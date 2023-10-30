@@ -1,0 +1,11 @@
+export 'cancelled_cheque_uploads.dart';
+export 'document_re_uploads.dart';
+export 'document_uploads.dart';
+export 'emirates_uploads.dart';
+export 'kyc_info.dart';
+export 'kyc_info_re_upload.dart';
+export 'merchant_info.dart';
+export 'personal_info.dart';
+export 'profile_page.dart';
+export 'trade_license_uploads.dart';
+export 'location.dart';

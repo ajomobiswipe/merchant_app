@@ -1,0 +1,15 @@
+{
+    "title": "Settings",
+    "pageTitle": "App Settings",
+    "themeTitle": "Theme Mode",
+    "selectThemeMode": "Select Theme Mode",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "language": "Language",
+    "selectLanguage": "Select Language",
+    "english": "English",
+    "arabic": "Arabic",
+    "themeColor": "Theme Color",
+    "selectThemeColor": "Select Theme Color"
+}

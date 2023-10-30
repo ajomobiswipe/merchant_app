@@ -1,0 +1,15 @@
+{
+    "title": "إعدادات",
+    "pageTitle": "إعدادات التطبيقات",
+    "themeTitle": "وضع السمة",
+    "selectThemeMode": "حدد وضع الموضوع",
+    "light": "خفيفة",
+    "dark": "مظلم",
+    "system": "نظام",
+    "language": "لغة",
+    "selectLanguage": "اختار اللغة",
+    "english": "English",
+    "arabic": "عربي",
+    "themeColor": "لون الموضوع",
+    "selectThemeColor": "حدد لون المظهر"
+}
