@@ -402,7 +402,7 @@ class _AddNewCardState extends State<AddNewCard> {
       cardRequestModel.cardHolderName = cardHolderName.trim();
       cardRequestModel.instId = Constants.instId;
       cardRequestModel.userName = username;
-      print(jsonEncode(cardRequestModel));
+      // print(jsonEncode(cardRequestModel));
 
       accountCardService.saveAccountsCard(cardRequestModel).then((result) {
         setState(() {

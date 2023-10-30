@@ -191,12 +191,12 @@ class _HomePageState extends State<HomePage> {
     );
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      print('User granted permission');
+      // print('User granted permission');
     } else if (settings.authorizationStatus ==
         AuthorizationStatus.provisional) {
-      print('User granted provisional permission');
+      // print('User granted provisional permission');
     } else {
-      print('User declined or has not accepted permission');
+      // print('User declined or has not accepted permission');
     }
   }
 
@@ -212,7 +212,7 @@ class _HomePageState extends State<HomePage> {
   // GET FCM - mobile token
   getToken() async {
     mToken = await FirebaseMessaging.instance.getToken();
-    print(mToken);
+    // print(mToken);
     var localToken = boxStorage.getNotificationToken();
     var result = localToken.compareTo(mToken);
     if (result != 0) {
@@ -222,7 +222,7 @@ class _HomePageState extends State<HomePage> {
           {'notificationToken': mToken.toString()}).then((response) {
         setLoading(false);
         var decodeData = json.decode(response.body);
-        print(decodeData);
+        // print(decodeData);
       });
     }
   }
@@ -358,8 +358,8 @@ class _HomePageState extends State<HomePage> {
         result = qrResult ?? 'null string ';
       });
     } on PlatformException catch (ex) {
-      print("----------");
-      print(ex);
+      // print("----------");
+      // print(ex);
       if (ex.code == MajaScan.CameraAccessDenied) {
         setState(() {
           result = "Camera permission was denied";
@@ -382,7 +382,7 @@ class _HomePageState extends State<HomePage> {
     if (result.isEmpty) {
       alertService.failure(context, 'Failure', 'Invalid QR code');
     }
-    print(result);
+    // print(result);
     if (result.isNotEmpty) {
       Navigator.pushNamed(context, "withdrawConfirmation",
           arguments: {'scanData': result});
@@ -916,7 +916,7 @@ class _HomePageState extends State<HomePage> {
   // CHECKING THE LOCATION PERMISSION
   checkAndRequestLocationPermissions() async {
     var status = await Permission.location.status;
-    print(status);
+    // print(status);
     Navigator.pushNamed(context, 'nearByLocation');
 
     // if (!status.isGranted) {

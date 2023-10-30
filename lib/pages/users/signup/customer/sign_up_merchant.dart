@@ -1673,7 +1673,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
       title: 'Email ID',
       suffixText: showVerify1 ? 'Verify' : 'Change',
       suffixIconOnPressed: () {
-        print('Button Pressed');
+        // print('Button Pressed');
         setState(() {
           if (!showVerify1 && emailVerify) {
             emailVerify = false;

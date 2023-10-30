@@ -15,7 +15,7 @@ class AuthService {
               biometricOnly: true, useErrorDialogs: true, stickyAuth: true),
         );
       } on PlatformException catch (e) {
-        print(e);
+        // print(e);
       }
     }
     return isAuthenticated;

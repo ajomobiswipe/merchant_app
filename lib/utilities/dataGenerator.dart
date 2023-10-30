@@ -18,6 +18,7 @@ List<Map<String, dynamic>> emvFields = [
 
 Future getDataFromScanData(String? scanData) async {
 
+  print(scanData);
 
   int? index54 = scanData?.indexOf("54");
   int? index26 = scanData?.indexOf("26");
@@ -34,7 +35,7 @@ Future getDataFromScanData(String? scanData) async {
 
     amount = scanData!.substring(index54! + 4, (index54! + 4) + numberOfDigits);
 
-    print(amount);
+    // print(amount);
   }
 
   if (index26 != -1) {
@@ -46,10 +47,10 @@ Future getDataFromScanData(String? scanData) async {
 
     accountInfo = scanData!.substring(index54! + 4, (index54! + 4) + numberOfDigits);
 
-    print(accountInfo);
+    // print(accountInfo);
   }
 
-  print('amount$amount');
+  // print('amount$amount');
 
 
   var requestBody = {

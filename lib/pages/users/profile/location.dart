@@ -105,7 +105,7 @@ class _LocationUpdateState extends State<LocationUpdate> {
     requestModel.nationalIdExpiry =
         DateFormat('dd-mm-yyyy').format(nationExpiryDate);
     userServices.updateUserDetails(requestModel).then((result) {
-      print(result.body);
+      // print(result.body);
       var response = jsonDecode(result.body);
       setLoading(false);
       if (result.statusCode == 200 || result.statusCode == 201) {

@@ -277,12 +277,12 @@ class _SettingsPageState extends State<SettingsPage> {
                 splashRadius: 50.0,
                 value: enableBioMetric,
                 onChanged: (value) async {
-                  print(value);
+                  // print(value);
                   var check = await Global.availableBiometrics();
-                  print(check);
+                  // print(check);
                   if (check.isNotEmpty) {
                     var authentication = await Global.authenticate();
-                    print(authentication);
+                    // print(authentication);
                     if (authentication) {
                       setState(() {
                         enableBioMetric = value;

@@ -135,7 +135,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: GestureDetector(
                   onTap: () async {
                     _launchInBrowser(_url);
-                    print(await Validators.encrypt('8776'));
+                    // print(await Validators.encrypt('8776'));
                   },
                   child: Text('Privacy Policy',
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
@@ -192,11 +192,11 @@ class _LoginPageState extends State<LoginPage> {
         requestModel.pin =
             await Validators.encrypt(requestModel.pin.toString());
       }
-      print(json.encode(requestModel));
+      // print(json.encode(requestModel));
       _passwordController.clear();
       userServices.loginService(requestModel).then((response) async {
         var result = jsonDecode(response.body);
-        print(result);
+        // print(result);
         var code = response.statusCode;
         if (code == 200 || code == 201) {
           if (result['responseCode'] == "00") {

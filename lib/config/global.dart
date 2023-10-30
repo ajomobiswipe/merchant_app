@@ -79,7 +79,7 @@ class Global {
       );
       return didAuthenticate;
     } on PlatformException catch (e) {
-      print(e.code);
+      // print(e.code);
       if (e.code == auth_error.notEnrolled) {
       } else if (e.code == auth_error.notAvailable) {
       } else if (e.code == auth_error.lockedOut ||

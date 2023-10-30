@@ -30,7 +30,7 @@ class Connection {
     SecurityContext sc = SecurityContext(withTrustedRoots: false);
     sc.setTrustedCertificatesBytes(sslCert1.buffer.asInt8List());
     if (kDebugMode) {
-      print(sc);
+      // print(sc);
     }
     return sc;
   }
@@ -52,7 +52,7 @@ class Connection {
     IOClient ioClient = IOClient(client);
     var response = await ioClient.post(Uri.parse(url),
         body: jsonEncode(requestData), headers: header);
-    print(response.body);
+    // print(response.body);
     return response;
   }
 
@@ -117,7 +117,7 @@ class Connection {
       'Content-Type': 'application/json'
     };
 
-    print(token);
+    // print(token);
     // var res = await http.post(Uri.parse(url),
     //     body: jsonEncode(requestData), headers: header);
 
@@ -127,7 +127,7 @@ class Connection {
     IOClient ioClient = IOClient(client);
     var res = await ioClient.post(Uri.parse(url),
         body: jsonEncode(requestData), headers: header);
-    print(res.body);
+    // print(res.body);
 
     if (res.statusCode == 401) {
       alertService.errorToast(Constants.unauthorized);

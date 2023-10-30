@@ -192,7 +192,7 @@ class _LoginPinNewState extends State<LoginPinNew> {
   getCustomerInfo() {
     String customerId = boxStorage.getCustomerId();
     userServices.getUserDetails(customerId).then((result) {
-      print(result);
+      // print(result);
     });
   }
 

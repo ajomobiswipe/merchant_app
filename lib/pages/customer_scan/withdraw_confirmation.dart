@@ -40,7 +40,7 @@ class _WithdrawConfirmationState extends State<WithdrawConfirmation> {
   );
   String currency = 'AED';
 
-  String amount="1000";
+  String amount = "1000";
 
   /// NEW
   String walletAccountNumber = '';
@@ -73,7 +73,7 @@ class _WithdrawConfirmationState extends State<WithdrawConfirmation> {
   }
 
   Future getScannedData(String? scanData) async {
-    print(scanData);
+    // print(scanData);
     var requestBody = await getDataFromScanData(scanData);
 
     // var requestBody = {
@@ -87,24 +87,32 @@ class _WithdrawConfirmationState extends State<WithdrawConfirmation> {
     //   }
     // };
 
-    var response = await userServices.finalisePayment(requestBody['requestBody']);
-
-
+    var response =
+        await userServices.finalisePayment(requestBody['requestBody']);
 
     var responseBody = jsonDecode(response.body);
-    print('responseValue$responseBody');
+
 
     if (response.statusCode == 200 || response.statusCode == 201) {
-      setState(() {
-        // if (scanData['qrData'].toString() != null) {
-        description.text = responseBody['payment']['reason'].toString();
-        currency = responseBody['payment']['currency'];
-        amount = responseBody['payment']['amount']!=null?responseBody['payment']['amount'].toString():"1000";
-        // } else {
-        // alertWidget.failure(context, "Error", "Invalid QR Code!");
-        // Navigator.pushReplacementNamed(context, 'home');
-        // }
-      });
+      if (responseBody['responseCode'] != '01') {
+        setState(() {
+          // if (scanData['qrData'].toString() != null) {
+          description.text = responseBody['payment']['reason'].toString();
+          currency = responseBody['payment']['currency'];
+          amount = responseBody['payment']['amount'] != null
+              ? responseBody['payment']['amount'].toString()
+              : "1000";
+          // } else {
+          // alertWidget.failure(context, "Error", "Invalid QR Code!");
+          // Navigator.pushReplacementNamed(context, 'home');
+          // }
+        });
+      } else {
+        Future.delayed(const Duration(seconds: 1),(){
+          alertWidget.failure(context, "Error", responseBody['responseMessgae']);
+          Navigator.pushReplacementNamed(context, 'home');
+        });
+      }
 
       //     {
       //       "payment": {
@@ -298,7 +306,6 @@ class _WithdrawConfirmationState extends State<WithdrawConfirmation> {
   }
 
   goToPin(request) async {
-
     // var qrData = request['qrData'].toString().split('#')[5];\
     var qrData = request;
     var customerId = boxStorage.getCustomerId();

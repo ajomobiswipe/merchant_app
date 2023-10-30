@@ -26,7 +26,7 @@ class TransactionServices {
     var url = "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/registerQRCode/12345/AA1234567890/UB776WH";
     var response = await connection.post(url, requestModel);
 
-    print('response$response');
+    // print('response$response');
     return response;
   }
 
@@ -36,7 +36,7 @@ class TransactionServices {
     var url = "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/registerQRCode/12345/AA1234567890/UB776WH";
     var response = await connection.get(url);
 
-    print('response$response');
+    // print('response$response');
     return response;
   }
 
@@ -124,7 +124,7 @@ class TransactionServices {
   */
   cashOut(requestModel) async {
 
-    print(requestModel);
+    // print(requestModel);
 
     Connection connection = Connection();
     var url = EndPoints.baseApi9503 + EndPoints.cashOut;

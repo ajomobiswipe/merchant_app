@@ -85,7 +85,7 @@ class _TransactionListState extends State<TransactionList> {
           _isLoadMoreRunning = false;
         });
         if (kDebugMode) {
-          print('Something went wrong!');
+          // print('Something went wrong!');
         }
       }
     }
@@ -117,7 +117,7 @@ class _TransactionListState extends State<TransactionList> {
         _isFirstLoadRunning = false;
       });
       if (kDebugMode) {
-        print('Something went wrong');
+        // print('Something went wrong');
       }
     }
   }

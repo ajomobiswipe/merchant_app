@@ -174,12 +174,12 @@ class _LoginAuthOTPState extends State<LoginAuthOTP> {
                     textInputAction: TextInputAction.done,
                     mainAxisAlignment: MainAxisAlignment.center,
                     onCompleted: (v) {
-                      print("Pin Comleted: $v");
+                      // print("Pin Comleted: $v");
                     },
                     onChanged: (value) {
-                      print(value);
+                      // print(value);
                       setState(() {
-                        print("x");
+                        // print("x");
                         otpCode = value;
                         if (value.length == 4) {
                           _enableButton = true;

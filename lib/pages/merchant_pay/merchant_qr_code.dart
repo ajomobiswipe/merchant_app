@@ -142,7 +142,7 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
             requestModel.qrData = desiredSubstring;
             verifiedQrData = desiredSubstring;
 
-            print(verifiedQrData);
+            // print(verifiedQrData);
 
             // timer = Timer.periodic(const Duration(seconds: 30), (Timer t) {
             //   print('30 seconds');

@@ -338,7 +338,7 @@ class _ProfilePageState extends State<ProfilePage> {
   List<Widget> merchant() {
     var du = mDetails[0];
     var docArray = Validators.urlDecrypt(du['merchantDocs']).split(',');
-    print(docArray);
+    // print(docArray);
     return [
       const Align(
         alignment: Alignment.centerLeft,
