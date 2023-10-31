@@ -406,14 +406,12 @@ class UserServices {
     return response;
   }
 
-
-  finalisePayment(requestData)async{
-
-
-
+  finalisePayment(requestData, String? bankCode, String? bankUserId,
+      String merchantTag) async {
     Connection connection = Connection();
-    var url = 'http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/finalizePaymentChannel/12345/AA1234567890/UB776WH';
-    var response = await connection.putWithRequestBody(url,requestData);
+    var url =
+        'http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/finalizePaymentChannel/$bankCode/$bankUserId/$merchantTag';
+    var response = await connection.putWithRequestBody(url, requestData);
     return response;
   }
 
@@ -671,6 +669,32 @@ class UserServices {
     Connection connection = Connection();
     var url = '${EndPoints.baseApi9502}${EndPoints.processFlowAPI}$customerId';
     var response = await connection.get(url);
+    return response;
+  }
+
+  Future getQrPaymentID(String qrLink) async {
+    Connection connection = Connection();
+    var url =
+        '${EndPoints.getQrCodeIdApi}12345/AA1234567890/UB776WH?qrLink=$qrLink';
+    var response = await connection.get(url);
+    return response;
+  }
+
+  Future getQrCodeStatus(String qrCodeId) async {
+    Connection connection = Connection();
+    var url =
+        '${EndPoints.getQrCodeStatusApi}12345/AA1234567890/UB776WH?qrCodeId=$qrCodeId';
+    var response = await connection.get(url);
+
+    return response;
+  }
+
+  Future getBank(String qrCodeId, String merchantTag) async {
+    Connection connection = Connection();
+    var url = '${EndPoints.getBankApi}$qrCodeId/$merchantTag';
+    print(url);
+    var response = await connection.get(url);
+    print(response);
     return response;
   }
 }

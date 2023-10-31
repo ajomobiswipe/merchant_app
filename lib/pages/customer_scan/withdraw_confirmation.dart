@@ -73,25 +73,67 @@ class _WithdrawConfirmationState extends State<WithdrawConfirmation> {
   }
 
   Future getScannedData(String? scanData) async {
-    // print(scanData);
     var requestBody = await getDataFromScanData(scanData);
 
-    // var requestBody = {
-    //   "payment": {
-    //     "paymentId": "123456",
-    //     "amount": "70",
-    //     "currency": "AED",
-    //     "reason": "Soccer shoes",
-    //     "shopId": "10001",
-    //     "cashDeskId": "10000001"
-    //   }
-    // };
+    /// We have to call 3 APIs from customer side
+    ///---getQrPaymentID API- First call API
+    // var getPaymentIdResponse=await userServices.getQrPaymentID(scanData!);
+    //
+    // var getPaymentIdResponseValue=jsonDecode(getPaymentIdResponse.body);
+    //
+    // if(getPaymentIdResponseValue!=''){
+    //
+    // }
+    ///---check QR status API calling for getting paymentId
+    var getQrCodeStatusResponse =
+        await userServices.getQrCodeStatus(requestBody['qrCodeId']);
 
-    var response =
-        await userServices.finalisePayment(requestBody['requestBody']);
+    var getQrCodeStatusResponseValue = jsonDecode(getQrCodeStatusResponse.body);
+
+    print(getQrCodeStatusResponseValue);
+
+    if(getQrCodeStatusResponseValue['qrCodeRequestStatus']!='ATT'){
+      Future.delayed(const Duration(seconds: 1), () {
+        if (getQrCodeStatusResponseValue['qrCodeRequestStatus'] == 'EFF') {
+          alertWidget.failure(context, "Error", 'Request paid by the buyer');
+          Navigator.pushReplacementNamed(context, 'home');
+        }
+
+        if (getQrCodeStatusResponseValue['qrCodeRequestStatus'] == 'EXP') {
+          alertWidget.failure(context, "Error", 'Request Expired');
+          Navigator.pushReplacementNamed(context, 'home');
+        }
+
+        if (getQrCodeStatusResponseValue['qrCodeRequestStatus'] == 'ANN') {
+          alertWidget.failure(context, "Error", 'QR code canceled by merchant');
+          Navigator.pushReplacementNamed(context, 'home');
+        }
+      });
+
+      return;
+    }
+
+
+
+    requestBody['requestBody']['payment']['paymentId'] =
+        getQrCodeStatusResponseValue['paymentId'];
+
+    ///---- Calling an api for getting bank userId and bankCode
+    var getBankResponse = await userServices.getBank(
+        requestBody['qrCodeId'], requestBody['merchantTag']);
+
+    var getBankResponseValue = jsonDecode(getBankResponse.body);
+
+    /// To achieve final payment
+    var response = await userServices.finalisePayment(
+        requestBody['requestBody'],
+        getBankResponseValue['bankCode'],
+        getBankResponseValue['bankUserId'],
+        requestBody['merchantTag']);
 
     var responseBody = jsonDecode(response.body);
 
+    print(responseBody);
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       if (responseBody['responseCode'] != '01') {
@@ -108,8 +150,9 @@ class _WithdrawConfirmationState extends State<WithdrawConfirmation> {
           // }
         });
       } else {
-        Future.delayed(const Duration(seconds: 1),(){
-          alertWidget.failure(context, "Error", responseBody['responseMessgae']);
+        Future.delayed(const Duration(seconds: 1), () {
+          alertWidget.failure(
+              context, "Error", responseBody['responseMessage']);
           Navigator.pushReplacementNamed(context, 'home');
         });
       }

@@ -126,6 +126,9 @@ class EndPoints {
   static const processFlowAPI = "$nanoServiceUrl/getAppProcessFlow/SIFR/";
 
 
+  static const getQrCodeIdApi = "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/getQrPaymentID/";
+  static const getQrCodeStatusApi = "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/checkQRCodeStatus/";
+  static const getBankApi = "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/getbankData/";
 
 
 

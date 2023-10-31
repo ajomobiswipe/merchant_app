@@ -25,7 +25,6 @@ class MerchantQRCode extends StatefulWidget {
 
 class _MerchantQRCodeState extends State<MerchantQRCode>
     with SingleTickerProviderStateMixin {
-
   GenerateQRCodeRequest requestModel = GenerateQRCodeRequest();
 
   TransactionServices transactionServices = TransactionServices();
@@ -42,6 +41,9 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
   late String traceNo = '';
 
   Timer? timer;
+  AlertService alertWidget = AlertService();
+
+  UserServices userServices = UserServices();
 
   @override
   void initState() {
@@ -73,10 +75,26 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
     });
   }
 
+  Future _checkQrStatus(String? qrCodeId) async {
+    var getQrCodeStatusResponse = await userServices.getQrCodeStatus(qrCodeId!);
+    var getQrCodeStatusResponseValue = jsonDecode(getQrCodeStatusResponse.body);
+    if (getQrCodeStatusResponseValue['qrCodeRequestStatus'] == 'ATT') return;
 
-  Future _checkQrStatus(String? qrCodeId)async{
-    transactionServices.checkQrStatus(qrCodeId).then((response) {
+    Future.delayed(const Duration(seconds: 1), () {
+      if (getQrCodeStatusResponseValue['qrCodeRequestStatus'] == 'EFF') {
+        alertWidget.failure(context, "Error", 'Request paid by the buyer');
+        Navigator.pushReplacementNamed(context, 'home');
+      }
 
+      if (getQrCodeStatusResponseValue['qrCodeRequestStatus'] == 'EXP') {
+        alertWidget.failure(context, "Error", 'Request Expired');
+        Navigator.pushReplacementNamed(context, 'home');
+      }
+
+      if (getQrCodeStatusResponseValue['qrCodeRequestStatus'] == 'ANN') {
+        alertWidget.failure(context, "Error", 'QR code canceled by merchant');
+        Navigator.pushReplacementNamed(context, 'home');
+      }
     });
   }
 
@@ -93,7 +111,6 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
     requestModel.amount = widget.params;
     requestModel.qrData = '';
 
-
     Random random = Random();
 
     // Generate a random 7-digit number.
@@ -102,8 +119,6 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
     int randomSevenDigitNumber = min + random.nextInt(max - min + 1);
 
     // print("Random 7-digit number: $randomSevenDigitNumber");
-
-
 
     var objectBody = {
       "payment": {
@@ -123,8 +138,6 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
       var decodeData = jsonDecode(response.body);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-
-
         String inputString = decodeData['link'];
 
         // Split the input string using 'data=' as the delimiter.
@@ -144,17 +157,14 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
 
             // print(verifiedQrData);
 
-            // timer = Timer.periodic(const Duration(seconds: 30), (Timer t) {
-            //   print('30 seconds');
-            //   _checkQrStatus(decodeData['qrCodeId']);
-            // });
+            timer = Timer.periodic(const Duration(seconds: 30), (Timer t) {
+              _checkQrStatus(decodeData['qrCodeId']);
+            });
 
             _controller.start();
             _isLoading = false;
           });
         }
-
-
 
         // if (decodeData['responseCode'].toString() == "00") {
         //   setState(() {
@@ -172,7 +182,6 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
         alertService.failure(context, '', Constants.somethingWrong);
       }
     });
-
   }
 
   @override
@@ -189,9 +198,7 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
       appBar: const AppBarWidget(
         title: 'Scan QR',
       ),
-      backgroundColor: Theme
-          .of(context)
-          .scaffoldBackgroundColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: _isLoading ? const LoadingWidget() : mainContent(),
     );
   }
@@ -199,99 +206,85 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
   mainContent() {
     return SingleChildScrollView(
         child: Column(children: [
-          const SizedBox(
-            height: 16.0,
+      const SizedBox(
+        height: 16.0,
+      ),
+      Center(
+        child: Image.asset(
+          Constants.sifrLogo,
+          height: 100,
+          fit: BoxFit.fill,
+        ),
+      ),
+      const SizedBox(
+        height: 16.0,
+      ),
+      Center(
+        child: QRCode(
+          qrSize: 250,
+          qrBackgroundColor: Colors.white,
+          qrPadding: 13,
+          qrBorderRadius: 10,
+          qrForegroundColor: Theme.of(context).primaryColor,
+          qrData: verifiedQrData,
+          gapLess: false,
+          // embeddedImage: AssetImage("assets/logo.jpg"),
+        ),
+      ),
+      const SizedBox(
+        height: 16.0,
+      ),
+      Center(
+        child: Text(
+          "Scan to Pay",
+          style: Theme.of(context)
+              .textTheme
+              .bodyMedium
+              ?.copyWith(fontSize: 18, fontWeight: FontWeight.w400),
+        ),
+      ),
+      const SizedBox(
+        height: 16.0,
+      ),
+      CustomTimer(
+          controller: _controller,
+          builder: (state, time) {
+            return RichText(
+                text: TextSpan(
+                    text: 'QR Code will expired in ',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(fontSize: 14),
+                    children: [
+                  TextSpan(
+                    text: "${time.minutes}:${time.seconds}",
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Colors.red,
+                        fontSize: 14,
+                        decoration: TextDecoration.none),
+                  ),
+                ]));
+          }),
+      const SizedBox(
+        height: 16.0,
+      ),
+      OutlinedButton(
+          onPressed: () {
+            Navigator.pushNamed(context, 'merchantPay');
+            _controller.reset();
+            _controller.finish();
+          },
+          style: OutlinedButton.styleFrom(
+            side: const BorderSide(color: Colors.red, width: 1),
           ),
-          Center(
-            child: Image.asset(
-              Constants.sifrLogo,
-              height: 100,
-              fit: BoxFit.fill,
-            ),
-          ),
-          const SizedBox(
-            height: 16.0,
-          ),
-          Center(
-            child: QRCode(
-              qrSize: 250,
-              qrBackgroundColor: Colors.white,
-              qrPadding: 13,
-              qrBorderRadius: 10,
-              qrForegroundColor: Theme
-                  .of(context)
-                  .primaryColor,
-              qrData: verifiedQrData,
-              gapLess: false,
-              // embeddedImage: AssetImage("assets/logo.jpg"),
-            ),
-          ),
-          const SizedBox(
-            height: 16.0,
-          ),
-          Center(
-            child: Text(
-              "Scan to Pay",
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .bodyMedium
-                  ?.copyWith(fontSize: 18, fontWeight: FontWeight.w400),
-            ),
-          ),
-          const SizedBox(
-            height: 16.0,
-          ),
-
-          CustomTimer(
-              controller: _controller,
-              builder: (state, time) {
-                return RichText(
-                    text: TextSpan(
-                        text: 'QR Code will expired in ',
-                        style: Theme
-                            .of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(fontSize: 14),
-                        children: [
-                          TextSpan(
-                            text: "${time.minutes}:${time.seconds}",
-                            style: Theme
-                                .of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(
-                                color: Colors.red,
-                                fontSize: 14,
-                                decoration: TextDecoration.none),
-                          ),
-                        ]));
-              }),
-
-          const SizedBox(
-            height: 16.0,
-          ),
-          OutlinedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, 'merchantPay');
-                _controller.reset();
-                _controller.finish();
-              },
-              style: OutlinedButton.styleFrom(
-                side: const BorderSide(color: Colors.red, width: 1),
-              ),
-              child: Text(
-                "Cancel",
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(
+          child: Text(
+            "Cancel",
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: Colors.red,
                 ),
-              ))
-        ]));
+          ))
+    ]));
   }
 
   setLoading(bool tf) {
