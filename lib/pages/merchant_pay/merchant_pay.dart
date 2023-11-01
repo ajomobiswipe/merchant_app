@@ -62,12 +62,12 @@ class _MerchantPayState extends State<MerchantPay> {
   }
 
   Future<bool> _onWillPop(BuildContext context) async {
-    bool? exitResult = customAlert.displayDialogConfirm(
+    var exitResult = customAlert.displayDialogConfirm(
         context,
         'Please confirm',
         'Do you want cancel this transaction?',
         onTapConfirm1);
-    return exitResult ?? false;
+    return exitResult!=null?true : false;
   }
 
   void onTapConfirm1() {

@@ -184,6 +184,88 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
     });
   }
 
+  Future _deleteQr() async {
+
+    /// Calling deleteQR API - First
+    /// After calling First API - we will call verify reversal API
+    /// We will call confirm reversal API
+
+    try {
+      var deleteQrResponse = await transactionServices.deleteQr();
+
+      if (deleteQrResponse.statusCode != 200) return;
+
+      var deleteQrResponseValue = jsonDecode(deleteQrResponse.body);
+
+      if (deleteQrResponseValue != null) {
+
+        var paymentObject = {
+          "payment": {
+            "amount": 0,
+            "currency": "string",
+            "reason": "string",
+            "paymentRefId": "string",
+            "shopId": "string",
+            "cashDeskId": "string",
+            "merchantTrxId": "string",
+            "merchantTrxRefId": "string",
+            "paymentId": "string",
+            "fees": 0,
+            "totalAmt": 0,
+            "categoryPurpose": "string"
+          },
+          "merchantTrxId": "string",
+          "merchantTrxRefId": "string"
+        };
+
+        var verifyReversalResponse =
+            await transactionServices.verifyReversal(paymentObject);
+
+        if (verifyReversalResponse.statusCode != 200) return;
+
+        var verifyReversalResponseValue =
+            jsonDecode(verifyReversalResponse.body);
+
+        if (verifyReversalResponseValue != null) {
+
+          var requestBody = {
+            "status": "string",
+            "payment": {
+              "amount": 0,
+              "currency": "string",
+              "reason": "string",
+              "paymentRefId": "string",
+              "shopId": "string",
+              "cashDeskId": "string",
+              "merchantTrxId": "string",
+              "merchantTrxRefId": "string",
+              "paymentId": "string",
+              "fees": 0,
+              "totalAmt": 0,
+              "categoryPurpose": "string"
+            }
+          };
+
+          String paymentId = '';
+
+          var confirmReversalResponse =
+              await transactionServices.confirmReversal(paymentId, requestBody);
+
+          if (confirmReversalResponse.statusCode != 200) return;
+
+          var confirmReversalResponseValue =
+              jsonDecode(confirmReversalResponse.body);
+
+        }
+
+      }
+
+
+    } catch (_) {
+      print('Error Logs$_');
+    }
+  }
+
   @override
   void dispose() {
     _controller.reset();
@@ -269,17 +351,34 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
       const SizedBox(
         height: 16.0,
       ),
+      // OutlinedButton(
+      //     onPressed: () {
+      //       Navigator.pushNamed(context, 'merchantPay');
+      //       _controller.reset();
+      //       _controller.finish();
+      //     },
+      //     style: OutlinedButton.styleFrom(
+      //       side: const BorderSide(color: Colors.red, width: 1),
+      //     ),
+      //     child: Text(
+      //       "Cancel",
+      //       style: Theme.of(context).textTheme.bodySmall?.copyWith(
+      //             color: Colors.red,
+      //           ),
+      //     ))
+
       OutlinedButton(
           onPressed: () {
-            Navigator.pushNamed(context, 'merchantPay');
-            _controller.reset();
-            _controller.finish();
+            // Navigator.pushNamed(context, 'merchantPay');
+            // _controller.reset();
+            // _controller.finish();
+            _deleteQr();
           },
           style: OutlinedButton.styleFrom(
             side: const BorderSide(color: Colors.red, width: 1),
           ),
           child: Text(
-            "Cancel",
+            "Delete",
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: Colors.red,
                 ),

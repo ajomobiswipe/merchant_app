@@ -103,6 +103,31 @@ class Connection {
     }
   }
 
+  delete(String url) async {
+    String token = boxStorage.getToken();
+    final headers = {
+      'Authorization': 'Bearer $token',
+      'Bearer': token,
+      'Content-Type': 'application/json'
+    };
+
+    // var res = await http.get(Uri.parse(url), headers: headers);
+
+    HttpClient client = HttpClient(context: await globalContext);
+    client.badCertificateCallback =
+        (X509Certificate cert, String host, int port) => false;
+    IOClient ioClient = IOClient(client);
+    var res = await ioClient.delete(Uri.parse(url), headers: headers);
+
+    if (res.statusCode == 401) {
+      alertService.errorToast(Constants.unauthorized);
+      navigatorKey.currentState?.pushReplacementNamed('login');
+      clearStorage();
+    } else {
+      return res;
+    }
+  }
+
   /*
   * SERVICE NAME: post
   * DESC: Global POST Method With Token

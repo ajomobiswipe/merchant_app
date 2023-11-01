@@ -131,5 +131,10 @@ class EndPoints {
   static const getBankApi = "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/getbankData/";
 
 
+  static const generateQrCodeAPI = "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/registerQRCode/12345/AA1234567890/UB776WH";
+  static const deleteQrCodeAPI = "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/deleteQRCode/12345/AA1234567890/UB776WH";
+  static const verifyReversalAPI = "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/verifyReversal";
+  static const confirmReversalAPI = "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/confirmReversal";
+
 
 }

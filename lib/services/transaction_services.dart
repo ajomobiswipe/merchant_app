@@ -6,6 +6,8 @@
 *  ===============================================================*/
 
 // Dependencies or Plugins - Models - Services - Global Functions
+import 'dart:convert';
+
 import 'package:sifr_latest/config/constants.dart';
 import 'package:sifr_latest/models/TransactionRequest.dart';
 import '../config/endpoints.dart';
@@ -23,18 +25,60 @@ class TransactionServices {
   generateQRCode(requestModel) async {
     Connection connection = Connection();
     // var url = EndPoints.baseApi9502 + EndPoints.generateQrCode;
-    var url = "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/registerQRCode/12345/AA1234567890/UB776WH";
+    var url = EndPoints.generateQrCodeAPI;
+    var response = await connection.post(url, requestModel);
+
+    return response;
+  }
+
+  checkQrStatus(String? qrCodeId) async {
+    Connection connection = Connection();
+    // var url = EndPoints.baseApi9502 + EndPoints.generateQrCode;
+    var url =
+        '${EndPoints.getQrCodeStatusApi}12345/AA1234567890/UB776WH?qrCodeId=$qrCodeId';
+    var response = await connection.get(url);
+
+    // print('response$response');
+    return response;
+  }
+
+  Future deleteQr() async {
+    Connection connection = Connection();
+    // var url = EndPoints.baseApi9502 + EndPoints.generateQrCode;
+
+    var url = EndPoints.deleteQrCodeAPI;
+
+    // var url = "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/deleteQRCode/12345/AA1234567890/UB776WH";
+
+    var response = await connection.delete(url);
+
+    // print('response$response');
+    return response;
+  }
+
+  Future verifyReversal(requestModel) async {
+    Connection connection = Connection();
+    // var url = EndPoints.baseApi9502 + EndPoints.generateQrCode;
+
+    var url = EndPoints.verifyReversalAPI;
+
+    // var url =
+    //     "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/verifyReversal";
     var response = await connection.post(url, requestModel);
 
     // print('response$response');
     return response;
   }
 
-  checkQrStatus(String? qrCodeId)async{
+  Future confirmReversal(String paymentId,requestBody) async {
     Connection connection = Connection();
     // var url = EndPoints.baseApi9502 + EndPoints.generateQrCode;
-    var url = "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/registerQRCode/12345/AA1234567890/UB776WH";
-    var response = await connection.get(url);
+
+    var url = '${EndPoints.confirmReversalAPI}/$paymentId';
+
+    // var url =
+    //     "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/verifyReversal";
+    var response = await connection.putWithRequestBody(url,requestBody);
 
     // print('response$response');
     return response;
@@ -123,7 +167,6 @@ class TransactionServices {
   * to pass token in Headers
   */
   cashOut(requestModel) async {
-
     // print(requestModel);
 
     Connection connection = Connection();
