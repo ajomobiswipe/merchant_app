@@ -42,11 +42,13 @@ class TransactionServices {
     return response;
   }
 
-  Future deleteQr() async {
+  Future deleteQr(String qrCodeId,String qrCodeTransactionId) async {
+
+    print('$qrCodeId,$qrCodeTransactionId');
     Connection connection = Connection();
     // var url = EndPoints.baseApi9502 + EndPoints.generateQrCode;
 
-    var url = EndPoints.deleteQrCodeAPI;
+    var url = '${EndPoints.deleteQrCodeAPI}?qrCodeId=$qrCodeId&qrCodeTransactionId=$qrCodeTransactionId';
 
     // var url = "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/deleteQRCode/12345/AA1234567890/UB776WH";
 

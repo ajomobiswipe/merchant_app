@@ -40,6 +40,9 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
   late String verifiedQrData = '';
   late String traceNo = '';
 
+  String qrCodeId='';
+  String qrCodeTransactionId='';
+
   Timer? timer;
   AlertService alertWidget = AlertService();
 
@@ -120,7 +123,7 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
 
     // print("Random 7-digit number: $randomSevenDigitNumber");
 
-    var objectBody = {
+    Map<String,dynamic> objectBody = {
       "payment": {
         "amount": "${widget.params}",
         "currency": "AED",
@@ -136,6 +139,8 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
 
     transactionServices.generateQRCode(objectBody).then((response) {
       var decodeData = jsonDecode(response.body);
+
+      print(decodeData);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         String inputString = decodeData['link'];
@@ -154,6 +159,10 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
           setState(() {
             requestModel.qrData = desiredSubstring;
             verifiedQrData = desiredSubstring;
+
+            qrCodeTransactionId=objectBody['qrCodeTransactionId']!;
+            qrCodeId=decodeData['qrCodeId'];
+
 
             // print(verifiedQrData);
 
@@ -191,11 +200,19 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
     /// We will call confirm reversal API
 
     try {
-      var deleteQrResponse = await transactionServices.deleteQr();
+      var deleteQrResponse = await transactionServices.deleteQr(qrCodeId,qrCodeTransactionId);
+
+
 
       if (deleteQrResponse.statusCode != 200) return;
 
       var deleteQrResponseValue = jsonDecode(deleteQrResponse.body);
+
+      if(deleteQrResponseValue['responseCode']=='01'){
+        alertService.failure(context, '', deleteQrResponseValue['responseMessage']);
+        Navigator.pushReplacementNamed(context, 'home');
+        return;
+      }
 
       if (deleteQrResponseValue != null) {
 
