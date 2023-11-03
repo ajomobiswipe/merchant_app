@@ -81,21 +81,38 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
   Future _checkQrStatus(String? qrCodeId) async {
     var getQrCodeStatusResponse = await userServices.getQrCodeStatus(qrCodeId!);
     var getQrCodeStatusResponseValue = jsonDecode(getQrCodeStatusResponse.body);
+
+    print(getQrCodeStatusResponseValue['qrCodeRequestStatus']);
     if (getQrCodeStatusResponseValue['qrCodeRequestStatus'] == 'ATT') return;
 
     Future.delayed(const Duration(seconds: 1), () {
-      if (getQrCodeStatusResponseValue['qrCodeRequestStatus'] == 'EFF') {
-        alertWidget.failure(context, "Error", 'Request paid by the buyer');
+      if (getQrCodeStatusResponseValue['qrCodeRequestStatus'] == 'EFF' || getQrCodeStatusResponseValue['qrCodeRequestStatus'] == 'EXECUTED') {
+        // alertWidget.failure(context, "Error", 'Request paid by the buyer');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Request paid by the buyer'),
+          ),
+        );
         Navigator.pushReplacementNamed(context, 'home');
       }
 
       if (getQrCodeStatusResponseValue['qrCodeRequestStatus'] == 'EXP') {
-        alertWidget.failure(context, "Error", 'Request Expired');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Request Expired'),
+          ),
+        );
+        // alertWidget.failure(context, "Error", 'Request Expired');
         Navigator.pushReplacementNamed(context, 'home');
       }
 
-      if (getQrCodeStatusResponseValue['qrCodeRequestStatus'] == 'ANN') {
+      if (getQrCodeStatusResponseValue['qrCodeRequestStatus'] == 'ANN' || getQrCodeStatusResponseValue['qrCodeRequestStatus'] == 'CANCELLED') {
         alertWidget.failure(context, "Error", 'QR code canceled by merchant');
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   const SnackBar(
+        //     content: Text('Request Expired'),
+        //   ),
+        // );
         Navigator.pushReplacementNamed(context, 'home');
       }
     });
@@ -162,11 +179,8 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
 
             qrCodeTransactionId=objectBody['qrCodeTransactionId']!;
             qrCodeId=decodeData['qrCodeId'];
-
-
             // print(verifiedQrData);
-
-            timer = Timer.periodic(const Duration(seconds: 30), (Timer t) {
+            timer = Timer.periodic(const Duration(seconds: 20), (Timer t) {
               _checkQrStatus(decodeData['qrCodeId']);
             });
 
@@ -203,7 +217,6 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
       var deleteQrResponse = await transactionServices.deleteQr(qrCodeId,qrCodeTransactionId);
 
 
-
       if (deleteQrResponse.statusCode != 200) return;
 
       var deleteQrResponseValue = jsonDecode(deleteQrResponse.body);
@@ -214,34 +227,77 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
         return;
       }
 
+      /// Checking QR code is paid by customer
+      /// calling verify reversal API if only the buyer is paid for QR code
+      var getQrCodeStatusResponse = await userServices.getQrCodeStatus(qrCodeId!);
+      var getQrCodeStatusResponseValue = jsonDecode(getQrCodeStatusResponse.body);
+
+      // print(getQrCodeStatusResponseValue['qrCodeRequestStatus']);
+      if (getQrCodeStatusResponseValue['qrCodeRequestStatus'] != 'EXECUTED') {
+        Future.delayed(const Duration(seconds: 1),(){
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Qr code is deleted'),
+            ),
+          );
+          Navigator.pushReplacementNamed(context, 'home');
+        });
+
+        return;
+        // alertWidget.failure(context, "Error", 'Request paid by the buyer');
+      }
+
       if (deleteQrResponseValue != null) {
+
+
+        Random random7 = Random();
+
+        // Generate a random 7-digit number.
+        int min7 = 1000000; // Smallest 7-digit number (1,000,000).
+        int max7 = 9999999; // Largest 7-digit number (9,999,999).
+        int randomSevenDigitNumber = min7 + random7.nextInt(max7 - min7 + 1);
+
+
+        Random random6 = Random();
+
+        // Generate a random 7-digit number.
+        int min6 = 100000; // Smallest 7-digit number (1,000,000).
+        int max6 = 999999; // Largest 7-digit number (9,999,999).
+        int randomSixDigitNumber = min6 + random6.nextInt(max6 - min6 + 1);
+
+
+        Random random8 = Random();
+        // Generate a random 7-digit number.
+        int min8 = 10000000; // Smallest 7-digit number (1,000,000).
+        int max8 = 99999999; // Largest 7-digit number (9,999,999).
+        int randomEightDigitNumber = min8 + random8.nextInt(max8 - min8 + 1);
+
 
         var paymentObject = {
           "payment": {
-            "amount": 0,
-            "currency": "string",
-            "reason": "string",
-            "paymentRefId": "string",
-            "shopId": "string",
-            "cashDeskId": "string",
-            "merchantTrxId": "string",
-            "merchantTrxRefId": "string",
-            "paymentId": "string",
-            "fees": 0,
-            "totalAmt": 0,
-            "categoryPurpose": "string"
+            "amount": "${widget.params}",
+            "currency": "AED",
+            "reason": "Coffee x4",
+            "paymentRefId ": "QRP$randomEightDigitNumber",
+            "shopId": "10001",
+            "cashDeskId": "10000001"
           },
-          "merchantTrxId": "string",
-          "merchantTrxRefId": "string"
+          "merchantTrxId": "$randomSevenDigitNumber",
+          "merchantTrxRefId": "$randomSixDigitNumber"
         };
+
+        print(paymentObject);
 
         var verifyReversalResponse =
             await transactionServices.verifyReversal(paymentObject);
+
 
         if (verifyReversalResponse.statusCode != 200) return;
 
         var verifyReversalResponseValue =
             jsonDecode(verifyReversalResponse.body);
+
+        print('verifyReversalResponseValue$verifyReversalResponseValue');
 
         if (verifyReversalResponseValue != null) {
 
