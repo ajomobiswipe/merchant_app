@@ -90,7 +90,6 @@ class _WithdrawConfirmationState extends State<WithdrawConfirmation> {
 
     var getQrCodeStatusResponseValue = jsonDecode(getQrCodeStatusResponse.body);
 
-    print(getQrCodeStatusResponseValue);
 
     if(getQrCodeStatusResponseValue['qrCodeRequestStatus']!='ATT'){
       Future.delayed(const Duration(seconds: 1), () {
@@ -124,6 +123,9 @@ class _WithdrawConfirmationState extends State<WithdrawConfirmation> {
 
     var getBankResponseValue = jsonDecode(getBankResponse.body);
 
+
+
+
     /// To achieve final payment
     var response = await userServices.finalisePayment(
         requestBody['requestBody'],
@@ -133,7 +135,7 @@ class _WithdrawConfirmationState extends State<WithdrawConfirmation> {
 
     var responseBody = jsonDecode(response.body);
 
-    print(responseBody);
+
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       if (responseBody['responseCode'] != '01') {

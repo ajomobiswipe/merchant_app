@@ -154,6 +154,9 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
       "qrCodeTransactionId": "qr$randomSevenDigitNumber"
     };
 
+
+
+
     transactionServices.generateQRCode(objectBody).then((response) {
       var decodeData = jsonDecode(response.body);
 
@@ -180,9 +183,9 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
             qrCodeTransactionId=objectBody['qrCodeTransactionId']!;
             qrCodeId=decodeData['qrCodeId'];
             // print(verifiedQrData);
-            timer = Timer.periodic(const Duration(seconds: 20), (Timer t) {
-              _checkQrStatus(decodeData['qrCodeId']);
-            });
+            // timer = Timer.periodic(const Duration(seconds: 20), (Timer t) {
+            //   _checkQrStatus(decodeData['qrCodeId']);
+            // });
 
             _controller.start();
             _isLoading = false;
@@ -232,8 +235,11 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
       var getQrCodeStatusResponse = await userServices.getQrCodeStatus(qrCodeId!);
       var getQrCodeStatusResponseValue = jsonDecode(getQrCodeStatusResponse.body);
 
+
+      print(getQrCodeStatusResponseValue['qrCodeRequestStatus']);
+
       // print(getQrCodeStatusResponseValue['qrCodeRequestStatus']);
-      if (getQrCodeStatusResponseValue['qrCodeRequestStatus'] != 'EXECUTED') {
+      if (getQrCodeStatusResponseValue['qrCodeRequestStatus'] != 'EXECUTED' && getQrCodeStatusResponseValue['qrCodeRequestStatus'] != 'EFF') {
         Future.delayed(const Duration(seconds: 1),(){
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -248,7 +254,6 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
       }
 
       if (deleteQrResponseValue != null) {
-
 
         Random random7 = Random();
 
@@ -286,7 +291,8 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
           "merchantTrxRefId": "$randomSixDigitNumber"
         };
 
-        print(paymentObject);
+
+        // return;
 
         var verifyReversalResponse =
             await transactionServices.verifyReversal(paymentObject);
@@ -298,6 +304,11 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
             jsonDecode(verifyReversalResponse.body);
 
         print('verifyReversalResponseValue$verifyReversalResponseValue');
+
+        if(verifyReversalResponseValue['status']=="Failed"){
+            Navigator.pushReplacementNamed(context, 'home');
+          return;
+        }
 
         if (verifyReversalResponseValue != null) {
 

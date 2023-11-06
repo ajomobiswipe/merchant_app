@@ -684,6 +684,7 @@ class UserServices {
     Connection connection = Connection();
     var url =
         '${EndPoints.getQrCodeStatusApi}12345/AA1234567890/UB776WH?qrCodeId=$qrCodeId';
+    print(url);
     var response = await connection.get(url);
 
     return response;
