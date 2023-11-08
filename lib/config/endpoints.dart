@@ -16,6 +16,7 @@ class EndPoints {
   static const baseApi8988 = 'https://softposreceipt.omaemirates.com:8988';
   static const serviceUrl =
       "https://sandboxdev.omaemirates.com:9506/customer/v1";
+
   /*
     * This Short apis used for code reduce.
   */
@@ -24,6 +25,7 @@ class EndPoints {
 
   // SIFR logo api
   static const sifrLogo = '$baseApi8988/SoftPOS/SifrLogo/';
+
   // Slider image for dashboard
   static const slideUrl = "/SoftPOS/Sifr/AppSilderimages";
 
@@ -118,6 +120,7 @@ class EndPoints {
   */
   static const verifyKycInfo = "$nanoServiceUrl/updateKYCStatus/SIFR/";
   static const addOrUpdateKYCInfo = "$nanoServiceUrl/addOrUpdateKYCInfo/SIFR";
+
   /*
     * Raise complaint Apis
   */
@@ -125,16 +128,23 @@ class EndPoints {
   static const addComplaintAPI = "$nanoServiceUrl/raiseComplaint/add/";
   static const processFlowAPI = "$nanoServiceUrl/getAppProcessFlow/SIFR/";
 
+  static const getQrCodeIdApi =
+      "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/getQrPaymentID/";
+  static const getQrCodeStatusApi =
+      "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/checkQRCodeStatus/$bankCode/$bankUserId/$merchantTag";
+  static const getBankApi =
+      "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/getbankData/";
 
-  static const getQrCodeIdApi = "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/getQrPaymentID/";
-  static const getQrCodeStatusApi = "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/checkQRCodeStatus/";
-  static const getBankApi = "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/getbankData/";
+  static const bankCode = "12345";
+  static const bankUserId = "AA1234567890";
+  static const merchantTag = "UB776WH";
 
-
-  static const generateQrCodeAPI = "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/registerQRCode/12345/AA1234567890/UB776WH";
-  static const deleteQrCodeAPI = "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/deleteQRCode/12345/AA1234567890/UB776WH";
-  static const verifyReversalAPI = "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/verifyReversal";
-  static const confirmReversalAPI = "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/confirmReversal";
-
-
+  static const generateQrCodeAPI =
+      "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/registerQRCode/$bankCode/$bankUserId/$merchantTag";
+  static const deleteQrCodeAPI =
+      "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/deleteQRCode/$bankCode/$bankUserId/$merchantTag";
+  static const verifyReversalAPI =
+      "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/verifyReversal/$bankCode/$bankUserId/$merchantTag";
+  static const confirmReversalAPI =
+      "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/confirmReversal/$bankCode/$bankUserId/$merchantTag";
 }

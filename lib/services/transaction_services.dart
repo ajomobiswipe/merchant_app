@@ -27,7 +27,6 @@ class TransactionServices {
     // var url = EndPoints.baseApi9502 + EndPoints.generateQrCode;
     var url = EndPoints.generateQrCodeAPI;
 
-
     var response = await connection.post(url, requestModel);
 
     return response;
@@ -37,20 +36,20 @@ class TransactionServices {
     Connection connection = Connection();
     // var url = EndPoints.baseApi9502 + EndPoints.generateQrCode;
     var url =
-        '${EndPoints.getQrCodeStatusApi}12345/AA1234567890/UB776WH?qrCodeId=$qrCodeId';
+        '${EndPoints.getQrCodeStatusApi}?qrCodeId=$qrCodeId';
     var response = await connection.get(url);
 
     // print('response$response');
     return response;
   }
 
-  Future deleteQr(String qrCodeId,String qrCodeTransactionId) async {
-
+  Future deleteQr(String qrCodeId, String qrCodeTransactionId) async {
     print('$qrCodeId,$qrCodeTransactionId');
     Connection connection = Connection();
     // var url = EndPoints.baseApi9502 + EndPoints.generateQrCode;
 
-    var url = '${EndPoints.deleteQrCodeAPI}?qrCodeId=$qrCodeId&qrCodeTransactionId=$qrCodeTransactionId';
+    var url =
+        '${EndPoints.deleteQrCodeAPI}?qrCodeId=$qrCodeId&qrCodeTransactionId=$qrCodeTransactionId';
     print(url);
 
     // var url = "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/deleteQRCode/12345/AA1234567890/UB776WH";
@@ -65,9 +64,7 @@ class TransactionServices {
     Connection connection = Connection();
     // var url = EndPoints.baseApi9502 + EndPoints.generateQrCode;
 
-    var url = '${EndPoints.verifyReversalAPI}/12345/AA1234567890/UB776WH';
-
-
+    var url = EndPoints.verifyReversalAPI;
 
     // var url =
     //     "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/verifyReversal";
@@ -77,15 +74,15 @@ class TransactionServices {
     return response;
   }
 
-  Future confirmReversal(String paymentId,requestBody) async {
+  Future confirmReversal(requestBody) async {
     Connection connection = Connection();
     // var url = EndPoints.baseApi9502 + EndPoints.generateQrCode;
 
-    var url = '${EndPoints.confirmReversalAPI}/$paymentId';
+    var url = EndPoints.confirmReversalAPI;
 
     // var url =
     //     "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/verifyReversal";
-    var response = await connection.putWithRequestBody(url,requestBody);
+    var response = await connection.putWithRequestBody(url, requestBody);
 
     // print('response$response');
     return response;

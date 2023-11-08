@@ -81,13 +81,23 @@ class UserServices {
   * Params: loginRequestModel and Url
   */
   otpVerification(String userName) async {
-    Connection connection = Connection();
-    LoginRequestModel loginRequestModel = LoginRequestModel();
-    var url = EndPoints.baseApi9502 + EndPoints.mobileOtpAPI;
-    loginRequestModel.userName = userName;
-    loginRequestModel.instId = Constants.instId;
-    var response = await connection.postWithOutToken(url, loginRequestModel);
-    return response;
+    try {
+
+
+      Connection connection = Connection();
+      LoginRequestModel loginRequestModel = LoginRequestModel();
+      var url = EndPoints.baseApi9502 + EndPoints.mobileOtpAPI;
+      loginRequestModel.userName = userName;
+      loginRequestModel.instId = Constants.instId;
+
+
+      var response = await connection.postWithOutToken(url, loginRequestModel);
+
+
+      return response;
+    } catch (_) {
+
+    }
   }
 
   /*
@@ -682,8 +692,7 @@ class UserServices {
 
   Future getQrCodeStatus(String qrCodeId) async {
     Connection connection = Connection();
-    var url =
-        '${EndPoints.getQrCodeStatusApi}12345/AA1234567890/UB776WH?qrCodeId=$qrCodeId';
+    var url = '${EndPoints.getQrCodeStatusApi}?qrCodeId=$qrCodeId';
     print(url);
     var response = await connection.get(url);
 

@@ -304,16 +304,31 @@ class _LoginAuthOTPState extends State<LoginAuthOTP> {
       isLoading = true;
       enableOtpField = false;
     });
-    userServices.otpVerification(username).then((response) {
-      var data = jsonDecode(response.body);
-      if (data['responseCode'] == "00") {
-        setState(() {
-          message = data['responseMessage'];
-          isLoading = false;
-          enableOtpField = true;
-        });
-      }
-    });
+
+   try{
+     userServices.otpVerification(username).then((response) {
+
+
+
+       var data = jsonDecode(response.body);
+
+
+
+       if (data['responseCode'] == "00") {
+         setState(() {
+           message = data['responseMessage'];
+           isLoading = false;
+           enableOtpField = true;
+         });
+       }
+     });
+   }catch(e){
+     print(e);
+   }
+
+
+
+
   }
 
   /// VERIFY OTP

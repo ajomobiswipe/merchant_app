@@ -183,9 +183,9 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
             qrCodeTransactionId=objectBody['qrCodeTransactionId']!;
             qrCodeId=decodeData['qrCodeId'];
             // print(verifiedQrData);
-            // timer = Timer.periodic(const Duration(seconds: 20), (Timer t) {
-            //   _checkQrStatus(decodeData['qrCodeId']);
-            // });
+            timer = Timer.periodic(const Duration(seconds: 20), (Timer t) {
+              _checkQrStatus(decodeData['qrCodeId']);
+            });
 
             _controller.start();
             _isLoading = false;
@@ -260,7 +260,7 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
         // Generate a random 7-digit number.
         int min7 = 1000000; // Smallest 7-digit number (1,000,000).
         int max7 = 9999999; // Largest 7-digit number (9,999,999).
-        int randomSevenDigitNumber = min7 + random7.nextInt(max7 - min7 + 1);
+        int merchantTxnId = min7 + random7.nextInt(max7 - min7 + 1);
 
 
         Random random6 = Random();
@@ -268,14 +268,14 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
         // Generate a random 7-digit number.
         int min6 = 100000; // Smallest 7-digit number (1,000,000).
         int max6 = 999999; // Largest 7-digit number (9,999,999).
-        int randomSixDigitNumber = min6 + random6.nextInt(max6 - min6 + 1);
+        int merchantTxnRefId = min6 + random6.nextInt(max6 - min6 + 1);
 
 
         Random random8 = Random();
         // Generate a random 7-digit number.
         int min8 = 10000000; // Smallest 7-digit number (1,000,000).
         int max8 = 99999999; // Largest 7-digit number (9,999,999).
-        int randomEightDigitNumber = min8 + random8.nextInt(max8 - min8 + 1);
+        int paymentRefId = min8 + random8.nextInt(max8 - min8 + 1);
 
 
         var paymentObject = {
@@ -283,13 +283,15 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
             "amount": "${widget.params}",
             "currency": "AED",
             "reason": "Coffee x4",
-            "paymentRefId ": "QRP$randomEightDigitNumber",
+            "paymentRefId ": "QRP$paymentRefId",
             "shopId": "10001",
             "cashDeskId": "10000001"
           },
-          "merchantTrxId": "$randomSevenDigitNumber",
-          "merchantTrxRefId": "$randomSixDigitNumber"
+          "merchantTrxId": "$merchantTxnId",
+          "merchantTrxRefId": "$merchantTxnRefId"
         };
+
+        print(paymentObject);
 
 
         // return;
@@ -313,32 +315,48 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
         if (verifyReversalResponseValue != null) {
 
           var requestBody = {
-            "status": "string",
+            "merchantTrxId": "$merchantTxnId",
+            "merchantTrxRefId": "$merchantTxnRefId",
             "payment": {
-              "amount": 0,
-              "currency": "string",
-              "reason": "string",
-              "paymentRefId": "string",
-              "shopId": "string",
-              "cashDeskId": "string",
-              "merchantTrxId": "string",
-              "merchantTrxRefId": "string",
-              "paymentId": "string",
-              "fees": 0,
-              "totalAmt": 0,
-              "categoryPurpose": "string"
+              "paymentId": "${getQrCodeStatusResponseValue['paymentId']}",
+              "amount": "${widget.params}",
+              "currency": "AED",
+              "reason": "Coffee x4 ",
+              "paymentRefId ": "QRP$paymentRefId",
+              "shopId": "10001",
+              "cashDeskId": "10000001"
             }
           };
 
-          String paymentId = '';
+
+
+          print(requestBody);
+
+          // return;
 
           var confirmReversalResponse =
-              await transactionServices.confirmReversal(paymentId, requestBody);
+              await transactionServices.confirmReversal(requestBody);
 
-          if (confirmReversalResponse.statusCode != 200) return;
+          print('confirmReversalResponse${jsonDecode(confirmReversalResponse.body)}');
+
+          if (confirmReversalResponse.statusCode != 200) {
+            Navigator.pushReplacementNamed(context, 'home');
+            return;
+          }
 
           var confirmReversalResponseValue =
               jsonDecode(confirmReversalResponse.body);
+
+          Future.delayed(Duration(seconds: 1),(){
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Reversal confirmed for this QR'),
+              ),
+            );
+            Navigator.pushReplacementNamed(context, 'home');
+          });
+
+
 
         }
 
