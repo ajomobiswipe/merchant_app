@@ -702,9 +702,9 @@ class UserServices {
   Future getBank(String qrCodeId, String merchantTag) async {
     Connection connection = Connection();
     var url = '${EndPoints.getBankApi}$qrCodeId/$merchantTag';
-    print(url);
+
     var response = await connection.get(url);
-    print(response);
+
     return response;
   }
 }
