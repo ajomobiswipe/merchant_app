@@ -648,7 +648,8 @@ class _HomePageState extends State<HomePage> {
         ),
         InkWell(
           onTap: () {
-            Navigator.pushNamed(context, 'transactionListing');
+            // Navigator.pushNamed(context, 'transactionListing');
+            Navigator.pushNamed(context, 'QRTransactionListing');
           },
           child: Card(
             elevation: 5,

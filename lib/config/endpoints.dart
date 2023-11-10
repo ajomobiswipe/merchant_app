@@ -131,20 +131,27 @@ class EndPoints {
   static const getQrCodeIdApi =
       "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/getQrPaymentID/";
   static const getQrCodeStatusApi =
-      "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/checkQRCodeStatus/$bankCode/$bankUserId/$merchantTag";
+      "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/checkQRCodeStatus/$terminalId";
   static const getBankApi =
       "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/getbankData/";
 
-  static const bankCode = "12345";
+  static const terminalId = "12345";
   static const bankUserId = "AA1234567890";
   static const merchantTag = "UB776WH";
 
   static const generateQrCodeAPI =
-      "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/registerQRCode/$bankCode/$bankUserId/$merchantTag";
+      "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/registerQRCode/$terminalId";
   static const deleteQrCodeAPI =
-      "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/deleteQRCode/$bankCode/$bankUserId/$merchantTag";
+      "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/deleteQRCode/$terminalId";
   static const verifyReversalAPI =
-      "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/verifyReversal/$bankCode/$bankUserId/$merchantTag";
+      "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/verifyReversal/$terminalId";
   static const confirmReversalAPI =
-      "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/confirmReversal/$bankCode/$bankUserId/$merchantTag";
+      "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/confirmReversal/$terminalId";
+
+  static const finalizePaymentApi =
+      "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/finalizePaymentChannel/$terminalId";
+
+  static const getTransactionList =
+      "http://10.0.38.60:8080/NanoSmartBanking/v1/smartBanking/transactionSearch?page=0&size=8&sortDir=DESC";
+
 }

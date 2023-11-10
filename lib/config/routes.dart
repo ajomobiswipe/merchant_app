@@ -16,6 +16,7 @@ import '../pages/help/help.dart';
 import '../pages/merchant_pay/merchant.dart';
 import '../pages/my_account_menu/my_account_menu.dart';
 import '../pages/pages.dart';
+import '../pages/transactions/qr_transaction_list.dart';
 import '../pages/transactions/transaction_list.dart';
 import '../pages/users/profile/profile.dart';
 import '../pages/users/users.dart';
@@ -113,6 +114,9 @@ class CustomRoute {
 
         case "transactionListing":
           return const TransactionList();
+
+        case "QRTransactionListing":
+          return const QRTransactionList();
         // return const TransactionPage();
         case "role":
           return const RolePage();

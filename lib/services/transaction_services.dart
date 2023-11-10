@@ -35,8 +35,7 @@ class TransactionServices {
   checkQrStatus(String? qrCodeId) async {
     Connection connection = Connection();
     // var url = EndPoints.baseApi9502 + EndPoints.generateQrCode;
-    var url =
-        '${EndPoints.getQrCodeStatusApi}?qrCodeId=$qrCodeId';
+    var url = '${EndPoints.getQrCodeStatusApi}?qrCodeId=$qrCodeId';
     var response = await connection.get(url);
 
     // print('response$response');
@@ -114,6 +113,13 @@ class TransactionServices {
     Connection connection = Connection();
     var url =
         '${EndPoints.baseApi9503}${EndPoints.transactionListing}?size=15&page=$page';
+    var response = await connection.post(url, requestModel);
+    return response;
+  }
+
+  getAllQRTransaction(requestModel, page) async {
+    Connection connection = Connection();
+    var url = EndPoints.getTransactionList;
     var response = await connection.post(url, requestModel);
     return response;
   }

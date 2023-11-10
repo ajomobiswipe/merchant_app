@@ -29,6 +29,7 @@ class UserServices {
     Connection connection = Connection();
     var url = EndPoints.baseApi9502 + EndPoints.loginAPI;
     var response = await connection.postWithOutToken(url, requestModel);
+
     return response;
   }
 
@@ -82,22 +83,16 @@ class UserServices {
   */
   otpVerification(String userName) async {
     try {
-
-
       Connection connection = Connection();
       LoginRequestModel loginRequestModel = LoginRequestModel();
       var url = EndPoints.baseApi9502 + EndPoints.mobileOtpAPI;
       loginRequestModel.userName = userName;
       loginRequestModel.instId = Constants.instId;
 
-
       var response = await connection.postWithOutToken(url, loginRequestModel);
 
-
       return response;
-    } catch (_) {
-
-    }
+    } catch (_) {}
   }
 
   /*
@@ -416,12 +411,13 @@ class UserServices {
     return response;
   }
 
-  finalisePayment(requestData, String? bankCode, String? bankUserId,
+  finalisePayment(requestData, String? terminalId, String? bankUserId,
       String merchantTag) async {
     Connection connection = Connection();
-    var url =
-        'http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/finalizePaymentChannel/$bankCode/$bankUserId/$merchantTag';
+    var url = EndPoints.finalizePaymentApi;
     var response = await connection.putWithRequestBody(url, requestData);
+
+    print(response.body);
     return response;
   }
 
