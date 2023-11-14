@@ -154,4 +154,11 @@ class EndPoints {
   static const getTransactionList =
       "http://10.0.38.60:8080/NanoSmartBanking/v1/smartBanking/transactionSearch?page=0&size=8&sortDir=DESC";
 
+  static const getRefundStatus =
+      "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/checkRefundStatus";
+
+  static const refundApi =
+      "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/refund";
+
+
 }

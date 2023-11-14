@@ -185,6 +185,15 @@ class TransactionServices {
     return response;
   }
 
+  refundAction(paymentId,requestBody) async {
+    // print(requestModel);
+
+    Connection connection = Connection();
+    var url = '${EndPoints.refundApi}/$paymentId';
+    var response = await connection.post(url, requestBody);
+    return response;
+  }
+
   /*
   * SERVICE NAME: getTraceNumber
   * DESC: Fetch Trace Number for Transaction
@@ -195,6 +204,13 @@ class TransactionServices {
     Connection connection = Connection();
     var url = '${EndPoints.serviceUrl}/getTraceNo';
     var response = await connection.getWithOutToken(url);
+    return response;
+  }
+
+  Future checkRefundStatus(String paymentId) async {
+    Connection connection = Connection();
+    var url = '${EndPoints.getRefundStatus}/$paymentId';
+    var response = await connection.get(url);
     return response;
   }
 }

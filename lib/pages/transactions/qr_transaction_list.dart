@@ -174,6 +174,44 @@ class _QRTransactionListState extends State<QRTransactionList> {
     }
   }
 
+  Future _refund(String paymentId, String price) async {
+    transactionServices.checkRefundStatus(paymentId).then((response) {
+      var result = jsonDecode(response.body);
+      if (result['status'] == "EFF") {
+        final snackBar = SnackBar(
+          content: Text('${result['responseMessage']}'),
+        );
+
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        return;
+      }
+
+      var refundObject = {
+        "refund": {
+          "amount": price,
+          "currency": "AED",
+          "reason": "wrong bill amount",
+          "type": "DISBURSEMENT",
+          "mobile": "+971837892848",
+          "proxy": {"type": "email", "value": "john.wick@gmail.com"},
+          "paymentTime": "2012-11-25T23:50:56.193",
+          "shopId": "10001",
+          "cashDeskId": "10000001",
+          "categoryPurpose": "CCP"
+        },
+        "merchantTrxId": "123456"
+      };
+
+      transactionServices.refundAction(paymentId, refundObject).then((value) {
+        var responseBody=jsonDecode(value.body);
+        final snackBar = SnackBar(
+          content: Text('${responseBody['responseMessage']}'),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget searchContacts = Row(
@@ -275,7 +313,6 @@ class _QRTransactionListState extends State<QRTransactionList> {
                             padding: const EdgeInsets.symmetric(
                               horizontal: 10,
                             ),
-
                             itemBuilder: (_, index) => Container(
                               margin: const EdgeInsets.only(top: 10),
                               padding: const EdgeInsets.all(5),
@@ -307,23 +344,35 @@ class _QRTransactionListState extends State<QRTransactionList> {
                                               color: Colors.white,
                                               size: 25,
                                             )),
+                                        // title: Text(
+                                        //   _posts[index]['fundSource'] ==
+                                        //           'ACCOUNT'
+                                        //       ? _posts[index]['accountNumber']
+                                        //           .toString()
+                                        //       : _posts[index]
+                                        //               ['cardReferenceNumber']
+                                        //           .toString(),
+                                        //   style: Theme.of(context)
+                                        //       .textTheme
+                                        //       .titleLarge
+                                        //       ?.copyWith(
+                                        //           fontWeight: FontWeight.normal,
+                                        //           fontSize: 16),
+                                        // ),
+
                                         title: Text(
-                                          _posts[index]['fundSource'] ==
-                                                  'ACCOUNT'
-                                              ? _posts[index]['accountNumber']
-                                                  .toString()
-                                              : _posts[index]
-                                                      ['cardReferenceNumber']
-                                                  .toString(),
+                                          _posts[index]['traceNumber']
+                                              .toString(),
                                           style: Theme.of(context)
                                               .textTheme
                                               .titleLarge
                                               ?.copyWith(
-                                                  fontWeight: FontWeight.normal,
-                                                  fontSize: 16),
+                                              fontWeight: FontWeight.normal,
+                                              fontSize: 16),
                                         ),
+
                                         subtitle: Text(
-                                          "${_posts[index]['responseMessage'].toString()}\n${_posts[index]['tranDateTime'].toString()}",
+                                          "${_posts[index]['terminalId'].toString()}\n${_posts[index]['tranDateTime'].toString()}",
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodySmall
@@ -378,11 +427,15 @@ class _QRTransactionListState extends State<QRTransactionList> {
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
                                       TextButton(
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            _refund(
+                                                _posts[index]['traceNumber'],
+                                                _posts[index]['amount']);
+                                          },
                                           child: const Text('Refund')),
-                                      TextButton(
-                                          onPressed: () {},
-                                          child: const Text('Delete')),
+                                      // TextButton(
+                                      //     onPressed: () {},
+                                      //     child: const Text('Delete')),
                                     ],
                                   )
                                 ],
