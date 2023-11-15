@@ -177,7 +177,8 @@ class _QRTransactionListState extends State<QRTransactionList> {
   Future _refund(String paymentId, String price) async {
     transactionServices.checkRefundStatus(paymentId).then((response) {
       var result = jsonDecode(response.body);
-      if (result['status'] == "EFF") {
+
+      if (result['status'] == "EFF" && result['responseMessage']!=null) {
         final snackBar = SnackBar(
           content: Text('${result['responseMessage']}'),
         );
@@ -185,6 +186,7 @@ class _QRTransactionListState extends State<QRTransactionList> {
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
         return;
       }
+
 
       var refundObject = {
         "refund": {
