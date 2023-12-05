@@ -209,6 +209,7 @@ class _LoginPageState extends State<LoginPage> {
             // Navigator.pushReplacementNamed(context, "loginAuthOtp");
             Navigator.pushNamed(context, 'loginAuthOtp',
                 arguments: {'userDetails': json.encode(requestModel)});
+            // Navigator.pushReplacementNamed(context, 'home');
           } else {
             setLoading(false);
             alertWidget.failure(context, 'Failure', result['responseMessage']);

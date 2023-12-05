@@ -90,17 +90,20 @@ class _LoginPinState extends State<LoginPin> {
                     const SizedBox(height: 20),
                     Expanded(
                       child: PinCodeWidget(
+                        onEnter: (stringValue,pinCodeState){
+
+                        },
                         buttonColor: Theme.of(context).cardColor,
-                        emptyIndicatorColor: Colors.grey,
+                        // emptyIndicatorColor: Colors.grey,
                         deleteButtonColor: Colors.white,
                         deleteIconColor: Colors.grey,
                         filledIndicatorColor: Theme.of(context).primaryColor,
                         onPressColorAnimation: Theme.of(context).primaryColor,
-                        onFullPin: (value, __) {
-                          submitLoginForm(value);
-                        },
+                        // onFullPin: (value, __) {
+                        //   submitLoginForm(value);
+                        // },
                         onChangedPinLength: (length) {},
-                        initialPinLength: 4,
+                        // initialPinLength: 4,
                         onChangedPin: (pin) {},
                       ),
                     ),

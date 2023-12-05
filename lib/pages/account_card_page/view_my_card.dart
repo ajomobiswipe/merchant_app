@@ -2,7 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+// import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+// import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:sifr_latest/storage/secure_storage.dart';
 
 import '../../config/config.dart';
@@ -190,8 +191,8 @@ class _ViewMyCardState extends State<ViewMyCard> {
                                     color: Theme.of(context).primaryColor,
                                   ),
                                   onPressed: () {
-                                    showMaterialModalBottomSheet(
-                                      expand: false,
+                                    showBottomSheet(
+                                      // expand: false,
                                       context: context,
                                       backgroundColor: Colors.transparent,
                                       builder: (context) => bottomSheet(list),

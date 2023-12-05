@@ -3,7 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:icons_plus/icons_plus.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+// import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+// import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sifr_latest/config/constants.dart';
 import 'package:sifr_latest/widgets/loading.dart';
@@ -434,8 +435,8 @@ class _CardPageState extends State<CardPage> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            showMaterialModalBottomSheet(
-                              expand: false,
+                            showBottomSheet(
+                              // expand: false,
                               context: context,
                               backgroundColor: Colors.transparent,
                               builder: (context) => bottomSheet(list),

@@ -25,11 +25,10 @@ class UserServices {
   * METHOD: POST
   * Params: LoginRequestModel
   */
-  loginService(requestModel) async {
+  loginService(LoginRequestModel requestModel) async {
     Connection connection = Connection();
     var url = EndPoints.baseApi9502 + EndPoints.loginAPI;
     var response = await connection.postWithOutToken(url, requestModel);
-
     return response;
   }
 
@@ -91,8 +90,12 @@ class UserServices {
 
       var response = await connection.postWithOutToken(url, loginRequestModel);
 
+
+
       return response;
-    } catch (_) {}
+    } catch (_) {
+
+    }
   }
 
   /*

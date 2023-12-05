@@ -12,82 +12,83 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  accordion: ^2.5.1
-  adaptive_dialog: ^1.8.3+1
-  awesome_card: ^1.1.7
-  awesome_snackbar_content: ^0.1.3
-  badges: ^3.1.1
-  cached_network_image: ^3.2.3
+  accordion:
+  adaptive_dialog:
+  awesome_card:
+  awesome_snackbar_content:
+  badges:
+  cached_network_image:
   chips_choice_null_safety: ^2.0.6
-  connectivity_plus: ^4.0.1
-  credit_card_scanner: ^1.0.5
-  credit_card_validator: ^2.1.0
-  cupertino_icons: ^1.0.5
-  custom_info_window: ^1.0.1
-  custom_timer: ^0.2.3
-  dropdown_search: ^5.0.6
-  flutter_custom_carousel_slider: ^1.2.0
-  flutter_html_to_pdf: ^0.7.0
-  flutter_image_compress: ^2.0.3
+  connectivity_plus:
+  credit_card_scanner:
+  credit_card_validator:
+  cupertino_icons:
+  custom_info_window:
+  custom_timer:
+  dropdown_search:
+  flutter_custom_carousel_slider:
+  flutter_html_to_pdf:
+  flutter_image_compress:
   # flutter_launcher_icons: ^0.13.1
-  flutter_localization: ^0.1.12
-  flutter_otp_text_field: ^1.1.1
-  flutter_pin_code_widget: ^0.0.5+1
-  flutter_swipe_button: ^2.1.1+1
-  flutter_toggle_tab: ^1.3.0
-  geocoding: ^2.1.0
-  geolocator: ^9.0.2
-  get_it: ^7.6.0
-  google_fonts: ^5.1.0
-  google_maps_flutter: ^2.3.1
-  grouped_list: ^5.1.2
-  hive_flutter: ^1.1.0
-  http: ^1.1.0
-  icons_plus: ^4.0.0
-  image_cropper: ^5.0.0
-  image_picker: ^1.0.0
-  intl: ^0.18.0
-  intl_phone_field: ^3.2.0
-  loading_animation_widget: ^1.2.0+4
-  local_auth: ^2.1.6
-  location: ^5.0.0
-  lottie: ^2.4.0
+  flutter_localization:
+  flutter_otp_text_field:
+  flutter_pin_code_widget:
+  flutter_swipe_button:
+  flutter_toggle_tab:
+  geocoding:
+  geolocator:
+  get_it:
+  google_fonts:
+  google_maps_flutter:
+  grouped_list:
+  hive_flutter:
+  http:
+  icons_plus:
+  image_cropper:
+  image_picker:
+  intl:
+  intl_phone_field:
+  loading_animation_widget:
+  local_auth:
+  location:
+  lottie:
   majascan: ^0.5.0
-  marquee: ^2.2.3
-  open_file_plus: ^3.4.1
-  open_mail_app: ^0.4.5
-  otp_text_field: ^1.1.3
-  package_info_plus: ^4.0.2
-  page_transition: ^2.0.9
-  path: ^1.8.3
-  path_provider: ^2.0.15
-  permission_handler: ^10.4.2
-  provider: ^6.0.5
-  qr_flutter: ^4.1.0
-  secure_application: ^3.8.0
-  shared_preferences: ^2.2.0
+  marquee:
+  open_file_plus:
+  open_mail_app:
+  otp_text_field:
+  package_info_plus:
+  page_transition:
+  path:
+  path_provider:
+  permission_handler:
+  provider:
+  qr_flutter:
+  secure_application:
+  shared_preferences:
   # tbib_splash_screen: ^1.0.0
-  timelines: ^0.1.0
-  url_launcher: ^6.1.12
-  email_validator: ^2.1.17
-  firebase_core: ^2.14.0
-  firebase_messaging: ^14.6.4
-  cloud_firestore: ^4.8.2
-  flutter_local_notifications: ^15.1.0+1
-  overlay_support: ^2.1.0
-  aes256gcm: ^1.0.1
-  easy_splash_screen: ^1.0.4
-  device_info_plus: ^9.0.2
-  sms_otp_auto_verify: ^2.1.0
-  fluttertoast: ^8.2.2
-  sms_autodetect: ^1.0.9
-  flutter_shimmer_widget: ^1.1.0
-  flutter_windowmanager: ^0.2.0
-  keyboard_actions: ^4.2.0
-  flutter_root_jailbreak: ^2.0.2
-  encrypt: ^5.0.1
-  pinput: ^2.2.31
-  modal_bottom_sheet: ^3.0.0-pre
+  timelines:
+  url_launcher:
+  email_validator:
+  firebase_core:
+  firebase_messaging:
+  cloud_firestore:
+  flutter_local_notifications:
+  overlay_support:
+  aes256gcm:
+  easy_splash_screen:
+  device_info_plus:
+  sms_otp_auto_verify:
+  fluttertoast:
+  sms_autodetect:
+  flutter_shimmer_widget:
+  flutter_windowmanager:
+  keyboard_actions:
+  flutter_jailbreak_detection: ^1.10.0
+  encrypt:
+  pinput:
+#  modal_bottom_sheet: ^2.1.2
+
 
 dev_dependencies:
   flutter_test:
