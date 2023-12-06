@@ -193,10 +193,14 @@ class _LoginPageState extends State<LoginPage> {
             await Validators.encrypt(requestModel.pin.toString());
       }
       // print(json.encode(requestModel));
+
+
       _passwordController.clear();
       userServices.loginService(requestModel).then((response) async {
         var result = jsonDecode(response.body);
-        // print(result);
+        print(result['bearerToken']);
+        print(result['bearerToken'].substring(result['bearerToken'].length - 200));
+        print(result['bearerToken'].length);
         var code = response.statusCode;
         if (code == 200 || code == 201) {
           if (result['responseCode'] == "00") {

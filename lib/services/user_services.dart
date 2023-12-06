@@ -81,21 +81,22 @@ class UserServices {
   * Params: loginRequestModel and Url
   */
   otpVerification(String userName) async {
-    try {
+
       Connection connection = Connection();
       LoginRequestModel loginRequestModel = LoginRequestModel();
       var url = EndPoints.baseApi9502 + EndPoints.mobileOtpAPI;
       loginRequestModel.userName = userName;
       loginRequestModel.instId = Constants.instId;
 
-      var response = await connection.postWithOutToken(url, loginRequestModel);
+      var _objectBody={
+        "instId": loginRequestModel.instId,
+        "userName":  loginRequestModel.userName,
+      };
 
-
+      var response = await connection.postWithOutToken(url, _objectBody);
 
       return response;
-    } catch (_) {
 
-    }
   }
 
   /*

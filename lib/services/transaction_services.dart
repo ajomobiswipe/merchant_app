@@ -147,11 +147,16 @@ class TransactionServices {
   * to pass token in Headers
   */
   loadAllNotification(size1, String custId) async {
+
     Connection connection = Connection();
     var size = '?size=$size1';
     var url =
         '${EndPoints.baseApi9503}${EndPoints.notificationListing}${Constants.instId}/$custId$size';
     var response = await connection.get(url);
+
+
+
+
     return response;
   }
 

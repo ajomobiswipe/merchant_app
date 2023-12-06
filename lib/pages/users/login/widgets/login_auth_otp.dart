@@ -17,6 +17,7 @@ import '../../../../storage/secure_storage.dart';
 class LoginAuthOTP extends StatefulWidget {
   const LoginAuthOTP({Key? key, this.userDetails}) : super(key: key);
   final dynamic userDetails;
+
   @override
   State<LoginAuthOTP> createState() => _LoginAuthOTPState();
 }
@@ -65,12 +66,12 @@ class _LoginAuthOTPState extends State<LoginAuthOTP> {
       keyboardBarColor: Theme.of(context).primaryColor,
       actions: [
         KeyboardActionsItem(focusNode: _otpFocus, toolbarButtons: [
-              (node) {
+          (node) {
             return GestureDetector(
               onTap: () => node.unfocus(),
               child: Container(
                 padding:
-                const EdgeInsets.symmetric(horizontal: 10.0, vertical: 0),
+                    const EdgeInsets.symmetric(horizontal: 10.0, vertical: 0),
                 child: const Text(
                   "Done",
                   style: TextStyle(color: Colors.white),
@@ -154,7 +155,7 @@ class _LoginAuthOTPState extends State<LoginAuthOTP> {
                     animationType: AnimationType.fade,
                     pinTheme: PinTheme(
                       fieldOuterPadding:
-                      const EdgeInsets.only(left: 8, right: 8),
+                          const EdgeInsets.only(left: 8, right: 8),
                       shape: PinCodeFieldShape.box,
                       borderRadius: BorderRadius.circular(2),
                       fieldHeight: 50,
@@ -305,29 +306,20 @@ class _LoginAuthOTPState extends State<LoginAuthOTP> {
       enableOtpField = false;
     });
 
-   try{
-     userServices.otpVerification(username).then((response) {
 
+      userServices.otpVerification(username).then((response) {
+        print('user${response.body}');
 
+        var data = jsonDecode(response.body);
 
-       var data = jsonDecode(response.body);
-
-
-
-       if (data['responseCode'] == "00") {
-         setState(() {
-           message = data['responseMessage'];
-           isLoading = false;
-           enableOtpField = true;
-         });
-       }
-     });
-   }catch(e){
-     print(e);
-   }
-
-
-
+        if (data['responseCode'] == "00") {
+          setState(() {
+            message = data['responseMessage'];
+            isLoading = false;
+            enableOtpField = true;
+          });
+        }
+      });
 
   }
 
@@ -340,16 +332,30 @@ class _LoginAuthOTPState extends State<LoginAuthOTP> {
       "userName": userDetails['userName'],
       "otp": await Validators.encrypt(otpCode),
     };
+
+    print(params);
+    // return;
+
     userServices.otpValidate(params).then((response) async {
       var data = jsonDecode(response.body);
+
+      print('otpValidate$data');
+
       if (data['responseCode'].toString() == "00") {
         var params = {
           "instId": Constants.instId,
           "userName": userDetails['userName'],
           "deviceId": await Validators.encrypt(await Global.getUniqueId()),
         };
+
+        print(params);
+
         enableOtpField = false;
         userServices.deviceRegister(params).then((response) {
+
+          print('deviceRegister${response.body}');
+
+
           setState(() {
             _isLoadingButton = false;
             _enableButton = false;
@@ -376,7 +382,7 @@ class _LoginAuthOTPState extends State<LoginAuthOTP> {
     requestModel.deviceType = Constants.deviceType;
     requestModel.userName = userDetails['userName'];
     requestModel.deviceId =
-    await Validators.encrypt(await Global.getUniqueId());
+        await Validators.encrypt(await Global.getUniqueId());
 
     if (userDetails['pin'] == null) {
       requestModel.password = userDetails['password'].toString();
