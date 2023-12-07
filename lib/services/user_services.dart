@@ -42,6 +42,10 @@ class UserServices {
     Connection connection = Connection();
     var url = EndPoints.baseApi9502 + EndPoints.userCheckAPI + userName;
     var response = await connection.getWithOutToken(url);
+
+    print(url);
+
+    print('Here${response.body}');
     return response;
   }
 
@@ -415,13 +419,15 @@ class UserServices {
     return response;
   }
 
-  finalisePayment(requestData, String? terminalId, String? bankUserId,
-      String merchantTag) async {
+  finalisePayment(requestData) async {
+
+    print(requestData);
+
     Connection connection = Connection();
     var url = EndPoints.finalizePaymentApi;
     var response = await connection.putWithRequestBody(url, requestData);
 
-    print(response.body);
+    print('finalize${response.body}');
     return response;
   }
 

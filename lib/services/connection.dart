@@ -152,7 +152,7 @@ class Connection {
         (X509Certificate cert, String host, int port) => false;
     IOClient ioClient = IOClient(client);
     var res = await ioClient.post(Uri.parse(url),
-        body: jsonEncode(requestData), headers: header);
+        body: jsonEncode(requestData), headers: header).timeout(const Duration(seconds: 10));
     // print(res.body);
 
     if (res.statusCode == 401) {

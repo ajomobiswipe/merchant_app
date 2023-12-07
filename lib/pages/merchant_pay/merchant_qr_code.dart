@@ -145,12 +145,10 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
         "amount": "${widget.params}",
         "currency": "AED",
         "reason": "Coffee x4",
-        "shopId": "10001",
-        "cashDeskId": "10000001",
-        "categoryPurpose": "CCP"
+        "merchantId": EndPoints.merchantId,
+        "terminalId": EndPoints.terminalId,
       },
       "paymentCategory": "01",
-      "paymentType": "PAG",
       "qrCodeTransactionId": "qr$randomSevenDigitNumber"
     };
 
@@ -285,13 +283,15 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
             "reason": "Coffee x4",
             "paymentRefId ": "QRP$paymentRefId",
             "shopId": "10001",
-            "cashDeskId": "10000001"
+            "cashDeskId": "10000001",
+            "merchantId": EndPoints.merchantId,
+            "terminalId": EndPoints.terminalId,
           },
           "merchantTrxId": "$merchantTxnId",
           "merchantTrxRefId": "$merchantTxnRefId"
         };
 
-        print(paymentObject);
+
 
 
         // return;
@@ -324,7 +324,9 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
               "reason": "Coffee x4 ",
               "paymentRefId ": "QRP$paymentRefId",
               "shopId": "10001",
-              "cashDeskId": "10000001"
+              "cashDeskId": "10000001",
+              "merchantId": EndPoints.merchantId,
+              "terminalId": EndPoints.terminalId,
             }
           };
 
@@ -347,7 +349,7 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
           var confirmReversalResponseValue =
               jsonDecode(confirmReversalResponse.body);
 
-          Future.delayed(Duration(seconds: 1),(){
+          Future.delayed(const Duration(seconds: 1),(){
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text('Reversal confirmed for this QR'),
@@ -355,8 +357,6 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
             );
             Navigator.pushReplacementNamed(context, 'home');
           });
-
-
 
         }
 
