@@ -1,3 +1,5 @@
+import '../config/endpoints.dart';
+
 List<Map<String, dynamic>> emvFields = [
   {"name": "Payload Format Indicator", "id": 00},
   {"name": "Point of Initiation Method ", "id": 01},
@@ -17,13 +19,11 @@ List<Map<String, dynamic>> emvFields = [
 ];
 
 Future getDataFromScanData(String? scanData) async {
-
   print(scanData);
 
   int? index54 = scanData?.indexOf("54"); // To get Amount
   int? index26 = scanData?.indexOf("26"); // To get account number
   int? index62 = scanData?.indexOf("62"); // To Get QrCodeId
-
 
   String? amount = "100.0";
   String accountInfo = "00043456";
@@ -71,7 +71,6 @@ Future getDataFromScanData(String? scanData) async {
       print("No content found between delimiters after '62'.");
     }
 
-
     int indexOfTarget = index62! + 8;
     int? indexOfHash = scanData?.indexOf('#');
 
@@ -81,7 +80,6 @@ Future getDataFromScanData(String? scanData) async {
     } else {
       print("No '#' found or pattern doesn't match.");
     }
-
   }
 
   // print('amount$amount');
@@ -91,8 +89,8 @@ Future getDataFromScanData(String? scanData) async {
       "amount": amount,
       "currency": "AED",
       "reason": "Soccer shoes",
-      "shopId": "10001",
-      "cashDeskId": "10000001"
+      "merchantId": EndPoints.merchantId,
+      "terminalId": EndPoints.terminalId,
     }
   };
 
@@ -100,6 +98,6 @@ Future getDataFromScanData(String? scanData) async {
     "requestBody": requestBody,
     "accountInfo": accountInfo,
     "qrCodeId": qrCodeId,
-    "merchantTag":merchantTag
+    "merchantTag": merchantTag
   };
 }
