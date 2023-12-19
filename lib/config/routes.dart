@@ -9,6 +9,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:sifr_latest/components/secure_screen.dart';
+import 'package:sifr_latest/pages/user_types/user_type_selection.dart';
 
 import '../pages/account_card_page/my_account_page.dart';
 import '../pages/customer_scan/customer_scan.dart';
@@ -39,6 +40,9 @@ class CustomRoute {
           return const LoginPage();
         case "login":
           return const LoginPage();
+        case "userType":
+          return const UserTypeSelection();
+
         case "loginAuthOtp":
           Map args = settings.arguments as Map;
           return LoginAuthOTP(userDetails: args['userDetails']);
@@ -92,14 +96,13 @@ class CustomRoute {
           return TransactionDetails(receipt: args['receipt']);
 
         case "receiptSuccess":
-        Map args = settings.arguments as Map;
-        return SuccessReceipt(receipt: args['receipt']);
+          Map args = settings.arguments as Map;
+          return SuccessReceipt(receipt: args['receipt']);
         case "security":
           return const SecureScreen();
 
         case "receiptSuccessForDemo":
           return const SuccessReceiptForDemo();
-
 
         case "userCheckPage":
           Map args = settings.arguments as Map;

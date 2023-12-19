@@ -40,7 +40,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
   bool accept = false;
   final double _lat = 13.05186999479027;
   final double _lng = 80.22561586938588;
-  FocusNode myFocusNode = FocusNode();
 
   AlertService alertWidget = AlertService();
   CustomAlert customAlert = CustomAlert();

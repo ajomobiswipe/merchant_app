@@ -122,6 +122,7 @@ flutter:
     - assets/lottie/
     - assets/app/
     - assets/ca/
+    - assets/app_icons/
 
   fonts:
     - family: Poppins

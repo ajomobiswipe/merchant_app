@@ -10,7 +10,9 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   // Constant colors declare globally
-  static const Color primary = Color(0xff6374db);
+  static const Color primary = Colors.black87;
+  //static const Color primary = Color(0xffa16ce6);
+  // static const Color primary = Color(0xff6374db);
   static const Color primaryOption2 = Color(0xff03569b);
   static const Color primaryOption3 = Color(0xffd23156);
   static const Color primaryOption4 = Color(0xff13d0c1);
@@ -29,6 +31,14 @@ class AppColors {
   static const Color black50 = Color(0x88001424);
   static const Color blackLight = Color(0xff011f35);
   static const Color transactionRevert = Color(0xffDFF5FF);
+
+  /// Merchant onboarding India colors
+  static const Color kLightGreen = Color(0xff00bf63);
+  static const Color kBorderColor = Color(0xffbfc1cf);
+  static const Color kRedColor = Color(0xfffe5657);
+  static const Color kPrimaryColor = Color(0xffa16ce6);
+  static const Color kSelectedBackgroundColor = Color(0xfffaf5f3);
+  static const Color kTileColor = Color(0xfffafafa);
 
   // List of primary colors
   static List<Color> primaryColorOptions = const [

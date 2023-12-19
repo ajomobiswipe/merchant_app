@@ -15,6 +15,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sifr_latest/pages/user_types/user_type_selection.dart';
 import 'package:sifr_latest/storage/secure_storage.dart';
 
 import '../../config/config.dart';
@@ -42,7 +43,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     // isRooted();
-    Future.delayed(const Duration(seconds: 0), () {
+    Future.delayed(const Duration(seconds: 1), () {
       getValidationData();
     });
     super.initState();
@@ -122,7 +123,7 @@ class _SplashScreenState extends State<SplashScreen> {
             SystemNavigator.pop();
           } else {
             if (!mounted) return;
-            Navigator.pushReplacementNamed(context, 'login');
+            Navigator.pushReplacementNamed(context, 'userType');
           }
         } else {
           if (diff.inHours >= 4) {
@@ -134,14 +135,14 @@ class _SplashScreenState extends State<SplashScreen> {
             Navigator.pushReplacementNamed(context, 'home');
           } else {
             if (!mounted) return;
-            Navigator.pushReplacementNamed(context, 'login');
+            Navigator.pushReplacementNamed(context, 'userType');
           }
         }
       }
     } else {
       if (isLoggedIn == false) {
         if (!mounted) return;
-        Navigator.pushReplacementNamed(context, 'login');
+        Navigator.pushReplacementNamed(context, 'userType');
       } else {
         if (!mounted) return;
         Navigator.pushReplacementNamed(context, 'home');
@@ -152,10 +153,10 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return EasySplashScreen(
-      logo: Image.asset('assets/logo/logo1.png'),
+      logo: Image.asset('assets/logo/oma_emirates_logo.png'),
       logoWidth: 150,
       title: Text(
-        "Withdraw Cash",
+        "Merchant Onboarding",
         style: Theme.of(context)
             .textTheme
             .titleLarge
@@ -171,6 +172,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
   dynamicNavigation() async {
     debugPrint("--- Dynamic Navigation ---");
-    return isLoggedIn == false ? const LoginPage() : const HomePage();
+    return isLoggedIn == false ? const UserTypeSelection() : const HomePage();
   }
 }
