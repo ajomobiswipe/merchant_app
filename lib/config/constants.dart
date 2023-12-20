@@ -57,4 +57,5 @@ class Constants {
   static const emptyProfileImage = 'assets/screen/profile.png';
   static const verifyMPIN = 'assets/screen/verify_mpin.png';
   static const verifyKYC = 'assets/screen/kyc.png';
+  static const omaLogo = 'assets/logo/oma_emirates_logo.png';
 }

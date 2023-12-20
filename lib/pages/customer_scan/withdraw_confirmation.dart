@@ -92,8 +92,7 @@ class _WithdrawConfirmationState extends State<WithdrawConfirmation> {
 
     print(getQrCodeStatusResponseValue['paymentId']);
 
-
-    if(getQrCodeStatusResponseValue['qrCodeRequestStatus']!='ATT'){
+    if (getQrCodeStatusResponseValue['qrCodeRequestStatus'] != 'ATT') {
       Future.delayed(const Duration(seconds: 1), () {
         if (getQrCodeStatusResponseValue['qrCodeRequestStatus'] == 'EFF') {
           alertWidget.failure(context, "Error", 'Request paid by the buyer');
@@ -114,12 +113,8 @@ class _WithdrawConfirmationState extends State<WithdrawConfirmation> {
       return;
     }
 
-
-
     requestBody['requestBody']['payment']['paymentId'] =
         getQrCodeStatusResponseValue['paymentId'];
-
-
 
     ///---- Calling an api for getting bank userId and bankCode
     // var getBankResponse = await userServices.getBank(
@@ -127,16 +122,11 @@ class _WithdrawConfirmationState extends State<WithdrawConfirmation> {
     //
     // var getBankResponseValue = jsonDecode(getBankResponse.body);
 
-
-
-
     /// To achieve final payment
-    var response = await userServices.finalisePayment(
-        requestBody['requestBody']);
+    var response =
+        await userServices.finalisePayment(requestBody['requestBody']);
 
     var responseBody = jsonDecode(response.body);
-
-
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       if (responseBody['responseCode'] != '01') {

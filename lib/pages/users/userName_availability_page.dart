@@ -113,12 +113,8 @@ class _UserNameAvailabilityState extends State<UserNameAvailability> {
       _formKey.currentState!.save();
       setLoading(true);
 
-
       String user = await Validators.encrypt(request.userName.toString());
       userServices.userCheck(user).then((response) async {
-
-
-
         if (response.statusCode == 200 || response.statusCode == 201) {
           if (response.body == "true") {
             setLoading(false);

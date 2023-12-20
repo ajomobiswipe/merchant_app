@@ -39,7 +39,6 @@ void main() {
 
     // await getDataFromScanData("00020101021226080004345652049995303978540415.05802IT5907Druidia6005MILAN62250121AZ115WL#UB776WH#z4E0k#10001");
 
-
     ByteData data = await PlatformAssetBundle()
         .load('assets/ca/omaemirates_root_certificate.cer');
     SecurityContext.defaultContext

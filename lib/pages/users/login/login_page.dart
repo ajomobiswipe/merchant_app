@@ -6,9 +6,13 @@ import 'package:flutter_swipe_button/flutter_swipe_button.dart';
 import 'package:intl/intl.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sifr_latest/common_wigdets/custom_app_button.dart';
+import 'package:sifr_latest/common_wigdets/copyright_widget.dart';
 import 'package:sifr_latest/config/config.dart';
 import 'package:sifr_latest/models/login_models.dart';
 import 'package:sifr_latest/services/user_services.dart';
+import 'package:sifr_latest/widgets/custom_text_widget.dart';
+import 'package:sifr_latest/widgets/widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../providers/providers.dart';
@@ -49,6 +53,7 @@ class _LoginPageState extends State<LoginPage> {
   AlertService alertWidget = AlertService();
   final Uri _url = Uri.parse('https://sifr.ae/privacy.html');
   final Uri _url1 = Uri.parse('https://sifr.ae/terms.html');
+  bool isChecked = false;
 
   @override
   void initState() {
@@ -75,7 +80,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: true,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        backgroundColor: Colors.white,
         body: _isLoading
             ? const LoadingWidget()
             : BackgroundPattern(
@@ -91,76 +96,145 @@ class _LoginPageState extends State<LoginPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Image.asset('assets/logo/logo2.png',
-                  height: 30, fit: BoxFit.fill),
-              Text("App Version ${_packageInfo.version.toString()}"),
-            ],
-          ),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //   children: [
+          //     Image.asset('assets/logo/logo2.png',
+          //         height: 30, fit: BoxFit.fill),
+          //     Text("App Version ${_packageInfo.version.toString()}"),
+          //   ],
+          // ),
           const SizedBox(height: 20),
-          Align(
-            alignment: Alignment.center,
-            child: Text(
-              "Login to your Account",
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.none),
-            ),
-          ),
+          // Align(
+          //   alignment: Alignment.center,
+          //   child: Text(
+          //     "Login to your Account",
+          //     textAlign: TextAlign.center,
+          //     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+          //         fontSize: 25,
+          //         fontWeight: FontWeight.bold,
+          //         decoration: TextDecoration.none),
+          //   ),
+          // ),
           const SizedBox(height: 10),
-          Image.asset(Constants.loginImage, height: 150, fit: BoxFit.fill),
+          Image.asset(Constants.omaLogo, height: 100, fit: BoxFit.fill),
           const SizedBox(height: 20),
-          toggledButton(),
+          // toggledButton(),
           const SizedBox(height: 10),
           userNameField(),
           passwordField(),
           const SizedBox(height: 10.0),
-          login(),
+          //login(),
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            forgotUserName(),
+            //forgotUserName(),
+            Checkbox(
+              value: isChecked,
+              onChanged: (value) {
+                setState(() {
+                  isChecked = value!;
+                });
+              },
+            ),
+            CustomTextWidget(
+              text: "Remember me",
+              // color: AppColors.kPrimaryColor,
+            ),
+            Expanded(child: SizedBox()),
             forgotPassword(),
           ]),
           const SizedBox(height: 10),
-          swipeButton(),
+          CustomAppButton(
+            title: 'Log In',
+            onPressed: () {
+              Navigator.pushNamed(context, 'MerchantNumVerify');
+            },
+          ),
+          // swipeButton(),
+          const SizedBox(height: 10),
+          CustomTextWidget(
+            text: '--- Or ---',
+            size: 22,
+          ),
+          const SizedBox(height: 10),
+          CustomTextWidget(
+            text: 'Connect With',
+            size: 18,
+          ),
           const SizedBox(height: 10),
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: GestureDetector(
-                  onTap: () async {
-                    _launchInBrowser(_url);
-                    // print(await Validators.encrypt('8776'));
-                  },
-                  child: Text('Privacy Policy',
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.underline)),
-                ),
+              Expanded(
+                child: SizedBox(),
+                flex: 4,
               ),
-              const Text('|'),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: GestureDetector(
-                  onTap: () async {
-                    _launchInBrowser(_url1);
-                  },
-                  child: Text('Terms of Service',
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.underline)),
-                ),
+              connectWithOptions(icon: Icon(Icons.phone), title: 'Phone'),
+              Expanded(
+                child: SizedBox(),
+                flex: 1,
+              ),
+              connectWithOptions(icon: Icon(Icons.email), title: 'E-mail'),
+              Expanded(
+                child: SizedBox(),
+                flex: 1,
+              ),
+              connectWithOptions(icon: Icon(Icons.more_horiz), title: 'Other'),
+              Expanded(
+                child: SizedBox(),
+                flex: 4,
               ),
             ],
-          )
+          ),
+          const SizedBox(height: 20),
+          CopyRightWidget(),
+
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.center,
+          //   children: [
+          //     Padding(
+          //       padding: const EdgeInsets.all(8.0),
+          //       child: GestureDetector(
+          //         onTap: () async {
+          //           _launchInBrowser(_url);
+          //           // print(await Validators.encrypt('8776'));
+          //         },
+          //         child: Text('Privacy Policy',
+          //             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+          //                 fontWeight: FontWeight.bold,
+          //                 decoration: TextDecoration.underline)),
+          //       ),
+          //     ),
+          //     const Text('|'),
+          //     Padding(
+          //       padding: const EdgeInsets.all(8.0),
+          //       child: GestureDetector(
+          //         onTap: () async {
+          //           _launchInBrowser(_url1);
+          //         },
+          //         child: Text('Terms of Service',
+          //             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+          //                 fontWeight: FontWeight.bold,
+          //                 decoration: TextDecoration.underline)),
+          //       ),
+          //     ),
+          //   ],
+          // )
         ],
       ),
     ));
+  }
+
+  Column connectWithOptions(
+      {required Widget icon, required String title, Function()? onTap}) {
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: onTap,
+          child: CircleAvatar(
+              backgroundColor: AppColors.kPrimaryColor, child: icon),
+        ),
+        Text(title)
+      ],
+    );
   }
 
   Future<void> _launchInBrowser(Uri url) async {
@@ -194,10 +268,8 @@ class _LoginPageState extends State<LoginPage> {
       }
       print(json.encode(requestModel));
 
-
       _passwordController.clear();
       userServices.loginService(requestModel).then((response) async {
-
         print(response.body);
 
         var result = jsonDecode(response.body);
@@ -312,113 +384,144 @@ class _LoginPageState extends State<LoginPage> {
   userNameField() {
     return Container(
       padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-      child: TextFormField(
-          keyboardType: TextInputType.text,
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-          inputFormatters: <TextInputFormatter>[
-            FilteringTextInputFormatter.allow(RegExp(r'\w'))
-          ],
-          decoration: InputDecoration(
-            labelText: "Username *",
-            labelStyle:
-                Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
-            enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: Theme.of(context).primaryColor),
-            ),
-            contentPadding:
-                const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-            prefixIcon: Icon(Icons.verified_user_rounded,
-                size: 25, color: Theme.of(context).primaryColor),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 10),
+            child: CustomTextWidget(text: "Username"),
           ),
-          onSaved: (value) {
-            requestModel.userName = value;
-          },
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Please enter Username!';
-            }
-            if (value.length < 3) {
-              return 'Minimum character length is 3';
-            }
-            if (!RegExp(r'^[a-zA-Z0-9][a-zA-Z0-9_.]+[a-zA-Z0-9]$')
-                .hasMatch(value)) {
-              return 'Invalid username!';
-            }
+          TextFormField(
+              keyboardType: TextInputType.text,
+              style:
+                  Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.allow(RegExp(r'\w'))
+              ],
+              decoration: InputDecoration(
+                hintText: 'Insert your Username here',
+                labelStyle: Theme.of(context)
+                    .textTheme
+                    .bodyLarge
+                    ?.copyWith(fontSize: 16),
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                border: InputBorder.none,
+                errorBorder: InputBorder.none,
+                focusedErrorBorder: InputBorder.none,
+                contentPadding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                fillColor:
+                    AppColors.kTileColor, // Set the background color here
+                filled: true,
+                hintStyle: TextStyle(
+                  color: Colors.grey, // Set the hint text color here
+                ),
+                // prefixIcon: Icon(Icons.verified_user_rounded,
+                //     size: 25, color: Theme.of(context).primaryColor),
+              ),
+              onSaved: (value) {
+                requestModel.userName = value;
+              },
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter Username!';
+                }
+                if (value.length < 3) {
+                  return 'Minimum character length is 3';
+                }
+                if (!RegExp(r'^[a-zA-Z0-9][a-zA-Z0-9_.]+[a-zA-Z0-9]$')
+                    .hasMatch(value)) {
+                  return 'Invalid username!';
+                }
 
-            return null;
-          }),
+                return null;
+              }),
+        ],
+      ),
     );
   }
 
   passwordField() {
     return Container(
       padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
-      child: TextFormField(
-        controller: _passwordController,
-        style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
-        obscureText: hidePassword,
-        obscuringCharacter: '*',
-        maxLength: password != 'Password' ? 4 : null,
-        focusNode: _focusNode,
-        keyboardType: keyboardType,
-        autovalidateMode: AutovalidateMode.onUserInteraction,
-        onSaved: (value) {
-          password == 'Password'
-              ? requestModel.password = value
-              : requestModel.pin = value;
-        },
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Please enter $password!';
-          }
-          if (password == 'Password') {
-            // if (!Validators.isPassword(value)) {
-            //   return Constants.passwordError;
-            // }
-          } else {
-            if (value.length != 4) {
-              return 'Login PIN must be 4 digits';
-            }
-            if (Validators.isConsecutive(value) != -1) {
-              return 'Login PIN should not be consecutive digits.';
-            }
-          }
-
-          return null;
-        },
-        inputFormatters: <TextInputFormatter>[
-          password != 'Password'
-              ? FilteringTextInputFormatter.digitsOnly
-              : FilteringTextInputFormatter.singleLineFormatter
-        ],
-        decoration: InputDecoration(
-          labelText: '$password *',
-          counterText: "",
-          labelStyle:
-              Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
-          enabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: Theme.of(context).primaryColor),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 10),
+            child: CustomTextWidget(text: "Password"),
           ),
-          contentPadding:
-              const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-          prefixIcon: Icon(
-            Icons.lock,
-            size: 25,
-            color: Theme.of(context).primaryColor,
-          ),
-          suffixIcon: IconButton(
-            onPressed: () {
-              setState(() {
-                hidePassword = !hidePassword;
-              });
+          TextFormField(
+            controller: _passwordController,
+            style:
+                Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
+            obscureText: hidePassword,
+            obscuringCharacter: '*',
+            maxLength: password != 'Password' ? 4 : null,
+            focusNode: _focusNode,
+            keyboardType: keyboardType,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            onSaved: (value) {
+              password == 'Password'
+                  ? requestModel.password = value
+                  : requestModel.pin = value;
             },
-            icon: Icon(
-              hidePassword ? Icons.visibility_off : Icons.visibility,
-              color: Theme.of(context).primaryColor,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter $password!';
+              }
+              if (password == 'Password') {
+                // if (!Validators.isPassword(value)) {
+                //   return Constants.passwordError;
+                // }
+              } else {
+                if (value.length != 4) {
+                  return 'Login PIN must be 4 digits';
+                }
+                if (Validators.isConsecutive(value) != -1) {
+                  return 'Login PIN should not be consecutive digits.';
+                }
+              }
+
+              return null;
+            },
+            inputFormatters: <TextInputFormatter>[
+              password != 'Password'
+                  ? FilteringTextInputFormatter.digitsOnly
+                  : FilteringTextInputFormatter.singleLineFormatter
+            ],
+            decoration: InputDecoration(
+              hintText: 'Password',
+              labelStyle:
+                  Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
+              enabledBorder: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              border: InputBorder.none,
+              errorBorder: InputBorder.none,
+              focusedErrorBorder: InputBorder.none,
+              contentPadding:
+                  const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+              fillColor: AppColors.kTileColor,
+              filled: true,
+              hintStyle: TextStyle(
+                color: Colors.grey,
+              ),
+              suffixIcon: IconButton(
+                onPressed: () {
+                  setState(() {
+                    hidePassword = !hidePassword;
+                  });
+                },
+                icon: Icon(
+                  hidePassword ? Icons.visibility_off : Icons.visibility,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -464,11 +567,15 @@ class _LoginPageState extends State<LoginPage> {
       onPressed: () {
         Navigator.pushNamed(context, 'forgotPage', arguments: password);
       },
-      child: Text("Forgot $password?",
-          style: Theme.of(context)
-              .textTheme
-              .bodyLarge
-              ?.copyWith(fontWeight: FontWeight.bold)),
+      child: CustomTextWidget(
+        text: "Forgot Password?",
+        color: AppColors.kPrimaryColor,
+      ),
+      // Text("Forgot $password?",
+      //     style: Theme.of(context)
+      //         .textTheme
+      //         .bodyLarge
+      //         ?.copyWith(fontWeight: FontWeight.bold)),
     );
   }
 

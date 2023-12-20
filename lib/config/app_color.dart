@@ -39,6 +39,7 @@ class AppColors {
   static const Color kPrimaryColor = Color(0xffa16ce6);
   static const Color kSelectedBackgroundColor = Color(0xfffaf5f3);
   static const Color kTileColor = Color(0xfffafafa);
+  static const Color kheadingColor = Color(0xff2a3075);
 
   // List of primary colors
   static List<Color> primaryColorOptions = const [
