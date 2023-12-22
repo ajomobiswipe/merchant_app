@@ -123,6 +123,7 @@ flutter:
     - assets/app/
     - assets/ca/
     - assets/app_icons/
+    - assets/merchant_icons/
 
   fonts:
     - family: Poppins

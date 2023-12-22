@@ -48,6 +48,8 @@ class CustomRoute {
           return const MerchantNumVerify();
         case "MerchantOrderDetails":
           return const MerchantOrderDetails();
+        case "merchantOnboarding":
+          return const SignUpCustomer();
 
         case "loginAuthOtp":
           Map args = settings.arguments as Map;
@@ -76,8 +78,7 @@ class CustomRoute {
           return const HomePage();
         case "splash":
           return const SplashScreen();
-        case "signUp":
-          return const SignUpCustomer();
+
         case "merchantSignUp":
           return const MerchantSignup();
 
