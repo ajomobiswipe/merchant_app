@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sifr_latest/common_wigdets/copyright_widget.dart';
+import 'package:sifr_latest/common_widgets/copyright_widget.dart';
 import 'package:sifr_latest/config/config.dart';
 import 'package:sifr_latest/main.dart';
 import 'package:sifr_latest/widgets/app_scafold.dart';
@@ -21,9 +21,7 @@ class UserTypeSelection extends StatelessWidget {
         eneableAppbar: false,
         child: Column(
           children: [
-            Placeholder(
-                child: Image.asset('assets/logo/oma_emirates_logo.png',
-                    height: 100)),
+            Image.asset('assets/logo/oma_emirates_logo.png', height: 100),
             const Expanded(
               child: SizedBox(),
               flex: 2,

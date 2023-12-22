@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:sifr_latest/common_wigdets/app_appbar.dart';
+import 'package:sifr_latest/common_widgets/app_appbar.dart';
 
 class AppScafofld extends StatelessWidget {
   final bool eneableAppbar;

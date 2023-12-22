@@ -17,9 +17,11 @@ import 'package:intl_phone_field/countries.dart';
 import 'package:provider/provider.dart';
 import 'package:sifr_latest/pages/users/signup/customer/terms_and_conditions.dart';
 import 'package:sifr_latest/widgets/Forms/kyc_form.dart';
+import 'package:sifr_latest/widgets/custom_text_widget.dart';
 import 'package:sifr_latest/widgets/loading.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../common_widgets/icon_text_widget.dart';
 import '../../../../config/config.dart';
 import '../../../../models/models.dart';
 import '../../../../services/services.dart';
@@ -281,6 +283,8 @@ class _SignUpCustomerState extends State<SignUpCustomer> {
 
   /// PERSONAL INFO
   Widget personalInfo() {
+    var screenHeight = MediaQuery.of(context).size.height;
+
     return Form(
       key: personalFormKey,
       onChanged: () =>
@@ -289,29 +293,62 @@ class _SignUpCustomerState extends State<SignUpCustomer> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           defaultHeight(),
-          Center(
-            child: Stack(
+          // Center(
+          //   child: Stack(
+          //     children: [
+          //       ClipOval(
+          //         child: newProfilePicture == ''
+          //             ? Image.asset(
+          //                 "assets/screen/default-1.png",
+          //                 width: 100,
+          //                 height: 100,
+          //                 fit: BoxFit.cover,
+          //               )
+          //             : Image.file(
+          //                 File(newProfilePicture),
+          //                 width: 100,
+          //                 height: 100,
+          //                 fit: BoxFit.cover,
+          //               ),
+          //       ),
+          //       Positioned(
+          //         bottom: 0,
+          //         right: 0,
+          //         child: buildEditIcon(Theme.of(context).primaryColor),
+          //       ),
+          //     ],
+          //   ),
+          // ),
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: AppColors.kSelectedBackgroundColor,
+            ),
+            // height: screenHeight / 10,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                ClipOval(
-                  child: newProfilePicture == ''
-                      ? Image.asset(
-                          "assets/screen/default-1.png",
-                          width: 100,
-                          height: 100,
-                          fit: BoxFit.cover,
-                        )
-                      : Image.file(
-                          File(newProfilePicture),
-                          width: 100,
-                          height: 100,
-                          fit: BoxFit.cover,
-                        ),
-                ),
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: buildEditIcon(Theme.of(context).primaryColor),
-                ),
+                IconTextWidget(
+                    screenHeight: screenHeight,
+                    color: AppColors.kPrimaryColor,
+                    iconPath: 'assets/merchant_icons/merchant_detials.png',
+                    title: "Merchant\nDetails"),
+                IconTextWidget(
+                    screenHeight: screenHeight,
+                    color: AppColors.kPrimaryColor,
+                    iconPath: 'assets/merchant_icons/id_proof_icon.png',
+                    title: "Id\nProofs"),
+                IconTextWidget(
+                    screenHeight: screenHeight,
+                    color: AppColors.kPrimaryColor,
+                    iconPath: 'assets/merchant_icons/bussiness_proofs.png',
+                    title: "Bussiness\nProofs"),
+                IconTextWidget(
+                    screenHeight: screenHeight,
+                    color: AppColors.kPrimaryColor,
+                    iconPath: 'assets/merchant_icons/bank_details.png',
+                    title: "Bank\nDetails"),
               ],
             ),
           ),
