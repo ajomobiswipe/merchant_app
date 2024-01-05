@@ -14,10 +14,16 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:intl_phone_field/countries.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:sifr_latest/common_widgets/app_appbar.dart';
+import 'package:sifr_latest/models/merchant_requestmodel.dart';
 import 'package:sifr_latest/widgets/Forms/Business_info.dart';
 import 'package:sifr_latest/widgets/Forms/document_uploads.dart';
+import 'package:sifr_latest/widgets/custom_text_widget.dart';
 import 'package:sifr_latest/widgets/loading.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../../common_widgets/custom_app_button.dart';
+import '../../../../common_widgets/form_title_widget.dart';
+import '../../../../common_widgets/icon_text_widget.dart';
 import '../../../../config/config.dart';
 import '../../../../models/models.dart';
 import '../../../../providers/providers.dart';
@@ -37,28 +43,49 @@ class MerchantSignup extends StatefulWidget {
 class _MerchantSignupState extends State<MerchantSignup> {
   bool _isLoading = false;
   int position = 0;
-  bool accept = false;
+  bool accept = true;
   final double _lat = 13.05186999479027;
   final double _lng = 80.22561586938588;
+  FocusNode myFocusNode = FocusNode();
 
   AlertService alertWidget = AlertService();
   CustomAlert customAlert = CustomAlert();
   UserServices userServices = UserServices();
   MerchantRequestModel requestModel = MerchantRequestModel();
+  MerchantRegPersonalReqModel merchantPersonalReq =
+      MerchantRegPersonalReqModel();
+  MerchantCompanyDetailsReqModel merchantCompanyDetailsReq =
+      MerchantCompanyDetailsReqModel();
 
   // --------- FORM KEYs ------------
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<FormState> personalFormKey = GlobalKey<FormState>();
   final GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
+  final _textFieldKey = GlobalKey<FormFieldState<String>>();
 
   /// PERSONAL INFORMATION
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
-  final TextEditingController _nickNameController = TextEditingController();
-  final TextEditingController _dateController = TextEditingController();
+  final TextEditingController _dateOfBirthController = TextEditingController();
   final TextEditingController _mobileCodeController = TextEditingController();
   final TextEditingController _mobileNoController = TextEditingController();
+  final TextEditingController _alternativeMobileCodeController =
+      TextEditingController();
+  final TextEditingController _altMobileNoController = TextEditingController();
+  final TextEditingController _poaExiryController = TextEditingController();
+  final TextEditingController _poaNumberController = TextEditingController();
+  final TextEditingController _poiExpryController = TextEditingController();
+  final TextEditingController _poINumberController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _dateController = TextEditingController();
+  final TextEditingController _currentAddressController =
+      TextEditingController();
+  final TextEditingController _currentZipCodeCtrl = TextEditingController();
+  final TextEditingController _permanentAddressController =
+      TextEditingController();
+
+  final TextEditingController _permanentZipCodeCtrl = TextEditingController();
+
   String profilePic = '';
   bool enabledLast = false;
   bool enabledNick = false;
@@ -74,10 +101,53 @@ class _MerchantSignupState extends State<MerchantSignup> {
   String mobileNoCheck = '';
   String? mobileNoCheckMessage;
   TextStyle? style;
-  String countryCode = 'AE';
+  String countryCode = 'IN';
   late Country _country =
       countries.firstWhere((element) => element.code == countryCode);
+  List nationalityList =
+
+      //  ['Europien', 'Emirates', 'American', 'Britan'];
+      //     var aa =
+
+      [
+    {"value": "Europien", "label": "Europien"},
+    {"value": "Emirates", "label": "Emirates"},
+    {"value": "American", "label": "American"},
+    {"value": "Britan", "label": "Britan"},
+  ];
+
+  List bankList =
+
+      //  ['Europien', 'Emirates', 'American', 'Britan'];
+      //     var aa =
+
+      [
+    {"value": "HDF1212", "label": "Hdfc"},
+    {"value": "SBI5454", "label": "SBI"},
+    {"value": "AXI5454", "label": "AXIS"},
+    {"value": "ICI5445", "label": "ICICI"},
+  ];
+
+  List<Map<String, dynamic>> POIAList = [
+    {"value": 1, "label": "PAN"},
+    {"value": 2, "label": "Passport"},
+  ];
+
+  Map<String, int> countrysList = {
+    "Europe": 141,
+    "India": 356,
+    "UK": 999,
+    "USA": 340,
+    "UAE": 784,
+  };
+  List statesList = ['Dubai', 'Abudhabi', 'Sharjah', 'Others'];
   List countryList = [];
+  List acquirerList = [];
+  List mmcGroupList = [];
+  List tmsMasterCountriesList = [];
+  List tmsMasterCitiesList = [];
+  List tmsMasterCurrenciesList = [];
+  List mmcTypeList = [];
   List stateList = [];
   List cityList = [];
 
@@ -87,6 +157,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
   final TextEditingController _cnfPasswordCtrl = TextEditingController();
   final TextEditingController _pinController = TextEditingController();
   final TextEditingController _confirmPinController = TextEditingController();
+
+  // merchant id proof
+  final TextEditingController _merchantPanController = TextEditingController();
+  final TextEditingController _merchantAddharController =
+      TextEditingController();
 
   String userCheck = '';
   bool showVerify = true;
@@ -113,9 +188,16 @@ class _MerchantSignupState extends State<MerchantSignup> {
   final TextEditingController selectedItem1 = TextEditingController();
   final TextEditingController selectedItem2 = TextEditingController();
   final TextEditingController selectedItem3 = TextEditingController();
+  String nationality = '';
+  String selectedPOA = '';
+  String selectedPOI = '';
   String selectedCountries = '';
   String selectedCity = '';
   String selectedState = '';
+  String selectedCurrentState = '';
+  String selectedPermenentState = '';
+  String selectedCurrentCountry = '';
+  String selectedPermenentCountry = '';
   final TextEditingController selectedMcc = TextEditingController();
   final TextEditingController selectedBusinessType = TextEditingController();
 
@@ -133,7 +215,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
   final TextEditingController _companyRegCtrl = TextEditingController();
   final TextEditingController _nationalIdCtrl = TextEditingController();
   final TextEditingController _nationalIdExpiryCtrl = TextEditingController();
-  final TextEditingController _merchantZipCodeCtrl = TextEditingController();
+
   final TextEditingController _tradeLicenseCtrl = TextEditingController();
   final TextEditingController _tradeLicenseExpiryCtrl = TextEditingController();
 
@@ -147,10 +229,43 @@ class _MerchantSignupState extends State<MerchantSignup> {
   final TextEditingController kycFront = TextEditingController();
   final TextEditingController kycBack = TextEditingController();
 
+  /// Bank detials
+  String ifscCode = '';
+  TextEditingController merchantAccountNumberCtrl = TextEditingController();
+  TextEditingController merchantIfscCodeCtrl = TextEditingController();
+  TextEditingController merchantBeneficiaryNamrCodeCtrl =
+      TextEditingController();
+
+// merchant Aggrement
+  String mdrType = '';
+
+  // Merchant company detials feilda
+  TextEditingController merchantCommercialNameCtrl = TextEditingController();
+  TextEditingController onwershipNameCtrl = TextEditingController();
+  TextEditingController merchantIdCtrl = TextEditingController();
+  TextEditingController merchantAddressCtrl = TextEditingController();
+  TextEditingController merchantStreetNameCtrl = TextEditingController();
+  TextEditingController merchantDescriptionCtrl = TextEditingController();
+  TextEditingController merchantZipCodeCtrl = TextEditingController();
+  TextEditingController acquirerNameCtrl = TextEditingController();
+  TextEditingController acquirerApplicationIdCtrl = TextEditingController();
+  TextEditingController selectedCountry = TextEditingController();
+  TextEditingController selectedCityCtrl = TextEditingController();
+  TextEditingController selectedGeoFencingRadius = TextEditingController();
+  TextEditingController selectedCurrency = TextEditingController();
+  TextEditingController vatValueCtrl = TextEditingController();
+  TextEditingController VATRegistrationNumberCtrl = TextEditingController();
+  TextEditingController shareholderPercentCtrl = TextEditingController();
+  TextEditingController maxAuthAmountCtrl = TextEditingController();
+  TextEditingController maxTerminalCountCtrl = TextEditingController();
+  TextEditingController merchantPercentageAmountCtrl = TextEditingController();
+
   var dobSelectedDt = DateTime(
       DateTime.now().year - 18, DateTime.now().month, DateTime.now().day);
-  var tradeSelectedDt = DateTime.now();
   var nationalSelectedDt = DateTime.now();
+  var tradeSelectedDt = DateTime.now();
+  var poaExpiry = DateTime.now();
+  var poiExpiry = DateTime.now();
 
   @override
   void initState() {
@@ -159,7 +274,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
     getSecurityQuestions();
     loadMcc();
     getCountry();
-    getToken();
+    getAcquirers();
+    //userServices.getAcqApplicationid('1');
+
     super.initState();
   }
 
@@ -172,6 +289,26 @@ class _MerchantSignupState extends State<MerchantSignup> {
     setState(() {
       requestModel.notificationToken = token;
     });
+  }
+
+  int? getValueByLabel(List<Map<String, dynamic>> list, String? label) {
+    for (var map in list) {
+      if (map['label'] == label) {
+        return map['value'];
+      }
+    }
+    return null;
+  }
+
+  void getIntByKey(
+      {required String countryKey, required Map<String, int> dataMap}) {
+    int? countryValue = dataMap[countryKey];
+
+    if (countryValue != null) {
+      print('$countryKey: $countryValue');
+    } else {
+      print('Country not found');
+    }
   }
 
   @override
@@ -198,11 +335,27 @@ class _MerchantSignupState extends State<MerchantSignup> {
     Navigator.pushNamedAndRemoveUntil(context, 'login', (route) => false);
   }
 
+  int currTabPosition = 1;
+  //int completedTab = 3;
+
+  Color getIconColor({
+    required int position,
+  }) {
+    if (position <= currTabPosition - 1) {
+      return Colors.green;
+    } else if (position == currTabPosition) {
+      return AppColors.kPrimaryColor;
+    } else if (position > currTabPosition) {
+      return Colors.grey;
+    }
+    return Colors.black;
+  }
+
   items(int position) {
     if (position == 0) {
-      return mainControl('Personal Information', personalInfo());
+      return mainControl('Merchant Personal Information', personalInfo());
     } else if (position == 1) {
-      return mainControl('Login Information', loginInfo());
+      return mainControl('Merchant Id proof', loginInfo());
     } else if (position == 2) {
       var isDarkMode = context.isDarkMode;
       return SecurityForm(
@@ -220,20 +373,50 @@ class _MerchantSignupState extends State<MerchantSignup> {
       );
     } else if (position == 3) {
       return BusinessInfo(
-          previous: businessPrevious,
-          next: businessNext,
-          merchantNameCtrl: _merchantNameCtrl,
-          companyRegCtrl: _companyRegCtrl,
-          nationalIdCtrl: _nationalIdCtrl,
-          nationalIdExpiryCtrl: _nationalIdExpiryCtrl,
-          tradeLicenseCtrl: _tradeLicenseCtrl,
-          tradeLicenseExpiryCtrl: _tradeLicenseExpiryCtrl,
-          selectedMcc: selectedMcc,
-          selectedBusinessType: selectedBusinessType,
-          requestModel: requestModel,
-          mccList: mccList,
-          tradeSelectedDt: tradeSelectedDt,
-          nationalSelectedDt: nationalSelectedDt);
+        previous: businessPrevious,
+        next: businessNext,
+        merchantLegalNameCtrl: _merchantNameCtrl,
+        MCCGroupList: mmcGroupList,
+        MCCTypeList: mmcTypeList,
+        merchantCommercialNameCtrl: merchantCommercialNameCtrl,
+        onwershipNameCtrl: onwershipNameCtrl,
+        merchantIdCtrl: merchantIdCtrl,
+        merchantAddressCtrl: merchantAddressCtrl,
+        merchantStreetNameCtrl: merchantStreetNameCtrl,
+        merchantDescriptionCtrl: merchantDescriptionCtrl,
+        merchantZipCodeCtrl: merchantZipCodeCtrl,
+        acquirerNameCtrl: acquirerNameCtrl,
+        acquirerApplicationIdCtrl: acquirerApplicationIdCtrl,
+        selectedCountry: selectedCountry,
+        selectedCityCtrl: selectedCityCtrl,
+        selectedGeoFencingRadius: selectedGeoFencingRadius,
+        selectedCurrency: selectedCurrency,
+        vatValueCtrl: vatValueCtrl,
+        VATRegistrationNumberCtrl: VATRegistrationNumberCtrl,
+        shareholderPercentCtrl: shareholderPercentCtrl,
+        maxAuthAmountCtrl: maxAuthAmountCtrl,
+        maxTerminalCountCtrl: maxTerminalCountCtrl,
+        merchantPercentageAmountCtrl: merchantPercentageAmountCtrl,
+        companyRegCtrl: _companyRegCtrl,
+        nationalIdCtrl: _nationalIdCtrl,
+        nationalIdExpiryCtrl: _nationalIdExpiryCtrl,
+        tradeLicenseCtrl: _tradeLicenseCtrl,
+        tradeLicenseExpiryCtrl: _tradeLicenseExpiryCtrl,
+        selectedMccGroup: selectedMcc,
+        selectedBusinessType: selectedBusinessType,
+        merchantCompanyDetailsReq: merchantCompanyDetailsReq,
+        mccList: mccList,
+        tradeSelectedDt: tradeSelectedDt,
+        nationalSelectedDt: nationalSelectedDt,
+        acquierList: acquirerList,
+        emailController: _emailController,
+        selectedBussinesTurnover: TextEditingController(),
+        nextfordev: () {
+          setState(() {
+            position = 4;
+          });
+        },
+      );
     } else if (position == 4) {
       return DocumentUploads(
           previous: documentPrevious,
@@ -250,18 +433,20 @@ class _MerchantSignupState extends State<MerchantSignup> {
           kycBackImage: kycBack);
     } else if (position == 6) {
       return mainControl('Review', review());
+    } else if (position == 7) {
+      return mainControl('Merchant Bank Details', merchantBankDetails());
     }
   }
 
   businessNext() {
     setState(() {
-      position = 4;
+      position = 1; //default value 4
     });
   }
 
   businessPrevious() {
     setState(() {
-      position = 2;
+      position = 0;
     });
   }
 
@@ -285,11 +470,13 @@ class _MerchantSignupState extends State<MerchantSignup> {
     return _isLoading
         ? const LoadingWidget()
         : Scaffold(
-            appBar: AppBarWidget(
-              action: false,
-              title: title,
-              automaticallyImplyLeading: false,
-            ),
+            appBar: AppAppbar(title: title),
+            // AppBarWidget(
+            //   action: false,
+            //   title: title,
+            //   automaticallyImplyLeading: false,
+            // ),
+            backgroundColor: Colors.white,
             body: SafeArea(
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
@@ -302,14 +489,77 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
   /// PERSONAL INFORMATION
   Widget personalInfo() {
+    var screenHeight = MediaQuery.of(context).size.height;
     return Form(
         key: personalFormKey,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             const SizedBox(height: 10),
-            profilePicture(),
-            const SizedBox(height: 10),
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: AppColors.kSelectedBackgroundColor,
+              ),
+              // height: screenHeight / 10,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  IconTextWidget(
+                      screenHeight: screenHeight,
+                      color: getIconColor(
+                        position: 1,
+                      ),
+                      iconPath: 'assets/merchant_icons/merchant_detials.png',
+                      title: "Merchant\nDetails"),
+                  IconTextWidget(
+                      screenHeight: screenHeight,
+                      color: getIconColor(position: 2),
+                      iconPath: 'assets/merchant_icons/id_proof_icon.png',
+                      title: "Id\nProofs"),
+                  IconTextWidget(
+                      screenHeight: screenHeight,
+                      color: getIconColor(position: 3),
+                      iconPath: 'assets/merchant_icons/bussiness_proofs.png',
+                      title: "Bussiness\nProofs"),
+                  IconTextWidget(
+                      screenHeight: screenHeight,
+                      color: getIconColor(position: 4),
+                      iconPath: 'assets/merchant_icons/bank_details.png',
+                      title: "Bank\nDetails"),
+                ],
+              ),
+            ),
+            Placeholder(
+              child: Row(
+                children: [
+                  ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          currTabPosition = 1;
+                        });
+                      },
+                      child: Text('reset')),
+                  ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          currTabPosition--;
+                        });
+                      },
+                      child: Text('back')),
+                  ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          currTabPosition++;
+                        });
+                      },
+                      child: Text('next')),
+                ],
+              ),
+            ),
+            const FormTitleWidget(subWord: 'Merchant Details'),
+            const SizedBox(height: 35),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -346,7 +596,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                       }
                     },
                     onSaved: (value) {
-                      requestModel.firstName = value;
+                      merchantPersonalReq.firstName = value;
                     },
                   ),
                 ),
@@ -359,10 +609,10 @@ class _MerchantSignupState extends State<MerchantSignup> {
                     controller: _lastNameController,
                     required: true,
                     textCapitalization: TextCapitalization.words,
-                    enabled: _firstNameController.text.isEmpty ||
-                            _firstNameController.text.length < 3
-                        ? enabledLast = false
-                        : enabledLast = true,
+                    // enabled: _firstNameController.text.isEmpty ||
+                    //         _firstNameController.text.length < 3
+                    //     ? enabledLast = false
+                    //     : enabledLast = true,
                     prefixIcon: LineAwesome.user_circle,
                     validator: (value) {
                       value = value.trim();
@@ -388,7 +638,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                       });
                     },
                     onSaved: (value) {
-                      requestModel.lastName = value;
+                      merchantPersonalReq.lastName = value;
                     },
                     onFieldSubmitted: (value) {
                       _lastNameController.text = value.trim();
@@ -404,43 +654,75 @@ class _MerchantSignupState extends State<MerchantSignup> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
+                // Expanded(
+                //   child: CustomTextFormField(
+                //     title: 'Nickname',
+                //     enabled: _lastNameController.text.trim().isEmpty ||
+                //             _lastNameController.text.trim().length < 3 ||
+                //             !Validators.isValidName(
+                //                 _lastNameController.text.trim())
+                //         ? false
+                //         : true,
+                //     controller: _nickNameController,
+                //     onTap: () {
+                //       _lastNameController.text =
+                //           _lastNameController.text.trim();
+                //     },
+                //     maxLength: 12,
+                //     textCapitalization: TextCapitalization.words,
+                //     prefixIcon: LineAwesome.user,
+                //     validator: (value) {
+                //       if (value == null || value.isEmpty) {
+                //         return null;
+                //       }
+                //       if (!Validators.isValidName(value)) {
+                //         return 'Invalid Nick Name';
+                //       }
+                //       return null;
+                //     },
+                //     onSaved: (value) {
+                //       requestModel.nickName = value;
+                //     },
+                //   ),
+                // ),
                 Expanded(
-                  child: CustomTextFormField(
-                    title: 'Nickname',
-                    enabled: _lastNameController.text.trim().isEmpty ||
-                            _lastNameController.text.trim().length < 3 ||
-                            !Validators.isValidName(
-                                _lastNameController.text.trim())
-                        ? false
-                        : true,
-                    controller: _nickNameController,
-                    onTap: () {
-                      _lastNameController.text =
-                          _lastNameController.text.trim();
+                  child: CustomDropdown(
+                    title: "Nationality",
+                    // enabled: selectedState != '' && enabledState
+                    //     ? enabledcity = true
+                    //     : enabledcity = false,
+                    required: true,
+                    selectedItem: nationality != '' ? nationality : null,
+                    prefixIcon: FontAwesome.map,
+                    itemList: nationalityList
+                        .map((map) => map['label'].toString())
+                        .toList(),
+                    //countryList.map((e) => e['ctyName']).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        nationality = value;
+                        // requestModel.city = value;
+                      });
                     },
-                    maxLength: 12,
-                    textCapitalization: TextCapitalization.words,
-                    prefixIcon: LineAwesome.user,
+                    onSaved: (value) {
+                      merchantPersonalReq.currentNationality = value;
+                    },
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return null;
-                      }
-                      if (!Validators.isValidName(value)) {
-                        return 'Invalid Nick Name';
+                        return 'Nationality is Mandatory!';
                       }
                       return null;
                     },
-                    onSaved: (value) {
-                      requestModel.nickName = value;
-                    },
                   ),
                 ),
+
                 const SizedBox(
                   width: 10,
                 ),
                 Expanded(
                   child: CustomTextFormField(
-                    controller: _dateController,
+                    key: _textFieldKey,
+                    controller: _dateOfBirthController,
                     title: 'Date of Birth',
                     required: true,
                     readOnly: true,
@@ -459,8 +741,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                       return null;
                     },
                     onTap: () async {
-                      _lastNameController.text =
-                          _lastNameController.text.trim();
+                      _dateOfBirthController.text =
+                          _dateOfBirthController.text.trim();
                       DateTime? pickedDate = await showDatePicker(
                         initialDatePickerMode: DatePickerMode.day,
                         initialEntryMode: DatePickerEntryMode.calendarOnly,
@@ -475,22 +757,24 @@ class _MerchantSignupState extends State<MerchantSignup> {
                             DateFormat('dd-MM-yyyy').format(pickedDate);
                         setState(() {
                           dobSelectedDt = pickedDate;
-                          requestModel.dob = formattedDate;
-                          _dateController.text = formattedDate;
-                          if (_dateController.text.isEmpty) {
-                            enabledMobile = false;
-                          } else {
-                            enabledMobile = enabledDob;
-                          }
+                          _dateOfBirthController.text = formattedDate;
                         });
                       } else {}
+
+                      if (pickedDate != null) {
+                        String formattedDate =
+                            DateFormat("yyyy-MM-ddTHH:mm:ss.SSS")
+                                .format(pickedDate);
+                        merchantPersonalReq.dob = formattedDate;
+                        print('Formatted Date: ${formattedDate}Z');
+                      }
                     },
-                    enabled: _lastNameController.text.trim().isEmpty ||
-                            _lastNameController.text.trim().length < 3 ||
-                            !Validators.isValidName(
-                                _lastNameController.text.trim())
-                        ? enabledDob = false
-                        : enabledDob = enabledLast,
+                    // enabled: _lastNameController.text.trim().isEmpty ||
+                    //         _lastNameController.text.trim().length < 3 ||
+                    //         !Validators.isValidName(
+                    //             _lastNameController.text.trim())
+                    //     ? enabledDob = false
+                    //     : enabledDob = enabledLast,
                   ),
                 ),
               ],
@@ -499,195 +783,625 @@ class _MerchantSignupState extends State<MerchantSignup> {
               height: 10,
             ),
             CustomMobileField(
+              enabled: true,
               controller: _mobileNoController,
               keyboardType: TextInputType.number,
               title: 'Mobile Number',
-              enabled: _dateController.text.isEmpty
-                  ? enabledMobile = false
-                  : enabledMobile = enabledDob,
+              // enabled: _dateController.text.isEmpty
+              //     ? enabledMobile = false
+              //     : enabledMobile = enabledDob,
               required: true,
               helperText: mobileNoCheckMessage,
               helperStyle: style,
               prefixIcon: FontAwesome.mobile,
               countryCode: countryCode,
               onChanged: (phone) {
-                requestModel.mobileNumber = phone.number;
-                requestModel.mobileCountryCode = phone.countryCode;
-                setState(() {
-                  if (phone.number.isNotEmpty &&
-                      (phone.number.length >= _country.minLength &&
-                          phone.number.length <= _country.maxLength)) {
-                    getEmailIdOrMobileNo('mobileNumber', phone.number);
-                  } else {
-                    mobile = false;
-                    enabledEmail = false;
-                  }
-                });
+                merchantPersonalReq.currentMobileNo =
+                    phone.countryCode + phone.number;
               },
               onCountryChanged: (country) {
                 setState(() {
                   countryCode = country.code;
                   _country = country;
-                  _mobileCodeController.text = countryCode;
+                  _mobileNoController.text = countryCode;
                 });
               },
             ),
             const SizedBox(
               height: 10,
             ),
-            emailWidget(),
-            const SizedBox(
-              height: 10.0,
-            ),
-            CustomDropdown(
-              title: "Country",
+            CustomMobileField(
+              enabled: true,
+              controller: _altMobileNoController,
+              keyboardType: TextInputType.number,
+              title: 'WhatsApp Number',
+              // enabled: _dateController.text.isEmpty
+              //     ? enabledMobile = false
+              //     : enabledMobile = enabledDob,
               required: true,
-              enabled: email &&
-                      enabledEmail &&
-                      _emailController.text.isNotEmpty &&
-                      Validators.isValidEmail(_emailController.text)
-                  ? enabledCountry = true
-                  : enabledCountry = false,
-              selectedItem: selectedCountries != '' ? selectedCountries : null,
-              prefixIcon: Icons.location_city_outlined,
-              itemList: countryList.map((e) => e['ctyName']).toList(),
-              onChanged: (value) {
-                List selectedCountry = countryList
-                    .where((element) => element['ctyName'] == value)
-                    .toList();
-                String id = selectedCountry[0]['id'].toString();
-                String currencyCode = selectedCountry[0]['currencyCode'];
-                getState(id);
+              helperText: mobileNoCheckMessage,
+              helperStyle: style,
+              prefixIcon: FontAwesome.mobile,
+              countryCode: countryCode,
+              onChanged: (phone) {
+                merchantPersonalReq.currentAltMobNo =
+                    phone.countryCode + phone.number;
+              },
+              onCountryChanged: (country) {
                 setState(() {
-                  selectedCountries = value;
-                  requestModel.country = value;
-                  requestModel.currencyId = currencyCode;
+                  countryCode = country.code;
+                  _country = country;
+                  _alternativeMobileCodeController.text = countryCode;
                 });
-              },
-              onSaved: (value) {
-                requestModel.country = value;
-              },
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Country is Mandatory!';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 10.0),
-            CustomDropdown(
-              title: "State",
-              required: true,
-              enabled: selectedCountries != '' && enabledCountry
-                  ? enabledState = true
-                  : enabledState = false,
-              selectedItem: selectedState != '' ? selectedState : null,
-              prefixIcon: Icons.location_city_outlined,
-              itemList: stateList.map((e) => e['staName']).toList(),
-              onChanged: (value) {
-                List state = stateList
-                    .where((element) => element['staName'] == value)
-                    .toList();
-                String id = state[0]['id'].toString();
-                getCity(id);
-                setState(() {
-                  selectedState = value;
-                  requestModel.state = value;
-                });
-              },
-              onSaved: (value) {
-                requestModel.state = value;
-              },
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'State is Mandatory!';
-                }
-                return null;
               },
             ),
             const SizedBox(
-              height: 10.0,
+              height: 20,
             ),
-            CustomDropdown(
-              title: "City",
-              enabled: selectedState != '' && enabledState
-                  ? enabledcity = true
-                  : enabledcity = false,
-              required: true,
-              selectedItem: selectedCity != '' ? selectedCity : null,
-              prefixIcon: Icons.location_city_outlined,
-              itemList: cityList.map((e) => e['citName']).toList(),
-              onChanged: (value) {
-                setState(() {
-                  selectedCity = value;
-                  requestModel.city = value;
-                });
-              },
-              onSaved: (value) {
-                requestModel.city = value;
-              },
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'City is Mandatory!';
-                }
-                return null;
-              },
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Expanded(
+                  child: CustomDropdown(
+                    title: "POA Type",
+                    required: true,
+                    selectedItem: selectedPOA != '' ? selectedPOA : null,
+                    prefixIcon: Icons.location_city_outlined,
+                    itemList:
+                        POIAList.map((map) => map['label'].toString()).toList(),
+                    //countryList.map((e) => e['ctyName']).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedPOA = value;
+                        merchantPersonalReq.poaType =
+                            getValueByLabel(POIAList, value);
+                      });
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'POA Type is Mandatory!';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                  child: CustomTextFormField(
+                    controller: _poaExiryController,
+                    title: 'POA Expiry',
+                    required: true,
+                    readOnly: true,
+                    errorMaxLines: 2,
+                    maxLength: 26,
+                    // helperText: Constants.dobMessage,
+                    helperStyle: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(color: Theme.of(context).primaryColor),
+                    prefixIcon: FontAwesome.calendar,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Poa Expiry is Mandatory!';
+                      }
+                      return null;
+                    },
+                    onTap: () async {
+                      _poaExiryController.text =
+                          _poaExiryController.text.trim();
+                      DateTime? pickedDate = await showDatePicker(
+                        initialDatePickerMode: DatePickerMode.day,
+                        initialEntryMode: DatePickerEntryMode.calendarOnly,
+                        context: context,
+                        initialDate: poaExpiry,
+                        firstDate: DateTime.now().add(const Duration(days: 0)),
+                        lastDate: DateTime(DateTime.now().year + 10),
+                      );
+                      if (pickedDate != null) {
+                        String formattedDate =
+                            DateFormat('dd-MM-yyyy').format(pickedDate);
+                        setState(() {
+                          poaExpiry = pickedDate;
+
+                          _poaExiryController.text = formattedDate;
+                        });
+                      } else {}
+
+                      if (pickedDate != null) {
+                        String formattedDate =
+                            DateFormat("yyyy-MM-ddTHH:mm:ss.SSS")
+                                .format(pickedDate);
+                        merchantPersonalReq.poaExpiryDate = formattedDate;
+                        print('Formatted Date: ${formattedDate}Z');
+                      }
+                    },
+                  ),
+                ),
+              ],
             ),
             const SizedBox(
               height: 10.0,
             ),
             CustomTextFormField(
-              title: 'Makani No',
-              enabled: selectedCity != '' && enabledcity ? true : false,
-              maxLength: 10,
+              title: 'POA Number',
+              controller: _poaNumberController,
               required: true,
+              textCapitalization: TextCapitalization.words,
+              // enabled: _firstNameController.text.isEmpty ||
+              //         _firstNameController.text.length < 3
+              //     ? enabledLast = false
+              //     : enabledLast = true,
+              prefixIcon: LineAwesome.user_circle,
               validator: (value) {
+                value = value.trim();
                 if (value == null || value.isEmpty) {
-                  return 'Makani No is Mandatory!';
+                  return 'POA Number Mandatory!';
                 }
-                if (!value.isEmpty && value.length < 10) {
-                  return 'Minimum 10 digits';
+                if (value.length < 10) {
+                  return 'Minimum 10 characters';
                 }
+
                 return null;
               },
-              controller: _merchantZipCodeCtrl,
-              keyboardType: TextInputType.number,
-              inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.allow(RegExp(r'\d'))
-              ],
-              prefixIcon: Icons.map_outlined,
+              onChanged: (String value) {
+                value = value.trim();
+              },
               onSaved: (value) {
-                requestModel.merchantZipCode = value;
-                requestModel.zipCode = value;
+                merchantPersonalReq.poaNumber = value;
+              },
+              onFieldSubmitted: (value) {
+                _lastNameController.text = value.trim();
               },
             ),
             const SizedBox(
               height: 20.0,
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Spacer(),
-                SizedBox(
-                  width: 150,
-                  child: AppButton(
-                    title: "Next",
-                    onPressed: () async {
-                      getCurrentPosition();
-                      if (personalFormKey.currentState!.validate() &&
-                          mobileNoCheck == 'false' &&
-                          emailCheck == 'false' &&
-                          email) {
-                        personalFormKey.currentState!.save();
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Expanded(
+                  child: CustomDropdown(
+                    title: "POI Type",
+                    // enabled: selectedState != '' && enabledState
+                    //     ? enabledcity = true
+                    //     : enabledcity = false,
+                    required: true,
+                    selectedItem: selectedPOI != '' ? selectedPOI : null,
+                    prefixIcon: Icons.location_city_outlined,
+                    itemList:
+                        POIAList.map((map) => map['label'].toString()).toList(),
+                    // cityList.map((e) => e['citName']).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedPOI = value;
+                        merchantPersonalReq.poiType =
+                            getValueByLabel(POIAList, value);
+                      });
+                    },
+                    onSaved: (value) {
+                      //merchantPersonalReq.poiType = value;
+                      merchantPersonalReq.poiType =
+                          getValueByLabel(POIAList, value);
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'City is Mandatory!';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                  child: CustomTextFormField(
+                    controller: _poiExpryController,
+                    title: 'POI Expiry',
+                    required: true,
+                    readOnly: true,
+                    errorMaxLines: 2,
+                    maxLength: 26,
+                    // helperText: Constants.dobMessage,
+                    helperStyle: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(color: Theme.of(context).primaryColor),
+                    prefixIcon: FontAwesome.calendar,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'POI Expiry is Mandatory!';
+                      }
+                      return null;
+                    },
+                    onTap: () async {
+                      _poiExpryController.text =
+                          _poiExpryController.text.trim();
+                      DateTime? pickedDate = await showDatePicker(
+                        initialDatePickerMode: DatePickerMode.day,
+                        initialEntryMode: DatePickerEntryMode.calendarOnly,
+                        context: context,
+                        initialDate: poiExpiry,
+                        firstDate: DateTime.now().add(const Duration(days: 0)),
+                        lastDate: DateTime(DateTime.now().year + 10),
+                      );
+                      if (pickedDate != null) {
+                        String formattedDate =
+                            DateFormat('dd-MM-yyyy').format(pickedDate);
                         setState(() {
-                          position = 1;
+                          poiExpiry = pickedDate;
+                          merchantPersonalReq.poiExpiryDate = formattedDate;
+                          _poiExpryController.text = formattedDate;
                         });
+                      } else {}
+
+                      if (pickedDate != null) {
+                        String formattedDate =
+                            DateFormat("yyyy-MM-ddTHH:mm:ss.SSS")
+                                .format(pickedDate);
+                        merchantPersonalReq.poiExpiryDate = formattedDate;
+                        print('Formatted Date: ${formattedDate}Z');
                       }
                     },
                   ),
-                )
+                ),
               ],
+            ),
+            const SizedBox(
+              height: 10.0,
+            ),
+            CustomTextFormField(
+              title: 'POI Number',
+              controller: _poINumberController,
+              required: true,
+              textCapitalization: TextCapitalization.words,
+              // enabled: _firstNameController.text.isEmpty ||
+              //         _firstNameController.text.length < 3
+              //     ? enabledLast = false
+              //     : enabledLast = true,
+              prefixIcon: LineAwesome.user_circle,
+              validator: (value) {
+                value = value.trim();
+                if (value == null || value.isEmpty) {
+                  return 'POI Number is Mandatory!';
+                }
+                if (value.length < 10) {
+                  return 'Minimum 10 characters';
+                }
+
+                return null;
+              },
+              onChanged: (String value) {
+                value = value.trim();
+                setState(() {
+                  value.isEmpty ||
+                          value.length < 3 ||
+                          !Validators.isValidName(value)
+                      ? enabledDob = false
+                      : enabledDob = enabledLast;
+                });
+              },
+              onSaved: (value) {
+                merchantPersonalReq.poiNumber = value;
+              },
+              onFieldSubmitted: (value) {
+                _poINumberController.text = value.trim();
+              },
+            ),
+            const SizedBox(
+              height: 20.0,
+            ),
+            CustomTextFormField(
+              title: 'Current Address',
+
+              controller: _currentAddressController,
+              prefixIcon: Icons.home,
+              required: true,
+              minLines: 2,
+              keyboardType: TextInputType.multiline,
+              textCapitalization: TextCapitalization.words,
+              enabled: true,
+              // prefixIcon: LineAwesome.address_book,
+              validator: (value) {
+                value = value.trim();
+                if (value == null || value.isEmpty) {
+                  return 'Current Address is Mandatory!';
+                }
+                if (value.length < 10) {
+                  return 'Minimum 10 characters';
+                }
+
+                return null;
+              },
+              onChanged: (String value) {
+                value = value.trim();
+              },
+              onSaved: (value) {
+                merchantPersonalReq.currentAddress = value;
+              },
+              onFieldSubmitted: (value) {
+                _currentAddressController.text = value.trim();
+              },
+            ),
+            const SizedBox(
+              height: 20.0,
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Expanded(
+                  child: CustomDropdown(
+                    title: "Current Country",
+                    // enabled: selectedState != '' && enabledState
+                    //     ? enabledcity = true
+                    //     : enabledcity = false,
+                    required: true,
+                    selectedItem: selectedCurrentCountry != ''
+                        ? selectedCurrentCountry
+                        : null,
+                    prefixIcon: Icons.location_city_outlined,
+                    itemList: countrysList.keys.toList(),
+                    //cityList.map((e) => e['citName']).toList(),
+                    onChanged: (value) {
+                      print(countrysList[value]);
+                      setState(() {
+                        selectedCurrentCountry = value;
+                        merchantPersonalReq.currentCountry =
+                            countrysList[value];
+                      });
+                    },
+                    onSaved: (value) {
+                      merchantPersonalReq.currentCountry = countrysList[value];
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Country is Mandatory!';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                  child: CustomDropdown(
+                    title: "Current State",
+                    // enabled: selectedState != '' && enabledState
+                    //     ? enabledcity = true
+                    //     : enabledcity = false,
+                    required: true,
+                    selectedItem: selectedCurrentState != ''
+                        ? selectedCurrentState
+                        : null,
+                    prefixIcon: Icons.location_city_outlined,
+                    itemList: statesList,
+                    // cityList.map((e) => e['citName']).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedCurrentState = value;
+                        merchantPersonalReq.currentState = value;
+                      });
+                    },
+                    onSaved: (value) {
+                      merchantPersonalReq.currentState = value;
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Current state is Mandatory!';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 10.0,
+            ),
+            CustomTextFormField(
+              title: 'Current Zip Code',
+              // enabled: selectedCity != '' && enabledcity ? true : false,
+              maxLength: 6,
+              required: true,
+
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Current Zip is Mandatory!';
+                }
+                if (!value.isEmpty && value.length < 6) {
+                  return 'Minimum 6 digits';
+                }
+                return null;
+              },
+              controller: _currentZipCodeCtrl,
+              keyboardType: TextInputType.number,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.allow(RegExp(r'\d'))
+              ],
+              prefixIcon: Icons.map_outlined,
+              onSaved: (value) {
+                merchantPersonalReq.currentZipCode = value;
+              },
+            ),
+            const SizedBox(
+              height: 10.0,
+            ),
+            CustomTextFormField(
+              title: 'Permanent Address',
+              minLines: 2,
+              controller: _permanentAddressController,
+              required: true,
+              textCapitalization: TextCapitalization.words,
+              enabled: true,
+              keyboardType: TextInputType.multiline,
+              prefixIcon: LineAwesome.home_solid,
+              validator: (value) {
+                value = value.trim();
+                if (value == null || value.isEmpty) {
+                  return 'Permanent Address is Mandatory!';
+                }
+                if (value.length < 10) {
+                  return 'Minimum 10 characters';
+                }
+
+                return null;
+              },
+              onChanged: (String value) {
+                value = value.trim();
+              },
+              onSaved: (value) {
+                merchantPersonalReq.permanentAddress = value;
+              },
+              onFieldSubmitted: (value) {
+                _permanentAddressController.text = value.trim();
+              },
+            ),
+            const SizedBox(
+              height: 20.0,
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Expanded(
+                  child: CustomDropdown(
+                    title: "Permanent Country",
+                    // enabled: selectedState != '' && enabledState
+                    //     ? enabledcity = true
+                    //     : enabledcity = false,
+                    required: true,
+                    selectedItem: selectedPermenentCountry != ''
+                        ? selectedPermenentCountry
+                        : null,
+                    prefixIcon: Icons.location_city_outlined,
+                    itemList: countrysList.keys.toList(),
+                    //cityList.map((e) => e['citName']).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedPermenentCountry = value;
+                      });
+                    },
+                    onSaved: (value) {
+                      merchantPersonalReq.permanentCountry =
+                          countrysList[value];
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Permanent Country is Mandatory!';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                  child: CustomDropdown(
+                    title: "Permanent State",
+                    // enabled: selectedState != '' && enabledState
+                    //     ? enabledcity = true
+                    //     : enabledcity = false,
+                    required: true,
+                    selectedItem: selectedPermenentState != ''
+                        ? selectedPermenentState
+                        : null,
+                    prefixIcon: Icons.location_city_outlined,
+                    itemList:
+                        statesList, // cityList.map((e) => e['citName']).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedPermenentState = value;
+                        merchantPersonalReq.permanentState = value;
+                      });
+                    },
+                    onSaved: (value) {
+                      merchantPersonalReq.permanentState = value;
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Permanent State is Mandatory!';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 10.0,
+            ),
+            CustomTextFormField(
+              title: 'Permanent Zip/Postal Code',
+              // enabled: selectedCity != '' && enabledcity ? true : false,
+              maxLength: 10,
+              required: true,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Zip Code is Mandatory!';
+                }
+                if (!value.isEmpty && value.length < 6) {
+                  return 'Minimum 6 digits';
+                }
+                return null;
+              },
+              controller: _permanentZipCodeCtrl,
+              keyboardType: TextInputType.number,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.allow(RegExp(r'\d'))
+              ],
+              prefixIcon: Icons.map_outlined,
+              onSaved: (value) {
+                merchantPersonalReq.permanentZipCode = value;
+              },
+            ),
+            const SizedBox(
+              height: 20.0,
+            ),
+            Placeholder(
+              child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      currTabPosition = 2;
+                      position = 3;
+                    });
+                  },
+                  child: Text('next')),
+            ),
+            CustomAppButton(
+              title: "Next",
+              onPressed: () async {
+                // // getCurrentPosition();
+
+                // if (personalFormKey.currentState!.validate()
+                //     //  &&
+                //     //     mobileNoCheck == 'false' &&
+                //     //     emailCheck == 'false' &&
+                //     //     email
+
+                //     ) {
+                // personalFormKey.currentState!.save();
+                // print(merchantPersonalReq.toJson());
+                // print(jsonEncode(merchantPersonalReq.toJson()));
+                // setState(() {
+                //   position = 3;
+                // });
+                // }
+                personalFormKey.currentState!.save();
+                if (personalFormKey.currentState!.validate()) {
+                  print(jsonEncode(merchantPersonalReq.toJson()));
+                  setState(() {
+                    currTabPosition = 2;
+                    position = 3;
+                  });
+                }
+              },
             ),
             const SizedBox(
               height: 20.0,
@@ -752,6 +1466,60 @@ class _MerchantSignupState extends State<MerchantSignup> {
           });
         }
       }
+    });
+  }
+
+  getAcquirers() {
+    userServices.getAcquirers().then((response) async {
+      final Map<String, dynamic> data = json.decode(response.body);
+      List<dynamic> acquirerDetails =
+          data['data'][0]['acquirerAcquirerDetails'];
+      List<dynamic> mccGroups = data['data'][0]['tmsMasterMccGroup'];
+      List<dynamic> mccTypes = data['data'][0]['tmsMasterMccTypes'];
+      List<dynamic> tmsMasterCountries = data['data'][0]['tmsMasterCountries'];
+      List<dynamic> tmsMasterCities = data['data'][0]['tmsMasterCities'];
+      List<dynamic> tmsMasterCurrencies =
+          data['data'][0]['tmsMasterCurrencies'];
+
+      //       var countries = List<String>.from(data['data'][0]['tmsMasterCountries']
+      //     .map((item) => item['countryName']));
+      // cities = List<String>.from(
+      //     data['data'][0]['tmsMasterCities'].map((item) => item['cityName']));
+      // currencies = List<String>.from(data['data'][0]['tmsMasterCurrencies']
+      //     .map((item) => item['currencyDesc']));
+
+      setState(() {
+        acquirerList = acquirerDetails;
+        mmcGroupList = mccGroups;
+        mmcTypeList = mccTypes;
+        tmsMasterCountriesList = tmsMasterCountries;
+        tmsMasterCitiesList = tmsMasterCities;
+        tmsMasterCurrenciesList = tmsMasterCurrencies;
+
+        for (var acquirer in acquirerDetails) {
+          String acquirerName = acquirer['acquirerName'];
+          print('Acquirer Name: $acquirerName');
+        }
+
+        for (var mccGroup in mccGroups) {
+          String mccGroupId = mccGroup['mccGroupId'].toString();
+          print('mccGroupId : $mccGroupId');
+        }
+
+        for (var mccType in mccTypes) {
+          String acquirerName = mccType['mccTypeDesc'];
+          print('mccTypeDesc: $acquirerName');
+        }
+        // countryList = decodeData['responseValue']['list'];
+        // if (countryList.isNotEmpty) {
+        //   selectedCountries = countryList[0]['ctyName'].toString();
+        //   requestModel.country = selectedCountries;
+        //   requestModel.currencyId =
+        //       countryList[0]['currencyCode'].toString();
+        //   getState(countryList[0]['id'].toString());
+        // }
+        //userServices.getAcqApplicationid('1');
+      });
     });
   }
 
@@ -852,240 +1620,448 @@ class _MerchantSignupState extends State<MerchantSignup> {
       );
 
   Widget loginInfo() {
+    var screenHeight = MediaQuery.of(context).size.height;
+
     return Form(
         key: loginFormKey,
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: AppColors.kSelectedBackgroundColor,
+                ),
+                // height: screenHeight / 10,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    IconTextWidget(
+                        screenHeight: screenHeight,
+                        color: getIconColor(
+                          position: 1,
+                        ),
+                        iconPath: 'assets/merchant_icons/merchant_detials.png',
+                        title: "Merchant\nDetails"),
+                    IconTextWidget(
+                        screenHeight: screenHeight,
+                        color: getIconColor(position: 2),
+                        iconPath: 'assets/merchant_icons/id_proof_icon.png',
+                        title: "Id\nProofs"),
+                    IconTextWidget(
+                        screenHeight: screenHeight,
+                        color: getIconColor(position: 3),
+                        iconPath: 'assets/merchant_icons/bussiness_proofs.png',
+                        title: "Bussiness\nProofs"),
+                    IconTextWidget(
+                        screenHeight: screenHeight,
+                        color: getIconColor(position: 4),
+                        iconPath: 'assets/merchant_icons/bank_details.png',
+                        title: "Bank\nDetails"),
+                  ],
+                ),
+              ),
+              Placeholder(
+                strokeWidth: 1,
+                child: Row(
+                  children: [
+                    ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            currTabPosition = 1;
+                          });
+                        },
+                        child: Text('Reset')),
+                    ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            currTabPosition--;
+                          });
+                        },
+                        child: Text('back')),
+                    ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            currTabPosition++;
+                          });
+                        },
+                        child: Text('next')),
+                  ],
+                ),
+              ),
+              const FormTitleWidget(subWord: 'Merchant ID proof'),
               const SizedBox(height: 10),
-              userNameWidget(),
-              const SizedBox(height: 30.0),
               CustomTextFormField(
-                controller: _passwordController,
-                title: 'Password',
+                controller: _merchantPanController,
+                title: 'Merchant Pan',
                 required: true,
-                enabled: _userNameController.text.isEmpty ||
-                        userCheck == "true" ||
-                        !userVerify ||
-                        !RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
-                            .hasMatch(_userNameController.text)
-                    ? enabledPassword = false
-                    : enabledPassword = true,
-                prefixIcon: _passwordController.text.isNotEmpty &&
-                        _passwordController.text == _cnfPasswordCtrl.text
-                    ? Icons.check_circle_outline
-                    : Icons.password,
-                iconColor: _passwordController.text.isNotEmpty &&
-                        _passwordController.text == _cnfPasswordCtrl.text
-                    ? Colors.green
-                    : null,
-                obscureText: hidePassword,
-                textInputAction: TextInputAction.next,
-                keyboardType: TextInputType.visiblePassword,
-                suffixIconTrue: true,
-                maxLength: 14,
-                suffixIcon:
-                    hidePassword ? Icons.visibility : Icons.visibility_off,
-                suffixIconOnPressed: () {
-                  setState(() {
-                    hidePassword = !hidePassword;
-                  });
-                },
-                onChanged: (String value) {
-                  setState(() {
-                    if (value.isEmpty || !Validators.isPassword(value)) {
-                      enabledConfirmPass = false;
-                    } else {
-                      enabledConfirmPass = enabledPassword;
-                    }
-                  });
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Password is Mandatory!';
-                  }
-                  if (!Validators.isPassword(value)) {
-                    return Constants.passwordError;
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  requestModel.password = value;
-                },
-              ),
-              const SizedBox(height: 10.0),
-              CustomTextFormField(
-                controller: _cnfPasswordCtrl,
-                title: 'Confirm Password',
-                required: true,
-                maxLength: 14,
-                enabled: _passwordController.text.isEmpty ||
-                        !Validators.isPassword(_passwordController.text)
-                    ? enabledConfirmPass = false
-                    : enabledConfirmPass = enabledPassword,
-                prefixIcon: _passwordController.text.isNotEmpty &&
-                        _passwordController.text == _cnfPasswordCtrl.text
-                    ? Icons.check_circle_outline
-                    : Icons.password,
-                iconColor: _passwordController.text.isNotEmpty &&
-                        _passwordController.text == _cnfPasswordCtrl.text
-                    ? Colors.green
-                    : null,
-                obscureText: hideCnfPassword,
-                textInputAction: TextInputAction.next,
-                keyboardType: TextInputType.visiblePassword,
-                onChanged: (String value) {
-                  setState(() {
-                    if (value.isEmpty || value != _passwordController.text) {
-                      enabledPin = false;
-                    } else {
-                      enabledPin = enabledConfirmPass;
-                    }
-                  });
-                },
-                suffixIconTrue: true,
-                suffixIcon:
-                    hideCnfPassword ? Icons.visibility : Icons.visibility_off,
-                suffixIconOnPressed: () {
-                  setState(() {
-                    hideCnfPassword = !hideCnfPassword;
-                  });
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Confirm Password is Mandatory!';
-                  }
-                  if (value != _passwordController.text) {
-                    return Constants.passwordMissMatch;
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  requestModel.confirmPassword = value;
-                },
-              ),
-              const SizedBox(
-                height: 30.0,
-              ),
-              CustomTextFormField(
-                controller: _pinController,
-                title: 'Login PIN',
-                required: true,
-                maxLength: 4,
-                enabled: _cnfPasswordCtrl.text.isEmpty ||
-                        _cnfPasswordCtrl.text != _passwordController.text
-                    ? enabledPin = false
-                    : enabledPin = enabledConfirmPass,
-                prefixIcon: _pinController.text.isNotEmpty &&
-                        _pinController.text == _confirmPinController.text
-                    ? Icons.check_circle_outline
-                    : Icons.pin,
-                iconColor: _pinController.text.isNotEmpty &&
-                        _pinController.text == _confirmPinController.text
-                    ? Colors.green
-                    : null,
-                //prefixIcon: Icons.pin,
-                obscureText: hidePin,
-                helperText:
-                    _pinController.text.isEmpty ? Constants.pinMessage : null,
-                helperStyle: Theme.of(context)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(color: Theme.of(context).primaryColor),
-                textInputAction: TextInputAction.next,
-                keyboardType: TextInputType.number,
-                suffixIconTrue: true,
-                inputFormatters: <TextInputFormatter>[
-                  FilteringTextInputFormatter.digitsOnly
-                ],
-                suffixIcon: hidePin ? Icons.visibility : Icons.visibility_off,
-                suffixIconOnPressed: () {
-                  setState(() {
-                    hidePin = !hidePin;
-                  });
+                prefixIcon: Icons.verified,
+                onFieldSubmitted: (name) {
+                  getUser();
                 },
                 onChanged: (String value) {
                   setState(() {
                     if (value.isEmpty ||
-                        value.length != 4 ||
-                        Validators.isConsecutive(value) != -1) {
-                      enabledConfirmPin = false;
+                        !userVerify ||
+                        userCheck.toString() == "true" ||
+                        !RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
+                            .hasMatch(value)) {
+                      enabledPassword = false;
                     } else {
-                      enabledConfirmPin = enabledPin;
+                      enabledPassword = true;
                     }
                   });
                 },
+                suffixIconOnPressed: () {
+                  if (_merchantPanController.text.length >= 10) {
+                    setState(() {
+                      if (!showVerify && userVerify) {
+                        userVerify = false;
+                      } else {
+                        userVerify = true;
+                      }
+                    });
+                    showVerify = true;
+                    if (userVerify) {
+                      getUser();
+                    }
+                  }
+                },
+                suffixIconTrue: true,
+                helperStyle: Theme.of(context)
+                    .textTheme
+                    .bodySmall
+                    ?.copyWith(color: Theme.of(context).primaryColor),
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.allow(RegExp(r'\w'))
+                ],
+                suffixText: showVerify ? 'Verify' : 'Change',
+                readOnly: !showVerify,
+                helperText: customHelperHelper(text: 'Merchant Pan'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Login PIN is Mandatory!';
+                    return 'Merchant Pan is Mandatory!';
                   }
-                  if (value.length != 4) {
-                    return 'Login PIN must be 4 digits';
+                  if (value.length < 10) {
+                    return 'Minimum character length is 10';
                   }
-                  if (Validators.isConsecutive(value) != -1) {
-                    return 'Login PIN should not be consecutive digits.';
+                  if (userVerify && userCheck == "true") {
+                    return Constants.userNameFailureMessage;
                   }
-
+                  if (!RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
+                      .hasMatch(value)) {
+                    return 'Invalid Merchant Pan Number!';
+                  }
                   return null;
                 },
                 onSaved: (value) {
-                  requestModel.pin = value;
+                  requestModel.userName = value;
                 },
               ),
-              const SizedBox(height: 10.0),
+              // userNameWidget(),
+              const SizedBox(height: 30.0),
               CustomTextFormField(
-                controller: _confirmPinController,
-                title: 'Confirm Login PIN',
+                controller: _merchantAddharController,
+                title: 'Merchant Addhaar Number',
                 required: true,
-                maxLength: 4,
-                //prefixIcon: Icons.pin,
-                prefixIcon: _pinController.text.isNotEmpty &&
-                        _pinController.text == _confirmPinController.text
-                    ? Icons.check_circle_outline
-                    : Icons.pin,
-                iconColor: _pinController.text.isNotEmpty &&
-                        _pinController.text == _confirmPinController.text
-                    ? Colors.green
-                    : null,
-                inputFormatters: <TextInputFormatter>[
-                  FilteringTextInputFormatter.digitsOnly
-                ],
-                obscureText: hideCnfPin,
-                enabled: _pinController.text.isEmpty ||
-                        _pinController.text.length != 4 ||
-                        Validators.isConsecutive(_pinController.text) != -1
-                    ? enabledConfirmPin = false
-                    : enabledConfirmPin = enabledPin,
-                textInputAction: TextInputAction.next,
-                keyboardType: TextInputType.number,
-                suffixIconTrue: true,
-                suffixIcon:
-                    hideCnfPin ? Icons.visibility : Icons.visibility_off,
-                suffixIconOnPressed: () {
-                  setState(() {
-                    hideCnfPin = !hideCnfPin;
-                  });
+                prefixIcon: Icons.verified,
+                onFieldSubmitted: (name) {
+                  getUser();
                 },
                 onChanged: (String value) {
-                  setState(() {});
+                  setState(() {
+                    // if (value.isEmpty ||
+                    //     !userVerify ||
+                    //     userCheck.toString() == "true" ||
+                    //     !RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
+                    //         .hasMatch(value)) {
+                    //   enabledPassword = false;
+                    // } else {
+                    //   enabledPassword = true;
+                    // }
+                  });
                 },
+                suffixIconOnPressed: () {
+                  if (_merchantAddharController.text.length >= 12) {
+                    setState(() {
+                      if (!showVerify && userVerify) {
+                        userVerify = false;
+                      } else {
+                        userVerify = true;
+                      }
+                    });
+                    showVerify = true;
+                    if (userVerify) {
+                      getUser();
+                    }
+                  }
+                },
+                suffixIconTrue: true,
+                helperStyle: Theme.of(context)
+                    .textTheme
+                    .bodySmall
+                    ?.copyWith(color: Theme.of(context).primaryColor),
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.allow(RegExp(r'\w'))
+                ],
+                suffixText: showVerify ? 'Verify' : 'Change',
+                readOnly: !showVerify,
+                helperText: customHelperHelper(text: 'MerchantAddhaar Number'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Confirm Login PIN is Mandatory!';
+                    return 'Addhaar Numberis Mandatory!';
                   }
-                  if (value != _pinController.text) {
-                    return 'Login PIN & Confirm Login PIN do not match';
+                  if (value.length < 12) {
+                    return 'Minimum character length is 12';
                   }
-                  if (Validators.isConsecutive(value) != -1) {
-                    return 'Login PIN should not be consecutive digits.';
+                  // if (userVerify && userCheck == "true") {
+                  //   return Constants.userNameFailureMessage;
+                  // }
+                  if (!RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
+                      .hasMatch(value)) {
+                    return 'InvalidAddhaar Number!';
                   }
                   return null;
                 },
                 onSaved: (value) {
-                  requestModel.confirmPin = value;
+                  requestModel.userName = value;
                 },
               ),
+              // CustomTextFormField(
+              //   minLines: 1,
+              //   maxLines: 1,
+              //   controller: _passwordController,
+              //   title: 'Password',
+              //   required: true,
+              //   enabled: _userNameController.text.isEmpty ||
+              //           userCheck == "true" ||
+              //           !userVerify ||
+              //           !RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
+              //               .hasMatch(_userNameController.text)
+              //       ? enabledPassword = false
+              //       : enabledPassword = true,
+              //   prefixIcon: _passwordController.text.isNotEmpty &&
+              //           _passwordController.text == _cnfPasswordCtrl.text
+              //       ? Icons.check_circle_outline
+              //       : Icons.password,
+              //   iconColor: _passwordController.text.isNotEmpty &&
+              //           _passwordController.text == _cnfPasswordCtrl.text
+              //       ? Colors.green
+              //       : null,
+              //   obscureText: hidePassword,
+              //   textInputAction: TextInputAction.next,
+              //   keyboardType: TextInputType.visiblePassword,
+              //   suffixIconTrue: true,
+              //   maxLength: 14,
+              //   suffixIcon:
+              //       hidePassword ? Icons.visibility : Icons.visibility_off,
+              //   suffixIconOnPressed: () {
+              //     setState(() {
+              //       hidePassword = !hidePassword;
+              //     });
+              //   },
+              //   onChanged: (String value) {
+              //     setState(() {
+              //       if (value.isEmpty || !Validators.isPassword(value)) {
+              //         enabledConfirmPass = false;
+              //       } else {
+              //         enabledConfirmPass = enabledPassword;
+              //       }
+              //     });
+              //   },
+              //   validator: (value) {
+              //     if (value == null || value.isEmpty) {
+              //       return 'Password is Mandatory!';
+              //     }
+              //     if (!Validators.isPassword(value)) {
+              //       return Constants.passwordError;
+              //     }
+              //     return null;
+              //   },
+              //   onSaved: (value) {
+              //     requestModel.password = value;
+              //   },
+              // ),
+              // const SizedBox(height: 10.0),
+              // CustomTextFormField(
+              //   minLines: 1,
+              //   maxLines: 1,
+              //   controller: _cnfPasswordCtrl,
+              //   title: 'Confirm Password',
+              //   required: true,
+              //   maxLength: 14,
+              //   enabled: _passwordController.text.isEmpty ||
+              //           !Validators.isPassword(_passwordController.text)
+              //       ? enabledConfirmPass = false
+              //       : enabledConfirmPass = enabledPassword,
+              //   prefixIcon: _passwordController.text.isNotEmpty &&
+              //           _passwordController.text == _cnfPasswordCtrl.text
+              //       ? Icons.check_circle_outline
+              //       : Icons.password,
+              //   iconColor: _passwordController.text.isNotEmpty &&
+              //           _passwordController.text == _cnfPasswordCtrl.text
+              //       ? Colors.green
+              //       : null,
+              //   obscureText: hideCnfPassword,
+              //   textInputAction: TextInputAction.next,
+              //   keyboardType: TextInputType.visiblePassword,
+              //   onChanged: (String value) {
+              //     setState(() {
+              //       if (value.isEmpty || value != _passwordController.text) {
+              //         enabledPin = false;
+              //       } else {
+              //         enabledPin = enabledConfirmPass;
+              //       }
+              //     });
+              //   },
+              //   suffixIconTrue: true,
+              //   suffixIcon:
+              //       hideCnfPassword ? Icons.visibility : Icons.visibility_off,
+              //   suffixIconOnPressed: () {
+              //     setState(() {
+              //       hideCnfPassword = !hideCnfPassword;
+              //     });
+              //   },
+              //   validator: (value) {
+              //     if (value == null || value.isEmpty) {
+              //       return 'Confirm Password is Mandatory!';
+              //     }
+              //     if (value != _passwordController.text) {
+              //       return Constants.passwordMissMatch;
+              //     }
+              //     return null;
+              //   },
+              //   onSaved: (value) {
+              //     requestModel.confirmPassword = value;
+              //   },
+              // ),
+              // const SizedBox(
+              //   height: 30.0,
+              // ),
+              // CustomTextFormField(
+              //   minLines: 1,
+              //   maxLines: 1,
+              //   controller: _pinController,
+              //   title: 'Login PIN',
+              //   required: true,
+              //   maxLength: 4,
+              //   enabled: _cnfPasswordCtrl.text.isEmpty ||
+              //           _cnfPasswordCtrl.text != _passwordController.text
+              //       ? enabledPin = false
+              //       : enabledPin = enabledConfirmPass,
+              //   prefixIcon: _pinController.text.isNotEmpty &&
+              //           _pinController.text == _confirmPinController.text
+              //       ? Icons.check_circle_outline
+              //       : Icons.pin,
+              //   iconColor: _pinController.text.isNotEmpty &&
+              //           _pinController.text == _confirmPinController.text
+              //       ? Colors.green
+              //       : null,
+              //   //prefixIcon: Icons.pin,
+              //   obscureText: hidePin,
+              //   helperText:
+              //       _pinController.text.isEmpty ? Constants.pinMessage : null,
+              //   helperStyle: Theme.of(context)
+              //       .textTheme
+              //       .bodySmall
+              //       ?.copyWith(color: Theme.of(context).primaryColor),
+              //   textInputAction: TextInputAction.next,
+              //   keyboardType: TextInputType.number,
+              //   suffixIconTrue: true,
+              //   inputFormatters: <TextInputFormatter>[
+              //     FilteringTextInputFormatter.digitsOnly
+              //   ],
+              //   suffixIcon: hidePin ? Icons.visibility : Icons.visibility_off,
+              //   suffixIconOnPressed: () {
+              //     setState(() {
+              //       hidePin = !hidePin;
+              //     });
+              //   },
+              //   onChanged: (String value) {
+              //     setState(() {
+              //       if (value.isEmpty ||
+              //           value.length != 4 ||
+              //           Validators.isConsecutive(value) != -1) {
+              //         enabledConfirmPin = false;
+              //       } else {
+              //         enabledConfirmPin = enabledPin;
+              //       }
+              //     });
+              //   },
+              //   validator: (value) {
+              //     if (value == null || value.isEmpty) {
+              //       return 'Login PIN is Mandatory!';
+              //     }
+              //     if (value.length != 4) {
+              //       return 'Login PIN must be 4 digits';
+              //     }
+              //     if (Validators.isConsecutive(value) != -1) {
+              //       return 'Login PIN should not be consecutive digits.';
+              //     }
+
+              //     return null;
+              //   },
+              //   onSaved: (value) {
+              //     requestModel.pin = value;
+              //   },
+              // ),
+              // const SizedBox(height: 10.0),
+              // CustomTextFormField(
+              //   minLines: 1,
+              //   maxLines: 1,
+              //   controller: _confirmPinController,
+              //   title: 'Confirm Login PIN',
+              //   required: true,
+              //   maxLength: 4,
+              //   //prefixIcon: Icons.pin,
+              //   prefixIcon: _pinController.text.isNotEmpty &&
+              //           _pinController.text == _confirmPinController.text
+              //       ? Icons.check_circle_outline
+              //       : Icons.pin,
+              //   iconColor: _pinController.text.isNotEmpty &&
+              //           _pinController.text == _confirmPinController.text
+              //       ? Colors.green
+              //       : null,
+              //   inputFormatters: <TextInputFormatter>[
+              //     FilteringTextInputFormatter.digitsOnly
+              //   ],
+              //   obscureText: hideCnfPin,
+              //   enabled: _pinController.text.isEmpty ||
+              //           _pinController.text.length != 4 ||
+              //           Validators.isConsecutive(_pinController.text) != -1
+              //       ? enabledConfirmPin = false
+              //       : enabledConfirmPin = enabledPin,
+              //   textInputAction: TextInputAction.next,
+              //   keyboardType: TextInputType.number,
+              //   suffixIconTrue: true,
+              //   suffixIcon:
+              //       hideCnfPin ? Icons.visibility : Icons.visibility_off,
+              //   suffixIconOnPressed: () {
+              //     setState(() {
+              //       hideCnfPin = !hideCnfPin;
+              //     });
+              //   },
+              //   onChanged: (String value) {
+              //     setState(() {});
+              //   },
+              //   validator: (value) {
+              //     if (value == null || value.isEmpty) {
+              //       return 'Confirm Login PIN is Mandatory!';
+              //     }
+              //     if (value != _pinController.text) {
+              //       return 'Login PIN & Confirm Login PIN do not match';
+              //     }
+              //     if (Validators.isConsecutive(value) != -1) {
+              //       return 'Login PIN should not be consecutive digits.';
+              //     }
+              //     return null;
+              //   },
+              //   onSaved: (value) {
+              //     requestModel.confirmPin = value;
+              //   },
+              // ),
               const SizedBox(
                 height: 30.0,
               ),
@@ -1094,7 +2070,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 children: [
                   SizedBox(
                     width: 150,
-                    child: AppButton(
+                    child: CustomAppButton(
                       title: 'Previous',
                       onPressed: () {
                         // _userNameController.clear();
@@ -1103,23 +2079,341 @@ class _MerchantSignupState extends State<MerchantSignup> {
                         _pinController.clear();
                         _confirmPinController.clear();
                         setState(() {
-                          position = 0;
+                          position = 3; //old 0
                         });
                       },
                     ),
                   ),
                   SizedBox(
                     width: 150,
-                    child: AppButton(
+                    child: CustomAppButton(
                       title: 'Next',
                       width: 0.4,
                       onPressed: () {
-                        if (loginFormKey.currentState!.validate()) {
-                          loginFormKey.currentState!.save();
+                        // if (loginFormKey.currentState!.validate()) {
+                        //   loginFormKey.currentState!.save();
+                        //   setState(() {
+                        //     position = 2;
+                        //   });
+                        // }
+                        setState(() {
+                          position = 7; //old 2
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+            ]));
+  }
+
+  Widget merchantBankDetails() {
+    var screenHeight = MediaQuery.of(context).size.height;
+
+    return Form(
+        key: loginFormKey,
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: AppColors.kSelectedBackgroundColor,
+                ),
+                // height: screenHeight / 10,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    IconTextWidget(
+                        screenHeight: screenHeight,
+                        color: getIconColor(
+                          position: 1,
+                        ),
+                        iconPath: 'assets/merchant_icons/merchant_detials.png',
+                        title: "Merchant\nDetails"),
+                    IconTextWidget(
+                        screenHeight: screenHeight,
+                        color: getIconColor(position: 2),
+                        iconPath: 'assets/merchant_icons/id_proof_icon.png',
+                        title: "Id\nProofs"),
+                    IconTextWidget(
+                        screenHeight: screenHeight,
+                        color: getIconColor(position: 3),
+                        iconPath: 'assets/merchant_icons/bussiness_proofs.png',
+                        title: "Bussiness\nProofs"),
+                    IconTextWidget(
+                        screenHeight: screenHeight,
+                        color: getIconColor(position: 4),
+                        iconPath: 'assets/merchant_icons/bank_details.png',
+                        title: "Bank\nDetails"),
+                  ],
+                ),
+              ),
+              Placeholder(
+                strokeWidth: 1,
+                child: Row(
+                  children: [
+                    ElevatedButton(
+                        onPressed: () {
                           setState(() {
-                            position = 2;
+                            currTabPosition = 1;
                           });
-                        }
+                        },
+                        child: Text('Reset')),
+                    ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            currTabPosition--;
+                          });
+                        },
+                        child: Text('back')),
+                    ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            currTabPosition++;
+                          });
+                        },
+                        child: Text('next')),
+                  ],
+                ),
+              ),
+              const FormTitleWidget(subWord: 'Merchant Bank Details'),
+              const SizedBox(height: 10),
+              CustomTextWidget(text: 'Merchant Bank Account Details '),
+              const SizedBox(height: 10),
+              CustomTextFormField(
+                controller: merchantAccountNumberCtrl,
+                title: 'Merchant Account Number',
+                required: true,
+                prefixIcon: Icons.verified,
+                onFieldSubmitted: (name) {
+                  getUser();
+                },
+                onChanged: (String value) {
+                  setState(() {
+                    if (value.isEmpty ||
+                        !userVerify ||
+                        userCheck.toString() == "true" ||
+                        !RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
+                            .hasMatch(value)) {
+                      enabledPassword = false;
+                    } else {
+                      enabledPassword = true;
+                    }
+                  });
+                },
+                suffixIconOnPressed: () {
+                  if (merchantAccountNumberCtrl.text.length >= 10) {
+                    setState(() {
+                      if (!showVerify && userVerify) {
+                        userVerify = false;
+                      } else {
+                        userVerify = true;
+                      }
+                    });
+                    showVerify = true;
+                    if (userVerify) {
+                      getUser();
+                    }
+                  }
+                },
+                suffixIconTrue: true,
+                helperStyle: Theme.of(context)
+                    .textTheme
+                    .bodySmall
+                    ?.copyWith(color: Theme.of(context).primaryColor),
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.allow(RegExp(r'\w'))
+                ],
+                suffixText: showVerify ? 'Verify' : 'Change',
+                readOnly: !showVerify,
+                helperText: customHelperHelper(text: 'Account Number'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Account Number is Mandatory!';
+                  }
+                  if (value.length < 10) {
+                    return 'Minimum character length is 10';
+                  }
+                  if (userVerify && userCheck == "true") {
+                    return Constants.userNameFailureMessage;
+                  }
+                  if (!RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
+                      .hasMatch(value)) {
+                    return 'Invalid Merchant Account Number!';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  requestModel.userName = value;
+                },
+              ),
+              // userNameWidget(),
+              const SizedBox(height: 20.0),
+              CustomTextFormField(
+                controller: merchantIfscCodeCtrl,
+                title: 'IFSC Code',
+                required: true,
+                prefixIcon: Icons.verified,
+                onFieldSubmitted: (name) {
+                  getUser();
+                },
+                onChanged: (String value) {
+                  setState(() {
+                    // if (value.isEmpty ||
+                    //     !userVerify ||
+                    //     userCheck.toString() == "true" ||
+                    //     !RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
+                    //         .hasMatch(value)) {
+                    //   enabledPassword = false;
+                    // } else {
+                    //   enabledPassword = true;
+                    // }
+                  });
+                },
+                suffixIconOnPressed: () {
+                  if (merchantIfscCodeCtrl.text.length >= 12) {
+                    setState(() {
+                      if (!showVerify && userVerify) {
+                        userVerify = false;
+                      } else {
+                        userVerify = true;
+                      }
+                    });
+                    showVerify = true;
+                    if (userVerify) {
+                      getUser();
+                    }
+                  }
+                },
+                suffixIconTrue: true,
+                helperStyle: Theme.of(context)
+                    .textTheme
+                    .bodySmall
+                    ?.copyWith(color: Theme.of(context).primaryColor),
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.allow(RegExp(r'\w'))
+                ],
+                suffixText: showVerify ? 'Verify' : 'Change',
+                readOnly: !showVerify,
+                helperText: customHelperHelper(text: 'IFSC Code'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'IFSC Code Mandatory!';
+                  }
+                  if (value.length < 12) {
+                    return 'Minimum character length is 12';
+                  }
+                  // if (userVerify && userCheck == "true") {
+                  //   return Constants.userNameFailureMessage;
+                  // }
+                  if (!RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
+                      .hasMatch(value)) {
+                    return 'Invalid IFSC Code';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  requestModel.userName = value;
+                },
+              ),
+              const SizedBox(height: 20.0),
+              CustomDropdown(
+                title: "Select Bank",
+                // enabled: selectedState != '' && enabledState
+                //     ? enabledcity = true
+                //     : enabledcity = false,
+                required: true,
+                selectedItem: ifscCode != '' ? ifscCode : null,
+                prefixIcon: FontAwesome.building_columns,
+                itemList:
+                    bankList.map((map) => map['label'].toString()).toList(),
+                //countryList.map((e) => e['ctyName']).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    ifscCode = value;
+                    // requestModel.city = value;
+                  });
+                },
+                onSaved: (value) {
+                  // merchantPersonalReq.currentNationality = value;
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'IFSC Code is Mandatory!';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20.0),
+              CustomTextFormField(
+                  title: 'Beneficiary Name',
+                  required: true,
+                  controller: merchantBeneficiaryNamrCodeCtrl,
+                  maxLength: 24,
+                  keyboardType: TextInputType.visiblePassword,
+                  textCapitalization: TextCapitalization.words,
+                  prefixIcon: LineAwesome.store_alt_solid,
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\d\s]'))
+                  ],
+                  onSaved: (value) {},
+                  onChanged: (value) {
+                    setState(() {
+                      merchantBeneficiaryNamrCodeCtrl.text = value;
+                    });
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Beneficiary Name is Mandatory!';
+                    }
+                    if (!RegExp(r'^[-a-zA-Z0-9]+(\s[-a-zA-Z0-9]+)*$')
+                        .hasMatch(value)) {
+                      return 'Invalid Beneficiary Name';
+                    }
+                    return null;
+                  }),
+
+              const SizedBox(
+                height: 30.0,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(
+                    width: 150,
+                    child: CustomAppButton(
+                      title: 'Previous',
+                      onPressed: () {
+                        // _userNameController.clear();
+                        _passwordController.clear();
+                        _cnfPasswordCtrl.clear();
+                        _pinController.clear();
+                        _confirmPinController.clear();
+                        setState(() {
+                          position = 1; //old 0
+                        });
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    width: 150,
+                    child: CustomAppButton(
+                      title: 'Next',
+                      width: 0.4,
+                      onPressed: () {
+                        // if (loginFormKey.currentState!.validate()) {
+                        //   loginFormKey.currentState!.save();
+                        //   setState(() {
+                        //     position = 2;
+                        //   });
+                        // }
+                        setState(() {
+                          position = 6; //old 2
+                        });
                       },
                     ),
                   ),
@@ -1293,74 +2587,246 @@ class _MerchantSignupState extends State<MerchantSignup> {
   }
 
   Widget review() {
+    var screenHeight = MediaQuery.of(context).size.height;
     return SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 10),
-          Text(
-            "You are in the final step of registration process. Please click on Get Started below to complete your registration",
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(),
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: AppColors.kSelectedBackgroundColor,
+            ),
+            // height: screenHeight / 10,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                IconTextWidget(
+                    screenHeight: screenHeight,
+                    color: getIconColor(
+                      position: 1,
+                    ),
+                    iconPath: 'assets/merchant_icons/merchant_detials.png',
+                    title: "Merchant\nDetails"),
+                IconTextWidget(
+                    screenHeight: screenHeight,
+                    color: getIconColor(position: 2),
+                    iconPath: 'assets/merchant_icons/id_proof_icon.png',
+                    title: "Id\nProofs"),
+                IconTextWidget(
+                    screenHeight: screenHeight,
+                    color: getIconColor(position: 3),
+                    iconPath: 'assets/merchant_icons/bussiness_proofs.png',
+                    title: "Bussiness\nProofs"),
+                IconTextWidget(
+                    screenHeight: screenHeight,
+                    color: getIconColor(position: 4),
+                    iconPath: 'assets/merchant_icons/bank_details.png',
+                    title: "Bank\nDetails"),
+              ],
+            ),
           ),
-          const SizedBox(height: 20),
-          Card(
-            elevation: 10,
-            margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 10.0),
-            child: ListTile(
-              title: Text(
-                'Username',
-                style: Theme.of(context)
-                    .textTheme
-                    .displaySmall
-                    ?.copyWith(fontWeight: FontWeight.bold),
-              ),
-              subtitle: Text(
-                _userNameController.text,
-                style: Theme.of(context).textTheme.bodyMedium,
+          // Placeholder(
+          //   child: Row(
+          //     children: [
+          //       ElevatedButton(
+          //           onPressed: () {
+          //             setState(() {
+          //               currTabPosition = 1;
+          //             });
+          //           },
+          //           child: Text('reset')),
+          //       ElevatedButton(
+          //           onPressed: () {
+          //             setState(() {
+          //               currTabPosition--;
+          //             });
+          //           },
+          //           child: Text('back')),
+          //       ElevatedButton(
+          //           onPressed: () {
+          //             setState(() {
+          //               currTabPosition++;
+          //             });
+          //           },
+          //           child: Text('next')),
+          //     ],
+          //   ),
+          // ),
+          const SizedBox(
+            height: 30,
+          ),
+          CustomDropdown(
+            title: "MDR Type",
+            required: true,
+            selectedItem: mdrType != '' ? mdrType : null,
+            prefixIcon: FontAwesome.building_columns,
+            itemList: [
+              'Flat rate',
+              'Tier based pricing',
+              'Cost plus(Interchange)',
+              'blended',
+              'location based',
+              'fixed subscription-based'
+            ],
+            //countryList.map((e) => e['ctyName']).toList(),
+            onChanged: (value) {
+              setState(() {
+                mdrType = value;
+                // requestModel.city = value;
+              });
+            },
+            onSaved: (value) {
+              // merchantPersonalReq.currentNationality = value;
+            },
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'MDR Type is Mandatory!';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          CustomTextWidget(text: "MDR Summary"),
+          const SizedBox(
+            height: 5,
+          ),
+          Container(
+            color: AppColors.kTileColor,
+            child: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      CustomTextWidget(
+                          text:
+                              "UPI - 0% |  UPI (Credit) - 1.5%\n Debit Card - 0.4%  | Debit Card(Rupay) - 0%\nCredit (Domestic - 1.99%)"),
+                    ],
+                  ),
+                  Container(
+                    color: AppColors.kSelectedBackgroundColor,
+                    child: ExpansionTile(
+                      title: CustomTextWidget(
+                        text: "View Complete MDR Summary",
+                        color: Colors.grey.shade600,
+                        size: 10,
+                      ),
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Text("content"),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
               ),
             ),
           ),
-          Card(
-            elevation: 10,
-            margin: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 10.0),
-            child: ListTile(
-              title: Text(
-                'Email ID',
-                style: Theme.of(context)
-                    .textTheme
-                    .displaySmall
-                    ?.copyWith(fontWeight: FontWeight.bold),
-              ),
-              subtitle: Text(
-                _emailController.text,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-            ),
+          const SizedBox(
+            height: 20.0,
           ),
-          Card(
-            elevation: 10,
-            margin: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 10.0),
-            child: ListTile(
-              title: Text(
-                'Mobile Number',
-                style: Theme.of(context)
-                    .textTheme
-                    .displaySmall
-                    ?.copyWith(fontWeight: FontWeight.bold),
-              ),
-              subtitle: Text(
-                "${requestModel.mobileCountryCode} ${_mobileNoController.text}",
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
+          const FormTitleWidget(
+              subWord: 'Merchant Aggrement', mainWord: 'Acceptance of'),
+
+          // Text(
+          //   "You are in the final step of registration process. Please click on Get Started below to complete your registration",
+          //   textAlign: TextAlign.center,
+          //   style: Theme.of(context).textTheme.bodyMedium?.copyWith(),
+          // ),
+          // const SizedBox(height: 20),
+          // Card(
+          //   elevation: 10,
+          //   margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 10.0),
+          //   child: ListTile(
+          //     title: Text(
+          //       'Name ',
+          //       style: Theme.of(context)
+          //           .textTheme
+          //           .displaySmall
+          //           ?.copyWith(fontWeight: FontWeight.bold),
+          //     ),
+          //     subtitle: Text(
+          //       '',
+          //       style: Theme.of(context).textTheme.bodyMedium,
+          //     ),
+          //   ),
+          // ),
+          // Card(
+          //   elevation: 10,
+          //   margin: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 10.0),
+          //   child: ListTile(
+          //     title: Text(
+          //       'Email ID',
+          //       style: Theme.of(context)
+          //           .textTheme
+          //           .displaySmall
+          //           ?.copyWith(fontWeight: FontWeight.bold),
+          //     ),
+          //     subtitle: Text(
+          //       " merchantCompanyDetailsReq.emailId!",
+          //       style: Theme.of(context).textTheme.bodyMedium,
+          //     ),
+          //   ),
+          // ),
+          // Card(
+          //   elevation: 10,
+          //   margin: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 10.0),
+          //   child: ListTile(
+          //     title: Text(
+          //       'Mobile Number',
+          //       style: Theme.of(context)
+          //           .textTheme
+          //           .displaySmall
+          //           ?.copyWith(fontWeight: FontWeight.bold),
+          //     ),
+          //     subtitle: Text("merchantCompanyDetailsReq.mobileNo!"),
+          //   ),
+          // ),
+
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+            child: RichText(
+              text: TextSpan(
+                  text: "Note: ",
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium
+                      ?.copyWith(fontWeight: FontWeight.bold),
+                  children: [
+                    TextSpan(
+                      text: Constants.reviewNotes,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(fontWeight: FontWeight.normal),
+                    )
+                  ]),
             ),
           ),
           const SizedBox(height: 10),
           Container(
-            padding: const EdgeInsets.fromLTRB(10, 0, 20, 0),
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            color: AppColors.kTileColor,
             child: Row(
               children: <Widget>[
+                Expanded(
+                  child: RichText(
+                    text: TextSpan(
+                      text: "Terms and conditionss",
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(fontWeight: FontWeight.bold, fontSize: 12),
+                      recognizer: TapGestureRecognizer()..onTap = () {},
+                    ),
+                  ),
+                ),
                 Checkbox(
                   value: accept,
                   checkColor: Colors.white,
@@ -1387,79 +2853,101 @@ class _MerchantSignupState extends State<MerchantSignup> {
                     }
                   },
                 ),
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 15,
+          ),
+          Container(
+            color: AppColors.kTileColor,
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              children: <Widget>[
                 Expanded(
                   child: RichText(
                     text: TextSpan(
-                      text:
-                          "By continuing, you agree to our Terms and Conditions",
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.normal, fontSize: 10),
+                      text: "Merchant Service Aggrement",
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(fontWeight: FontWeight.bold, fontSize: 12),
                       recognizer: TapGestureRecognizer()..onTap = () {},
                     ),
                   ),
                 ),
+                Checkbox(
+                  value: accept,
+                  checkColor: Colors.white,
+                  visualDensity: VisualDensity.adaptivePlatformDensity,
+                  onChanged: (bool? newValue) async {
+                    if (!accept) {
+                      var results =
+                          await Navigator.of(context).push(MaterialPageRoute(
+                              builder: (BuildContext context) {
+                                return const TermsAndConditionPage();
+                              },
+                              fullscreenDialog: true));
+                      setState(() {
+                        if (results != null) {
+                          accept = results;
+                          requestModel.acceptLicense = accept;
+                        }
+                      });
+                    } else {
+                      setState(() {
+                        accept = false;
+                        requestModel.acceptLicense = accept;
+                      });
+                    }
+                  },
+                ),
               ],
             ),
           ),
+          SizedBox(
+            height: 30,
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: AppButton(
-              title: "Get Started",
+            child: CustomAppButton(
+              title: "Submit",
               onPressed: () {
-                if (requestModel.acceptLicense == true) {
-                  submitUserRegistration();
-                } else {
-                  alertWidget.failure(
-                      context, '', 'Please accept our Terms and Conditions');
-                }
+                submitUserRegistration();
+                // if (requestModel.acceptLicense == true) {
+                //   submitUserRegistration();
+                // } else {
+                //   alertWidget.failure(
+                //       context, '', 'Please accept our Terms and Conditions');
+                // }
               },
             ),
           ),
+
           const SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: RichText(
-              text: TextSpan(
-                  text: "Note: ",
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(fontWeight: FontWeight.bold),
-                  children: [
-                    TextSpan(
-                      text: Constants.reviewNotes,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.copyWith(fontWeight: FontWeight.normal),
-                    )
-                  ]),
-            ),
-          ),
-          const SizedBox(height: 20),
-          Center(
-            child: GestureDetector(
-              onTap: () {
-                _launchInBrowser(_url);
-              },
-              child: Container(
-                width: MediaQuery.of(context).size.width * 0.85,
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                        color: Theme.of(context).primaryColor.withOpacity(0.5),
-                        blurRadius: 15),
-                  ],
-                ),
-                child: Image.network(
-                  '${EndPoints.baseApi8988}${EndPoints.slideUrl}/IMG_6.PNG',
-                  height: 85,
-                  width: MediaQuery.of(context).size.width,
-                  fit: BoxFit.fill,
-                ),
-              ),
-            ),
-          ),
+          // Center(
+          //   child: GestureDetector(
+          //     onTap: () {
+          //       _launchInBrowser(_url);
+          //     },
+          //     child: Container(
+          //       width: MediaQuery.of(context).size.width * 0.85,
+          //       decoration: BoxDecoration(
+          //         boxShadow: [
+          //           BoxShadow(
+          //               color: Theme.of(context).primaryColor.withOpacity(0.5),
+          //               blurRadius: 15),
+          //         ],
+          //       ),
+          //       child: Image.network(
+          //         '${EndPoints.baseApi8988}${EndPoints.slideUrl}/IMG_6.PNG',
+          //         height: 85,
+          //         width: MediaQuery.of(context).size.width,
+          //         fit: BoxFit.fill,
+          //       ),
+          //     ),
+          //   ),
+          // ),
           const SizedBox(height: 10),
         ],
       ),
@@ -1497,7 +2985,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
         await Validators.encrypt(await Global.getUniqueId());
     userServices
         .newMerchantSignup(
-            requestModel,
+            merchantPersonalReq,
+            merchantCompanyDetailsReq,
             profilePic,
             kycFront.text,
             kycBack.text,
@@ -1507,8 +2996,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
             cancelCheque.text)
         .then((response) {
       var decodeData = jsonDecode(response.body);
+      print(response.body);
       if (response.statusCode == 200 || response.statusCode == 201) {
-        if (decodeData['responseCode'].toString() == "00") {
+        if (decodeData['statusCode'].toString() == "00") {
           setState(() {
             _isLoading = false;
           });
@@ -1521,8 +3011,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
           setState(() {
             _isLoading = false;
           });
-          alertWidget.failure(
-              context, 'Failure', decodeData['responseMessage']);
+          alertWidget.failure(context, 'Failure', decodeData['errorMessage']);
         }
       } else {
         setState(() {
@@ -1625,6 +3114,18 @@ class _MerchantSignupState extends State<MerchantSignup> {
     }
   }
 
+  customHelperHelper({required String text}) {
+    if (userVerify == false) {
+      return "Click 'Verify' to validate $text ";
+    }
+    if (userCheck.toString() == "false") {
+      return Constants.userNameSuccessMessage;
+    }
+    if (userCheck == "Loading...") {
+      return "Please wait...";
+    }
+  }
+
   getUser() async {
     if (_userNameController.text.isNotEmpty) {
       debugPrint("Calling API");
@@ -1672,7 +3173,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
       title: 'Email ID',
       suffixText: showVerify1 ? 'Verify' : 'Change',
       suffixIconOnPressed: () {
-        // print('Button Pressed');
+        print('Button Pressed');
         setState(() {
           if (!showVerify1 && emailVerify) {
             emailVerify = false;

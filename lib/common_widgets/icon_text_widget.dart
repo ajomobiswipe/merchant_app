@@ -13,7 +13,7 @@ class IconTextWidget extends StatelessWidget {
     required this.screenHeight,
     required this.iconPath,
     required this.title,
-    required this.color,
+    this.color = AppColors.kBorderColor,
   });
 
   final double screenHeight;
@@ -21,7 +21,7 @@ class IconTextWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 15),
+      padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
       child: Column(
         children: [
           Image.asset(
@@ -32,8 +32,8 @@ class IconTextWidget extends StatelessWidget {
           CustomTextWidget(
             text: title,
             textAlign: TextAlign.center,
-            size: 8,
-            color: AppColors.kPrimaryColor,
+            size: 10,
+            color: color,
           )
         ],
       ),

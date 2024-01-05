@@ -5,7 +5,8 @@
 |
 *  ===============================================================*/
 
-import 'package:flutter/foundation.dart';
+import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sifr_latest/config/constants.dart';
@@ -25,7 +26,7 @@ class UserServices {
   * METHOD: POST
   * Params: LoginRequestModel
   */
-  loginService(LoginRequestModel requestModel) async {
+  loginService(requestModel) async {
     Connection connection = Connection();
     var url = EndPoints.baseApi9502 + EndPoints.loginAPI;
     var response = await connection.postWithOutToken(url, requestModel);
@@ -42,10 +43,6 @@ class UserServices {
     Connection connection = Connection();
     var url = EndPoints.baseApi9502 + EndPoints.userCheckAPI + userName;
     var response = await connection.getWithOutToken(url);
-
-    print(url);
-
-    print('Here${response.body}');
     return response;
   }
 
@@ -85,22 +82,13 @@ class UserServices {
   * Params: loginRequestModel and Url
   */
   otpVerification(String userName) async {
-
-      Connection connection = Connection();
-      LoginRequestModel loginRequestModel = LoginRequestModel();
-      var url = EndPoints.baseApi9502 + EndPoints.mobileOtpAPI;
-      loginRequestModel.userName = userName;
-      loginRequestModel.instId = Constants.instId;
-
-      var _objectBody={
-        "instId": loginRequestModel.instId,
-        "userName":  loginRequestModel.userName,
-      };
-
-      var response = await connection.postWithOutToken(url, _objectBody);
-
-      return response;
-
+    Connection connection = Connection();
+    LoginRequestModel loginRequestModel = LoginRequestModel();
+    var url = EndPoints.baseApi9502 + EndPoints.mobileOtpAPI;
+    loginRequestModel.userName = userName;
+    loginRequestModel.instId = Constants.instId;
+    var response = await connection.postWithOutToken(url, loginRequestModel);
+    return response;
   }
 
   /*
@@ -222,6 +210,56 @@ class UserServices {
     return response;
   }
 
+  getAcquirers() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? barrertoken = prefs.getString('bearerToken');
+    print(barrertoken);
+    http.Response resonr = await http.get(
+      Uri.parse(
+          'http://omasoftposqc.omaemirates.com:9508/NanoPay/Middleware/UiApi/GetMerchantDefaultValues'),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $barrertoken',
+      },
+    );
+    print(resonr.body);
+    // print(prefs.getString('bearerToken') ?? 'error in reciving token');
+
+    // print('length  : ${acquirerDetails.length}');
+    // for (var acquirer in acquirerDetails) {
+    //   String acquirerName = acquirer['acquirerName'];
+    //   print('Acquirer Name: $acquirerName');
+    // }
+    return resonr;
+  }
+
+  getAcqApplicationid(String guid) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? barrertoken = prefs.getString('bearerToken');
+    http.Response resonr = await http.get(
+      Uri.parse(
+          'http://omasoftposqc.omaemirates.com:9508/NanoPay/Middleware/UiApi/GetAllAcquirerData/$guid'),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $barrertoken',
+      },
+    );
+    print('---------Get application id---------------');
+    print(resonr.body);
+
+    // print(prefs.getString('bearerToken') ?? 'error in reciving token');
+    final Map<String, dynamic> data = json.decode(resonr.body);
+    List<dynamic> acqApplications = data['data'];
+    // List<dynamic> data = jsonResponseMap['data'];
+
+    // print('length  : ${acqApplicationId.length}');
+    // for (var acquirer in acqApplicationId) {
+    //   String acquirerName = acquirer['description'];
+    //   print('Acquirer Application id: $acquirerName');
+    // }
+    return acqApplications;
+  }
+
   /*
   * SERVICE NAME: newCustomerSignup
   * DESC:Customer Registration
@@ -259,45 +297,43 @@ class UserServices {
     request.fields['postalCode'] = req.zipCode;
     request.fields['kycType'] = "E-KYC";
     request.fields['currencyId'] = req.currencyId ?? "784";
-    if (kDebugMode) {
-      // print("-------");
-      // print(request.fields['instId']);
-      // print(request.fields['notificationToken']);
-      // print(request.fields['deviceId']);
-      // print(request.fields['userName']);
-      // print(request.fields['role']);
-      // print(request.fields['password']);
-      // print(request.fields['pin']);
-      // print(request.fields['mobileCountryCode']);
-      // print(request.fields['mobileNumber']);
-      // print(request.fields['emailId']);
-      // print(request.fields['deviceType']);
-      // print(request.fields['questionOne']);
-      // print(request.fields['answerOne']);
-      // print(request.fields['questionTwo']);
-      // print(request.fields['answerTwo']);
-      // print(request.fields['questionThree']);
-      // print(request.fields['answerThree']);
-      // print(request.fields['firstName']);
-      // print(request.fields['lastName']);
-      // print(request.fields['dob']);
-      // print(request.fields['nickName']);
-      // print(request.fields['country']);
-      // print(request.fields['state']);
-      // print(request.fields['city']);
-      // print(request.fields['postalCode']);
-      // print(request.fields['kycType']);
-      // print(request.fields['currencyId']);
-    }
+    print("-------");
+    print(request.fields['instId']);
+    print(request.fields['notificationToken']);
+    print(request.fields['deviceId']);
+    print(request.fields['userName']);
+    print(request.fields['role']);
+    print(request.fields['password']);
+    print(request.fields['pin']);
+    print(request.fields['mobileCountryCode']);
+    print(request.fields['mobileNumber']);
+    print(request.fields['emailId']);
+    print(request.fields['deviceType']);
+    print(request.fields['questionOne']);
+    print(request.fields['answerOne']);
+    print(request.fields['questionTwo']);
+    print(request.fields['answerTwo']);
+    print(request.fields['questionThree']);
+    print(request.fields['answerThree']);
+    print(request.fields['firstName']);
+    print(request.fields['lastName']);
+    print(request.fields['dob']);
+    print(request.fields['nickName']);
+    print(request.fields['country']);
+    print(request.fields['state']);
+    print(request.fields['city']);
+    print(request.fields['postalCode']);
+    print(request.fields['kycType']);
+    print(request.fields['currencyId']);
     final k1 = await http.MultipartFile.fromPath('file', kf);
     final k2 = await http.MultipartFile.fromPath('file', kb);
     if (pp != '') {
       final p1 = await http.MultipartFile.fromPath('profilePic', pp);
       request.files.add(p1);
     }
-    // print(k1);
-    // print(k2);
-    // print(pp);
+    print(k1);
+    print(k2);
+    print(pp);
     request.files.add(k1);
     request.files.add(k2);
     final streamedResponse = await request.send();
@@ -312,7 +348,8 @@ class UserServices {
   * Params: RegisterRequestModel,newProfilePicture,kycFrontImage,kycBackImage,tradeLicense,nationalIdFront,nationalIdBack and cancelCheque
   */
   newMerchantSignup(
-    req,
+    merchantPersonalReq,
+    merchantCompanyDetailsReq,
     profilePic,
     kycFront,
     kycBack,
@@ -321,16 +358,24 @@ class UserServices {
     nationalIdBack,
     cancelCheque,
   ) async {
-    var url = EndPoints.baseApi9502 + EndPoints.registerAPI;
-    final request = http.MultipartRequest('POST', Uri.parse(url));
-    final kf = await http.MultipartFile.fromPath('file', kycFront);
-    final kb = await http.MultipartFile.fromPath('file', kycBack);
-    final tl =
-        await http.MultipartFile.fromPath('tradeLicenseFile', tradeLicense);
-    final nf =
-        await http.MultipartFile.fromPath('nationalIdDoc', nationalIdFront);
-    final nb =
-        await http.MultipartFile.fromPath('nationalIdDoc', nationalIdBack);
+    //var url = EndPoints.baseApi9502 + EndPoints.registerAPI;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? barrertoken = prefs.getString('bearerToken');
+    var url =
+        'http://omasoftposqc.omaemirates.com:9508/NanoPay/Middleware/UiApi/merchantRegistration';
+    // Set up the headers
+    Map<String, String> headers = {
+      'Content-Type': 'multipart/form-data',
+      'Authorization': 'Bearer $barrertoken', // Add any other headers you need
+    };
+
+    final request = http.MultipartRequest('POST', Uri.parse(url))
+      ..headers.addAll(headers);
+    final kf = await http.MultipartFile.fromPath('shopLicenseFile', kycFront);
+    final kb = await http.MultipartFile.fromPath('gstFile', kycBack);
+    final tl = await http.MultipartFile.fromPath('poiFile', tradeLicense);
+    final nf = await http.MultipartFile.fromPath('poaFile', nationalIdFront);
+    final nb = await http.MultipartFile.fromPath('chequeFile', nationalIdBack);
 
     if (cancelCheque != '') {
       var cc =
@@ -348,44 +393,99 @@ class UserServices {
     request.files.add(nf);
     request.files.add(nb);
 
-    request.fields['instId'] = Constants.instId;
-    request.fields['notificationToken'] = req.notificationToken;
-    request.fields['deviceType'] = Constants.deviceType;
-    request.fields['deviceId'] = req.deviceId;
-    request.fields['userName'] = req.userName;
-    request.fields['firstName'] = req.firstName;
-    request.fields['lastName'] = req.lastName;
-    request.fields['nickName'] = req.nickName;
-    request.fields['password'] = req.password;
-    request.fields['pin'] = req.pin;
-    request.fields['mobileCountryCode'] = req.mobileCountryCode;
-    request.fields['mobileNumber'] = req.mobileNumber;
-    request.fields['emailId'] = req.emailId;
-    request.fields['dob'] = req.dob;
-    request.fields['role'] = req.role;
-    request.fields['questionOne'] = req.questionOne;
-    request.fields['answerOne'] = req.answerOne;
-    request.fields['questionTwo'] = req.questionTwo;
-    request.fields['answerTwo'] = req.answerTwo;
-    request.fields['questionThree'] = req.questionThree;
-    request.fields['answerThree'] = req.answerThree;
-    request.fields['country'] = req.country;
-    request.fields['state'] = req.state;
-    request.fields['city'] = req.city;
-    request.fields['latitude'] = req.latitude.toString();
-    request.fields['longitude'] = req.longitude.toString();
-    request.fields['merchantZipCode'] = req.merchantZipCode;
-    request.fields['currencyId'] = req.currencyId ?? "784";
-    request.fields['kycType'] = req.kycType ?? "E-KYC";
+    // request.fields['instId'] = Constants.instId;
+    // request.fields['notificationToken'] = req.notificationToken;
+    // request.fields['deviceType'] = Constants.deviceType;
+    // request.fields['deviceId'] = req.deviceId;
+    // request.fields['userName'] = req.userName;
+    // request.fields['firstName'] = req.firstName;
+    // request.fields['lastName'] = req.lastName;
+    // request.fields['nickName'] = req.nickName;
+    // request.fields['password'] = req.password;
+    // request.fields['pin'] = req.pin;
+    // request.fields['mobileCountryCode'] = req.mobileCountryCode;
+    // request.fields['mobileNumber'] = req.mobileNumber;
+    // request.fields['emailId'] = req.emailId;
+    // request.fields['dob'] = req.dob;
+    // request.fields['role'] = req.role;
+    // request.fields['questionOne'] = req.questionOne;
+    // request.fields['answerOne'] = req.answerOne;
+    // request.fields['questionTwo'] = req.questionTwo;
+    // request.fields['answerTwo'] = req.answerTwo;
+    // request.fields['questionThree'] = req.questionThree;
+    // request.fields['answerThree'] = req.answerThree;
+    // request.fields['country'] = req.country;
+    // request.fields['state'] = req.state;
+    // request.fields['city'] = req.city;
+    // request.fields['latitude'] = req.latitude.toString();
+    // request.fields['longitude'] = req.longitude.toString();
+    // request.fields['merchantZipCode'] = req.merchantZipCode;
+    // request.fields['currencyId'] = req.currencyId ?? "784";
+    // request.fields['kycType'] = req.kycType ?? "E-KYC";
 
-    request.fields['merchantName'] = req.merchantName;
-    request.fields['mcc'] = req.mcc;
-    request.fields['businessType'] = req.businessType;
-    request.fields['companyRegNumber'] = req.companyRegNumber;
-    request.fields['nationalId'] = req.nationalId;
-    request.fields['nationalIdExpiry'] = req.nationalIdExpiry;
-    request.fields['tradeLicenseCode'] = req.tradeLicenseCode;
-    request.fields['tradeLicenseExpiry'] = req.tradeLicenseExpiry;
+    // request.fields['merchantName'] = req.merchantName;
+    // request.fields['mcc'] = req.mcc;
+    // request.fields['businessType'] = req.businessType;
+    // request.fields['companyRegNumber'] = req.companyRegNumber;
+    // request.fields['nationalId'] = req.nationalId;
+    // request.fields['nationalIdExpiry'] = req.nationalIdExpiry;
+    // request.fields['tradeLicenseCode'] = req.tradeLicenseCode;
+    // request.fields['tradeLicenseExpiry'] = req.tradeLicenseExpiry;
+    // var personInfo = {
+    //   "firstName": "HiFromApp",
+    //   "lastName": "NewTest",
+    //   "dob": "2022-11-16T20:00:00.000Z",
+    //   "poiType": 1,
+    //   "poiNumber": "18765432",
+    //   "poiExpiryDate": "2023-11-03T20:00:00.000Z",
+    //   "poaType": 1,
+    //   "poaNumber": "18765432",
+    //   "poaExpiryDate": "2023-11-03T20:00:00.000Z",
+    //   "currentAddress": "KM Trade,Rolla",
+    //   "currentCountry": 784,
+    //   "permanentState": "Sharjah",
+    //   "currentState": "Sharjah",
+    //   "currentNationality": "Emirates",
+    //   "currentMobileNo": "0567890987",
+    //   "currentAltMobNo": "0567890987",
+    //   "permanentAddress": "KM Trade ,Rolla",
+    //   "permanentCountry": 784,
+    //   "permanentZipCode": "870978",
+    //   "currentZipCode": "870978"
+    // };
+    // var cpmpanyin = {
+    //   "acquirerId": "ADIBOMA0001",
+    //   "merchantId": null,
+    //   "merchantName": "madhina",
+    //   "merchantAddress": "Al madina Al soor",
+    //   "merchantAddr2": "Rolla",
+    //   "description": "test merchant",
+    //   "cityCode": 2,
+    //   "countryId": 784,
+    //   "currency": 784,
+    //   "mobileNo": "0567898765",
+    //   "emailId": "subi@gmail.com",
+    //   "status": true,
+    //   "zipCode": "876545",
+    //   "mccTypeCode": 1,
+    //   "merchantLogoImage": "ADIB1.png",
+    //   "commercialName": "al madina",
+    //   "tradeLicenseNumber": "8765678",
+    //   "tradeLicenseExpiryDate": "2023-11-03T20:00:00.000Z",
+    //   "ownership": "test ownership",
+    //   "shareholderPercent": "test value",
+    //   "relationshipManagerId": 100,
+    //   "vatApplicable": true,
+    //   "vatRegistrationNumber": "98765",
+    //   "vatValue": "65",
+    //   "maxAuthAmount": "1000",
+    //   "maxTerminalCount": "50"
+    // };
+    request.fields['personalInfo'] = jsonEncode(merchantPersonalReq.toJson());
+    print(jsonEncode(merchantPersonalReq.toJson()));
+    request.fields['companyDetailsInfo'] =
+        jsonEncode(merchantCompanyDetailsReq.toJson());
+    print(jsonEncode(merchantCompanyDetailsReq.toJson()));
     final streamedResponse = await request.send();
     final response = await http.Response.fromStream(streamedResponse);
     return response;
@@ -416,18 +516,6 @@ class UserServices {
     var url =
         '${EndPoints.baseApi9502}${EndPoints.getCustomerDetails}${Constants.instId}/$customerId';
     var response = await connection.get(url);
-    return response;
-  }
-
-  finalisePayment(requestData) async {
-
-    print(requestData);
-
-    Connection connection = Connection();
-    var url = EndPoints.finalizePaymentApi;
-    var response = await connection.putWithRequestBody(url, requestData);
-
-    print('finalize${response.body}');
     return response;
   }
 
@@ -685,32 +773,6 @@ class UserServices {
     Connection connection = Connection();
     var url = '${EndPoints.baseApi9502}${EndPoints.processFlowAPI}$customerId';
     var response = await connection.get(url);
-    return response;
-  }
-
-  Future getQrPaymentID(String qrLink) async {
-    Connection connection = Connection();
-    var url =
-        '${EndPoints.getQrCodeIdApi}12345/AA1234567890/UB776WH?qrLink=$qrLink';
-    var response = await connection.get(url);
-    return response;
-  }
-
-  Future getQrCodeStatus(String qrCodeId) async {
-    Connection connection = Connection();
-    var url = '${EndPoints.getQrCodeStatusApi}?qrCodeId=$qrCodeId';
-    print(url);
-    var response = await connection.get(url);
-
-    return response;
-  }
-
-  Future getBank(String qrCodeId, String merchantTag) async {
-    Connection connection = Connection();
-    var url = '${EndPoints.getBankApi}$qrCodeId/$merchantTag';
-
-    var response = await connection.get(url);
-
     return response;
   }
 }

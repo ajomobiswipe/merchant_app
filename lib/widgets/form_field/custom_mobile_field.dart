@@ -12,6 +12,7 @@ import 'package:intl_phone_field/countries.dart';
 import 'package:intl_phone_field/country_picker_dialog.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:intl_phone_field/phone_number.dart';
+import 'package:sifr_latest/config/config.dart';
 
 //Global Mobile Field
 class CustomMobileField extends StatelessWidget {
@@ -113,12 +114,20 @@ class CustomMobileField extends StatelessWidget {
               helperStyle: helperStyle,
               errorMaxLines: 3,
               counterText: '',
+              fillColor: AppColors.kTileColor,
+              filled: true,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(5.0),
                 borderSide: BorderSide(
                   color: Theme.of(context).primaryColor,
                 ),
               ),
+              enabledBorder: const OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                  borderSide: BorderSide(color: Colors.transparent)),
+              disabledBorder: const OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                  borderSide: BorderSide(color: Colors.transparent)),
               focusedBorder: OutlineInputBorder(
                   borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                   borderSide:

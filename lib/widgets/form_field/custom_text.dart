@@ -8,6 +8,7 @@
 // Dependencies or Plugins - Models - Services - Global Functions
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:sifr_latest/config/app_color.dart';
 
 //Global Text Form Field
 class CustomTextFormField extends StatelessWidget {
@@ -45,6 +46,8 @@ class CustomTextFormField extends StatelessWidget {
   final String? initialValue;
   final TextCapitalization? textCapitalization;
   final ToolbarOptions? toolbarOptions;
+  final int? minLines;
+  final int? maxLines;
 
   const CustomTextFormField(
       {Key? key,
@@ -80,6 +83,8 @@ class CustomTextFormField extends StatelessWidget {
       this.errorText,
       this.textCapitalization,
       this.toolbarOptions,
+      this.minLines,
+      this.maxLines,
       this.iconColor})
       : super(key: key);
 
@@ -89,36 +94,15 @@ class CustomTextFormField extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          required
-              ? RichText(
-                  text: TextSpan(
-                      text: title,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodySmall
-                          ?.copyWith(fontWeight: FontWeight.normal),
-                      children: const [
-                        TextSpan(
-                            text: ' *', style: TextStyle(color: Colors.red))
-                      ]),
-                )
-              : RichText(
-                  text: TextSpan(
-                    text: title,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodySmall
-                        ?.copyWith(fontWeight: FontWeight.normal),
-                  ),
-                ),
-          //Global Text Form Field
           TextFormField(
+            minLines: minLines,
             toolbarOptions: toolbarOptions,
             initialValue: initialValue,
             controller: controller,
             keyboardType: keyboardType ?? TextInputType.text,
             textInputAction: textInputAction ?? TextInputAction.next,
             maxLength: maxLength,
+            maxLines: maxLines,
             obscureText: obscureText ?? false,
             obscuringCharacter: obscuringCharacter ?? '*',
             autofocus: autofocus ?? false,
@@ -134,27 +118,42 @@ class CustomTextFormField extends StatelessWidget {
             onFieldSubmitted: onFieldSubmitted,
             focusNode: focusNode,
             decoration: InputDecoration(
+              label: Text(
+                hintText ?? title,
+                style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+              ),
               hintText: hintText ?? title,
               counterText: counterText ?? '',
               errorMaxLines: errorMaxLines,
               helperText: helperText,
               errorText: errorText,
               helperStyle: helperStyle,
+              fillColor: AppColors.kTileColor,
+              filled: true,
               hintStyle: Theme.of(context)
                   .textTheme
                   .displaySmall
                   ?.copyWith(fontSize: 16, fontWeight: FontWeight.normal),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(5.0),
-                borderSide: BorderSide(
-                  color: Theme.of(context).primaryColor,
+                borderSide: const BorderSide(
+                  color: Colors.transparent,
                 ),
               ),
-              focusedBorder: OutlineInputBorder(
-                  borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                  borderSide:
-                      BorderSide(color: Theme.of(context).primaryColor)),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 0),
+              enabledBorder: const OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                  borderSide: BorderSide(color: Colors.transparent)),
+              disabledBorder: const OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                  borderSide: BorderSide(color: Colors.transparent)),
+              focusedBorder: const OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                  borderSide: BorderSide(color: Colors.transparent)),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 4, vertical: 10),
               prefixIcon: Icon(prefixIcon,
                   color: iconColor ?? Theme.of(context).primaryColor),
               suffixIcon: (suffixIconTrue && suffixText == null)

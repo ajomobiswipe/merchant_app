@@ -18,6 +18,7 @@ import '../pages/help/help.dart';
 import '../pages/mechant_order/merchant_order_details.dart';
 import '../pages/merchant_pay/merchant.dart';
 import '../pages/my_account_menu/my_account_menu.dart';
+import '../pages/my_applications/my_applications.dart';
 import '../pages/pages.dart';
 import '../pages/transactions/qr_transaction_list.dart';
 import '../pages/transactions/transaction_list.dart';
@@ -49,7 +50,9 @@ class CustomRoute {
         case "MerchantOrderDetails":
           return const MerchantOrderDetails();
         case "merchantOnboarding":
-          return const SignUpCustomer();
+          return const MerchantSignup();
+        case "myApplications":
+          return const MyApplications();
 
         case "loginAuthOtp":
           Map args = settings.arguments as Map;

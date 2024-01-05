@@ -87,6 +87,7 @@ dependencies:
   flutter_jailbreak_detection: ^1.10.0
   encrypt:
   pinput:
+  syncfusion_flutter_charts: ^24.1.44+1
 #  modal_bottom_sheet: ^2.1.2
 
 

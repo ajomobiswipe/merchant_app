@@ -20,14 +20,98 @@ class _MerchantNumVerifyState extends State<MerchantNumVerify> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.white,
-        leading: IconButton(
-          icon: GestureDetector(
-            child: const CircleAvatar(
+        leading: PopupMenuButton<int>(
+          color: Colors.white,
+          itemBuilder: (context) => [
+            // PopupMenuItem 1
+            const PopupMenuItem(
+              value: 1,
+              // row with 2 children
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.person,
+                    color: Colors.black87,
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    "My Profile",
+                    style: TextStyle(color: Colors.black87),
+                  )
+                ],
+              ),
+            ),
+            // PopupMenuItem 2
+            const PopupMenuItem(
+              value: 2,
+              // row with two children
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.logout_rounded,
+                    color: Colors.black87,
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    "My Applications",
+                    style: TextStyle(color: Colors.black87),
+                  ),
+                ],
+              ),
+            ),
+            const PopupMenuItem(
+              value: 3,
+              // row with two children
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.contact_page_outlined,
+                    color: Colors.black87,
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text("Settings", style: TextStyle(color: Colors.black87))
+                ],
+              ),
+            ),
+            const PopupMenuItem(
+              value: 4,
+              // row with two children
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.logout_rounded,
+                    color: Colors.black87,
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text("Log Out", style: TextStyle(color: Colors.black87))
+                ],
+              ),
+            ),
+          ],
+          offset: const Offset(40, 40),
+          // color: Colors.black12,
+          icon: const Padding(
+            padding: EdgeInsets.only(right: 10),
+            child: CircleAvatar(
               child: Icon(Icons.person),
             ),
-            onTap: () {},
           ),
-          onPressed: () {},
+          elevation: 2,
+
+          onSelected: (value) {
+            if (value == 1) {
+            } else if (value == 2) {
+              Navigator.pushNamed(context, 'myApplications');
+            } else if (value == 3) {}
+          },
         ),
         actions: [
           IconButton(
@@ -87,8 +171,8 @@ class _MerchantNumVerifyState extends State<MerchantNumVerify> {
             const Row(
               children: [
                 Expanded(
-                  child: SizedBox(),
                   flex: 1,
+                  child: SizedBox(),
                 ),
                 MerchantRegnTypeSelector(
                   iconPath: "assets/app_icons/new_merchant.png",
@@ -98,8 +182,8 @@ class _MerchantNumVerifyState extends State<MerchantNumVerify> {
                   flex: 8,
                 ),
                 Expanded(
-                  child: SizedBox(),
                   flex: 1,
+                  child: SizedBox(),
                 ),
                 MerchantRegnTypeSelector(
                   iconPath: "assets/app_icons/existing_merchant.png",
@@ -107,8 +191,8 @@ class _MerchantNumVerifyState extends State<MerchantNumVerify> {
                   flex: 8,
                 ),
                 Expanded(
-                  child: SizedBox(),
                   flex: 1,
+                  child: SizedBox(),
                 ),
               ],
             ),

@@ -15,6 +15,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:intl_phone_field/countries.dart';
 import 'package:provider/provider.dart';
+import 'package:sifr_latest/common_widgets/app_appbar.dart';
 import 'package:sifr_latest/pages/users/signup/customer/terms_and_conditions.dart';
 import 'package:sifr_latest/widgets/Forms/kyc_form.dart';
 import 'package:sifr_latest/widgets/custom_text_widget.dart';
@@ -266,11 +267,12 @@ class _SignUpCustomerState extends State<SignUpCustomer> {
     return _isLoading
         ? const LoadingWidget()
         : Scaffold(
-            appBar: AppBarWidget(
-              action: false,
-              title: title,
-              automaticallyImplyLeading: false,
-            ),
+            appBar: AppAppbar(),
+            // AppBarWidget(
+            //   action: false,
+            //   title: title,
+            //   automaticallyImplyLeading: false,
+            // ),
             body: SafeArea(
               child: SingleChildScrollView(
                 // physics: const AlwaysScrollableScrollPhysics(),

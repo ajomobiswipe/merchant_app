@@ -5,7 +5,8 @@ import 'package:sifr_latest/widgets/custom_text_widget.dart';
 
 class FormTitleWidget extends StatelessWidget {
   final String subWord;
-  const FormTitleWidget({super.key, required this.subWord});
+  final String? mainWord;
+  const FormTitleWidget({super.key, required this.subWord, this.mainWord});
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +14,7 @@ class FormTitleWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CustomTextWidget(
-          text: 'Please Enter',
+          text: mainWord ?? 'Please Enter',
         ),
         defaultWidth(10),
         Column(

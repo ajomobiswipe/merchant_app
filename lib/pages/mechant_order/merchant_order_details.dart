@@ -255,7 +255,7 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                           color: AppColors.kSelectedBackgroundColor,
                           child: ExpansionTile(
                             title: CustomTextWidget(
-                              text: "View Complete order Summery",
+                              text: "View Complete order Summary",
                               color: Colors.grey.shade600,
                               size: 10,
                             ),

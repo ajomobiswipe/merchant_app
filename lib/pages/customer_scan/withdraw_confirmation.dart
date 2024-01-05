@@ -49,7 +49,7 @@ class _WithdrawConfirmationState extends State<WithdrawConfirmation> {
   void initState() {
     super.initState();
     getUserDetails();
-    getScannedData(widget.scanData);
+    // getScannedData(widget.scanData);
 
     // var scanData = jsonDecode(widget.scanData);
     // print(scanData.runtimeType);
@@ -72,110 +72,110 @@ class _WithdrawConfirmationState extends State<WithdrawConfirmation> {
     // });
   }
 
-  Future getScannedData(String? scanData) async {
-    var requestBody = await getDataFromScanData(scanData);
+  // Future getScannedData(String? scanData) async {
+  //   var requestBody = await getDataFromScanData(scanData);
 
-    /// We have to call 3 APIs from customer side
-    ///---getQrPaymentID API- First call API
-    // var getPaymentIdResponse=await userServices.getQrPaymentID(scanData!);
-    //
-    // var getPaymentIdResponseValue=jsonDecode(getPaymentIdResponse.body);
-    //
-    // if(getPaymentIdResponseValue!=''){
-    //
-    // }
-    ///---check QR status API calling for getting paymentId
-    var getQrCodeStatusResponse =
-        await userServices.getQrCodeStatus(requestBody['qrCodeId']);
+  //   /// We have to call 3 APIs from customer side
+  //   ///---getQrPaymentID API- First call API
+  //   // var getPaymentIdResponse=await userServices.getQrPaymentID(scanData!);
+  //   //
+  //   // var getPaymentIdResponseValue=jsonDecode(getPaymentIdResponse.body);
+  //   //
+  //   // if(getPaymentIdResponseValue!=''){
+  //   //
+  //   // }
+  //   ///---check QR status API calling for getting paymentId
+  //   var getQrCodeStatusResponse =
+  //       await userServices.getQrCodeStatus(requestBody['qrCodeId']);
 
-    var getQrCodeStatusResponseValue = jsonDecode(getQrCodeStatusResponse.body);
+  //   var getQrCodeStatusResponseValue = jsonDecode(getQrCodeStatusResponse.body);
 
-    print(getQrCodeStatusResponseValue['paymentId']);
+  //   print(getQrCodeStatusResponseValue['paymentId']);
 
-    if (getQrCodeStatusResponseValue['qrCodeRequestStatus'] != 'ATT') {
-      Future.delayed(const Duration(seconds: 1), () {
-        if (getQrCodeStatusResponseValue['qrCodeRequestStatus'] == 'EFF') {
-          alertWidget.failure(context, "Error", 'Request paid by the buyer');
-          Navigator.pushReplacementNamed(context, 'home');
-        }
+  //   if (getQrCodeStatusResponseValue['qrCodeRequestStatus'] != 'ATT') {
+  //     Future.delayed(const Duration(seconds: 1), () {
+  //       if (getQrCodeStatusResponseValue['qrCodeRequestStatus'] == 'EFF') {
+  //         alertWidget.failure(context, "Error", 'Request paid by the buyer');
+  //         Navigator.pushReplacementNamed(context, 'home');
+  //       }
 
-        if (getQrCodeStatusResponseValue['qrCodeRequestStatus'] == 'EXP') {
-          alertWidget.failure(context, "Error", 'Request Expired');
-          Navigator.pushReplacementNamed(context, 'home');
-        }
+  //       if (getQrCodeStatusResponseValue['qrCodeRequestStatus'] == 'EXP') {
+  //         alertWidget.failure(context, "Error", 'Request Expired');
+  //         Navigator.pushReplacementNamed(context, 'home');
+  //       }
 
-        if (getQrCodeStatusResponseValue['qrCodeRequestStatus'] == 'ANN') {
-          alertWidget.failure(context, "Error", 'QR code canceled by merchant');
-          Navigator.pushReplacementNamed(context, 'home');
-        }
-      });
+  //       if (getQrCodeStatusResponseValue['qrCodeRequestStatus'] == 'ANN') {
+  //         alertWidget.failure(context, "Error", 'QR code canceled by merchant');
+  //         Navigator.pushReplacementNamed(context, 'home');
+  //       }
+  //     });
 
-      return;
-    }
+  //     return;
+  //   }
 
-    requestBody['requestBody']['payment']['paymentId'] =
-        getQrCodeStatusResponseValue['paymentId'];
+  //   requestBody['requestBody']['payment']['paymentId'] =
+  //       getQrCodeStatusResponseValue['paymentId'];
 
-    ///---- Calling an api for getting bank userId and bankCode
-    // var getBankResponse = await userServices.getBank(
-    //     requestBody['qrCodeId'], requestBody['merchantTag']);
-    //
-    // var getBankResponseValue = jsonDecode(getBankResponse.body);
+  //   ///---- Calling an api for getting bank userId and bankCode
+  //   // var getBankResponse = await userServices.getBank(
+  //   //     requestBody['qrCodeId'], requestBody['merchantTag']);
+  //   //
+  //   // var getBankResponseValue = jsonDecode(getBankResponse.body);
 
-    /// To achieve final payment
-    var response =
-        await userServices.finalisePayment(requestBody['requestBody']);
+  //   /// To achieve final payment
+  //   var response =
+  //       await userServices.finalisePayment(requestBody['requestBody']);
 
-    var responseBody = jsonDecode(response.body);
+  //   var responseBody = jsonDecode(response.body);
 
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      if (responseBody['responseCode'] != '01') {
-        setState(() {
-          // if (scanData['qrData'].toString() != null) {
-          description.text = responseBody['payment']['reason'].toString();
-          currency = responseBody['payment']['currency'];
-          amount = responseBody['payment']['amount'] != null
-              ? responseBody['payment']['amount'].toString()
-              : "1000";
-          // } else {
-          // alertWidget.failure(context, "Error", "Invalid QR Code!");
-          // Navigator.pushReplacementNamed(context, 'home');
-          // }
-        });
-      } else {
-        Future.delayed(const Duration(seconds: 1), () {
-          alertWidget.failure(
-              context, "Error", responseBody['responseMessage']);
-          Navigator.pushReplacementNamed(context, 'home');
-        });
-      }
+  //   if (response.statusCode == 200 || response.statusCode == 201) {
+  //     if (responseBody['responseCode'] != '01') {
+  //       setState(() {
+  //         // if (scanData['qrData'].toString() != null) {
+  //         description.text = responseBody['payment']['reason'].toString();
+  //         currency = responseBody['payment']['currency'];
+  //         amount = responseBody['payment']['amount'] != null
+  //             ? responseBody['payment']['amount'].toString()
+  //             : "1000";
+  //         // } else {
+  //         // alertWidget.failure(context, "Error", "Invalid QR Code!");
+  //         // Navigator.pushReplacementNamed(context, 'home');
+  //         // }
+  //       });
+  //     } else {
+  //       Future.delayed(const Duration(seconds: 1), () {
+  //         alertWidget.failure(
+  //             context, "Error", responseBody['responseMessage']);
+  //         Navigator.pushReplacementNamed(context, 'home');
+  //       });
+  //     }
 
-      //     {
-      //       "payment": {
-      //   "amount": 70.0,
-      //   "currency": "AED",
-      //   "reason": "Soccer shoes ",
-      //   "shopId": "10001",
-      //   "cashDeskId": "10000001",
-      //   "paymentId": "123456"
-      // }
-      // }
-    }
+  //     //     {
+  //     //       "payment": {
+  //     //   "amount": 70.0,
+  //     //   "currency": "AED",
+  //     //   "reason": "Soccer shoes ",
+  //     //   "shopId": "10001",
+  //     //   "cashDeskId": "10000001",
+  //     //   "paymentId": "123456"
+  //     // }
+  //     // }
+  //   }
 
-    // setState(() {
-    //   print("-----------------");
-    //   print(scanData);
-    //   print("-----------------");
-    //
-    //   if (scanData['qrData'].toString() != null) {
-    //     description.text = scanData['transaction'].toString();
-    //     currency = scanData['qrData'].toString().split('#')[4];
-    //   } else {
-    //     alertWidget.failure(context, "Error", "Invalid QR Code!");
-    //     Navigator.pushReplacementNamed(context, 'home');
-    //   }
-    // });
-  }
+  //   // setState(() {
+  //   //   print("-----------------");
+  //   //   print(scanData);
+  //   //   print("-----------------");
+  //   //
+  //   //   if (scanData['qrData'].toString() != null) {
+  //   //     description.text = scanData['transaction'].toString();
+  //   //     currency = scanData['qrData'].toString().split('#')[4];
+  //   //   } else {
+  //   //     alertWidget.failure(context, "Error", "Invalid QR Code!");
+  //   //     Navigator.pushReplacementNamed(context, 'home');
+  //   //   }
+  //   // });
+  // }
 
   setLoading(bool tf) {
     setState(() {
