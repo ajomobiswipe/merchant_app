@@ -51,7 +51,7 @@ class AppThemes {
           elevation: 10,
           foregroundColor: Colors.white,
           backgroundColor: primaryColor),
-      scaffoldBackgroundColor: isDark ? AppColors.blackLight : AppColors.gray,
+      scaffoldBackgroundColor: isDark ? AppColors.blackLight : AppColors.white,
       // cardColor: isDark ? AppColors.white.withOpacity(0) : AppColors.white,
       cardTheme: CardTheme(
         color: isDark ? AppColors.blackLight : AppColors.white,

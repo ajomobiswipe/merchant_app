@@ -18,7 +18,6 @@ dependencies:
   awesome_snackbar_content:
   badges:
   cached_network_image:
-  chips_choice_null_safety: ^2.0.6
   connectivity_plus:
   credit_card_scanner:
   credit_card_validator:

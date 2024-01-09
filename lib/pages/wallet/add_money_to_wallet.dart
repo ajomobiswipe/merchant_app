@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:chips_choice_null_safety/chips_choice_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_toggle_tab/flutter_toggle_tab.dart';
@@ -409,7 +408,6 @@ class _AddMoneyToWalletState extends State<AddMoneyToWallet> {
                                 keyboardType: TextInputType.phone,
                                 textInputAction: TextInputAction.done,
                                 maxLength: 6,
-
                                 inputFormatters: <TextInputFormatter>[
                                   FilteringTextInputFormatter.digitsOnly
                                 ],
@@ -467,54 +465,54 @@ class _AddMoneyToWalletState extends State<AddMoneyToWallet> {
                             const SizedBox(
                               height: 10,
                             ),
-                            ChipsChoice.single(
-                              value: tag,
-                              onChanged: (val) {
-                                setState(() => tag = val.toString());
-                                if (val != "Others") {
-                                  // value = int.parse(val) + value;
-                                  amountController.text = val.toString();
-                                } else {
-                                  amountController.text = '';
-                                }
-                                amountController.selection =
-                                    TextSelection.fromPosition(TextPosition(
-                                        offset: amountController.text.length));
-                              },
-                              choiceItems: C2Choice.listFrom<String, String>(
-                                source: fixedAmount,
-                                value: (i, v) => v.toString(),
-                                label: (i, v) {
-                                  if (v == 'Others') {
-                                    return v;
-                                  } else {
-                                    return "+$v";
-                                  }
-                                },
-                              ),
-                              wrapped: true,
-                              choiceActiveStyle: C2ChoiceStyle(
-                                showCheckmark: false,
-                                elevation: 2,
-                                color: Colors.white,
-                                borderColor: Theme.of(context).primaryColor,
-                                backgroundColor: Theme.of(context).primaryColor,
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 10),
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(20)),
-                              ),
-                              choiceStyle: C2ChoiceStyle(
-                                showCheckmark: false,
-                                color: Theme.of(context).primaryColor,
-                                borderColor: Colors.grey,
-                                backgroundColor: Theme.of(context).cardColor,
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 10),
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(20)),
-                              ),
-                            ),
+                            // ChipsChoice.single(
+                            //   value: tag,
+                            //   onChanged: (val) {
+                            //     setState(() => tag = val.toString());
+                            //     if (val != "Others") {
+                            //       // value = int.parse(val) + value;
+                            //       amountController.text = val.toString();
+                            //     } else {
+                            //       amountController.text = '';
+                            //     }
+                            //     amountController.selection =
+                            //         TextSelection.fromPosition(TextPosition(
+                            //             offset: amountController.text.length));
+                            //   },
+                            //   choiceItems: C2Choice.listFrom<String, String>(
+                            //     source: fixedAmount,
+                            //     value: (i, v) => v.toString(),
+                            //     label: (i, v) {
+                            //       if (v == 'Others') {
+                            //         return v;
+                            //       } else {
+                            //         return "+$v";
+                            //       }
+                            //     },
+                            //   ),
+                            //   wrapped: true,
+                            //   choiceActiveStyle: C2ChoiceStyle(
+                            //     showCheckmark: false,
+                            //     elevation: 2,
+                            //     color: Colors.white,
+                            //     borderColor: Theme.of(context).primaryColor,
+                            //     backgroundColor: Theme.of(context).primaryColor,
+                            //     padding:
+                            //         const EdgeInsets.symmetric(horizontal: 10),
+                            //     borderRadius:
+                            //         const BorderRadius.all(Radius.circular(20)),
+                            //   ),
+                            //   choiceStyle: C2ChoiceStyle(
+                            //     showCheckmark: false,
+                            //     color: Theme.of(context).primaryColor,
+                            //     borderColor: Colors.grey,
+                            //     backgroundColor: Theme.of(context).cardColor,
+                            //     padding:
+                            //         const EdgeInsets.symmetric(horizontal: 10),
+                            //     borderRadius:
+                            //         const BorderRadius.all(Radius.circular(20)),
+                            //   ),
+                            // ),
                             const SizedBox(height: 20),
                             AppButton(
                               title: "Proceed to add",

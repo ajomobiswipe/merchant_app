@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:chips_choice_null_safety/chips_choice_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sifr_latest/pages/help/RecentComplaint.dart';
@@ -324,32 +323,32 @@ class _ComplaintPageState extends State<ComplaintPage> {
             ),
           ),
           const SizedBox(height: 10),
-          ChipsChoice.single(
-            value: tag,
-            wrapped: false,
-            onChanged: (val) {
-              setState(() => tag = val);
-              type = val.toString().toLowerCase();
-              getComplaintDetails(val.toString().toLowerCase(), 5);
-            },
-            choiceItems: C2Choice.listFrom<String, String>(
-              source: options,
-              value: (i, v) => v.toString(),
-              label: (i, v) => v,
-            ),
-            choiceActiveStyle: C2ChoiceStyle(
-              color: Colors.white,
-              showCheckmark: false,
-              backgroundColor: Theme.of(context).primaryColor,
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
-            ),
-            choiceStyle: C2ChoiceStyle(
-              showCheckmark: false,
-              color: Theme.of(context).primaryColor,
-              backgroundColor: Colors.white,
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
-            ),
-          ),
+          // ChipsChoice.single(
+          //   value: tag,
+          //   wrapped: false,
+          //   onChanged: (val) {
+          //     setState(() => tag = val);
+          //     type = val.toString().toLowerCase();
+          //     getComplaintDetails(val.toString().toLowerCase(), 5);
+          //   },
+          //   choiceItems: C2Choice.listFrom<String, String>(
+          //     source: options,
+          //     value: (i, v) => v.toString(),
+          //     label: (i, v) => v,
+          //   ),
+          //   choiceActiveStyle: C2ChoiceStyle(
+          //     color: Colors.white,
+          //     showCheckmark: false,
+          //     backgroundColor: Theme.of(context).primaryColor,
+          //     borderRadius: const BorderRadius.all(Radius.circular(10)),
+          //   ),
+          //   choiceStyle: C2ChoiceStyle(
+          //     showCheckmark: false,
+          //     color: Theme.of(context).primaryColor,
+          //     backgroundColor: Colors.white,
+          //     borderRadius: const BorderRadius.all(Radius.circular(10)),
+          //   ),
+          // ),
         ],
       ),
     );

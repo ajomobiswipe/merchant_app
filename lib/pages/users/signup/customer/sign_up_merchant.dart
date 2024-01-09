@@ -18,6 +18,7 @@ import 'package:sifr_latest/common_widgets/app_appbar.dart';
 import 'package:sifr_latest/models/merchant_requestmodel.dart';
 import 'package:sifr_latest/widgets/Forms/Business_info.dart';
 import 'package:sifr_latest/widgets/Forms/document_uploads.dart';
+import 'package:sifr_latest/widgets/Forms/merchant_store_form.dart';
 import 'package:sifr_latest/widgets/custom_text_widget.dart';
 import 'package:sifr_latest/widgets/loading.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -435,6 +436,12 @@ class _MerchantSignupState extends State<MerchantSignup> {
       return mainControl('Review', review());
     } else if (position == 7) {
       return mainControl('Merchant Bank Details', merchantBankDetails());
+    } else if (position == 8) {
+      return MerchantStoreImagesForm(
+          previous: kycPrevious,
+          next: kycNext,
+          storeFrontImage: TextEditingController(),
+          insideStoreImage: TextEditingController());
     }
   }
 
@@ -2412,7 +2419,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                         //   });
                         // }
                         setState(() {
-                          position = 6; //old 2
+                          position = 8; //old 6//2
                         });
                       },
                     ),
@@ -2667,9 +2674,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
               'Flat rate',
               'Tier based pricing',
               'Cost plus(Interchange)',
-              'blended',
-              'location based',
-              'fixed subscription-based'
+              'Blended',
+              'Location based',
+              'Fixed subscription-based'
             ],
             //countryList.map((e) => e['ctyName']).toList(),
             onChanged: (value) {
