@@ -26,6 +26,7 @@ import '../form_field/custom_text.dart';
 // STATEFUL WIDGET
 class BusinessInfo extends StatefulWidget {
   final MerchantCompanyDetailsReqModel merchantCompanyDetailsReq;
+
   final TextEditingController merchantLegalNameCtrl;
   final TextEditingController acquirerNameCtrl;
   final TextEditingController acquirerApplicationIdCtrl;
@@ -234,33 +235,6 @@ class _BusinessInfoState extends State<BusinessInfo> {
                           color: getIconColor(position: 4),
                           iconPath: 'assets/merchant_icons/bank_details.png',
                           title: "Bank\nDetails"),
-                    ],
-                  ),
-                ),
-                Placeholder(
-                  child: Row(
-                    children: [
-                      ElevatedButton(
-                          onPressed: () {
-                            setState(() {
-                              currTabPosition = 1;
-                            });
-                          },
-                          child: Text('reset')),
-                      ElevatedButton(
-                          onPressed: () {
-                            setState(() {
-                              currTabPosition--;
-                            });
-                          },
-                          child: Text('back')),
-                      ElevatedButton(
-                          onPressed: () {
-                            setState(() {
-                              currTabPosition++;
-                            });
-                          },
-                          child: Text('next')),
                     ],
                   ),
                 ),
