@@ -16,6 +16,7 @@ import 'package:intl_phone_field/countries.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sifr_latest/common_widgets/app_appbar.dart';
 import 'package:sifr_latest/models/merchant_requestmodel.dart';
+import 'package:sifr_latest/pages/mechant_order/merchant_order_details.dart';
 import 'package:sifr_latest/widgets/Forms/Business_info.dart';
 import 'package:sifr_latest/widgets/Forms/document_uploads.dart';
 import 'package:sifr_latest/widgets/Forms/merchant_store_form.dart';
@@ -26,12 +27,15 @@ import '../../../../common_widgets/custom_app_button.dart';
 import '../../../../common_widgets/form_title_widget.dart';
 import '../../../../common_widgets/icon_text_widget.dart';
 import '../../../../config/config.dart';
+import '../../../../helpers/addhaarvalidaters.dart';
+import '../../../../helpers/pan_validateer.dart';
 import '../../../../models/models.dart';
 import '../../../../providers/providers.dart';
 import '../../../../services/services.dart';
 import '../../../../widgets/Forms/kyc_form.dart';
 import '../../../../widgets/Forms/security_form.dart';
 import '../../../../widgets/widget.dart';
+import '../../../mechant_order/models/mechant_additionalingo_model.dart';
 import 'terms_and_conditions.dart';
 
 class MerchantSignup extends StatefulWidget {
@@ -57,6 +61,15 @@ class _MerchantSignupState extends State<MerchantSignup> {
       MerchantRegPersonalReqModel();
   MerchantCompanyDetailsReqModel merchantCompanyDetailsReq =
       MerchantCompanyDetailsReqModel();
+  MerchantAdditionalInfoRequestmodel merchantadditipnalreq =
+      MerchantAdditionalInfoRequestmodel(merchantProductDetails: [
+    MerchantProductDetails(
+        productName: "aadf",
+        productId: 1,
+        package: "package",
+        packagetId: 2,
+        quantity: 5)
+  ]);
 
   // --------- FORM KEYs ------------
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -86,6 +99,12 @@ class _MerchantSignupState extends State<MerchantSignup> {
       TextEditingController();
 
   final TextEditingController _permanentZipCodeCtrl = TextEditingController();
+
+  // merchant store image
+  final TextEditingController _merchantStoreFrontImageCtrl =
+      TextEditingController();
+  final TextEditingController _merchantStoreInsideImageCtrl =
+      TextEditingController();
 
   String profilePic = '';
   bool enabledLast = false;
@@ -148,6 +167,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
   List tmsMasterCountriesList = [];
   List tmsMasterCitiesList = [];
   List tmsMasterCurrenciesList = [];
+  List tmsProductMasterlist = [];
   List mmcTypeList = [];
   List stateList = [];
   List cityList = [];
@@ -165,7 +185,12 @@ class _MerchantSignupState extends State<MerchantSignup> {
       TextEditingController();
 
   String userCheck = '';
+  String panOwnerName = '';
+  String addhaarCheck = '';
+  String accountCheck = '';
   bool showVerify = true;
+  bool showaddharverify = true;
+  bool addhaarOTPsent = false;
   bool showVerify1 = true;
   bool emailVerify = false;
 
@@ -180,6 +205,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
   bool enabledConfirmPin = false;
   late String userCheckMessage = '';
   bool userVerify = false;
+  bool accountVerify = true;
 
   /// SECURITY QUESTION INFO
   final TextEditingController _answer1Controller = TextEditingController();
@@ -201,6 +227,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
   String selectedPermenentCountry = '';
   final TextEditingController selectedMcc = TextEditingController();
   final TextEditingController selectedBusinessType = TextEditingController();
+  final TextEditingController selectedBusinessTurnOverCtrl =
+      TextEditingController();
 
   List list = [];
   bool enabledSecurity2 = false;
@@ -269,12 +297,12 @@ class _MerchantSignupState extends State<MerchantSignup> {
   var poiExpiry = DateTime.now();
 
   @override
-  void initState() {
+  initState() {
     DevicePermission().checkPermission();
     getCurrentPosition();
-    getSecurityQuestions();
-    loadMcc();
-    getCountry();
+    //getSecurityQuestions();
+    //loadMcc();
+    //getCountry();
     getAcquirers();
     //userServices.getAcqApplicationid('1');
 
@@ -333,7 +361,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
   }
 
   onTapConfirm() {
-    Navigator.pushNamedAndRemoveUntil(context, 'login', (route) => false);
+    Navigator.pushNamedAndRemoveUntil(
+        context, 'MerchantNumVerify', (route) => false);
   }
 
   int currTabPosition = 1;
@@ -354,25 +383,33 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
   items(int position) {
     if (position == 0) {
-      return mainControl('Merchant Personal Information', personalInfo());
-    } else if (position == 1) {
-      return mainControl('Merchant Id proof', loginInfo());
-    } else if (position == 2) {
-      var isDarkMode = context.isDarkMode;
-      return SecurityForm(
-        selectedItem1: selectedItem1,
-        selectedItem2: selectedItem2,
-        selectedItem3: selectedItem3,
-        registerRequestModel: requestModel,
-        answer1: _answer1Controller,
-        answer2: _answer2Controller,
-        answer3: _answer3Controller,
-        securityQuestionList: securityQuestionList,
-        darkmode: isDarkMode,
-        next: securityNext,
-        previous: securityPrevious,
+      return MerchantOrderDetails(
+        orderNext: orderNext,
+        tmsProductMaster: tmsProductMasterlist,
+        merchantCompanyDetailsReq: merchantadditipnalreq,
       );
-    } else if (position == 3) {
+    }
+    if (position == 1) {
+      return mainControl('Merchant Personal Information', personalInfo());
+    }
+    // else if (position == 2) {
+    //   var isDarkMode = context.isDarkMode;
+    //   return SecurityForm(
+    //     selectedItem1: selectedItem1,
+    //     selectedItem2: selectedItem2,
+    //     selectedItem3: selectedItem3,
+    //     registerRequestModel: requestModel,
+    //     answer1: _answer1Controller,
+    //     answer2: _answer2Controller,
+    //     answer3: _answer3Controller,
+    //     securityQuestionList: securityQuestionList,
+    //     darkmode: isDarkMode,
+    //     next: securityNext,
+    //     previous: securityPrevious,
+    //   );
+    // }
+
+    else if (position == 2) {
       return BusinessInfo(
         previous: businessPrevious,
         next: businessNext,
@@ -411,14 +448,24 @@ class _MerchantSignupState extends State<MerchantSignup> {
         nationalSelectedDt: nationalSelectedDt,
         acquierList: acquirerList,
         emailController: _emailController,
-        selectedBussinesTurnover: TextEditingController(),
+        selectedBussinesTurnover: selectedBusinessTurnOverCtrl,
         nextfordev: () {
           setState(() {
             position = 4;
           });
         },
       );
+    } else if (position == 3) {
+      return mainControl('Merchant Id proof', merchantIdproof());
     } else if (position == 4) {
+      return mainControl('Merchant Bank Details', merchantBankDetails());
+    } else if (position == 5) {
+      return MerchantStoreImagesForm(
+          previous: storePrevious,
+          next: storeNext,
+          storeFrontImage: _merchantStoreFrontImageCtrl,
+          insideStoreImage: _merchantStoreInsideImageCtrl);
+    } else if (position == 6) {
       return DocumentUploads(
           previous: documentPrevious,
           next: documentNext,
@@ -426,40 +473,42 @@ class _MerchantSignupState extends State<MerchantSignup> {
           nationalIdFront: nationalIdFront,
           cancelCheque: cancelCheque,
           nationalIdBack: nationalIdBack);
-    } else if (position == 5) {
-      return KYCForm(
-          previous: kycPrevious,
-          next: kycNext,
-          kycFrontImage: kycFront,
-          kycBackImage: kycBack);
-    } else if (position == 6) {
+    }
+
+    //  else if (position == 5) {
+    //   return KYCForm(
+    //       previous: kycPrevious,
+    //       next: kycNext,
+    //       kycFrontImage: kycFront,
+    //       kycBackImage: kycBack);
+    // }
+
+    else if (position == 7) {
       return mainControl('Review', review());
-    } else if (position == 7) {
-      return mainControl('Merchant Bank Details', merchantBankDetails());
-    } else if (position == 8) {
-      return MerchantStoreImagesForm(
-          previous: kycPrevious,
-          next: kycNext,
-          storeFrontImage: TextEditingController(),
-          insideStoreImage: TextEditingController());
     }
   }
 
   businessNext() {
     setState(() {
-      position = 1; //default value 4
+      position = 3; //default value 4
     });
   }
 
   businessPrevious() {
     setState(() {
-      position = 0;
+      position = 1;
     });
   }
 
   securityNext() {
     setState(() {
       position = 3;
+    });
+  }
+
+  orderNext() {
+    setState(() {
+      position = 1;
     });
   }
 
@@ -538,33 +587,33 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 ],
               ),
             ),
-            Placeholder(
-              child: Row(
-                children: [
-                  ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          currTabPosition = 1;
-                        });
-                      },
-                      child: Text('reset')),
-                  ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          currTabPosition--;
-                        });
-                      },
-                      child: Text('back')),
-                  ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          currTabPosition++;
-                        });
-                      },
-                      child: Text('next')),
-                ],
-              ),
-            ),
+            // Placeholder(
+            //   child: Row(
+            //     children: [
+            //       ElevatedButton(
+            //           onPressed: () {
+            //             setState(() {
+            //               currTabPosition = 1;
+            //             });
+            //           },
+            //           child: Text('reset')),
+            //       ElevatedButton(
+            //           onPressed: () {
+            //             setState(() {
+            //               currTabPosition--;
+            //             });
+            //           },
+            //           child: Text('back')),
+            //       ElevatedButton(
+            //           onPressed: () {
+            //             setState(() {
+            //               currTabPosition++;
+            //             });
+            //           },
+            //           child: Text('next')),
+            //     ],
+            //   ),
+            // ),
             const FormTitleWidget(subWord: 'Merchant Details'),
             const SizedBox(height: 35),
             Row(
@@ -1376,39 +1425,54 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   onPressed: () {
                     setState(() {
                       currTabPosition = 2;
-                      position = 3;
+                      position = 2;
                     });
                   },
                   child: Text('next')),
             ),
-            CustomAppButton(
-              title: "Next",
-              onPressed: () async {
-                // // getCurrentPosition();
+            Row(
+              children: [
+                CustomAppButton(
+                  width: 0.4,
+                  title: 'Back',
+                  onPressed: () {
+                    setState(() {
+                      position = 0;
+                    });
+                  },
+                ),
+                Expanded(child: SizedBox()),
+                CustomAppButton(
+                  width: 0.4,
+                  title: "Next",
+                  onPressed: () async {
+                    // // getCurrentPosition();
 
-                // if (personalFormKey.currentState!.validate()
-                //     //  &&
-                //     //     mobileNoCheck == 'false' &&
-                //     //     emailCheck == 'false' &&
-                //     //     email
+                    // if (personalFormKey.currentState!.validate()
+                    //     //  &&
+                    //     //     mobileNoCheck == 'false' &&
+                    //     //     emailCheck == 'false' &&
+                    //     //     email
 
-                //     ) {
-                // personalFormKey.currentState!.save();
-                // print(merchantPersonalReq.toJson());
-                // print(jsonEncode(merchantPersonalReq.toJson()));
-                // setState(() {
-                //   position = 3;
-                // });
-                // }
-                personalFormKey.currentState!.save();
-                if (personalFormKey.currentState!.validate()) {
-                  print(jsonEncode(merchantPersonalReq.toJson()));
-                  setState(() {
-                    currTabPosition = 2;
-                    position = 3;
-                  });
-                }
-              },
+                    //     ) {
+                    // personalFormKey.currentState!.save();
+                    // print(merchantPersonalReq.toJson());
+                    // print(jsonEncode(merchantPersonalReq.toJson()));
+                    // setState(() {
+                    //   position = 3;
+                    // });
+                    // }
+                    personalFormKey.currentState!.save();
+                    if (personalFormKey.currentState!.validate()) {
+                      print(jsonEncode(merchantPersonalReq.toJson()));
+                      setState(() {
+                        currTabPosition = 2;
+                        position = 2;
+                      });
+                    }
+                  },
+                ),
+              ],
             ),
             const SizedBox(
               height: 20.0,
@@ -1476,8 +1540,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
     });
   }
 
-  getAcquirers() {
-    userServices.getAcquirers().then((response) async {
+  getAcquirers() async {
+    print("----default value called----");
+    await userServices.getAcquirers().then((response) async {
       final Map<String, dynamic> data = json.decode(response.body);
       List<dynamic> acquirerDetails =
           data['data'][0]['acquirerAcquirerDetails'];
@@ -1487,6 +1552,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
       List<dynamic> tmsMasterCities = data['data'][0]['tmsMasterCities'];
       List<dynamic> tmsMasterCurrencies =
           data['data'][0]['tmsMasterCurrencies'];
+      List<dynamic> tmsProductMaster = data['data'][0]['tmsProductMaster'];
 
       //       var countries = List<String>.from(data['data'][0]['tmsMasterCountries']
       //     .map((item) => item['countryName']));
@@ -1502,21 +1568,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
         tmsMasterCountriesList = tmsMasterCountries;
         tmsMasterCitiesList = tmsMasterCities;
         tmsMasterCurrenciesList = tmsMasterCurrencies;
+        tmsProductMasterlist = tmsProductMaster;
 
-        for (var acquirer in acquirerDetails) {
-          String acquirerName = acquirer['acquirerName'];
-          print('Acquirer Name: $acquirerName');
-        }
-
-        for (var mccGroup in mccGroups) {
-          String mccGroupId = mccGroup['mccGroupId'].toString();
-          print('mccGroupId : $mccGroupId');
-        }
-
-        for (var mccType in mccTypes) {
-          String acquirerName = mccType['mccTypeDesc'];
-          print('mccTypeDesc: $acquirerName');
-        }
         // countryList = decodeData['responseValue']['list'];
         // if (countryList.isNotEmpty) {
         //   selectedCountries = countryList[0]['ctyName'].toString();
@@ -1527,6 +1580,27 @@ class _MerchantSignupState extends State<MerchantSignup> {
         // }
         //userServices.getAcqApplicationid('1');
       });
+
+      for (var acquirer in acquirerDetails) {
+        String acquirerName = acquirer['acquirerName'];
+        print('Acquirer Name: $acquirerName');
+      }
+
+      for (var mccGroup in mccGroups) {
+        String mccGroupId = mccGroup['mccGroupId'].toString();
+        print('mccGroupId : $mccGroupId');
+      }
+
+      for (var mccType in mccTypes) {
+        String acquirerName = mccType['mccTypeDesc'];
+        print('mccTypeDesc: $acquirerName');
+      }
+
+      for (var products in tmsProductMaster) {
+        String acquirerName = products['productName'];
+        print('productName: $acquirerName');
+      }
+      print("length" + "${tmsProductMaster.length}");
     });
   }
 
@@ -1626,7 +1700,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
         ),
       );
 
-  Widget loginInfo() {
+  Widget merchantIdproof() {
     var screenHeight = MediaQuery.of(context).size.height;
 
     return Form(
@@ -1670,34 +1744,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   ],
                 ),
               ),
-              Placeholder(
-                strokeWidth: 1,
-                child: Row(
-                  children: [
-                    ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            currTabPosition = 1;
-                          });
-                        },
-                        child: Text('Reset')),
-                    ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            currTabPosition--;
-                          });
-                        },
-                        child: Text('back')),
-                    ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            currTabPosition++;
-                          });
-                        },
-                        child: Text('next')),
-                  ],
-                ),
-              ),
+
               const FormTitleWidget(subWord: 'Merchant ID proof'),
               const SizedBox(height: 10),
               CustomTextFormField(
@@ -1706,7 +1753,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 required: true,
                 prefixIcon: Icons.verified,
                 onFieldSubmitted: (name) {
-                  getUser();
+                  // getUser();
+                  validatePan();
                 },
                 onChanged: (String value) {
                   setState(() {
@@ -1732,7 +1780,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                     });
                     showVerify = true;
                     if (userVerify) {
-                      getUser();
+                      validatePan();
                     }
                   }
                 },
@@ -1741,12 +1789,10 @@ class _MerchantSignupState extends State<MerchantSignup> {
                     .textTheme
                     .bodySmall
                     ?.copyWith(color: Theme.of(context).primaryColor),
-                inputFormatters: <TextInputFormatter>[
-                  FilteringTextInputFormatter.allow(RegExp(r'\w'))
-                ],
+                inputFormatters: <TextInputFormatter>[PanNumberFormatter()],
                 suffixText: showVerify ? 'Verify' : 'Change',
                 readOnly: !showVerify,
-                helperText: customHelperHelper(text: 'Merchant Pan'),
+                helperText: customPanHelper(text: 'Merchant Pan'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Merchant Pan is Mandatory!';
@@ -1770,6 +1816,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               // userNameWidget(),
               const SizedBox(height: 30.0),
               CustomTextFormField(
+                keyboardType: TextInputType.number,
                 controller: _merchantAddharController,
                 title: 'Merchant Addhaar Number',
                 required: true,
@@ -1792,17 +1839,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 },
                 suffixIconOnPressed: () {
                   if (_merchantAddharController.text.length >= 12) {
-                    setState(() {
-                      if (!showVerify && userVerify) {
-                        userVerify = false;
-                      } else {
-                        userVerify = true;
-                      }
-                    });
-                    showVerify = true;
-                    if (userVerify) {
-                      getUser();
-                    }
+                    sendAddhaarOtp();
                   }
                 },
                 suffixIconTrue: true,
@@ -1810,12 +1847,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
                     .textTheme
                     .bodySmall
                     ?.copyWith(color: Theme.of(context).primaryColor),
-                inputFormatters: <TextInputFormatter>[
-                  FilteringTextInputFormatter.allow(RegExp(r'\w'))
-                ],
-                suffixText: showVerify ? 'Verify' : 'Change',
-                readOnly: !showVerify,
-                helperText: customHelperHelper(text: 'MerchantAddhaar Number'),
+                inputFormatters: <TextInputFormatter>[AadhaarNumberFormatter()],
+                suffixText: showaddharverify ? 'Send OTP' : 'Change',
+                readOnly: !showaddharverify,
+                helperText:
+                    customAddhaarHelper(text: 'Merchant Addhaar Number'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Addhaar Numberis Mandatory!';
@@ -2081,12 +2117,12 @@ class _MerchantSignupState extends State<MerchantSignup> {
                       title: 'Previous',
                       onPressed: () {
                         // _userNameController.clear();
-                        _passwordController.clear();
-                        _cnfPasswordCtrl.clear();
-                        _pinController.clear();
-                        _confirmPinController.clear();
+                        // _passwordController.clear();
+                        // _cnfPasswordCtrl.clear();
+                        // _pinController.clear();
+                        // _confirmPinController.clear();
                         setState(() {
-                          position = 3; //old 0
+                          position = 2; //old 0
                         });
                       },
                     ),
@@ -2104,7 +2140,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                         //   });
                         // }
                         setState(() {
-                          position = 7; //old 2
+                          position = 4; //old 2
                         });
                       },
                     ),
@@ -2159,34 +2195,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   ],
                 ),
               ),
-              Placeholder(
-                strokeWidth: 1,
-                child: Row(
-                  children: [
-                    ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            currTabPosition = 1;
-                          });
-                        },
-                        child: Text('Reset')),
-                    ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            currTabPosition--;
-                          });
-                        },
-                        child: Text('back')),
-                    ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            currTabPosition++;
-                          });
-                        },
-                        child: Text('next')),
-                  ],
-                ),
-              ),
+
               const FormTitleWidget(subWord: 'Merchant Bank Details'),
               const SizedBox(height: 10),
               CustomTextWidget(text: 'Merchant Bank Account Details '),
@@ -2212,32 +2221,34 @@ class _MerchantSignupState extends State<MerchantSignup> {
                     }
                   });
                 },
-                suffixIconOnPressed: () {
-                  if (merchantAccountNumberCtrl.text.length >= 10) {
-                    setState(() {
-                      if (!showVerify && userVerify) {
-                        userVerify = false;
-                      } else {
-                        userVerify = true;
-                      }
-                    });
-                    showVerify = true;
-                    if (userVerify) {
-                      getUser();
-                    }
-                  }
-                },
-                suffixIconTrue: true,
+                // suffixIconOnPressed: () {
+                //   if (merchantAccountNumberCtrl.text.length >= 10) {
+                //     setState(() {
+                //       if (!showVerify && userVerify) {
+                //         userVerify = false;
+                //       } else {
+                //         userVerify = true;
+                //       }
+                //     });
+                //     showVerify = true;
+                //     if (userVerify) {
+                //       getUser();
+                //     }
+                //   }
+                // },
+                // suffixIconTrue: true,
                 helperStyle: Theme.of(context)
                     .textTheme
                     .bodySmall
                     ?.copyWith(color: Theme.of(context).primaryColor),
                 inputFormatters: <TextInputFormatter>[
-                  FilteringTextInputFormatter.allow(RegExp(r'\w'))
+                  FilteringTextInputFormatter.digitsOnly,
                 ],
-                suffixText: showVerify ? 'Verify' : 'Change',
-                readOnly: !showVerify,
-                helperText: customHelperHelper(text: 'Account Number'),
+                // suffixText: showVerify ? 'Verify' : 'Change',
+                keyboardType: TextInputType.number,
+                maxLength: 18,
+                readOnly: !accountVerify,
+                // helperText: customHelperHelper(text: 'Account Number'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Account Number is Mandatory!';
@@ -2266,7 +2277,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 required: true,
                 prefixIcon: Icons.verified,
                 onFieldSubmitted: (name) {
-                  getUser();
+                  validateAccountNumber();
                 },
                 onChanged: (String value) {
                   setState(() {
@@ -2282,17 +2293,17 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   });
                 },
                 suffixIconOnPressed: () {
-                  if (merchantIfscCodeCtrl.text.length >= 12) {
-                    setState(() {
-                      if (!showVerify && userVerify) {
-                        userVerify = false;
-                      } else {
-                        userVerify = true;
-                      }
-                    });
-                    showVerify = true;
-                    if (userVerify) {
-                      getUser();
+                  if (merchantIfscCodeCtrl.text.length >= 10) {
+                    print("clicked");
+                    if (accountVerify) {
+                      print("validate");
+                      validateAccountNumber();
+                    } else {
+                      print("change");
+
+                      setState(() {
+                        accountVerify = true;
+                      });
                     }
                   }
                 },
@@ -2302,22 +2313,23 @@ class _MerchantSignupState extends State<MerchantSignup> {
                     .bodySmall
                     ?.copyWith(color: Theme.of(context).primaryColor),
                 inputFormatters: <TextInputFormatter>[
-                  FilteringTextInputFormatter.allow(RegExp(r'\w'))
+                  LengthLimitingTextInputFormatter(11),
+                  FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')),
                 ],
-                suffixText: showVerify ? 'Verify' : 'Change',
-                readOnly: !showVerify,
-                helperText: customHelperHelper(text: 'IFSC Code'),
+                suffixText: accountVerify ? 'Verify' : 'Change',
+                readOnly: !accountVerify,
+                helperText: customAccountHelper(text: 'Acc. No And IFSC '),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'IFSC Code Mandatory!';
                   }
-                  if (value.length < 12) {
+                  if (value.length < 10) {
                     return 'Minimum character length is 12';
                   }
                   // if (userVerify && userCheck == "true") {
                   //   return Constants.userNameFailureMessage;
                   // }
-                  if (!RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
+                  if (!RegExp(r'^[a-zA-Z\d][a-zA-Z\d.]+[a-zA-Z\d]$')
                       .hasMatch(value)) {
                     return 'Invalid IFSC Code';
                   }
@@ -2401,7 +2413,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                         _pinController.clear();
                         _confirmPinController.clear();
                         setState(() {
-                          position = 1; //old 0
+                          position = 3; //old 0
                         });
                       },
                     ),
@@ -2419,7 +2431,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                         //   });
                         // }
                         setState(() {
-                          position = 8; //old 6//2
+                          position = 5; //old 6//2
                         });
                       },
                     ),
@@ -2474,25 +2486,37 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
   kycNext() {
     setState(() {
-      position = 6;
+      position = 7;
     });
   }
 
   kycPrevious() {
     setState(() {
+      position = 8;
+    });
+  }
+
+  storePrevious() {
+    setState(() {
       position = 4;
+    });
+  }
+
+  storeNext() {
+    setState(() {
+      position = 6;
     });
   }
 
   documentNext() {
     setState(() {
-      position = 5;
+      position = 7;
     });
   }
 
   documentPrevious() {
     setState(() {
-      position = 3;
+      position = 5;
     });
   }
 
@@ -2712,8 +2736,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
                     children: [
                       CustomTextWidget(
                           text:
-                              "UPI - 0% |  UPI (Credit) - 1.5%\n Debit Card - 0.4%  | Debit Card(Rupay) - 0%\nCredit (Domestic - 1.99%)"),
+                              "UPI - 0% |  UPI (Credit) - 1.5%\nDebit Card - 0.4%  \nDebit Card(Rupay) - 0%\nCredit (Domestic - 1.99%)"),
                     ],
+                  ),
+                  SizedBox(
+                    height: 15,
                   ),
                   Container(
                     color: AppColors.kSelectedBackgroundColor,
@@ -2807,7 +2834,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                       ?.copyWith(fontWeight: FontWeight.bold),
                   children: [
                     TextSpan(
-                      text: Constants.reviewNotes,
+                      text: Constants.aggrementMessage,
                       style: Theme.of(context)
                           .textTheme
                           .bodyMedium
@@ -2912,6 +2939,13 @@ class _MerchantSignupState extends State<MerchantSignup> {
               ],
             ),
           ),
+          ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  position = 6;
+                });
+              },
+              child: Text('back')),
           SizedBox(
             height: 30,
           ),
@@ -3121,15 +3155,148 @@ class _MerchantSignupState extends State<MerchantSignup> {
     }
   }
 
+  customAddhaarHelper({required String text}) {
+    if (addhaarCheck == false) {
+      return "Click 'Send Opp' validate $text ";
+    }
+    if (addhaarOTPsent) {
+      return 'Verify Using  Otp';
+    }
+  }
+
   customHelperHelper({required String text}) {
     if (userVerify == false) {
       return "Click 'Verify' to validate $text ";
     }
-    if (userCheck.toString() == "false") {
-      return Constants.userNameSuccessMessage;
+    if (userCheck.toString() == "VALID") {
+      return 'Name $panOwnerName';
     }
     if (userCheck == "Loading...") {
       return "Please wait...";
+    }
+  }
+
+  customAccountHelper({required String text}) {
+    if (accountVerify) {
+      return "Click 'Verify' to validate $text ";
+    }
+    if (!accountVerify) {
+      return "Account Info Validated";
+    }
+    if (accountCheck == "Loading...") {
+      return "Please wait...";
+    }
+  }
+
+  customPanHelper({required String text}) {
+    if (userVerify == false) {
+      return "Click 'Verify' to validate $text ";
+    }
+    if (userCheck.toString() == "VALID") {
+      return 'Name $panOwnerName';
+    }
+    if (userCheck == "Loading...") {
+      return "Please wait...";
+    }
+  }
+
+  validatePan() async {
+    if (_merchantPanController.text.isNotEmpty) {
+      debugPrint("Calling pan validation API");
+      setState(() {
+        userCheck = "Loading...";
+      });
+      var panNumber = _merchantPanController.text.toString();
+      // var user = await Validators.encrypt(_merchantPanController.text.toString());
+      userServices.panValidation(panNumber).then((response) async {
+        print(response.body);
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          setState(() {
+            Map<String, dynamic> jsonResponse = json.decode(response.body);
+            String name = jsonResponse["kycResult"]["name"];
+            String idStatus = jsonResponse["kycResult"]["idStatus"];
+            //userCheck = response.body[];
+
+            if (idStatus == 'VALID') {
+              userCheck = 'VALID';
+              panOwnerName = name;
+              showVerify = false;
+
+              print(name);
+              userCheckMessage = Constants.userNameSuccessMessage;
+              merchantadditipnalreq.panNo = panNumber;
+            } else {
+              setState(() => showVerify = true);
+            }
+          });
+        }
+      });
+    }
+  }
+
+  validateAccountNumber() async {
+    if (merchantIfscCodeCtrl.text.isNotEmpty &&
+        merchantAccountNumberCtrl.text.isNotEmpty) {
+      debugPrint("Calling Accountvalidation API");
+      setState(() {
+        accountCheck = "Loading...";
+      });
+      var accNumber = merchantAccountNumberCtrl.text.toString();
+      var ifscNumber = merchantIfscCodeCtrl.text.toString();
+      print(accNumber);
+      print(ifscNumber);
+      // var user = await Validators.encrypt(_merchantPanController.text.toString());
+      userServices
+          .accountValidation(accNumber, ifscNumber)
+          .then((response) async {
+        print(response.body);
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          print(response.statusCode);
+          setState(() {
+            accountCheck = 'VALID';
+
+            accountVerify = false;
+            // if (idStatus == 'VALID') {
+            //   accountCheck = 'VALID';
+            //   panOwnerName = name;
+            //   showVerify = false;
+            //   print(name);
+            //   userCheckMessage = Constants.userNameSuccessMessage;
+            // } else {
+            //   setState(() => showVerify = true);
+            // }
+          });
+        }
+      });
+    }
+  }
+
+  sendAddhaarOtp() async {
+    if (_merchantAddharController.text.isNotEmpty) {
+      debugPrint("Calling AddhaarOtp API");
+      setState(() {
+        addhaarCheck = "Loading...";
+      });
+      // var user =
+      //     await Validators.encrypt(_merchantAddharController.text.toString());
+      var addhaarNumber = _merchantAddharController.text.toString();
+      userServices.sendAddhaarOtp(addhaarNumber).then((response) async {
+        print(response.statusCode);
+        if (response.statusCode == 200 ||
+            response.statusCode == 201 ||
+            response.statusCode >= 200) {
+          setState(() {
+            addhaarOTPsent = true;
+            showaddharverify = !showaddharverify;
+            // if (addhaarCheck == 'false') {
+            //   showaddharverify = false;
+            //   userCheckMessage = Constants.userNameSuccessMessage;
+            // } else {
+            //   setState(() => showaddharverify = true);
+            // }
+          });
+        }
+      });
     }
   }
 

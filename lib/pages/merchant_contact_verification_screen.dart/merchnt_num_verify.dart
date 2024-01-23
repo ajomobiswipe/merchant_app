@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:icons_plus/icons_plus.dart';
 import 'package:sifr_latest/common_widgets/app_text_form_feild.dart';
 import 'package:sifr_latest/common_widgets/custom_otp_widget.dart';
 import 'package:sifr_latest/config/config.dart';
 import 'package:sifr_latest/pages/merchant_contact_verification_screen.dart/merchant_regn_type_selector.dart';
 import 'package:sifr_latest/widgets/custom_text_widget.dart';
+import 'package:sifr_latest/widgets/widget.dart';
 
 class MerchantNumVerify extends StatefulWidget {
   const MerchantNumVerify({super.key});
@@ -13,6 +15,7 @@ class MerchantNumVerify extends StatefulWidget {
 }
 
 class _MerchantNumVerifyState extends State<MerchantNumVerify> {
+  final TextEditingController _mobileNoController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -110,7 +113,12 @@ class _MerchantNumVerifyState extends State<MerchantNumVerify> {
             if (value == 1) {
             } else if (value == 2) {
               Navigator.pushNamed(context, 'myApplications');
-            } else if (value == 3) {}
+            } else if (value == 3) {
+              Navigator.pushNamed(context, 'LocationPage');
+            } else if (value == 4) {
+              logout.bottomSheet(context);
+              //  Navigator.pushNamed(context, 'DeviceDeploymentScreen');
+            }
           },
         ),
         actions: [
@@ -207,14 +215,47 @@ class _MerchantNumVerifyState extends State<MerchantNumVerify> {
             const SizedBox(
               height: 10,
             ),
-            const AppTextFormField(
-              title: 'Enther the Merchant Mobile Number',
-              required: false,
-              suffixIcon: Icons.send_outlined,
-              iconColor: AppColors.kLightGreen,
-              eneablrTitle: false,
-              suffixIconTrue: true,
+            CustomMobileField(
+              enabled: true,
+              controller: _mobileNoController,
+              keyboardType: TextInputType.number,
+              title: 'Mobile Number',
+              // enabled: _dateController.text.isEmpty
+              //     ? enabledMobile = false
+              //     : enabledMobile = enabledDob,
+
+              required: true,
+              // helperText: mobileNoCheckMessage,
+              //helperStyle: style,
+              prefixIcon: FontAwesome.mobile,
+              countryCode: 'IN',
+              onChanged: (phone) {
+                // merchantPersonalReq.currentMobileNo =
+                //     phone.countryCode + phone.number;
+              },
+              onCountryChanged: (country) {
+                setState(() {
+                  // countryCode = country.code;
+                  // _country = country;
+                  // _mobileNoController.text = countryCode;
+                });
+              },
+              onTap: () {
+                print("ontap");
+              },
+              // validator: (value) {
+              //   print(value);
+              //   return '';
+              // },
             ),
+            // const AppTextFormField(
+            //   title: 'Enther the Merchant Mobile Number',
+            //   required: false,
+            //   suffixIcon: Icons.send_outlined,
+            //   iconColor: AppColors.kLightGreen,
+            //   eneablrTitle: false,
+            //   suffixIconTrue: true,
+            // ),
             const SizedBox(
               height: 20,
             ),

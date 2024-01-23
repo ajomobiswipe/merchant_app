@@ -12,7 +12,9 @@ class AppAppbar extends StatelessWidget implements PreferredSizeWidget {
       surfaceTintColor: Colors.white,
       leading: IconButton(
         icon: Icon(Icons.arrow_back),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pop(context);
+        },
       ),
       title: CustomTextWidget(text: title),
       actions: [

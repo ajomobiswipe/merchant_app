@@ -7,8 +7,7 @@
 
 class Constants {
   // GLOBAL MESSAGE IN APIS
-  static const unauthorized =
-      'You have logged into Sifr from another device with the same credentials.';
+  static const unauthorized = 'Please Login Again';
   static const instId = 'SIFR';
   static const deviceType = 'MOBILE';
   static const pwdResetType = 'pwdReset';
@@ -58,4 +57,6 @@ class Constants {
   static const verifyMPIN = 'assets/screen/verify_mpin.png';
   static const verifyKYC = 'assets/screen/kyc.png';
   static const omaLogo = 'assets/logo/oma_emirates_logo.png';
+  static const aggrementMessage =
+      "Through the provided link via SMS or email, the merchant has read the acknowledgment, the terms and conditions, as well as the merchant service agreement.";
 }

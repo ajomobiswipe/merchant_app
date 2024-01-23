@@ -17,9 +17,7 @@ import 'package:path_provider/path_provider.dart';
 
 // STATEFUL WIDGET
 class SuccessReceiptForDemo extends StatefulWidget {
-
   const SuccessReceiptForDemo({super.key});
-
 
   @override
   State<SuccessReceiptForDemo> createState() => _SuccessReceiptForDemoState();
@@ -77,7 +75,7 @@ class _SuccessReceiptForDemoState extends State<SuccessReceiptForDemo> {
                 const Center(
                   child: Text("Your Payment is success",
                       style:
-                      TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                 ),
                 // const Center(
                 //   child: Text("Transaction Receipt",
@@ -350,10 +348,7 @@ class _SuccessReceiptForDemoState extends State<SuccessReceiptForDemo> {
                     },
                     child: Text(
                       'Go to Dashboard',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.copyWith(
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                           decoration: TextDecoration.underline),
                     ))

@@ -9,6 +9,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:sifr_latest/components/secure_screen.dart';
+import 'package:sifr_latest/pages/device_deployment/device_deployment.dart';
+import 'package:sifr_latest/pages/location_demo.dart';
 import 'package:sifr_latest/pages/merchant_contact_verification_screen.dart/merchnt_num_verify.dart';
 import 'package:sifr_latest/pages/user_types/user_type_selection.dart';
 
@@ -39,20 +41,23 @@ class CustomRoute {
       }
       switch (settings.name) {
         // --- USERS ---
-        case "/":
-          return const LoginPage();
+        // case "/":
+        //   return const LoginPage();
         case "login":
           return const LoginPage();
         case "userType":
           return const UserTypeSelection();
         case "MerchantNumVerify":
           return const MerchantNumVerify();
-        case "MerchantOrderDetails":
-          return const MerchantOrderDetails();
+
         case "merchantOnboarding":
           return const MerchantSignup();
         case "myApplications":
           return const MyApplications();
+        case "LocationPage":
+          return const LocationPage();
+        case "DeviceDeploymentScreen":
+          return const DeviceDeploymentScreen();
 
         case "loginAuthOtp":
           Map args = settings.arguments as Map;

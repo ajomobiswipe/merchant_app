@@ -111,14 +111,14 @@ class _SplashScreenState extends State<SplashScreen> {
       List check = await Global.availableBiometrics();
       if (check.isEmpty) {
         if (!mounted) return;
-        Navigator.pushReplacementNamed(context, 'home');
+        Navigator.pushReplacementNamed(context, 'MerchantNumVerify');
       } else {
         bool isEnableBioMetric = boxStorage.get('isEnableBioMetric') ?? false;
         if (isEnableBioMetric) {
           var authentication = await Global.authenticate();
           if (authentication && authentication != null) {
             if (!mounted) return;
-            Navigator.pushReplacementNamed(context, 'home');
+            Navigator.pushReplacementNamed(context, 'MerchantNumVerify');
           } else if (authentication == false) {
             SystemNavigator.pop();
           } else {
@@ -132,7 +132,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 context, 'loginWithPin', (route) => false);
           } else if (isLoggedIn) {
             if (!mounted) return;
-            Navigator.pushReplacementNamed(context, 'home');
+            Navigator.pushReplacementNamed(context, 'MerchantNumVerify');
           } else {
             if (!mounted) return;
             Navigator.pushReplacementNamed(context, 'userType');
@@ -145,7 +145,7 @@ class _SplashScreenState extends State<SplashScreen> {
         Navigator.pushReplacementNamed(context, 'userType');
       } else {
         if (!mounted) return;
-        Navigator.pushReplacementNamed(context, 'home');
+        Navigator.pushReplacementNamed(context, 'MerchantNumVerify');
       }
     }
   }

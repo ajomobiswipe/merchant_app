@@ -7,57 +7,31 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sifr_latest/common_widgets/app_appbar.dart';
 import 'package:sifr_latest/common_widgets/custom_app_button.dart';
-import '../../common_widgets/icon_text_widget.dart';
 import '../../config/config.dart';
 import '../../config/constants.dart';
-import '../app/CustomDialogBox.dart';
-import '../app/alert_service.dart';
-import '../app/camera_image_picker.dart';
-import '../app_widget/app_bar_widget.dart';
-import '../app_widget/app_button.dart';
+import '../../widgets/app/camera_image_picker.dart';
+
 import 'package:badges/badges.dart' as badge;
 
-import '../custom_text_widget.dart';
+import '../../widgets/widget.dart';
 
 // STATEFUL WIDGET
-class MerchantStoreImagesForm extends StatefulWidget {
-  final TextEditingController storeFrontImage;
-  final TextEditingController insideStoreImage;
-  Function previous;
-  Function next;
-
-  MerchantStoreImagesForm({
+class DeviceDeploymentScreen extends StatefulWidget {
+  const DeviceDeploymentScreen({
     Key? key,
-    required this.previous,
-    required this.next,
-    required this.storeFrontImage,
-    required this.insideStoreImage,
   }) : super(key: key);
 
   @override
-  State<MerchantStoreImagesForm> createState() =>
-      _MerchantStoreImagesFormState();
+  State<DeviceDeploymentScreen> createState() => _DeviceDeploymentScreenState();
 }
 
-class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
+class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
+  final TextEditingController testTransactionChargeSlipImage =
+      TextEditingController();
+  final TextEditingController deviceAtStoreImage = TextEditingController();
+  final TextEditingController deviceSerialNumberCntrl = TextEditingController();
   Position? _currentPosition;
-  AlertService alertWidget = AlertService();
-  bool isChecked = true;
-
-  int currTabPosition = 3;
-
-  Color getIconColor({
-    required int position,
-  }) {
-    if (position <= currTabPosition - 1) {
-      return Colors.green;
-    } else if (position == currTabPosition) {
-      return AppColors.kPrimaryColor;
-    } else if (position > currTabPosition) {
-      return Colors.grey;
-    }
-    return Colors.black;
-  }
+  final AlertService alertWidget = AlertService();
 
   @override
   void initState() {
@@ -114,63 +88,80 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
     //Global Background Pattern Widget
     return Scaffold(
       appBar: const AppAppbar(
-        title: 'Merchant Store Info',
+        title: 'Deployment Details',
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 15),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             const SizedBox(
               height: 20.0,
             ),
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: AppColors.kSelectedBackgroundColor,
-              ),
-              // height: screenHeight / 10,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  IconTextWidget(
-                      screenHeight: screenHeight,
-                      color: getIconColor(
-                        position: 1,
-                      ),
-                      iconPath: 'assets/merchant_icons/merchant_detials.png',
-                      title: "Merchant\nDetails"),
-                  IconTextWidget(
-                      screenHeight: screenHeight,
-                      color: getIconColor(position: 2),
-                      iconPath: 'assets/merchant_icons/id_proof_icon.png',
-                      title: "Id\nProofs"),
-                  IconTextWidget(
-                      screenHeight: screenHeight,
-                      color: getIconColor(position: 3),
-                      iconPath: 'assets/merchant_icons/bussiness_proofs.png',
-                      title: "Bussiness\nProofs"),
-                  IconTextWidget(
-                      screenHeight: screenHeight,
-                      color: getIconColor(position: 4),
-                      iconPath: 'assets/merchant_icons/bank_details.png',
-                      title: "Bank\nDetails"),
-                ],
-              ),
+            const SizedBox(
+              height: 20.0,
             ),
-            const SizedBox(height: 20.0),
-            CustomTextWidget(
-                text:
-                    'lat ${_currentPosition?.latitude ?? ""} long ${_currentPosition?.longitude ?? ""}'),
-            Center(
-              child: Text(
-                  "Uploading your store's inside image, outside image, and store Address.",
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodySmall
-                      ?.copyWith(color: Colors.grey)),
+            Text("Curley Tales",
+                textAlign: TextAlign.center,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge
+                    ?.copyWith(color: Colors.black)),
+            Text("13574588898978",
+                textAlign: TextAlign.center,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge
+                    ?.copyWith(color: Colors.black)),
+            const SizedBox(
+              height: 20.0,
+            ),
+            // CustomTextWidget(
+            //     text:
+            //         'lat ${_currentPosition?.latitude ?? ""} long ${_currentPosition?.longitude ?? ""}'),
+            // Center(
+            //   child: Text(
+            //       "Uploading your store's inside image, outside image, and store Address.",
+            //       textAlign: TextAlign.center,
+            //       style: Theme.of(context)
+            //           .textTheme
+            //           .bodySmall
+            //           ?.copyWith(color: Colors.grey)),
+            // ),
+            CustomTextFormField(
+              title: 'MAP Device Serial Number',
+              controller: deviceSerialNumberCntrl,
+              required: true,
+              textCapitalization: TextCapitalization.words,
+              // enabled: _firstNameController.text.isEmpty ||
+              //         _firstNameController.text.length < 3
+              //     ? enabledLast = false
+              //     : enabledLast = true,
+              prefixIcon: LineAwesome.mobile_alt_solid,
+              validator: (value) {
+                value = value.trim();
+                if (value == null || value.isEmpty) {
+                  return 'Device Serial is Mandatory!';
+                }
+                if (value.length < 10) {
+                  return 'Minimum 10 characters';
+                }
+
+                return null;
+              },
+              onChanged: (String value) {
+                value = value.trim();
+              },
+              onSaved: (value) {
+                // merchantPersonalReq.poaNumber = value;
+              },
+              onFieldSubmitted: (value) {
+                // _lastNameController.text = value.trim();
+              },
+            ),
+            const SizedBox(
+              height: 20.0,
             ),
             const SizedBox(height: 20.0),
             Padding(
@@ -182,7 +173,7 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: RichText(
                       text: TextSpan(
-                          text: 'Merchant Store image',
+                          text: 'Test Transaction Chargeslip Image',
                           style: Theme.of(context)
                               .textTheme
                               .bodySmall
@@ -199,20 +190,22 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                           ]),
                     ),
                   ),
-                  widget.storeFrontImage.text != ''
+                  testTransactionChargeSlipImage.text != ''
                       ? GestureDetector(
                           onTap: () {
                             setState(() {
-                              widget.storeFrontImage.text = '';
+                              testTransactionChargeSlipImage.text = '';
                             });
                           },
-                          child: afterSelect(widget.storeFrontImage.text),
+                          child:
+                              afterSelect(testTransactionChargeSlipImage.text),
                         )
                       : Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: GestureDetector(
                             onTap: () {
-                              cameraPhotoDialog(context, 'storeFrontImage');
+                              cameraPhotoDialog(
+                                  context, 'testTransactionChargeSlipImage');
                             },
                             child: Card(
                               elevation: 10,
@@ -239,7 +232,8 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                                       ),
 
                                       Text(
-                                        'Take Photo',
+                                        'Click the image of test transaction Chargeslip',
+                                        textAlign: TextAlign.center,
                                         style: TextStyle(
                                             color:
                                                 Theme.of(context).primaryColor,
@@ -267,7 +261,7 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: RichText(
                       text: TextSpan(
-                          text: 'Inside Image Of Store',
+                          text: 'Image Of Device At Store',
                           style: Theme.of(context)
                               .textTheme
                               .bodySmall
@@ -285,20 +279,20 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                           ]),
                     ),
                   ),
-                  widget.insideStoreImage.text != ''
+                  deviceAtStoreImage.text != ''
                       ? GestureDetector(
                           onTap: () {
                             setState(() {
-                              widget.insideStoreImage.text = '';
+                              deviceAtStoreImage.text = '';
                             });
                           },
-                          child: afterSelect(widget.insideStoreImage.text),
+                          child: afterSelect(deviceAtStoreImage.text),
                         )
                       : Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: GestureDetector(
                             onTap: () {
-                              cameraPhotoDialog(context, 'insideStoreImage');
+                              cameraPhotoDialog(context, 'deviceAtStoreImage');
                             },
                             child: Card(
                               elevation: 10,
@@ -325,7 +319,7 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                                       ),
 
                                       Text(
-                                        'Take Photo',
+                                        'Click the image of Device At Store',
                                         style: TextStyle(
                                             color:
                                                 Theme.of(context).primaryColor,
@@ -352,56 +346,20 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                 ],
               ),
             ),
-            Row(
-              children: [
-                CustomTextWidget(
-                  text: "Merchant Store Address",
-                  // color: AppColors.kPrimaryColor,
-                ),
-                Checkbox(
-                  value: isChecked,
-                  onChanged: (value) {
-                    setState(() {
-                      isChecked = value!;
-                    });
-                  },
-                ),
-                CustomTextWidget(
-                  text: "Same as Bussiness",
-                  size: 10,
-                ),
-              ],
-            ),
-            const SizedBox(height: 20.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 150,
-                  child: CustomAppButton(
-                    title: 'Previous',
-                    onPressed: () {
-                      widget.previous();
-                    },
-                  ),
-                ),
-                SizedBox(
-                  width: 150,
-                  child: CustomAppButton(
-                    title: "Next",
-                    onPressed: () {
-                      if (widget.storeFrontImage.text != '' &&
-                          widget.insideStoreImage.text != '') {
-                        widget.next();
-                      } else {
-                        alertWidget.failure(
-                            context, '', 'Please upload Store Images!');
-                      }
-                    },
-                  ),
-                )
-              ],
+            const SizedBox(height: 30.0),
+            Center(
+              child: CustomAppButton(
+                title: "Depoly",
+                onPressed: () {
+                  if (testTransactionChargeSlipImage.text != '' &&
+                      deviceAtStoreImage.text != '') {
+                    // next();
+                  } else {
+                    alertWidget.failure(
+                        context, '', 'Please upload All images!');
+                  }
+                },
+              ),
             ),
             const SizedBox(height: 20.0),
           ],
@@ -469,18 +427,18 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
         double sizeInMb = sizeInBytes / (1024 * 1024);
 
         if (sizeInMb < 1) {
-          if (type == 'storeFrontImage') {
-            widget.storeFrontImage.text = result.path;
-          } else if (type == 'insideStoreImage') {
-            widget.insideStoreImage.text = result.path;
+          if (type == 'testTransactionChargeSlipImage') {
+            testTransactionChargeSlipImage.text = result.path;
+          } else if (type == 'deviceAtStoreImage') {
+            deviceAtStoreImage.text = result.path;
           }
         } else {
           alertWidget.failure(context, 'Failure', Constants.oneMbErrorMessage);
 
-          if (type == 'storeFrontImage') {
-            widget.storeFrontImage.text = '';
-          } else if (type == 'insideStoreImage') {
-            widget.insideStoreImage.text = '';
+          if (type == 'testTransactionChargeSlipImage') {
+            testTransactionChargeSlipImage.text = '';
+          } else if (type == 'deviceAtStoreImage') {
+            deviceAtStoreImage.text = '';
           }
         }
       });

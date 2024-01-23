@@ -113,7 +113,7 @@ class _CustomOtpWidgetState extends State<CustomOtpWidget> {
               formKey.currentState!.save();
               formKey.currentState!.validate();
               print(pinController.text);
-              Navigator.pushNamed(context, 'MerchantOrderDetails');
+              Navigator.pushNamed(context, 'merchantOnboarding');
             },
           ),
         ],

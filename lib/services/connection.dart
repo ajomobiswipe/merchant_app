@@ -93,13 +93,12 @@ class Connection {
     IOClient ioClient = IOClient(client);
     var res = await ioClient.get(Uri.parse(url), headers: headers);
 
-
-
     if (res.statusCode == 401) {
       alertService.errorToast(Constants.unauthorized);
       navigatorKey.currentState?.pushReplacementNamed('login');
       clearStorage();
     } else {
+      print("connection get response code" + res.statusCode.toString());
       return res;
     }
   }
@@ -151,8 +150,9 @@ class Connection {
     client.badCertificateCallback =
         (X509Certificate cert, String host, int port) => false;
     IOClient ioClient = IOClient(client);
-    var res = await ioClient.post(Uri.parse(url),
-        body: jsonEncode(requestData), headers: header).timeout(const Duration(seconds: 10));
+    var res = await ioClient
+        .post(Uri.parse(url), body: jsonEncode(requestData), headers: header)
+        .timeout(const Duration(seconds: 10));
     // print(res.body);
 
     if (res.statusCode == 401) {
@@ -192,7 +192,7 @@ class Connection {
     }
   }
 
-  putWithRequestBody(url,requestData) async {
+  putWithRequestBody(url, requestData) async {
     String token = boxStorage.getToken();
     final header = {
       'Authorization': 'Bearer $token',
@@ -204,7 +204,8 @@ class Connection {
     client.badCertificateCallback =
         (X509Certificate cert, String host, int port) => false;
     IOClient ioClient = IOClient(client);
-    var res = await ioClient.put(Uri.parse(url),  body: jsonEncode(requestData), headers: header);
+    var res = await ioClient.put(Uri.parse(url),
+        body: jsonEncode(requestData), headers: header);
     if (res.statusCode == 401) {
       alertService.errorToast(Constants.unauthorized);
       navigatorKey.currentState?.pushReplacementNamed('login');
@@ -213,6 +214,4 @@ class Connection {
       return res;
     }
   }
-
-
 }

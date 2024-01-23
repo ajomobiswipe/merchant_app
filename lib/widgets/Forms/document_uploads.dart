@@ -4,6 +4,10 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:sifr_latest/common_widgets/app_appbar.dart';
+import 'package:sifr_latest/common_widgets/custom_app_button.dart';
+import 'package:sifr_latest/common_widgets/icon_text_widget.dart';
+import '../../config/app_color.dart';
 import '../../config/constants.dart';
 import '../app/CustomDialogBox.dart';
 import '../app/alert_service.dart';
@@ -41,13 +45,28 @@ class _DocumentUploadsState extends State<DocumentUploads> {
     super.initState();
   }
 
+  int currTabPosition = 3;
+  //int completedTab = 3;
+
+  Color getIconColor({
+    required int position,
+  }) {
+    if (position <= currTabPosition - 1) {
+      return Colors.green;
+    } else if (position == currTabPosition) {
+      return AppColors.kPrimaryColor;
+    } else if (position > currTabPosition) {
+      return Colors.grey;
+    }
+    return Colors.black;
+  }
+
   @override
   Widget build(BuildContext context) {
+    var screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
-        appBar: const AppBarWidget(
-          action: false,
+        appBar: const AppAppbar(
           title: 'Document Uploads',
-          automaticallyImplyLeading: false,
         ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -57,12 +76,49 @@ class _DocumentUploadsState extends State<DocumentUploads> {
                 const SizedBox(
                   height: 20.0,
                 ),
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: AppColors.kSelectedBackgroundColor,
+                  ),
+                  // height: screenHeight / 10,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      IconTextWidget(
+                          screenHeight: screenHeight,
+                          color: getIconColor(
+                            position: 1,
+                          ),
+                          iconPath:
+                              'assets/merchant_icons/merchant_detials.png',
+                          title: "Merchant\nDetails"),
+                      IconTextWidget(
+                          screenHeight: screenHeight,
+                          color: getIconColor(position: 2),
+                          iconPath: 'assets/merchant_icons/id_proof_icon.png',
+                          title: "Id\nProofs"),
+                      IconTextWidget(
+                          screenHeight: screenHeight,
+                          color: getIconColor(position: 3),
+                          iconPath:
+                              'assets/merchant_icons/bussiness_proofs.png',
+                          title: "Bussiness\nProofs"),
+                      IconTextWidget(
+                          screenHeight: screenHeight,
+                          color: getIconColor(position: 4),
+                          iconPath: 'assets/merchant_icons/bank_details.png',
+                          title: "Bank\nDetails"),
+                    ],
+                  ),
+                ),
                 const SizedBox(height: 20.0),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: RichText(
                     text: TextSpan(
-                        text: 'Upload your Trade License',
+                        text: 'Upload your Bussines License',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color: Theme.of(context).primaryColor,
                             fontWeight: FontWeight.bold,
@@ -365,7 +421,7 @@ class _DocumentUploadsState extends State<DocumentUploads> {
                   children: [
                     SizedBox(
                       width: 150,
-                      child: AppButton(
+                      child: CustomAppButton(
                         title: 'Previous',
                         onPressed: () {
                           widget.previous();
@@ -374,7 +430,7 @@ class _DocumentUploadsState extends State<DocumentUploads> {
                     ),
                     SizedBox(
                       width: 150,
-                      child: AppButton(
+                      child: CustomAppButton(
                         title: "Next",
                         onPressed: () {
                           if (widget.tradeLicense.text != '' &&

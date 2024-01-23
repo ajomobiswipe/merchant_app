@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sifr_latest/common_widgets/custom_app_button.dart';
 import 'package:sifr_latest/common_widgets/copyright_widget.dart';
 import 'package:sifr_latest/config/config.dart';
+import 'package:sifr_latest/models/login/sales_team_login_model.dart';
 import 'package:sifr_latest/models/login_models.dart';
 import 'package:sifr_latest/services/user_services.dart';
 import 'package:sifr_latest/widgets/custom_text_widget.dart';
@@ -30,7 +31,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  LoginRequestModel requestModel = LoginRequestModel();
+  //LoginRequestModel requestModel = LoginRequestModel();
+  SalesTeamLoginModel requestModel = SalesTeamLoginModel();
   UserServices userServices = UserServices();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _passwordController = TextEditingController();
@@ -146,7 +148,8 @@ class _LoginPageState extends State<LoginPage> {
           CustomAppButton(
             title: 'Log In',
             onPressed: () {
-              Navigator.pushNamed(context, 'MerchantNumVerify');
+              // Navigator.pushNamed(context, 'MerchantNumVerify');
+              submitLoginForm();
             },
           ),
           // swipeButton(),
@@ -250,26 +253,26 @@ class _LoginPageState extends State<LoginPage> {
     if (_formKey.currentState!.validate()) {
       setLoading(true);
       _formKey.currentState!.save();
-      requestModel.instId = Constants.instId;
+      //requestModel.instId = Constants.instId;
       requestModel.deviceType = Constants.deviceType;
-      requestModel.deviceId =
-          await Validators.encrypt(await Global.getUniqueId());
-      password == 'Password'
-          ? requestModel.pin = null
-          : requestModel.password = null;
-      if (password == 'Password') {
-        requestModel.pin = null;
-        requestModel.password =
-            await Validators.encrypt(requestModel.password.toString());
-      } else {
-        requestModel.password = null;
-        requestModel.pin =
-            await Validators.encrypt(requestModel.pin.toString());
-      }
+      // requestModel.deviceId =
+      //     await Validators.encrypt(await Global.getUniqueId());
+      // password == 'Password'
+      //     ? requestModel.pin = null
+      //     : requestModel.password = null;
+      // if (password == 'Password') {
+      //   requestModel.pin = null;
+      //   requestModel.password =
+      //       await Validators.encrypt(requestModel.password.toString());
+      // } else {
+      //   requestModel.password = null;
+      //   requestModel.pin =
+      //       await Validators.encrypt(requestModel.pin.toString());
+      // }
       print(json.encode(requestModel));
 
       _passwordController.clear();
-      userServices.loginService(requestModel).then((response) async {
+      userServices.salesTeamlogin(requestModel).then((response) async {
         print(response.body);
 
         var result = jsonDecode(response.body);
@@ -278,7 +281,7 @@ class _LoginPageState extends State<LoginPage> {
         if (code == 200 || code == 201) {
           if (result['responseCode'] == "00") {
             saveSecureStorage(result);
-            Navigator.pushReplacementNamed(context, 'home');
+            Navigator.pushReplacementNamed(context, 'MerchantNumVerify');
             setLoading(false);
           } else if (result['responseCode'] == "03") {
             setLoading(false);
@@ -464,9 +467,11 @@ class _LoginPageState extends State<LoginPage> {
             keyboardType: keyboardType,
             autovalidateMode: AutovalidateMode.onUserInteraction,
             onSaved: (value) {
-              password == 'Password'
-                  ? requestModel.password = value
-                  : requestModel.pin = value;
+              requestModel.password = value;
+              // : requestModel.pin = value;
+              // password == 'Password'
+              //     ? requestModel.password = value
+              //     : requestModel.pin = value;
             },
             validator: (value) {
               if (value == null || value.isEmpty) {

@@ -72,6 +72,7 @@ class CustomDropdown extends StatelessWidget {
         //             ?.copyWith(fontWeight: FontWeight.normal),
         //       ),
         // //Global Drop Down
+
         DropdownSearch(
           items: itemList,
           onChanged: onChanged,
@@ -114,7 +115,7 @@ class CustomDropdown extends StatelessWidget {
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(5.0),
                 borderSide: const BorderSide(
-                  color: Colors.transparent,
+                  color: Colors.black,
                 ),
               ),
               enabledBorder: const OutlineInputBorder(
