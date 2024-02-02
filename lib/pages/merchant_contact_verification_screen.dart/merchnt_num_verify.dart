@@ -94,7 +94,10 @@ class _MerchantNumVerifyState extends State<MerchantNumVerify> {
                   SizedBox(
                     width: 10,
                   ),
-                  Text("Log Out", style: TextStyle(color: Colors.black87))
+                  Text(
+                    "Log Out",
+                    style: TextStyle(color: Colors.black87),
+                  ),
                 ],
               ),
             ),
@@ -111,13 +114,14 @@ class _MerchantNumVerifyState extends State<MerchantNumVerify> {
 
           onSelected: (value) {
             if (value == 1) {
+              Navigator.pushNamed(context, 'PaymentPage');
             } else if (value == 2) {
               Navigator.pushNamed(context, 'myApplications');
             } else if (value == 3) {
-              Navigator.pushNamed(context, 'LocationPage');
+              Navigator.pushNamed(context, 'settings');
             } else if (value == 4) {
               logout.bottomSheet(context);
-              //  Navigator.pushNamed(context, 'DeviceDeploymentScreen');
+              Navigator.pushNamed(context, 'DeviceDeploymentScreen');
             }
           },
         ),

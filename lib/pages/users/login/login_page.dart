@@ -570,7 +570,7 @@ class _LoginPageState extends State<LoginPage> {
   forgotPassword() {
     return TextButton(
       onPressed: () {
-        Navigator.pushNamed(context, 'forgotPage', arguments: password);
+        Navigator.pushNamed(context, 'forgotPassword');
       },
       child: CustomTextWidget(
         text: "Forgot Password?",

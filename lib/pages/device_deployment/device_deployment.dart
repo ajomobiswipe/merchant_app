@@ -353,6 +353,12 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
                 onPressed: () {
                   if (testTransactionChargeSlipImage.text != '' &&
                       deviceAtStoreImage.text != '') {
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      'myApplications',
+                      (route) => false,
+                    );
+                    alertWidget.success(context, '', 'Deployment Completed!');
                     // next();
                   } else {
                     alertWidget.failure(

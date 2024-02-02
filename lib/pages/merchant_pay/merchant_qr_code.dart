@@ -78,45 +78,47 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
     });
   }
 
-  // Future _checkQrStatus(String? qrCodeId) async {
-  //   var getQrCodeStatusResponse = await userServices.getQrCodeStatus(qrCodeId!);
-  //   var getQrCodeStatusResponseValue = jsonDecode(getQrCodeStatusResponse.body);
+  Future _checkQrStatus(String? qrCodeId) async {
+    var getQrCodeStatusResponse = await userServices.getQrCodeStatus(qrCodeId!);
+    var getQrCodeStatusResponseValue = jsonDecode(getQrCodeStatusResponse.body);
 
-  //   print(getQrCodeStatusResponseValue['qrCodeRequestStatus']);
-  //   if (getQrCodeStatusResponseValue['qrCodeRequestStatus'] == 'ATT') return;
+    print(getQrCodeStatusResponseValue['qrCodeRequestStatus']);
+    if (getQrCodeStatusResponseValue['qrCodeRequestStatus'] == 'ATT') return;
 
-  //   Future.delayed(const Duration(seconds: 1), () {
-  //     if (getQrCodeStatusResponseValue['qrCodeRequestStatus'] == 'EFF' || getQrCodeStatusResponseValue['qrCodeRequestStatus'] == 'EXECUTED') {
-  //       // alertWidget.failure(context, "Error", 'Request paid by the buyer');
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         const SnackBar(
-  //           content: Text('Request paid by the buyer'),
-  //         ),
-  //       );
-  //       Navigator.pushReplacementNamed(context, 'home');
-  //     }
+    Future.delayed(const Duration(seconds: 1), () {
+      if (getQrCodeStatusResponseValue['qrCodeRequestStatus'] == 'EFF' ||
+          getQrCodeStatusResponseValue['qrCodeRequestStatus'] == 'EXECUTED') {
+        // alertWidget.failure(context, "Error", 'Request paid by the buyer');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Request paid by the buyer'),
+          ),
+        );
+        Navigator.pushReplacementNamed(context, 'home');
+      }
 
-  //     if (getQrCodeStatusResponseValue['qrCodeRequestStatus'] == 'EXP') {
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         const SnackBar(
-  //           content: Text('Request Expired'),
-  //         ),
-  //       );
-  //       // alertWidget.failure(context, "Error", 'Request Expired');
-  //       Navigator.pushReplacementNamed(context, 'home');
-  //     }
+      if (getQrCodeStatusResponseValue['qrCodeRequestStatus'] == 'EXP') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Request Expired'),
+          ),
+        );
+        // alertWidget.failure(context, "Error", 'Request Expired');
+        Navigator.pushReplacementNamed(context, 'home');
+      }
 
-  //     if (getQrCodeStatusResponseValue['qrCodeRequestStatus'] == 'ANN' || getQrCodeStatusResponseValue['qrCodeRequestStatus'] == 'CANCELLED') {
-  //       alertWidget.failure(context, "Error", 'QR code canceled by merchant');
-  //       // ScaffoldMessenger.of(context).showSnackBar(
-  //       //   const SnackBar(
-  //       //     content: Text('Request Expired'),
-  //       //   ),
-  //       // );
-  //       Navigator.pushReplacementNamed(context, 'home');
-  //     }
-  //   });
-  // }
+      if (getQrCodeStatusResponseValue['qrCodeRequestStatus'] == 'ANN' ||
+          getQrCodeStatusResponseValue['qrCodeRequestStatus'] == 'CANCELLED') {
+        alertWidget.failure(context, "Error", 'QR code canceled by merchant');
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   const SnackBar(
+        //     content: Text('Request Expired'),
+        //   ),
+        // );
+        Navigator.pushReplacementNamed(context, 'home');
+      }
+    });
+  }
 
   generateQr() async {
     setLoading(true);
@@ -178,9 +180,9 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
             qrCodeTransactionId = objectBody['qrCodeTransactionId']!;
             qrCodeId = decodeData['qrCodeId'];
             // print(verifiedQrData);
-            // timer = Timer.periodic(const Duration(seconds: 20), (Timer t) {
-            //   _checkQrStatus(decodeData['qrCodeId']);
-            // });
+            timer = Timer.periodic(const Duration(seconds: 20), (Timer t) {
+              _checkQrStatus(decodeData['qrCodeId']);
+            });
 
             _controller.start();
             _isLoading = false;
@@ -205,153 +207,153 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
     });
   }
 
-  // Future _deleteQr() async {
+  Future _deleteQr() async {
+    /// Calling deleteQR API - First
+    /// After calling First API - we will call verify reversal API
+    /// We will call confirm reversal API
 
-  //   /// Calling deleteQR API - First
-  //   /// After calling First API - we will call verify reversal API
-  //   /// We will call confirm reversal API
+    try {
+      var deleteQrResponse =
+          await transactionServices.deleteQr(qrCodeId, qrCodeTransactionId);
 
-  //   try {
-  //     var deleteQrResponse = await transactionServices.deleteQr(qrCodeId,qrCodeTransactionId);
+      if (deleteQrResponse.statusCode != 200) return;
 
-  //     if (deleteQrResponse.statusCode != 200) return;
+      var deleteQrResponseValue = jsonDecode(deleteQrResponse.body);
 
-  //     var deleteQrResponseValue = jsonDecode(deleteQrResponse.body);
+      if (deleteQrResponseValue['responseCode'] == '01') {
+        alertService.failure(
+            context, '', deleteQrResponseValue['responseMessage']);
+        Navigator.pushReplacementNamed(context, 'home');
+        return;
+      }
 
-  //     if(deleteQrResponseValue['responseCode']=='01'){
-  //       alertService.failure(context, '', deleteQrResponseValue['responseMessage']);
-  //       Navigator.pushReplacementNamed(context, 'home');
-  //       return;
-  //     }
+      /// Checking QR code is paid by customer
+      /// calling verify reversal API if only the buyer is paid for QR code
+      var getQrCodeStatusResponse =
+          await userServices.getQrCodeStatus(qrCodeId!);
+      var getQrCodeStatusResponseValue =
+          jsonDecode(getQrCodeStatusResponse.body);
 
-  //     /// Checking QR code is paid by customer
-  //     /// calling verify reversal API if only the buyer is paid for QR code
-  //     var getQrCodeStatusResponse = await userServices.getQrCodeStatus(qrCodeId!);
-  //     var getQrCodeStatusResponseValue = jsonDecode(getQrCodeStatusResponse.body);
+      print(getQrCodeStatusResponseValue['qrCodeRequestStatus']);
 
-  //     print(getQrCodeStatusResponseValue['qrCodeRequestStatus']);
+      // print(getQrCodeStatusResponseValue['qrCodeRequestStatus']);
+      if (getQrCodeStatusResponseValue['qrCodeRequestStatus'] != 'EXECUTED' &&
+          getQrCodeStatusResponseValue['qrCodeRequestStatus'] != 'EFF') {
+        Future.delayed(const Duration(seconds: 1), () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Qr code is deleted'),
+            ),
+          );
+          Navigator.pushReplacementNamed(context, 'home');
+        });
 
-  //     // print(getQrCodeStatusResponseValue['qrCodeRequestStatus']);
-  //     if (getQrCodeStatusResponseValue['qrCodeRequestStatus'] != 'EXECUTED' && getQrCodeStatusResponseValue['qrCodeRequestStatus'] != 'EFF') {
-  //       Future.delayed(const Duration(seconds: 1),(){
-  //         ScaffoldMessenger.of(context).showSnackBar(
-  //           const SnackBar(
-  //             content: Text('Qr code is deleted'),
-  //           ),
-  //         );
-  //         Navigator.pushReplacementNamed(context, 'home');
-  //       });
+        return;
+        // alertWidget.failure(context, "Error", 'Request paid by the buyer');
+      }
 
-  //       return;
-  //       // alertWidget.failure(context, "Error", 'Request paid by the buyer');
-  //     }
+      if (deleteQrResponseValue != null) {
+        Random random7 = Random();
 
-  //     if (deleteQrResponseValue != null) {
+        // Generate a random 7-digit number.
+        int min7 = 1000000; // Smallest 7-digit number (1,000,000).
+        int max7 = 9999999; // Largest 7-digit number (9,999,999).
+        int merchantTxnId = min7 + random7.nextInt(max7 - min7 + 1);
 
-  //       Random random7 = Random();
+        Random random6 = Random();
 
-  //       // Generate a random 7-digit number.
-  //       int min7 = 1000000; // Smallest 7-digit number (1,000,000).
-  //       int max7 = 9999999; // Largest 7-digit number (9,999,999).
-  //       int merchantTxnId = min7 + random7.nextInt(max7 - min7 + 1);
+        // Generate a random 7-digit number.
+        int min6 = 100000; // Smallest 7-digit number (1,000,000).
+        int max6 = 999999; // Largest 7-digit number (9,999,999).
+        int merchantTxnRefId = min6 + random6.nextInt(max6 - min6 + 1);
 
-  //       Random random6 = Random();
+        Random random8 = Random();
+        // Generate a random 7-digit number.
+        int min8 = 10000000; // Smallest 7-digit number (1,000,000).
+        int max8 = 99999999; // Largest 7-digit number (9,999,999).
+        int paymentRefId = min8 + random8.nextInt(max8 - min8 + 1);
 
-  //       // Generate a random 7-digit number.
-  //       int min6 = 100000; // Smallest 7-digit number (1,000,000).
-  //       int max6 = 999999; // Largest 7-digit number (9,999,999).
-  //       int merchantTxnRefId = min6 + random6.nextInt(max6 - min6 + 1);
+        var paymentObject = {
+          "payment": {
+            "amount": "${widget.params}",
+            "currency": "AED",
+            "reason": "Coffee x4",
+            "paymentRefId ": "QRP$paymentRefId",
+            "shopId": "10001",
+            "cashDeskId": "10000001",
+            "merchantId": EndPoints.merchantId,
+            "terminalId": EndPoints.terminalId,
+          },
+          "merchantTrxId": "$merchantTxnId",
+          "merchantTrxRefId": "$merchantTxnRefId"
+        };
 
-  //       Random random8 = Random();
-  //       // Generate a random 7-digit number.
-  //       int min8 = 10000000; // Smallest 7-digit number (1,000,000).
-  //       int max8 = 99999999; // Largest 7-digit number (9,999,999).
-  //       int paymentRefId = min8 + random8.nextInt(max8 - min8 + 1);
+        // return;
 
-  //       var paymentObject = {
-  //         "payment": {
-  //           "amount": "${widget.params}",
-  //           "currency": "AED",
-  //           "reason": "Coffee x4",
-  //           "paymentRefId ": "QRP$paymentRefId",
-  //           "shopId": "10001",
-  //           "cashDeskId": "10000001",
-  //           "merchantId": EndPoints.merchantId,
-  //           "terminalId": EndPoints.terminalId,
-  //         },
-  //         "merchantTrxId": "$merchantTxnId",
-  //         "merchantTrxRefId": "$merchantTxnRefId"
-  //       };
+        var verifyReversalResponse =
+            await transactionServices.verifyReversal(paymentObject);
 
-  //       // return;
+        if (verifyReversalResponse.statusCode != 200) return;
 
-  //       var verifyReversalResponse =
-  //           await transactionServices.verifyReversal(paymentObject);
+        var verifyReversalResponseValue =
+            jsonDecode(verifyReversalResponse.body);
 
-  //       if (verifyReversalResponse.statusCode != 200) return;
+        print('verifyReversalResponseValue$verifyReversalResponseValue');
 
-  //       var verifyReversalResponseValue =
-  //           jsonDecode(verifyReversalResponse.body);
+        if (verifyReversalResponseValue['status'] == "Failed") {
+          Navigator.pushReplacementNamed(context, 'home');
+          return;
+        }
 
-  //       print('verifyReversalResponseValue$verifyReversalResponseValue');
+        if (verifyReversalResponseValue != null) {
+          var requestBody = {
+            "merchantTrxId": "$merchantTxnId",
+            "merchantTrxRefId": "$merchantTxnRefId",
+            "payment": {
+              "paymentId": "${getQrCodeStatusResponseValue['paymentId']}",
+              "amount": "${widget.params}",
+              "currency": "AED",
+              "reason": "Coffee x4 ",
+              "paymentRefId ": "QRP$paymentRefId",
+              "shopId": "10001",
+              "cashDeskId": "10000001",
+              "merchantId": EndPoints.merchantId,
+              "terminalId": EndPoints.terminalId,
+            }
+          };
 
-  //       if(verifyReversalResponseValue['status']=="Failed"){
-  //           Navigator.pushReplacementNamed(context, 'home');
-  //         return;
-  //       }
+          print(requestBody);
 
-  //       if (verifyReversalResponseValue != null) {
+          // return;
 
-  //         var requestBody = {
-  //           "merchantTrxId": "$merchantTxnId",
-  //           "merchantTrxRefId": "$merchantTxnRefId",
-  //           "payment": {
-  //             "paymentId": "${getQrCodeStatusResponseValue['paymentId']}",
-  //             "amount": "${widget.params}",
-  //             "currency": "AED",
-  //             "reason": "Coffee x4 ",
-  //             "paymentRefId ": "QRP$paymentRefId",
-  //             "shopId": "10001",
-  //             "cashDeskId": "10000001",
-  //             "merchantId": EndPoints.merchantId,
-  //             "terminalId": EndPoints.terminalId,
-  //           }
-  //         };
+          var confirmReversalResponse =
+              await transactionServices.confirmReversal(requestBody);
 
-  //         print(requestBody);
+          print(
+              'confirmReversalResponse${jsonDecode(confirmReversalResponse.body)}');
 
-  //         // return;
+          if (confirmReversalResponse.statusCode != 200) {
+            Navigator.pushReplacementNamed(context, 'home');
+            return;
+          }
 
-  //         var confirmReversalResponse =
-  //             await transactionServices.confirmReversal(requestBody);
+          var confirmReversalResponseValue =
+              jsonDecode(confirmReversalResponse.body);
 
-  //         print('confirmReversalResponse${jsonDecode(confirmReversalResponse.body)}');
-
-  //         if (confirmReversalResponse.statusCode != 200) {
-  //           Navigator.pushReplacementNamed(context, 'home');
-  //           return;
-  //         }
-
-  //         var confirmReversalResponseValue =
-  //             jsonDecode(confirmReversalResponse.body);
-
-  //         Future.delayed(const Duration(seconds: 1),(){
-  //           ScaffoldMessenger.of(context).showSnackBar(
-  //             const SnackBar(
-  //               content: Text('Reversal confirmed for this QR'),
-  //             ),
-  //           );
-  //           Navigator.pushReplacementNamed(context, 'home');
-  //         });
-
-  //       }
-
-  //     }
-
-  //   } catch (_) {
-  //     print('Error Logs$_');
-  //   }
-  // }
+          Future.delayed(const Duration(seconds: 1), () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Reversal confirmed for this QR'),
+              ),
+            );
+            Navigator.pushReplacementNamed(context, 'home');
+          });
+        }
+      }
+    } catch (_) {
+      print('Error Logs$_');
+    }
+  }
 
   @override
   void dispose() {
@@ -459,7 +461,7 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
             // Navigator.pushNamed(context, 'merchantPay');
             // _controller.reset();
             // _controller.finish();
-            // _deleteQr();
+            _deleteQr();
           },
           style: OutlinedButton.styleFrom(
             side: const BorderSide(color: Colors.red, width: 1),

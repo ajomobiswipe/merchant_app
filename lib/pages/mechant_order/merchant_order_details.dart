@@ -13,14 +13,14 @@ import 'package:sifr_latest/widgets/custom_text_widget.dart';
 import 'package:sifr_latest/widgets/widget.dart';
 
 class MerchantOrderDetails extends StatefulWidget {
-  final MerchantAdditionalInfoRequestmodel merchantCompanyDetailsReq;
+  final MerchantAdditionalInfoRequestmodel merchantAdditionalInfoReq;
   List tmsProductMaster;
   Function orderNext;
   MerchantOrderDetails(
       {super.key,
       required this.orderNext,
       required this.tmsProductMaster,
-      required this.merchantCompanyDetailsReq});
+      required this.merchantAdditionalInfoReq});
 
   @override
   State<MerchantOrderDetails> createState() => _MerchantOrderDetailsState();
@@ -57,14 +57,14 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
   }
 
   addproduct() {
-    widget.merchantCompanyDetailsReq.merchantProductDetails!.add(
-        MerchantProductDetails(
+    widget.merchantAdditionalInfoReq.merchantProductDetails!.add(
+        MerchantProductDetail(
             productName: "aadf",
             productId: 1,
             package: "package",
             packagetId: 2,
-            quantity: 5));
-    print(widget.merchantCompanyDetailsReq.merchantProductDetails);
+            qty: 5));
+    print(widget.merchantAdditionalInfoReq.merchantProductDetails);
   }
 
   resetvalues() {
@@ -117,7 +117,7 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                 ElevatedButton(
                     onPressed: () {
                       print(jsonEncode(
-                          widget.merchantCompanyDetailsReq.toJson()));
+                          widget.merchantAdditionalInfoReq.toJson()));
                     },
                     child: Text("demo")),
                 DropdownButtonFormField<int>(

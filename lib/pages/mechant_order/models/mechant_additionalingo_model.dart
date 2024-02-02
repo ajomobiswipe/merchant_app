@@ -1,4 +1,16 @@
+// To parse this JSON data, do
+//
+//     final merchantAdditionalInfoRequestmodel = merchantAdditionalInfoRequestmodelFromJson(jsonString);
+
 import 'dart:convert';
+
+MerchantAdditionalInfoRequestmodel merchantAdditionalInfoRequestmodelFromJson(
+        String str) =>
+    MerchantAdditionalInfoRequestmodel.fromJson(json.decode(str));
+
+String merchantAdditionalInfoRequestmodelToJson(
+        MerchantAdditionalInfoRequestmodel data) =>
+    json.encode(data.toJson());
 
 class MerchantAdditionalInfoRequestmodel {
   int? businessTypeId;
@@ -12,9 +24,11 @@ class MerchantAdditionalInfoRequestmodel {
   String? bankNameId;
   String? beneficiaryName;
   String? mdrType;
+  double? latitude;
+  double? longitude;
   bool? termsCondition;
   bool? serviceAgreement;
-  List<MerchantProductDetails> merchantProductDetails;
+  List<MerchantProductDetail>? merchantProductDetails;
 
   MerchantAdditionalInfoRequestmodel({
     this.businessTypeId,
@@ -28,82 +42,85 @@ class MerchantAdditionalInfoRequestmodel {
     this.bankNameId,
     this.beneficiaryName,
     this.mdrType,
+    this.latitude,
+    this.longitude,
     this.termsCondition,
     this.serviceAgreement,
-    required this.merchantProductDetails,
+    this.merchantProductDetails,
   });
 
-  Map<String, dynamic> toJson() {
-    return {
-      'businessTypeId': businessTypeId,
-      'panNo': panNo,
-      'aadharCardNo': aadharCardNo,
-      'gstnNo': gstnNo,
-      'firmPanNo': firmPanNo,
-      'annualTurnOver': annualTurnOver,
-      'bankAccountNo': bankAccountNo,
-      'bankIfscCode': bankIfscCode,
-      'bankNameId': bankNameId,
-      'beneficiaryName': beneficiaryName,
-      'mdrType': mdrType,
-      'termsCondition': termsCondition,
-      'serviceAgreement': serviceAgreement,
-      'merchantProductDetails':
-          merchantProductDetails.map((detail) => detail.toJson()).toList(),
-    };
-  }
+  factory MerchantAdditionalInfoRequestmodel.fromJson(
+          Map<String, dynamic> json) =>
+      MerchantAdditionalInfoRequestmodel(
+        businessTypeId: json["businessTypeId"],
+        panNo: json["panNo"],
+        aadharCardNo: json["aadharCardNo"],
+        gstnNo: json["gstnNo"],
+        firmPanNo: json["firmPanNo"],
+        annualTurnOver: json["annualTurnOver"],
+        bankAccountNo: json["bankAccountNo"],
+        bankIfscCode: json["bankIfscCode"],
+        bankNameId: json["bankNameId"],
+        beneficiaryName: json["beneficiaryName"],
+        mdrType: json["mdrType"],
+        latitude: json["latitude"]?.toDouble(),
+        longitude: json["longitude"]?.toDouble(),
+        termsCondition: json["termsCondition"],
+        serviceAgreement: json["serviceAgreement"],
+        merchantProductDetails: json["merchantProductDetails"] == null
+            ? []
+            : List<MerchantProductDetail>.from(json["merchantProductDetails"]!
+                .map((x) => MerchantProductDetail.fromJson(x))),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "businessTypeId": businessTypeId,
+        "panNo": panNo,
+        "aadharCardNo": aadharCardNo,
+        "gstnNo": gstnNo,
+        "firmPanNo": firmPanNo,
+        "annualTurnOver": annualTurnOver,
+        "bankAccountNo": bankAccountNo,
+        "bankIfscCode": bankIfscCode,
+        "bankNameId": bankNameId,
+        "beneficiaryName": beneficiaryName,
+        "mdrType": mdrType,
+        "latitude": latitude,
+        "longitude": longitude,
+        "termsCondition": termsCondition,
+        "serviceAgreement": serviceAgreement,
+        "merchantProductDetails": merchantProductDetails == null
+            ? []
+            : List<dynamic>.from(
+                merchantProductDetails!.map((x) => x.toJson())),
+      };
 }
 
-class MerchantProductDetails {
-  String productName;
-  int productId;
-  String package;
-  int packagetId;
-  int quantity;
+class MerchantProductDetail {
+  String? productName;
+  String? package;
+  int? productId;
+  int? packagetId;
+  int? qty;
 
-  MerchantProductDetails({
-    required this.productName,
-    required this.productId,
-    required this.package,
-    required this.packagetId,
-    required this.quantity,
+  MerchantProductDetail({
+    this.productId,
+    this.packagetId,
+    this.productName,
+    this.package,
+    this.qty,
   });
 
-  Map<String, dynamic> toJson() {
-    return {
-      'productId': productId,
-      'packagetId': packagetId,
-      'qty': quantity,
-    };
-  }
+  factory MerchantProductDetail.fromJson(Map<String, dynamic> json) =>
+      MerchantProductDetail(
+        productId: json["productId"],
+        packagetId: json["packagetId"],
+        qty: json["qty; "],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "productId": productId,
+        "packagetId": packagetId,
+        "qty; ": qty,
+      };
 }
-
-// void main() {
-//   // Create an instance of MerchantData
-//   MerchantData merchantData = MerchantData(
-//     businessTypeId: 1,
-//     panNo: "EYVPS3146G",
-//     aadharCardNo: "215487546548",
-//     gstnNo: "GASTK566556F",
-//     firmPanNo: "HGFTGF656j",
-//     annualTurnOver: "5 cr",
-//     bankAccountNo: "656565657",
-//     bankIfscCode: "ASADF65456454",
-//     bankNameId: "BNKH67565k",
-//     beneficiaryName: "AFFGHGVFFF",
-//     mdrType: "AStnadarf",
-//     termsCondition: true,
-//     serviceAgreement: true,
-//     merchantProductDetails: [
-//       MerchantProductDetails(productId: "1", packagetId: "2", qty: 1),
-//       MerchantProductDetails(productId: "2", packagetId: "3", qty: 4),
-//       MerchantProductDetails(productId: "3", packagetId: "5", qty: 3),
-//     ],
-//   );
-
-//   // Convert the instance to JSON
-//   Map<String, dynamic> jsonData = merchantData.toJson();
-
-//   // Print the JSON data
-//   print(jsonEncode(jsonData));
-// }

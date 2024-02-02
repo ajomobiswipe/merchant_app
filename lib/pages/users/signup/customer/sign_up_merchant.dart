@@ -61,14 +61,14 @@ class _MerchantSignupState extends State<MerchantSignup> {
       MerchantRegPersonalReqModel();
   MerchantCompanyDetailsReqModel merchantCompanyDetailsReq =
       MerchantCompanyDetailsReqModel();
-  MerchantAdditionalInfoRequestmodel merchantadditipnalreq =
+  MerchantAdditionalInfoRequestmodel merchantAdditionalInfoReq =
       MerchantAdditionalInfoRequestmodel(merchantProductDetails: [
-    MerchantProductDetails(
+    MerchantProductDetail(
         productName: "aadf",
         productId: 1,
         package: "package",
         packagetId: 2,
-        quantity: 5)
+        qty: 5)
   ]);
 
   // --------- FORM KEYs ------------
@@ -303,7 +303,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
     //getSecurityQuestions();
     //loadMcc();
     //getCountry();
-    getAcquirers();
+    getDefaultMerchantValues();
     //userServices.getAcqApplicationid('1');
 
     super.initState();
@@ -386,7 +386,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
       return MerchantOrderDetails(
         orderNext: orderNext,
         tmsProductMaster: tmsProductMasterlist,
-        merchantCompanyDetailsReq: merchantadditipnalreq,
+        merchantAdditionalInfoReq: merchantAdditionalInfoReq,
       );
     }
     if (position == 1) {
@@ -461,10 +461,12 @@ class _MerchantSignupState extends State<MerchantSignup> {
       return mainControl('Merchant Bank Details', merchantBankDetails());
     } else if (position == 5) {
       return MerchantStoreImagesForm(
-          previous: storePrevious,
-          next: storeNext,
-          storeFrontImage: _merchantStoreFrontImageCtrl,
-          insideStoreImage: _merchantStoreInsideImageCtrl);
+        previous: storePrevious,
+        next: storeNext,
+        storeFrontImage: _merchantStoreFrontImageCtrl,
+        insideStoreImage: _merchantStoreInsideImageCtrl,
+        merchantAdditionalInfoReq: merchantAdditionalInfoReq,
+      );
     } else if (position == 6) {
       return DocumentUploads(
           previous: documentPrevious,
@@ -1540,9 +1542,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
     });
   }
 
-  getAcquirers() async {
+  getDefaultMerchantValues() async {
     print("----default value called----");
-    await userServices.getAcquirers().then((response) async {
+    await userServices.GetMerchantOnboardingValues().then((response) async {
       final Map<String, dynamic> data = json.decode(response.body);
       List<dynamic> acquirerDetails =
           data['data'][0]['acquirerAcquirerDetails'];
@@ -2133,15 +2135,12 @@ class _MerchantSignupState extends State<MerchantSignup> {
                       title: 'Next',
                       width: 0.4,
                       onPressed: () {
-                        // if (loginFormKey.currentState!.validate()) {
-                        //   loginFormKey.currentState!.save();
-                        //   setState(() {
-                        //     position = 2;
-                        //   });
-                        // }
-                        setState(() {
-                          position = 4; //old 2
-                        });
+                        if (loginFormKey.currentState!.validate()) {
+                          loginFormKey.currentState!.save();
+                          setState(() {
+                            position = 4; //old 2
+                          });
+                        }
                       },
                     ),
                   ),
@@ -2266,7 +2265,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   return null;
                 },
                 onSaved: (value) {
-                  requestModel.userName = value;
+                  merchantAdditionalInfoReq.bankAccountNo = value;
                 },
               ),
               // userNameWidget(),
@@ -2369,32 +2368,26 @@ class _MerchantSignupState extends State<MerchantSignup> {
               ),
               const SizedBox(height: 20.0),
               CustomTextFormField(
-                  title: 'Beneficiary Name',
-                  required: true,
-                  controller: merchantBeneficiaryNamrCodeCtrl,
-                  maxLength: 24,
-                  keyboardType: TextInputType.visiblePassword,
-                  textCapitalization: TextCapitalization.words,
-                  prefixIcon: LineAwesome.store_alt_solid,
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\d\s]'))
-                  ],
-                  onSaved: (value) {},
-                  onChanged: (value) {
-                    setState(() {
-                      merchantBeneficiaryNamrCodeCtrl.text = value;
-                    });
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Beneficiary Name is Mandatory!';
-                    }
-                    if (!RegExp(r'^[-a-zA-Z0-9]+(\s[-a-zA-Z0-9]+)*$')
-                        .hasMatch(value)) {
-                      return 'Invalid Beneficiary Name';
-                    }
-                    return null;
-                  }),
+                title: 'Beneficiary Name',
+                required: true,
+                controller: merchantBeneficiaryNamrCodeCtrl,
+                maxLength: 24,
+                keyboardType: TextInputType.visiblePassword,
+                textCapitalization: TextCapitalization.words,
+                prefixIcon: LineAwesome.store_alt_solid,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\d\s]'))
+                ],
+                onSaved: (value) {
+                  merchantAdditionalInfoReq.beneficiaryName = value;
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'IFSC Code is Mandatory!';
+                  }
+                  return null;
+                },
+              ),
 
               const SizedBox(
                 height: 30.0,
@@ -2424,15 +2417,12 @@ class _MerchantSignupState extends State<MerchantSignup> {
                       title: 'Next',
                       width: 0.4,
                       onPressed: () {
-                        // if (loginFormKey.currentState!.validate()) {
-                        //   loginFormKey.currentState!.save();
-                        //   setState(() {
-                        //     position = 2;
-                        //   });
-                        // }
-                        setState(() {
-                          position = 5; //old 6//2
-                        });
+                        if (loginFormKey.currentState!.validate()) {
+                          loginFormKey.currentState!.save();
+                          setState(() {
+                            position = 5; //old 6//2
+                          });
+                        }
                       },
                     ),
                   ),
@@ -3224,7 +3214,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
               print(name);
               userCheckMessage = Constants.userNameSuccessMessage;
-              merchantadditipnalreq.panNo = panNumber;
+              merchantAdditionalInfoReq.panNo = panNumber;
             } else {
               setState(() => showVerify = true);
             }
@@ -3255,6 +3245,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
           setState(() {
             accountCheck = 'VALID';
 
+            merchantAdditionalInfoReq.bankIfscCode = merchantIfscCodeCtrl.text;
+            merchantAdditionalInfoReq.bankAccountNo =
+                merchantAccountNumberCtrl.text;
             accountVerify = false;
             // if (idStatus == 'VALID') {
             //   accountCheck = 'VALID';

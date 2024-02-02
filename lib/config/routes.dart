@@ -13,6 +13,7 @@ import 'package:sifr_latest/pages/device_deployment/device_deployment.dart';
 import 'package:sifr_latest/pages/location_demo.dart';
 import 'package:sifr_latest/pages/merchant_contact_verification_screen.dart/merchnt_num_verify.dart';
 import 'package:sifr_latest/pages/user_types/user_type_selection.dart';
+import 'package:sifr_latest/pages/users/forgot_password.dart';
 
 import '../pages/account_card_page/my_account_page.dart';
 import '../pages/customer_scan/customer_scan.dart';
@@ -22,6 +23,8 @@ import '../pages/merchant_pay/merchant.dart';
 import '../pages/my_account_menu/my_account_menu.dart';
 import '../pages/my_applications/my_applications.dart';
 import '../pages/pages.dart';
+import '../pages/payment/payment_page.dart';
+import '../pages/payment/payment_success_page.dart';
 import '../pages/transactions/qr_transaction_list.dart';
 import '../pages/transactions/transaction_list.dart';
 import '../pages/users/profile/profile.dart';
@@ -58,6 +61,18 @@ class CustomRoute {
           return const LocationPage();
         case "DeviceDeploymentScreen":
           return const DeviceDeploymentScreen();
+        case "forgotPassword":
+          return const ForgotPassword();
+        case "PaymentPage":
+          return const PaymentPage();
+        case "PaymentSuccessPage":
+          return const PaymentSuccessPage();
+        case "settings":
+          return const SettingsPage();
+
+        case "forgotPage":
+          String code = settings.arguments as String;
+          return Forgot(type: code);
 
         case "loginAuthOtp":
           Map args = settings.arguments as Map;
@@ -72,9 +87,7 @@ class CustomRoute {
             type: args['type'],
             userName: args['userName'],
           );
-        case "forgotPage":
-          String code = settings.arguments as String;
-          return Forgot(type: code);
+
         case "changePassword":
           String type = settings.arguments as String;
           return ChangePassword(type: type);

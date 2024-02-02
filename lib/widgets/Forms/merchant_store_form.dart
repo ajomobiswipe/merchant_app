@@ -7,6 +7,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sifr_latest/common_widgets/app_appbar.dart';
 import 'package:sifr_latest/common_widgets/custom_app_button.dart';
+import 'package:sifr_latest/pages/mechant_order/models/mechant_additionalingo_model.dart';
 import '../../common_widgets/icon_text_widget.dart';
 import '../../config/config.dart';
 import '../../config/constants.dart';
@@ -23,6 +24,7 @@ import '../custom_text_widget.dart';
 class MerchantStoreImagesForm extends StatefulWidget {
   final TextEditingController storeFrontImage;
   final TextEditingController insideStoreImage;
+  final MerchantAdditionalInfoRequestmodel merchantAdditionalInfoReq;
   Function previous;
   Function next;
 
@@ -32,6 +34,7 @@ class MerchantStoreImagesForm extends StatefulWidget {
     required this.next,
     required this.storeFrontImage,
     required this.insideStoreImage,
+    required this.merchantAdditionalInfoReq,
   }) : super(key: key);
 
   @override
@@ -72,6 +75,8 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
     await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
         .then((Position position) {
       setState(() => _currentPosition = position);
+      widget.merchantAdditionalInfoReq.latitude = position.latitude;
+      widget.merchantAdditionalInfoReq.longitude = position.longitude;
       //_getAddressFromLatLng(_currentPosition!);
     }).catchError((e) {
       debugPrint(e);

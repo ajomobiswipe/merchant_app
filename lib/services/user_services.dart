@@ -54,6 +54,14 @@ class UserServices {
     return response;
   }
 
+  sendForgotPasswordLink(String userName) async {
+    Connection connection = Connection();
+    // var url = EndPoints.baseApi9502 + EndPoints.userCheckAPI + userName;
+    var url = "http://172.29.100.221:9508/NanoPay/v1/forgotPassword/$userName";
+    var response = await connection.getWithOutToken(url);
+    return response;
+  }
+
   panValidation(String panNumber) async {
     Connection connection = Connection();
     var url =
@@ -271,11 +279,46 @@ class UserServices {
     return response;
   }
 
-  Future<dynamic> getAcquirers() async {
+  Future<dynamic> GetMerchantOnboardingValues() async {
     Connection connection = Connection();
     var url =
         'http://172.29.100.221:9508/NanoPay/Middleware/UiApi/GetMerchantOnboardingValues';
     var response = await connection.get(url);
+    print("Defaultvalues Api response code" + response.statusCode.toString());
+    return response;
+
+    // old merchant onboarding implimentation
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    // String? barrertoken = prefs.getString('bearerToken');
+    // print(barrertoken);
+    // http.Response resonr = await http.get(
+    //   Uri.parse(
+    //       'http://omasoftposqc.omaemirates.com:9508/NanoPay/Middleware/UiApi/GetMerchantDefaultValues'),
+    //   headers: {
+    //     'Content-Type': 'application/json; charset=UTF-8',
+    //     'Authorization': 'Bearer $barrertoken',
+    //   },
+    // );
+
+    // con
+    // print(resonr.body);
+    // // print(prefs.getString('bearerToken') ?? 'error in reciving token');
+
+    // // print('length  : ${acquirerDetails.length}');
+    // // for (var acquirer in acquirerDetails) {
+    // //   String acquirerName = acquirer['acquirerName'];
+    // //   print('Acquirer Name: $acquirerName');
+    // // }
+    // return resonr;
+  }
+
+  Future<dynamic> getMerchantApplication(
+      {required int stage, required String merchantname}) async {
+    Connection connection = Connection();
+    final requestBody = {"stage": stage, "merchantName": merchantname};
+    var url =
+        'http://172.29.100.221:9508/NanoPay/Middleware/UiApi/MerchantOnboardList';
+    var response = await connection.post(url, requestBody);
     print("Defaultvalues Api response code" + response.statusCode.toString());
     return response;
 
@@ -847,6 +890,15 @@ class UserServices {
     Connection connection = Connection();
     var url = '${EndPoints.baseApi9502}${EndPoints.processFlowAPI}$customerId';
     var response = await connection.get(url);
+    return response;
+  }
+
+  Future getQrCodeStatus(String qrCodeId) async {
+    Connection connection = Connection();
+    var url = '${EndPoints.getQrCodeStatusApi}?qrCodeId=$qrCodeId';
+    print(url);
+    var response = await connection.get(url);
+
     return response;
   }
 }
