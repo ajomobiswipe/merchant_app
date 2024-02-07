@@ -8,7 +8,7 @@ CopyRightWidget() {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Copyright © 2024 OMA Emirates.',
+              'Copyright © 2024 AllianceNetwork Company.',
             ),
             Text(
               'All Rights Recived.',

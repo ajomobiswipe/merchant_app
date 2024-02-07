@@ -13,7 +13,7 @@ import 'package:sifr_latest/widgets/custom_text_widget.dart';
 import 'package:sifr_latest/widgets/widget.dart';
 
 class MerchantOrderDetails extends StatefulWidget {
-  final MerchantAdditionalInfoRequestmodel merchantAdditionalInfoReq;
+  MerchantAdditionalInfoRequestmodel merchantAdditionalInfoReq;
   List tmsProductMaster;
   Function orderNext;
   MerchantOrderDetails(
@@ -53,17 +53,19 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    addproduct();
+    // addproduct();
   }
 
   addproduct() {
-    widget.merchantAdditionalInfoReq.merchantProductDetails!.add(
-        MerchantProductDetail(
-            productName: "aadf",
-            productId: 1,
-            package: "package",
-            packagetId: 2,
-            qty: 5));
+    widget.merchantAdditionalInfoReq.merchantProductDetails == null
+        ? []
+        : widget.merchantAdditionalInfoReq.merchantProductDetails!.add(
+            MerchantProductDetail(
+                productName: "aadf",
+                productId: 1,
+                package: "package",
+                packagetId: 2,
+                qty: 5));
     print(widget.merchantAdditionalInfoReq.merchantProductDetails);
   }
 
@@ -114,12 +116,12 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                ElevatedButton(
-                    onPressed: () {
-                      print(jsonEncode(
-                          widget.merchantAdditionalInfoReq.toJson()));
-                    },
-                    child: Text("demo")),
+                // ElevatedButton(
+                //     onPressed: () {
+                //       print(jsonEncode(
+                //           widget.merchantAdditionalInfoReq.toJson()));
+                //     },
+                //     child: Text("demo")),
                 DropdownButtonFormField<int>(
                   value: selectedProductId,
                   hint: const Text('Select a Product'),
@@ -355,16 +357,16 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                   },
                 ),
 
-                Text('Selected Product ID: ${selectedProductId ?? "None"}'),
-                Text('Selected Package ID: ${selectedPackageId ?? "None"}'),
-                if (selectedPackageId != null &&
-                    selectedProductPackages.isNotEmpty)
-                  Text(
-                      'Selected Package Name: ${selectedProductPackages.firstWhere((package) => package['packageId'] == selectedPackageId)['packageName']}'),
-                if (selectedProductId != null &&
-                    widget.tmsProductMaster.isNotEmpty)
-                  Text(
-                      'Selected Product Description: ${widget.tmsProductMaster.firstWhere((product) => product['productId'] == selectedProductId)['description']}'),
+                // Text('Selected Product ID: ${selectedProductId ?? "None"}'),
+                // Text('Selected Package ID: ${selectedPackageId ?? "None"}'),
+                // if (selectedPackageId != null &&
+                //     selectedProductPackages.isNotEmpty)
+                //   Text(
+                //       'Selected Package Name: ${selectedProductPackages.firstWhere((package) => package['packageId'] == selectedPackageId)['packageName']}'),
+                // if (selectedProductId != null &&
+                //     widget.tmsProductMaster.isNotEmpty)
+                //   Text(
+                //       'Selected Product Description: ${widget.tmsProductMaster.firstWhere((product) => product['productId'] == selectedProductId)['description']}'),
                 // ElevatedButton(
                 //   onPressed: () {
                 //     setState(() {
@@ -394,6 +396,33 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                         productId: selectedProductId!,
                         packagetId: selectedPackageId!,
                       );
+
+                      widget.merchantAdditionalInfoReq.merchantProductDetails ==
+                          [
+                            MerchantProductDetail(
+                                productName: Product,
+                                productId: selectedProductId!,
+                                package: package,
+                                packagetId: selectedPackageId!,
+                                qty: int.parse(selectedQuantity))
+                          ];
+                      //     null
+                      // ? widget
+                      //     .merchantAdditionalInfoReq.merchantProductDetails!
+                      //     .add(MerchantProductDetail(
+                      //         productName: Product,
+                      //         productId: selectedProductId!,
+                      //         package: package,
+                      //         packagetId: selectedPackageId!,
+                      //         qty: int.parse(selectedQuantity)))
+                      // : widget
+                      //     .merchantAdditionalInfoReq.merchantProductDetails!
+                      //     .add(MerchantProductDetail(
+                      //         productName: Product,
+                      //         productId: selectedProductId!,
+                      //         package: package,
+                      //         packagetId: selectedPackageId!,
+                      //         qty: int.parse(selectedQuantity)));
                       setState(() {
                         selectedProductId = null;
                         selectedPackageId = null;
@@ -480,16 +509,19 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                           rows: selectedItems.map((item) {
                             return DataRow(cells: [
                               DataCell(CustomTextWidget(
-                                text: item.productName,
-                                size: 8,
+                                text: item.package,
+                                size: 10,
+                                fontWeight: FontWeight.w900,
                               )),
                               DataCell(CustomTextWidget(
-                                text: item.package,
-                                size: 8,
+                                text: item.productName,
+                                size: 10,
+                                fontWeight: FontWeight.w900,
                               )),
                               DataCell(CustomTextWidget(
                                 text: item.quantity.toString(),
-                                size: 8,
+                                size: 10,
+                                fontWeight: FontWeight.w900,
                               )),
                               DataCell(
                                 IconButton(
@@ -560,6 +592,10 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                 CustomAppButton(
                   onPressed: () async {
                     widget.orderNext();
+
+                    //print(widget.merchantAdditionalInfoReq.toJson());
+                    print(widget.merchantAdditionalInfoReq.toJson());
+
                     // if (selectedItems.isEmpty) {
                     //   print("add atlest one product");
                     // } else {

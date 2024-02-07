@@ -28,6 +28,11 @@ class MerchantAdditionalInfoRequestmodel {
   double? longitude;
   bool? termsCondition;
   bool? serviceAgreement;
+  bool? gstnVerifyStatus;
+  bool? panNumberVerifyStatus;
+  bool? aadhaarNumberVerifyStatus;
+  bool? firmPanNumberVerifyStatus;
+  bool? merchantBankVerifyStatus;
   List<MerchantProductDetail>? merchantProductDetails;
 
   MerchantAdditionalInfoRequestmodel({
@@ -46,6 +51,11 @@ class MerchantAdditionalInfoRequestmodel {
     this.longitude,
     this.termsCondition,
     this.serviceAgreement,
+    this.gstnVerifyStatus,
+    this.panNumberVerifyStatus,
+    this.aadhaarNumberVerifyStatus,
+    this.firmPanNumberVerifyStatus,
+    this.merchantBankVerifyStatus,
     this.merchantProductDetails,
   });
 
@@ -67,6 +77,11 @@ class MerchantAdditionalInfoRequestmodel {
         longitude: json["longitude"]?.toDouble(),
         termsCondition: json["termsCondition"],
         serviceAgreement: json["serviceAgreement"],
+        gstnVerifyStatus: json["gstnVerifyStatus"],
+        panNumberVerifyStatus: json["panNumberVerifyStatus"],
+        aadhaarNumberVerifyStatus: json["aadhaarNumberVerifyStatus"],
+        firmPanNumberVerifyStatus: json["firmPanNumberVerifyStatus"],
+        merchantBankVerifyStatus: json["merchantBankVerifyStatus"],
         merchantProductDetails: json["merchantProductDetails"] == null
             ? []
             : List<MerchantProductDetail>.from(json["merchantProductDetails"]!
@@ -89,6 +104,11 @@ class MerchantAdditionalInfoRequestmodel {
         "longitude": longitude,
         "termsCondition": termsCondition,
         "serviceAgreement": serviceAgreement,
+        "gstnVerifyStatus": gstnVerifyStatus,
+        "panNumberVerifyStatus": panNumberVerifyStatus,
+        "aadhaarNumberVerifyStatus": aadhaarNumberVerifyStatus,
+        "firmPanNumberVerifyStatus": firmPanNumberVerifyStatus,
+        "merchantBankVerifyStatus": merchantBankVerifyStatus,
         "merchantProductDetails": merchantProductDetails == null
             ? []
             : List<dynamic>.from(
@@ -110,7 +130,6 @@ class MerchantProductDetail {
     this.package,
     this.qty,
   });
-
   factory MerchantProductDetail.fromJson(Map<String, dynamic> json) =>
       MerchantProductDetail(
         productId: json["productId"],

@@ -151,7 +151,8 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
         "terminalId": EndPoints.terminalId,
       },
       "paymentCategory": "01",
-      "qrCodeTransactionId": "qr$randomSevenDigitNumber"
+      "qrCodeTransactionId": "qr$randomSevenDigitNumber",
+      "walletQrName": "ALIPAY"
     };
 
     transactionServices.generateQRCode(objectBody).then((response) {

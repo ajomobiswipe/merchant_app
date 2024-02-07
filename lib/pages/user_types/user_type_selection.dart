@@ -21,7 +21,11 @@ class UserTypeSelection extends StatelessWidget {
         eneableAppbar: false,
         child: Column(
           children: [
-            Image.asset('assets/logo/oma_emirates_logo.png', height: 100),
+            const Expanded(
+              child: SizedBox(),
+              flex: 1,
+            ),
+            Image.asset('assets/screen/anet.png', height: 100),
             const Expanded(
               child: SizedBox(),
               flex: 2,

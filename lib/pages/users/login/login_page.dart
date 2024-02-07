@@ -106,7 +106,20 @@ class _LoginPageState extends State<LoginPage> {
           //     Text("App Version ${_packageInfo.version.toString()}"),
           //   ],
           // ),
-          const SizedBox(height: 20),
+          Row(
+            children: [
+              IconButton(
+                  onPressed: () {
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, 'userType', (route) => false);
+                  },
+                  icon: Icon(
+                    Icons.arrow_back,
+                    color: Colors.black,
+                  )),
+              const SizedBox(height: 20),
+            ],
+          ),
           // Align(
           //   alignment: Alignment.center,
           //   child: Text(
@@ -119,7 +132,8 @@ class _LoginPageState extends State<LoginPage> {
           //   ),
           // ),
           const SizedBox(height: 10),
-          Image.asset(Constants.omaLogo, height: 100, fit: BoxFit.fill),
+          //Image.asset(Constants.omaLogo, height: 100, fit: BoxFit.fill),
+          Image.asset("assets/screen/anet.png", height: 100, fit: BoxFit.fill),
           const SizedBox(height: 20),
           // toggledButton(),
           const SizedBox(height: 10),

@@ -121,7 +121,7 @@ class _MerchantNumVerifyState extends State<MerchantNumVerify> {
               Navigator.pushNamed(context, 'settings');
             } else if (value == 4) {
               logout.bottomSheet(context);
-              Navigator.pushNamed(context, 'DeviceDeploymentScreen');
+              // Navigator.pushNamed(context, 'DeviceDeploymentScreen');
             }
           },
         ),
@@ -229,6 +229,7 @@ class _MerchantNumVerifyState extends State<MerchantNumVerify> {
               //     : enabledMobile = enabledDob,
 
               required: true,
+
               // helperText: mobileNoCheckMessage,
               //helperStyle: style,
               prefixIcon: FontAwesome.mobile,

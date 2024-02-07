@@ -14,11 +14,11 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
-        android:label="SIFR"
+        android:label="Merchant Onboarding"
         android:requestLegacyExternalStorage="true"
         android:enableOnBackInvokedCallback="true"
         android:name="${applicationName}"
-        android:icon="@mipmap/launcher_icon"
+        android:icon="@mipmap/ic_launcher"
         android:allowBackup="false"
         tools:targetApi="tiramisu"
         android:dataExtractionRules="@xml/data_extraction_rules"

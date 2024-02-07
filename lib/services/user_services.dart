@@ -62,57 +62,223 @@ class UserServices {
     return response;
   }
 
-  panValidation(String panNumber) async {
-    Connection connection = Connection();
-    var url =
-        "http://omasoftposqc.omaemirates.com:9508/NanoPay/Middleware/UiApi/validateDocument";
-    // var url = EndPoints.baseApi9502 + EndPoints.userCheckAPI + userName;
-    final reqbody = {
-      'document_type': 'PAN',
-      'id_number': panNumber,
-    };
-    var response = await connection.post(
-      url,
-      reqbody,
-    );
-    print(response.statusCode);
-    return response;
-  }
-
   accountValidation(
     String accno,
     String ifsc,
+    String name,
+    String phonenumber,
   ) async {
-    Connection connection = Connection();
-    var url =
-        "http://omasoftposqc.omaemirates.com:9508/NanoPay/Middleware/UiApi/validateBankAccount";
-    // var url = EndPoints.baseApi9502 + EndPoints.userCheckAPI + userName;
-    final reqbody = {
-      'transfer_amount': '1.5',
-      'beneficiary_details': {'account_number': accno, "ifsc": ifsc}
+    String token = boxStorage.getToken();
+
+// Ensure token is not null or empty
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
     };
-    var response = await connection.post(
-      url,
-      reqbody,
-    );
-    print(response);
-    return response;
+    // final headers = {'Authorization': 'Bearer $token'};
+    var urlnew = Uri.parse(
+        'http://172.29.100.221:9508/NanoPay/Middleware/UiApi/addOrUpdateLogin');
+    var body = jsonEncode(
+        {"username": "omaEmirates_preprod_v2", "password": "doXpr3KeKT"});
+
+    var response = await http.post(urlnew, headers: headers, body: body);
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+      String id = jsonResponse['id'];
+      String userId = jsonResponse['userId'];
+
+      print("id from response  $id");
+      print("userId from response $userId");
+      var newheader = {
+        'Authorization': 'Bearer $token',
+        'accessToken': id,
+        'Content-Type': 'application/json',
+      };
+
+      var verifyAccountUel = Uri.parse(
+          "http://172.29.100.221:9508/NanoPay/Middleware/UiApi/validateBankAccountVerifications");
+
+      final newreqbody = {
+        "task": "bankTransferLite",
+        "userId": userId,
+        "essentials": {
+          "beneficiaryMobile": phonenumber,
+          "beneficiaryAccount": accno,
+          "beneficiaryName": name,
+          "beneficiaryIFSC": ifsc
+        }
+      };
+
+      var responseapi = await http.post(verifyAccountUel,
+          headers: newheader, body: jsonEncode(newreqbody));
+      // print(newheader);
+      // print(userId);
+      // print("second api reponseStatus code ${responseapi.statusCode}");
+      // print(responseapi.body);
+      return responseapi.body;
+    }
+
+    return false;
+  }
+
+  gstValidation(
+    String gstNo,
+  ) async {
+    String token = boxStorage.getToken();
+
+// Ensure token is not null or empty
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+    // final headers = {'Authorization': 'Bearer $token'};
+    var urlnew = Uri.parse(
+        'http://172.29.100.221:9508/NanoPay/Middleware/UiApi/addOrUpdateLogin');
+    var body = jsonEncode(
+        {"username": "omaEmirates_preprod_v2", "password": "doXpr3KeKT"});
+
+    var response = await http.post(urlnew, headers: headers, body: body);
+    print("Fist Api responsecode ${response.statusCode}");
+    if (response.statusCode == 200) {
+      Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+      String id = jsonResponse['id'];
+      String userId = jsonResponse['userId'];
+
+      print("id from response  $id");
+      print("userId from response $userId");
+      var newheader = {
+        'Authorization': 'Bearer $token',
+        'accessToken': id,
+        'Content-Type': 'application/json',
+      };
+
+      var gstVerify = Uri.parse(
+          "http://172.29.100.221:9508/NanoPay/Middleware/UiApi/addOrUpdateGstns");
+
+      final newreqbody = {
+        "task": "gstinSearch",
+        "userId": userId,
+        "essentials": {"gstin": gstNo}
+      };
+
+      var responseapi = await http.post(gstVerify,
+          headers: newheader, body: jsonEncode(newreqbody));
+      // print(newheader);
+      // print(userId);
+      // print("second api reponseStatus code ${responseapi.statusCode}");
+      // print(responseapi.body);
+      return responseapi.body;
+    }
+
+    return false;
+  }
+
+  panValidation(
+    String panNumber,
+  ) async {
+    String token = boxStorage.getToken();
+
+// Ensure token is not null or empty
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+    // final headers = {'Authorization': 'Bearer $token'};
+    var urlnew = Uri.parse(
+        'http://172.29.100.221:9508/NanoPay/Middleware/UiApi/addOrUpdateLogin');
+    var body = jsonEncode(
+        {"username": "omaEmirates_preprod_v2", "password": "doXpr3KeKT"});
+
+    var response = await http.post(urlnew, headers: headers, body: body);
+    print("Fist Api responsecode ${response.statusCode}");
+    if (response.statusCode == 200) {
+      Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+      String id = jsonResponse['id'];
+      String userId = jsonResponse['userId'];
+
+      print("id from response  $id");
+      print("userId from response $userId");
+      var newheader = {
+        'Authorization': 'Bearer $token',
+        'accessToken': id,
+        'Content-Type': 'application/json',
+      };
+
+      var gstVerify = Uri.parse(
+          "http://172.29.100.221:9508/NanoPay/Middleware/UiApi/validatePanAadhar");
+
+      final newreqbody = {
+        "requestType": "PAN",
+        "panNumber": "EYVPS3146G",
+        "userId": "65a4f0adcd1c770023dd5ace"
+      };
+
+      var responseapi = await http.post(gstVerify,
+          headers: newheader, body: jsonEncode(newreqbody));
+      // print(newheader);
+      // print(userId);
+      print("second api reponseStatus code ${responseapi.statusCode}");
+      print(responseapi.body);
+      return responseapi.body;
+    }
+
+    return false;
   }
 
   sendAddhaarOtp(String addhaarNumber) async {
-    Connection connection = Connection();
-    var url =
-        "http://omasoftposqc.omaemirates.com:9508/NanoPay/Middleware/UiApi/generateAadhaarOtp";
-    // var url = EndPoints.baseApi9502 + EndPoints.userCheckAPI + userName;
-    final reqbody = {
-      'aadhaarNumber': addhaarNumber,
+    String token = boxStorage.getToken();
+
+// Ensure token is not null or empty
+
+    // final headers = {'Authorization': 'Bearer $token'};
+
+    var newheader = {
+      'Authorization': 'Bearer $token',
+      'accessToken': "C4kYXdmCpS4ojpdAXnuftstjpyAKsd0x",
+      'Content-Type': 'application/json',
     };
-    var response = await connection.post(
-      url,
-      reqbody,
-    );
-    print(response);
-    return response;
+
+    var addhaarverify = Uri.parse(
+        "http://172.29.100.221:9508/NanoPay/Middleware/UiApi/validatePanAadhar");
+
+    final newreqbody = {"requestType": "AADHAR", "aadharNumber": addhaarNumber};
+
+    var responseapi = await http.post(addhaarverify,
+        headers: newheader, body: jsonEncode(newreqbody));
+    // print(newheader);
+    // print(userId);
+    print("second api reponseStatus code ${responseapi.statusCode}");
+    print(responseapi.body);
+    return responseapi.body;
+  }
+
+  validateAddhaarOtp(String addhaarNumber, String addhaarOtp) async {
+    String token = boxStorage.getToken();
+
+    var newheader = {
+      'Authorization': 'Bearer $token',
+      'accessToken': "C4kYXdmCpS4ojpdAXnuftstjpyAKsd0x",
+      'Content-Type': 'application/json',
+    };
+
+    var addhaarverify = Uri.parse(
+        "http://172.29.100.221:9508/NanoPay/Middleware/UiApi/validatePanAadhar");
+
+    final newreqbody = {
+      "requestType": "VERIFYAADHAROTP",
+      "requestId": "aadhaar_v2_uBztmfFDSUsJWtDnYxwO",
+      "otp": addhaarOtp,
+      "aadharNumber": addhaarNumber
+    };
+
+    var responseapi = await http.post(addhaarverify,
+        headers: newheader, body: jsonEncode(newreqbody));
+    // print(newheader);
+    // print(userId);
+    print("second api reponseStatus code ${responseapi.statusCode}");
+    print(responseapi.body);
+    return responseapi.body;
   }
 
   /*
@@ -476,8 +642,9 @@ class UserServices {
     cancelCheque,
   ) async {
     //var url = EndPoints.baseApi9502 + EndPoints.registerAPI;
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? barrertoken = prefs.getString('bearerToken');
+    BoxStorage boxStorage = BoxStorage();
+    String barrertoken = boxStorage.getToken();
+
     var url =
         'http://omasoftposqc.omaemirates.com:9508/NanoPay/Middleware/UiApi/merchantRegistration';
     // Set up the headers
@@ -499,10 +666,10 @@ class UserServices {
           await http.MultipartFile.fromPath('canceledCheque', cancelCheque);
       request.files.add(cc);
     }
-    if (profilePic != '') {
-      var pp = await http.MultipartFile.fromPath('profilePic', profilePic);
-      request.files.add(pp);
-    }
+    // if (profilePic != '') {
+    //   var pp = await http.MultipartFile.fromPath('profilePic', profilePic);
+    //   request.files.add(pp);
+    // }
 
     request.files.add(kf);
     request.files.add(kb);
@@ -598,11 +765,39 @@ class UserServices {
     //   "maxAuthAmount": "1000",
     //   "maxTerminalCount": "50"
     // };
+    var additionalinfi = {
+      "businessTypeId": 1,
+      "panNo": "",
+      "aadharCardNo": "",
+      "gstnNo": "",
+      "firmPanNo": "",
+      "annualTurnOver": "",
+      "bankAccountNo": "",
+      "bankIfscCode": "",
+      "bankNameId": "",
+      "beneficiaryName": "",
+      "mdrType": "",
+      "latitude": 20.658745,
+      "longitude": 22.354445,
+      "termsCondition": true,
+      "serviceAgreement": true,
+      "gstnVerifyStatus": true,
+      "panNumberVerifyStatus": true,
+      "aadhaarNumberVerifyStatus": true,
+      "firmPanNumberVerifyStatus": true,
+      "merchantBankVerifyStatus": true,
+      "merchantProductDetails": [
+        {"productId": "1", "packagetId": "1", "qty; ": 2},
+        {"productId": "2", "packagetId": "3", "qty; ": 3}
+      ]
+    };
     request.fields['personalInfo'] = jsonEncode(merchantPersonalReq.toJson());
     print(jsonEncode(merchantPersonalReq.toJson()));
     request.fields['companyDetailsInfo'] =
         jsonEncode(merchantCompanyDetailsReq.toJson());
+
     print(jsonEncode(merchantCompanyDetailsReq.toJson()));
+    request.fields['merchantAdditionalInfo'] = jsonEncode(additionalinfi);
     final streamedResponse = await request.send();
     final response = await http.Response.fromStream(streamedResponse);
     return response;

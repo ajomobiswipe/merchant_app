@@ -223,17 +223,18 @@ class _MyApplicationsState extends State<MyApplications> {
                   .pushNamed('merchantQrCode', arguments: {'params': "200"});
             },
             child: Text("qrdata")),
-        QRCode(
-          qrSize: 250,
-          qrBackgroundColor: Colors.white,
-          qrPadding: 13,
-          qrBorderRadius: 10,
-          qrForegroundColor: Theme.of(context).primaryColor,
-          qrData:
-              "000201010212260800043456520499953039785406100.235802IT5907Druidia6005MILAN6233012910000001#QRID00000421##10001#",
-          gapLess: false,
-          // embeddedImage: AssetImage("assets/logo.jpg"),
-        ),
+        // QRCode(
+        //   qrSize: 250,
+        //   qrBackgroundColor: Colors.white,
+        //   qrPadding: 13,
+        //   qrBorderRadius: 10,
+        //   qrForegroundColor: Theme.of(context).primaryColor,
+        //   qrData:
+        //       //"upi://pay?pa=7558877098@apl&pn=Ajo Sebastian&am=500&cu=INR&tn=justForFun",
+        //       "000201010212260800043456520499953039785406100.235802IT5907Druidia6005MILAN6233012910000001#QRID00000421##10001#",
+        //   gapLess: false,
+        //   // embeddedImage: AssetImage("assets/logo.jpg"),
+        // ),
         Row(
           children: [
             const SizedBox(
@@ -442,7 +443,13 @@ class _MyApplicationsState extends State<MyApplications> {
                                   color: AppColors.kPrimaryColor,
                                   size: 12),
                               onTap: () {
-                                _showMyDialog(data: ststusdata[index]);
+                                _showMyDialog(
+                                    data: ststusdata[index],
+                                    Phonenumber:
+                                        allOnboardingApplications[index]
+                                            ["mobileNo"],
+                                    name: allOnboardingApplications[index]
+                                        ["merchantName"]);
                               },
                             ),
                           ],
@@ -589,7 +596,10 @@ class _MyApplicationsState extends State<MyApplications> {
     });
   }
 
-  Future<void> _showMyDialog({required ApplicationStatus data}) async {
+  Future<void> _showMyDialog(
+      {required ApplicationStatus data,
+      required String name,
+      required String Phonenumber}) async {
     //if(data.devices!.isNotEmpty)
     return showDialog<void>(
       context: context,
@@ -604,11 +614,11 @@ class _MyApplicationsState extends State<MyApplications> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    data.errorMessage!,
+                    Phonenumber,
                     style: TextStyle(fontSize: 16),
                   ),
-                  const Text(
-                    'Ajo Sebastian',
+                  Text(
+                    name,
                     style: TextStyle(fontSize: 20),
                   ),
                 ],

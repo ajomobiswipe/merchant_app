@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sifr_latest/common_widgets/custom_app_button.dart';
-import 'package:sifr_latest/config/app_color.dart';
 import 'package:sifr_latest/widgets/app_scafold.dart';
-import 'package:sifr_latest/widgets/app_widget/app_button.dart';
 import 'package:sifr_latest/widgets/custom_text_widget.dart';
+import '../../widgets/qr_code_widget.dart';
 
 class PaymentPage extends StatelessWidget {
   const PaymentPage({super.key});
@@ -12,7 +11,6 @@ class PaymentPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppScafofld(
         child: ListView(
-      // crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -134,9 +132,17 @@ class PaymentPage extends StatelessWidget {
           children: [
             Column(
               children: [
-                Image.network(
-                  "https://www.pixartprinting.it/blog/wp-content/uploads/2022/06/qr_code_cos_e.png",
-                  height: 200,
+                QRCode(
+                  qrSize: 250,
+                  qrBackgroundColor: Colors.white,
+                  qrPadding: 13,
+                  qrBorderRadius: 10,
+                  qrForegroundColor: Theme.of(context).primaryColor,
+                  qrData:
+                      //"upi://pay?pa=7558877098@apl&pn=Ajo Sebastian&am=500&cu=INR&tn=justForFun",
+                      "000201010212260800043456520499953039785406100.235802IT5907Druidia6005MILAN6233012910000001#QRID00000421##10001#",
+                  gapLess: false,
+                  // embeddedImage: AssetImage("assets/logo.jpg"),
                 ),
                 SizedBox(
                   height: 20,

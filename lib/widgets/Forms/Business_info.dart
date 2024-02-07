@@ -134,7 +134,7 @@ class _BusinessInfoState extends State<BusinessInfo> {
   TextStyle? style;
   final TextEditingController _mobileNoController = TextEditingController();
   String? mobileNoCheckMessage;
-  String countryCode = 'AE';
+  String countryCode = 'IN';
   late Country _country =
       countries.firstWhere((element) => element.code == countryCode);
   final TextEditingController _mobileCodeController = TextEditingController();
@@ -1255,13 +1255,13 @@ class _BusinessInfoState extends State<BusinessInfo> {
                     )
                   ],
                 ),
-                Placeholder(
-                  child: ElevatedButton(
-                      onPressed: () {
-                        widget.next();
-                      },
-                      child: Text('next')),
-                ),
+                // Placeholder(
+                //   child: ElevatedButton(
+                //       onPressed: () {
+                //         widget.next();
+                //       },
+                //       child: Text('next')),
+                // ),
                 const SizedBox(
                   height: 20.0,
                 ),

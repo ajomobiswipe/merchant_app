@@ -194,7 +194,7 @@ class _DocumentUploadsState extends State<DocumentUploads> {
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: RichText(
                     text: TextSpan(
-                        text: 'Upload Front page of your Emirates ID',
+                        text: 'Upload Front page of your National ID',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color: Theme.of(context).primaryColor,
                             fontWeight: FontWeight.bold,
@@ -271,7 +271,7 @@ class _DocumentUploadsState extends State<DocumentUploads> {
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: RichText(
                     text: TextSpan(
-                        text: 'Upload Back page of your Emirates ID',
+                        text: 'Upload Back page of your National ID',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color: Theme.of(context).primaryColor,
                             fontWeight: FontWeight.bold,

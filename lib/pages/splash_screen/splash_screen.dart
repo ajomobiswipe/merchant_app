@@ -153,7 +153,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return EasySplashScreen(
-      logo: Image.asset('assets/logo/oma_emirates_logo.png'),
+      logo: Image.asset('assets/screen/anet.png'),
       logoWidth: 150,
       title: Text(
         "Merchant Onboarding",
