@@ -167,11 +167,12 @@ class _MerchantNumVerifyState extends State<MerchantNumVerify> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomTextWidget(
-                        text: 'Please select yourmerchant type', size: 10),
+                        text: 'Please select your merchant type', size: 14),
                     CustomTextWidget(
                         text:
                             'You are onboarding a new or an \nexisting merchant',
-                        size: 14,
+                        size: 15,
+                        fontWeight: FontWeight.w500,
                         textAlign: TextAlign.left),
                   ],
                 ),
@@ -213,7 +214,10 @@ class _MerchantNumVerifyState extends State<MerchantNumVerify> {
             ),
             Row(
               children: [
-                CustomTextWidget(text: "Merchant Mobile Number"),
+                CustomTextWidget(
+                    text: "Merchant Mobile Number",
+                    size: 16,
+                    fontWeight: FontWeight.w700),
               ],
             ),
             const SizedBox(
@@ -264,8 +268,20 @@ class _MerchantNumVerifyState extends State<MerchantNumVerify> {
             const SizedBox(
               height: 20,
             ),
-            CustomTextWidget(text: "verify the Number with OTP"),
-            CustomTextWidget(text: "sent on the Merchant Mobile Number"),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Column(
+                  children: [
+                    CustomTextWidget(
+                        text: "Verify the Number with OTP",
+                        fontWeight: FontWeight.w800),
+                    CustomTextWidget(
+                        text: "sent on the Merchant Mobile Number"),
+                  ],
+                ),
+              ],
+            ),
             const SizedBox(
               height: 20,
             ),
@@ -282,6 +298,7 @@ class _MerchantNumVerifyState extends State<MerchantNumVerify> {
                 child: CustomTextWidget(
                   text: 'Resend OTP',
                   color: AppColors.kLightGreen,
+                  size: 16,
                 )),
             const SizedBox(
               height: 20,

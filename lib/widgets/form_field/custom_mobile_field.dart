@@ -63,10 +63,10 @@ class CustomMobileField extends StatelessWidget {
               ? RichText(
                   text: TextSpan(
                       text: title,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodySmall
-                          ?.copyWith(fontWeight: FontWeight.normal),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                          color: Colors.black87),
                       children: const [
                         TextSpan(
                             text: ' *', style: TextStyle(color: Colors.red))

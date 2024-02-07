@@ -37,12 +37,6 @@ class UserTypeSelection extends StatelessWidget {
               color: AppColors.kLightGreen,
             ),
             CustomTextWidget(
-              text: 'OMA',
-              size: 22,
-              fontWeight: FontWeight.w500,
-              color: AppColors.kheadingColor,
-            ),
-            CustomTextWidget(
               text: 'Merchant Onboarding',
               size: 22,
               fontWeight: FontWeight.w500,
@@ -80,7 +74,7 @@ class UserTypeSelection extends StatelessWidget {
             ),
             UserSelectContainer(
               iconPath: 'assets/app_icons/sales_team.png',
-              title: 'OMA Sales Team',
+              title: 'Sales Team',
               onTap: () {
                 Navigator.pushNamed(context, 'login');
               },

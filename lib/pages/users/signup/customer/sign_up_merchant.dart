@@ -124,10 +124,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
       //     var aa =
 
       [
-    {"value": "Europien", "label": "Europien"},
-    {"value": "Emirates", "label": "Emirates"},
-    {"value": "American", "label": "American"},
-    {"value": "Britan", "label": "Britan"},
+    {"value": "India", "label": "India"},
   ];
 
   List bankList =
@@ -148,13 +145,16 @@ class _MerchantSignupState extends State<MerchantSignup> {
   ];
 
   Map<String, int> countrysList = {
-    "Europe": 141,
     "India": 356,
-    "UK": 999,
-    "USA": 340,
-    "UAE": 784,
   };
-  List statesList = ['Dubai', 'Abudhabi', 'Sharjah', 'Others'];
+  List statesList = [
+    'TamilNadu',
+    'Andhra Pradesh',
+    'Telangana',
+    "Karnataka",
+    "Kerala",
+    'Others'
+  ];
   List countryList = [];
   List acquirerList = [];
   List mmcGroupList = [];
@@ -392,7 +392,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
       );
     }
     if (position == 1) {
-      return mainControl('Merchant Personal Information', personalInfo());
+      return mainControl('Merchant Information', personalInfo());
     }
     // else if (position == 2) {
     //   var isDarkMode = context.isDarkMode;
@@ -788,7 +788,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                     readOnly: true,
                     errorMaxLines: 2,
                     maxLength: 26,
-                    helperText: Constants.dobMessage,
+                    // helperText: Constants.dobMessage,
                     helperStyle: Theme.of(context)
                         .textTheme
                         .bodySmall
@@ -1833,7 +1833,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               CustomTextFormField(
                 keyboardType: TextInputType.number,
                 controller: _merchantAddharController,
-                title: 'Merchant Addhaar Number',
+                title: 'Merchant Aadhaar Number',
                 required: true,
                 prefixIcon: Icons.verified,
                 iconColor: isOtpVerifird ? Colors.green : Colors.red,
@@ -1882,7 +1882,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 readOnly: !showaddharverify,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Addhaar Numberis Mandatory!';
+                    return 'Aadhaar Numberis Mandatory!';
                   }
                   if (value.length < 12) {
                     return 'Minimum character length is 12';
@@ -1943,10 +1943,10 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   helperText: "Click verify",
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Addhaar Numberis Mandatory!';
+                      return 'Otp is Mandatory!';
                     }
-                    if (value.length < 4) {
-                      return 'Minimum character length is 4';
+                    if (value.length < 6) {
+                      return 'Minimum length is 6 digit';
                     }
                     // if (userVerify && userCheck == "true") {
                     //   return Constants.userNameFailureMessage;
@@ -2032,7 +2032,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               CustomTextFormField(
                 keyboardType: TextInputType.text,
                 controller: _gstController,
-                title: 'Merchant Gst Number',
+                title: 'Merchant GST Number',
                 required: true,
                 maxLength: 15,
                 prefixIcon: Icons.verified,
@@ -2429,7 +2429,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                     return 'Account Number is Mandatory!';
                   }
                   if (value.length < 10) {
-                    return 'Minimum character length is 10';
+                    return 'Minimum digits length is 10';
                   }
                   if (userVerify && userCheck == "true") {
                     return Constants.userNameFailureMessage;
@@ -2472,7 +2472,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               const SizedBox(height: 20.0),
               CustomTextFormField(
                 controller: merchantphoneNumberCtrl,
-                title: 'Beneficiary Phone Number',
+                title: 'Merchant Mobile Number',
                 required: true,
                 prefixIcon: Icons.phone,
                 onFieldSubmitted: (name) {
@@ -3106,6 +3106,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 Checkbox(
                   value: acceptTnc,
                   checkColor: Colors.white,
+                  activeColor: AppColors.kLightGreen,
                   visualDensity: VisualDensity.adaptivePlatformDensity,
                   onChanged: (bool? newValue) async {
                     setState(() {
@@ -3159,6 +3160,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 Checkbox(
                   value: acceptAggrement,
                   checkColor: Colors.white,
+                  activeColor: AppColors.kLightGreen,
                   visualDensity: VisualDensity.adaptivePlatformDensity,
                   onChanged: (bool? newValue) async {
                     setState(() {
@@ -3190,13 +3192,13 @@ class _MerchantSignupState extends State<MerchantSignup> {
               ],
             ),
           ),
-          ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  position = 6;
-                });
-              },
-              child: Text('back')),
+          // ElevatedButton(
+          //     onPressed: () {
+          //       setState(() {
+          //         position = 6;
+          //       });
+          //     },
+          //     child: Text('back')),
           SizedBox(
             height: 30,
           ),

@@ -52,7 +52,6 @@ class CustomRoute {
           return const UserTypeSelection();
         case "MerchantNumVerify":
           return const MerchantNumVerify();
-
         case "merchantOnboarding":
           return const MerchantSignup();
         case "myApplications":

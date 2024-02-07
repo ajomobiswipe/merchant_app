@@ -59,12 +59,12 @@ class _CustomOtpWidgetState extends State<CustomOtpWidget> {
               defaultPinTheme: defaultPinTheme,
               separatorBuilder: (index) => const SizedBox(width: 8),
               validator: (value) {
-                return value == '2222' ? null : 'Pin is incorrect';
+                return value == '2580' ? null : 'Pin is incorrect';
               },
-              onClipboardFound: (value) {
-                debugPrint('onClipboardFound: $value');
-                pinController.setText(value);
-              },
+              // onClipboardFound: (value) {
+              //   debugPrint('onClipboardFound: $value');
+              //   pinController.setText(value);
+              // },
               hapticFeedbackType: HapticFeedbackType.lightImpact,
               onCompleted: widget.onCompleted,
 

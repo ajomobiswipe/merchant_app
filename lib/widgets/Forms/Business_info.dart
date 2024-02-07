@@ -246,28 +246,18 @@ class _BusinessInfoState extends State<BusinessInfo> {
                   children: [
                     Expanded(
                       child: CustomDropdown(
-                        title: "Acquirer Name",
+                        title: "Processor Name",
                         required: true,
                         enabled: true,
                         selectedItem: widget.acquirerNameCtrl.text != ''
                             ? widget.acquirerNameCtrl.text
                             : null,
                         prefixIcon: Icons.location_city_outlined,
-                        itemList: widget.acquierList
-                            .map((e) => e['acquirerName'].toString())
-                            .toList(),
+                        itemList: ["SBI", "Axis", "Hdfc"],
                         onChanged: (value) {
                           setState(() {
-                            widget.acquirerApplicationIdCtrl.clear();
+                            // widget.acquirerApplicationIdCtrl.clear();
                             widget.acquirerNameCtrl.text = value;
-                            List selectedCountry = widget.acquierList
-                                .where((element) =>
-                                    element['acquirerName'] == value)
-                                .toList();
-                            String guid = selectedCountry[0]['guid'].toString();
-                            print(guid);
-                            acquierApplicationidList.clear();
-                            getAcqApplicationid(guid);
                           });
                         },
                         onSaved: (value) {
@@ -275,7 +265,7 @@ class _BusinessInfoState extends State<BusinessInfo> {
                         },
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Acquirer Name Mandatory!';
+                            return 'Processor Name Mandatory!';
                           }
                           return null;
                         },
@@ -286,7 +276,7 @@ class _BusinessInfoState extends State<BusinessInfo> {
                     ),
                     Expanded(
                       child: CustomDropdown(
-                        title: "Application Id",
+                        title: "Processor Id",
                         required: true,
                         enabled: isAquirerselected,
                         selectedItem:
@@ -294,7 +284,11 @@ class _BusinessInfoState extends State<BusinessInfo> {
                                 ? widget.acquirerApplicationIdCtrl.text
                                 : null,
                         prefixIcon: Icons.location_city_outlined,
-                        itemList: acquierApplicationidList.keys.toList(),
+                        itemList: [
+                          "PPR002125",
+                          "PPR0021654",
+                          "PPR0021684",
+                        ],
                         onChanged: (value) {
                           setState(() {
                             widget.acquirerApplicationIdCtrl.text = value;
@@ -302,7 +296,7 @@ class _BusinessInfoState extends State<BusinessInfo> {
                         },
                         onSaved: (value) {
                           widget.merchantCompanyDetailsReq.acquirerId =
-                              acquierApplicationidList[value];
+                              "ADIBOMA0001";
                         },
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -410,7 +404,7 @@ class _BusinessInfoState extends State<BusinessInfo> {
                   height: 15.0,
                 ),
                 CustomDropdown(
-                  title: "MCC Group",
+                  title: "Bussines Group",
                   required: true,
                   enabled: true,
                   selectedItem: widget.selectedMccGroup.text != ''
@@ -436,7 +430,7 @@ class _BusinessInfoState extends State<BusinessInfo> {
                 ),
                 const SizedBox(height: 10.0),
                 CustomDropdown(
-                  title: "MCC Type",
+                  title: "Bussines Type",
                   required: true,
                   enabled: true,
                   selectedItem: widget.selectedBusinessType.text != ''
@@ -599,10 +593,7 @@ class _BusinessInfoState extends State<BusinessInfo> {
                             : null,
                         prefixIcon: Icons.location_city_outlined,
                         itemList: const [
-                          "Europien",
-                          "Emirates",
-                          "American",
-                          "Britan",
+                          "India",
                         ],
                         // widget.mccList
                         //     .map((e) => e['mccDescription'].toString())
@@ -642,7 +633,12 @@ class _BusinessInfoState extends State<BusinessInfo> {
                             ? widget.selectedCityCtrl.text
                             : null,
                         prefixIcon: Icons.location_city_outlined,
-                        itemList: ['Dubai', 'Sharjah'],
+                        itemList: [
+                          'Chennai',
+                          "Hyderabad ",
+                          "Bangalore ",
+                          "Pune "
+                        ],
 
                         // widget.mccList
                         //     .map((e) => e['mccDescription'].toString())
@@ -683,17 +679,17 @@ class _BusinessInfoState extends State<BusinessInfo> {
                       ? widget.selectedCurrency.text
                       : null,
                   prefixIcon: Icons.location_city_outlined,
-                  itemList: ['AED'],
+                  itemList: ['INR'],
                   // widget.MCCGroupList.map((e) => e['mccGroupId'].toString())
                   //     .toList(),
                   onChanged: (value) {
                     setState(() {
                       widget.selectedCurrency.text = value;
-                      widget.merchantCompanyDetailsReq.currency = 784;
+                      widget.merchantCompanyDetailsReq.currency = 356;
                     });
                   },
                   onSaved: (value) {
-                    widget.merchantCompanyDetailsReq.currency = 784;
+                    widget.merchantCompanyDetailsReq.currency = 356;
                   },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -815,7 +811,7 @@ class _BusinessInfoState extends State<BusinessInfo> {
                       child: SizedBox(
                         child: Column(
                           children: [
-                            const Text('Vat Applicable'),
+                            const Text('GST Applicable'),
                             Switch(
                                 value: vatApplicable,
                                 onChanged: (value) {
@@ -836,71 +832,12 @@ class _BusinessInfoState extends State<BusinessInfo> {
                         ),
                       ),
                     ),
-                    Expanded(
-                      child: CustomTextFormField(
-                          enabled: vatApplicable ? true : false,
-                          title: 'VAT Value',
-                          required: true,
-                          controller: widget.vatValueCtrl,
-                          maxLength: 5,
-                          keyboardType: TextInputType.number,
-                          textCapitalization: TextCapitalization.words,
-                          prefixIcon: LineAwesome.store_alt_solid,
-                          inputFormatters: <TextInputFormatter>[
-                            FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
-                          ],
-                          onSaved: (value) {
-                            widget.merchantCompanyDetailsReq.vatValue = value;
-                          },
-                          onChanged: (value) {
-                            setState(() {});
-                          },
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Merchant Name is Mandatory!';
-                            }
-                            if (!RegExp(r'^[-a-zA-Z0-9]+(\s[-a-zA-Z0-9]+)*$')
-                                .hasMatch(value)) {
-                              return 'Invalid Merchant Name';
-                            }
-                            return null;
-                          }),
-                    ),
                   ],
                 ),
                 const SizedBox(
                   height: 15,
                 ),
-                CustomTextFormField(
-                    title: 'VAT Registration Number',
-                    enabled: vatApplicable ? true : false,
-                    required: true,
-                    controller: widget.VATRegistrationNumberCtrl,
-                    maxLength: 15,
-                    keyboardType: TextInputType.visiblePassword,
-                    textCapitalization: TextCapitalization.words,
-                    prefixIcon: LineAwesome.store_alt_solid,
-                    inputFormatters: <TextInputFormatter>[
-                      FilteringTextInputFormatter.allow(RegExp(
-                          r'[0-9]')) //FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\d\s,\'"\\]'))
-                    ],
-                    onSaved: (value) {
-                      widget.merchantCompanyDetailsReq.vatRegistrationNumber =
-                          value;
-                    },
-                    onChanged: (value) {
-                      setState(() {});
-                    },
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'VAT Registration Number is Mandatory!';
-                      }
-                      if (!RegExp(r'^[-a-zA-Z0-9]+(\s[-a-zA-Z0-9]+)*$')
-                          .hasMatch(value)) {
-                        return 'Invalid VAT Registration Number';
-                      }
-                      return null;
-                    }),
+
                 const SizedBox(
                   height: 15,
                 ),
@@ -1146,7 +1083,7 @@ class _BusinessInfoState extends State<BusinessInfo> {
                       child: SizedBox(
                         child: Column(
                           children: [
-                            Text('Hold Full Payment Amount'),
+                            Text('T + 1'),
                             Switch(
                                 value: holdFullPayment,
                                 onChanged: (value) {

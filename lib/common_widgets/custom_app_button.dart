@@ -34,7 +34,7 @@ class CustomAppButton extends StatelessWidget {
             style: Theme.of(context)
                 .textTheme
                 .titleMedium
-                ?.copyWith(color: Colors.white)),
+                ?.copyWith(color: Colors.white, fontSize: 20)),
       ),
     );
   }

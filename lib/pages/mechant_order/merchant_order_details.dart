@@ -206,8 +206,7 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                           Map<String, dynamic> package = entry.value;
                           return DropdownMenuItem<int>(
                             value: package['packageId'] as int,
-                            child: Text(
-                                '${package['packageName']} ${package['description']}'),
+                            child: Text(' ${package['description']}'),
                           );
                         }).toList()
                       : [
@@ -333,7 +332,7 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                   required: true,
                   selectedItem:
                       selectedQuantity != '' ? selectedQuantity : null,
-                  prefixIcon: FontAwesome.product_hunt,
+                  prefixIcon: Icons.production_quantity_limits,
                   itemList: const ['1', '2', '3', '4', '5'],
 
                   // nationalityList
@@ -351,7 +350,7 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                   },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please Product Quantity!';
+                      return 'Please Select Quantity!';
                     }
                     return null;
                   },
@@ -492,50 +491,50 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                 Container(
                   color: AppColors.kTileColor,
                   child: Padding(
-                    padding: const EdgeInsets.all(15.0),
+                    padding: const EdgeInsets.all(5.0),
                     child: Column(
                       children: [
                         DataTable(
                           headingRowHeight: 0,
-                          columnSpacing: 5,
+                          columnSpacing: 15,
                           dataRowMinHeight: 20,
                           dataRowMaxHeight: 30,
                           columns: [
                             DataColumn(label: Text('Product')),
                             DataColumn(label: Text('Package')),
                             DataColumn(label: Text('Quantity')),
-                            DataColumn(label: Text('Actions')),
+                            // DataColumn(label: Text('Actions')),
                           ],
                           rows: selectedItems.map((item) {
                             return DataRow(cells: [
                               DataCell(CustomTextWidget(
                                 text: item.package,
-                                size: 10,
+                                size: 11,
                                 fontWeight: FontWeight.w900,
                               )),
                               DataCell(CustomTextWidget(
-                                text: item.productName,
-                                size: 10,
+                                text: "${item.productName}+ 1499+499",
+                                size: 11,
                                 fontWeight: FontWeight.w900,
                               )),
                               DataCell(CustomTextWidget(
                                 text: item.quantity.toString(),
-                                size: 10,
+                                size: 12,
                                 fontWeight: FontWeight.w900,
                               )),
-                              DataCell(
-                                IconButton(
-                                  icon: Icon(
-                                    Icons.remove_circle_outline_rounded,
-                                    color: Colors.red,
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      selectedItems.remove(item);
-                                    });
-                                  },
-                                ),
-                              ),
+                              // DataCell(
+                              //   IconButton(
+                              //     icon: Icon(
+                              //       Icons.remove_circle_outline_rounded,
+                              //       color: Colors.red,
+                              //     ),
+                              //     onPressed: () {
+                              //       setState(() {
+                              //         selectedItems.remove(item);
+                              //       });
+                              //     },
+                              //   ),
+                              // ),
                             ]);
                           }).toList(),
                         ),
