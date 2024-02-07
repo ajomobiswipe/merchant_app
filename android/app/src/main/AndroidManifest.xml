@@ -16,7 +16,6 @@
     <application
         android:label="Merchant Onboarding"
         android:requestLegacyExternalStorage="true"
-        android:enableOnBackInvokedCallback="true"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:allowBackup="false"
