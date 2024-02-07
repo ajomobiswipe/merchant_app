@@ -23,6 +23,7 @@ class _MerchantNumVerifyState extends State<MerchantNumVerify> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.white,
+        leadingWidth: 200,
         leading: PopupMenuButton<int>(
           color: Colors.white,
           itemBuilder: (context) => [
@@ -103,13 +104,8 @@ class _MerchantNumVerifyState extends State<MerchantNumVerify> {
             ),
           ],
           offset: const Offset(40, 40),
-          // color: Colors.black12,
-          icon: const Padding(
-            padding: EdgeInsets.only(right: 10),
-            child: CircleAvatar(
-              child: Icon(Icons.person),
-            ),
-          ),
+          // icon:
+
           elevation: 2,
 
           onSelected: (value) {
@@ -124,6 +120,30 @@ class _MerchantNumVerifyState extends State<MerchantNumVerify> {
               // Navigator.pushNamed(context, 'DeviceDeploymentScreen');
             }
           },
+          // color: Colors.black12,
+
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                margin: EdgeInsets.only(top: 10, left: 10),
+                height: 100,
+                decoration: const BoxDecoration(
+                    shape: BoxShape.circle, color: Colors.blue),
+                child: Image.asset(
+                  'assets/app_icons/businessMan.png',
+                  height: 80,
+                ),
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Text('Aman Singh'),
+              )
+            ],
+          ),
         ),
         actions: [
           IconButton(
@@ -155,6 +175,7 @@ class _MerchantNumVerifyState extends State<MerchantNumVerify> {
               height: 20,
             ),
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Icon(
                   Icons.location_on_outlined,
