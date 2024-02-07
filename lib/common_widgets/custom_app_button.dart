@@ -31,10 +31,10 @@ class CustomAppButton extends StatelessWidget {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15))),
         child: Text(title,
-            style: Theme.of(context)
-                .textTheme
-                .titleMedium
-                ?.copyWith(color: Colors.white, fontSize: 20)),
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.bold)),
       ),
     );
   }

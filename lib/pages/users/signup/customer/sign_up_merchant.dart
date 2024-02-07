@@ -3263,7 +3263,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
   submitUserRegistration() async {
     setState(() {
-      _isLoading = false;
+      _isLoading = true;
       requestModel.role = "MERCHANT";
       requestModel.currencyId = '784';
       requestModel.latitude = _lat;
@@ -3310,7 +3310,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
           alertWidget.successPopup(
               context, 'Success', decodeData['responseMessage'], () {
             Navigator.pushNamedAndRemoveUntil(
-                context, 'login', (route) => false);
+                context, 'MerchantNumVerify', (route) => false);
           });
         } else {
           setState(() {

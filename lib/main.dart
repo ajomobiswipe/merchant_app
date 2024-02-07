@@ -65,7 +65,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 class MainPage extends StatelessWidget {
   // local variable declaration
   final StorageService storageService;
-  const MainPage({Key? key, required this.storageService}) : super(key: key);
+  MainPage({Key? key, required this.storageService}) : super(key: key);
 
   /*
   * This is the main page of project. we are using multiple provider.

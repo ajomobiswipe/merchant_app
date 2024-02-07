@@ -140,7 +140,7 @@ class _MerchantNumVerifyState extends State<MerchantNumVerify> {
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
-                child: Text('Aman Singh'),
+                child: Text('Vinay'),
               )
             ],
           ),

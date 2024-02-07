@@ -14,6 +14,7 @@ class AppButton extends StatelessWidget {
   final String title;
   final VoidCallback? onPressed;
   final Color? backgroundColor;
+  final Color? titleColor;
   final double? width;
 
   const AppButton(
@@ -21,7 +22,8 @@ class AppButton extends StatelessWidget {
       required this.title,
       this.onPressed,
       this.backgroundColor,
-      this.width})
+      this.width,
+      this.titleColor = Colors.white})
       : super(key: key);
 
   @override
@@ -39,7 +41,7 @@ class AppButton extends StatelessWidget {
             style: Theme.of(context)
                 .textTheme
                 .titleMedium
-                ?.copyWith(color: Colors.white)),
+                ?.copyWith(color: titleColor)),
       ),
     );
   }

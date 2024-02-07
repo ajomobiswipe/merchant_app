@@ -51,6 +51,7 @@ class _CustomOtpWidgetState extends State<CustomOtpWidget> {
             // Specify direction if desired
             textDirection: TextDirection.ltr,
             child: Pinput(
+              obscureText: true,
               controller: pinController,
               focusNode: focusNode,
               androidSmsAutofillMethod:

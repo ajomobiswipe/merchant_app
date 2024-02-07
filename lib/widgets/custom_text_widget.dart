@@ -21,6 +21,7 @@ class CustomTextWidget extends StatelessWidget {
     return Text(
       text,
       textAlign: textAlign,
+      overflow: TextOverflow.ellipsis,
       style: TextStyle(
         color: color,
         fontSize: size,

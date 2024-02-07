@@ -139,9 +139,9 @@ class AlertService {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: AppButton(
+                    titleColor: AppColors.white,
                     title: "Okay",
-                    backgroundColor:
-                        Theme.of(context).primaryColor.withOpacity(0.5),
+                    backgroundColor: AppColors.kLightGreen,
                     onPressed: onPressed,
                   ),
                 ),

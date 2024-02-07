@@ -215,14 +215,15 @@ class _MyApplicationsState extends State<MyApplications> {
     return AppScafofld(
         child: Column(
       children: [
-        CustomTextWidget(text: 'MY APPLICATIONS'),
+        CustomTextWidget(
+            text: 'MY APPLICATIONS', fontWeight: FontWeight.bold, size: 16),
 
-        ElevatedButton(
-            onPressed: () {
-              Navigator.of(context)
-                  .pushNamed('merchantQrCode', arguments: {'params': "200"});
-            },
-            child: Text("qrdata")),
+        // ElevatedButton(
+        //     onPressed: () {
+        //       Navigator.of(context)
+        //           .pushNamed('merchantQrCode', arguments: {'params': "200"});
+        //     },
+        //     child: Text("qrdata")),
         // QRCode(
         //   qrSize: 250,
         //   qrBackgroundColor: Colors.white,
@@ -270,7 +271,9 @@ class _MyApplicationsState extends State<MyApplications> {
 //     );
 //   }).toList(),
 // ),
-
+        SizedBox(
+          height: 20,
+        ),
         DropdownButtonFormField(
           // hint: const Text('Select Stage'),
           value: selectedValue ?? 0,
@@ -396,12 +399,14 @@ class _MyApplicationsState extends State<MyApplications> {
                               fontWeight: FontWeight.w800,
                               color: Colors.black87,
                               text: "Name : "),
-                          CustomTextWidget(
-                              size: 14,
-                              fontWeight: FontWeight.w800,
-                              color: AppColors.kLightGreen,
-                              text: allOnboardingApplications[index]
-                                  ["merchantName"]),
+                          Expanded(
+                            child: CustomTextWidget(
+                                size: 14,
+                                fontWeight: FontWeight.w800,
+                                color: AppColors.kLightGreen,
+                                text: allOnboardingApplications[index]
+                                    ["merchantName"]),
+                          ),
                         ],
                       ),
                       subtitle: Column(

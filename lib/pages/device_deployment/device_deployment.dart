@@ -349,7 +349,7 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
             const SizedBox(height: 30.0),
             Center(
               child: CustomAppButton(
-                title: "Depoly",
+                title: "Deploy",
                 onPressed: () {
                   if (testTransactionChargeSlipImage.text != '' &&
                       deviceAtStoreImage.text != '') {

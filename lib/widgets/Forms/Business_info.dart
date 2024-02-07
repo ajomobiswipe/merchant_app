@@ -253,7 +253,7 @@ class _BusinessInfoState extends State<BusinessInfo> {
                             ? widget.acquirerNameCtrl.text
                             : null,
                         prefixIcon: Icons.location_city_outlined,
-                        itemList: ["SBI", "Axis", "Hdfc"],
+                        itemList: ["Hitachi", "Axis", "WorldLine"],
                         onChanged: (value) {
                           setState(() {
                             // widget.acquirerApplicationIdCtrl.clear();
@@ -806,31 +806,31 @@ class _BusinessInfoState extends State<BusinessInfo> {
                   height: 15,
                 ),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Expanded(
-                      child: SizedBox(
-                        child: Column(
-                          children: [
-                            const Text('GST Applicable'),
-                            Switch(
-                                value: vatApplicable,
-                                onChanged: (value) {
-                                  widget.merchantCompanyDetailsReq
-                                      .vatApplicable = value;
-                                  setState(() {
-                                    vatApplicable = value;
-                                    if (!value) {
-                                      widget.vatValueCtrl.clear();
-                                      widget.VATRegistrationNumberCtrl.clear();
-                                    }
-                                    //                                 vatApplicable
-                                    // ? widget.vatValueCtrl.text = value
-                                    // : widget.vatValueCtrl.text='';
-                                  });
-                                }),
-                          ],
-                        ),
-                      ),
+                    Column(
+                      children: [
+                        const Text('GST Applicable'),
+                        Switch(
+                            activeColor: AppColors.kLightGreen,
+                            inactiveThumbColor: AppColors.white,
+                            inactiveTrackColor: AppColors.kRedColor,
+                            value: vatApplicable,
+                            onChanged: (value) {
+                              widget.merchantCompanyDetailsReq.vatApplicable =
+                                  value;
+                              setState(() {
+                                vatApplicable = value;
+                                if (!value) {
+                                  widget.vatValueCtrl.clear();
+                                  widget.VATRegistrationNumberCtrl.clear();
+                                }
+                                //                                 vatApplicable
+                                // ? widget.vatValueCtrl.text = value
+                                // : widget.vatValueCtrl.text='';
+                              });
+                            }),
+                      ],
                     ),
                   ],
                 ),
@@ -1085,6 +1085,9 @@ class _BusinessInfoState extends State<BusinessInfo> {
                           children: [
                             Text('T + 1'),
                             Switch(
+                                activeColor: AppColors.kLightGreen,
+                                inactiveThumbColor: AppColors.white,
+                                inactiveTrackColor: AppColors.kRedColor,
                                 value: holdFullPayment,
                                 onChanged: (value) {
                                   setState(() {
@@ -1104,6 +1107,9 @@ class _BusinessInfoState extends State<BusinessInfo> {
                           children: [
                             const Text('DCC Supported ?'),
                             Switch(
+                                activeColor: AppColors.kLightGreen,
+                                inactiveThumbColor: AppColors.white,
+                                inactiveTrackColor: AppColors.kRedColor,
                                 value: DCCSupported,
                                 onChanged: (value) {
                                   setState(() {
@@ -1126,6 +1132,9 @@ class _BusinessInfoState extends State<BusinessInfo> {
                           children: [
                             Text('Tips Allowed ?'),
                             Switch(
+                                activeColor: AppColors.kLightGreen,
+                                inactiveThumbColor: AppColors.white,
+                                inactiveTrackColor: AppColors.kRedColor,
                                 value: tipsAllowed,
                                 onChanged: (value) {
                                   setState(() {
@@ -1144,6 +1153,9 @@ class _BusinessInfoState extends State<BusinessInfo> {
                           children: [
                             Text('Status ?'),
                             Switch(
+                                activeColor: AppColors.kLightGreen,
+                                inactiveThumbColor: AppColors.white,
+                                inactiveTrackColor: AppColors.kRedColor,
                                 value: status,
                                 onChanged: (value) {
                                   setState(() {
