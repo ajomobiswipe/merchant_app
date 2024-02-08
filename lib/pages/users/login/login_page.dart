@@ -138,6 +138,7 @@ class _LoginPageState extends State<LoginPage> {
           // toggledButton(),
           const SizedBox(height: 10),
           userNameField(),
+          const SizedBox(height: 10),
           passwordField(),
           const SizedBox(height: 10.0),
           //login(),
@@ -152,7 +153,7 @@ class _LoginPageState extends State<LoginPage> {
               },
             ),
             CustomTextWidget(
-              text: "Remember me",
+              text: "Remember me",fontWeight: FontWeight.bold,
               // color: AppColors.kPrimaryColor,
             ),
             Expanded(child: SizedBox()),
@@ -188,26 +189,26 @@ class _LoginPageState extends State<LoginPage> {
           const SizedBox(height: 10),
           CustomTextWidget(
             text: 'Connect With',
-            size: 18,
+            size: 16,fontWeight: FontWeight.bold,
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 20),
           Row(
             children: [
               Expanded(
                 child: SizedBox(),
                 flex: 4,
               ),
-              connectWithOptions(icon: Icon(Icons.phone), title: 'Phone'),
+              connectWithOptions(icon: Icon(Icons.phone,color: Colors.white,), title: 'Phone'),
               Expanded(
                 child: SizedBox(),
                 flex: 1,
               ),
-              connectWithOptions(icon: Icon(Icons.email), title: 'E-mail'),
+              connectWithOptions(icon: Icon(Icons.email,color: Colors.white,), title: 'E-mail'),
               Expanded(
                 child: SizedBox(),
                 flex: 1,
               ),
-              connectWithOptions(icon: Icon(Icons.more_horiz), title: 'Other'),
+              connectWithOptions(icon: Icon(Icons.more_horiz,color: Colors.white,), title: 'Other'),
               Expanded(
                 child: SizedBox(),
                 flex: 4,
@@ -262,7 +263,8 @@ class _LoginPageState extends State<LoginPage> {
           child: CircleAvatar(
               backgroundColor: AppColors.kPrimaryColor, child: icon),
         ),
-        Text(title)
+        SizedBox(height: 5,),
+        Text(title,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 13),)
       ],
     );
   }
@@ -418,8 +420,8 @@ class _LoginPageState extends State<LoginPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 10),
-            child: CustomTextWidget(text: "Username"),
+            padding: const EdgeInsets.only(bottom: 5),
+            child: CustomTextWidget(text: "Username",fontWeight: FontWeight.bold,),
           ),
           TextFormField(
               keyboardType: TextInputType.text,
@@ -446,7 +448,8 @@ class _LoginPageState extends State<LoginPage> {
                     AppColors.kTileColor, // Set the background color here
                 filled: true,
                 hintStyle: TextStyle(
-                  color: Colors.grey, // Set the hint text color here
+                  color: Colors.grey,
+                  fontSize: 13// Set the hint text color here
                 ),
                 // prefixIcon: Icon(Icons.verified_user_rounded,
                 //     size: 25, color: Theme.of(context).primaryColor),
@@ -480,8 +483,8 @@ class _LoginPageState extends State<LoginPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 10),
-            child: CustomTextWidget(text: "Password"),
+            padding: const EdgeInsets.only(bottom: 5),
+            child: CustomTextWidget(text: "Password",fontWeight: FontWeight.bold,),
           ),
           TextFormField(
             controller: _passwordController,
@@ -539,6 +542,7 @@ class _LoginPageState extends State<LoginPage> {
               filled: true,
               hintStyle: TextStyle(
                 color: Colors.grey,
+                  fontSize: 13
               ),
               suffixIcon: IconButton(
                 onPressed: () {
@@ -601,7 +605,7 @@ class _LoginPageState extends State<LoginPage> {
       },
       child: CustomTextWidget(
         text: "Forgot Password?",
-        color: AppColors.kPrimaryColor,
+        color: AppColors.kPrimaryColor,fontWeight: FontWeight.bold,
       ),
       // Text("Forgot $password?",
       //     style: Theme.of(context)

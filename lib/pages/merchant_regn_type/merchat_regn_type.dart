@@ -214,7 +214,7 @@ class _MerchantNumVerifyState extends State<MerchantNumVerify> {
                   title: 'New \nMerchant',
                   iconColor: AppColors.kLightGreen,
                   borderColor: AppColors.kPrimaryColor,
-                  flex: 8,
+                  flex: 8,titleColor: Colors.black54,
                 ),
                 Expanded(
                   flex: 1,
@@ -223,7 +223,7 @@ class _MerchantNumVerifyState extends State<MerchantNumVerify> {
                 MerchantRegnTypeSelector(
                   iconPath: "assets/app_icons/existing_merchant.png",
                   title: 'Existing\nMerchant',
-                  flex: 8,
+                  flex: 8,titleColor: Colors.black54,
                 ),
                 Expanded(
                   flex: 1,
@@ -249,12 +249,11 @@ class _MerchantNumVerifyState extends State<MerchantNumVerify> {
               enabled: true,
               controller: _mobileNoController,
               keyboardType: TextInputType.number,
-              title: 'Mobile Number',
               // enabled: _dateController.text.isEmpty
               //     ? enabledMobile = false
               //     : enabledMobile = enabledDob,
 
-              required: true,
+              // required: true,
 
               // helperText: mobileNoCheckMessage,
               //helperStyle: style,
@@ -288,7 +287,7 @@ class _MerchantNumVerifyState extends State<MerchantNumVerify> {
             //   suffixIconTrue: true,
             // ),
             const SizedBox(
-              height: 20,
+              height: 40,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -296,10 +295,10 @@ class _MerchantNumVerifyState extends State<MerchantNumVerify> {
                 Column(
                   children: [
                     CustomTextWidget(
-                        text: "Verify the Number with OTP",
-                        fontWeight: FontWeight.w800),
+                        text: "Verify the Number with OTP",color: Colors.black.withOpacity(.6),size: 13,fontWeight: FontWeight.bold,
+                        ),
                     CustomTextWidget(
-                        text: "sent on the Merchant Mobile Number"),
+                        text: "sent on the Merchant Mobile Number",color: Colors.black.withOpacity(.6),size: 13,fontWeight: FontWeight.bold,),
                   ],
                 ),
               ],
@@ -312,15 +311,15 @@ class _MerchantNumVerifyState extends State<MerchantNumVerify> {
                 print('onCompleted: $pin');
               },
             ),
-            const SizedBox(
-              height: 20,
-            ),
+            // const SizedBox(
+            //   height: 20,
+            // ),
             TextButton(
                 onPressed: () {},
                 child: CustomTextWidget(
                   text: 'Resend OTP',
-                  color: AppColors.kLightGreen,
-                  size: 16,
+                  color: Colors.green,
+                  size: 15,fontWeight: FontWeight.bold,
                 )),
             const SizedBox(
               height: 20,

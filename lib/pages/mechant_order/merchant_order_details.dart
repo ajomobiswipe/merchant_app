@@ -128,16 +128,15 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomTextWidget(
-                      text: "Product",
-                      size: 16,
+                      text: "Product",fontWeight: FontWeight.bold,
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(left: 20, top: 8),
+                      padding: const EdgeInsets.only( top: 8),
                       child: DropdownButtonFormField<int>(
                         value: selectedProductId,
                         icon: Icon(Icons.keyboard_arrow_down,
                             color: AppColors.kPrimaryColor),
-                        hint: const Text('Select a Product'),
+                        hint: const Text('Select a Product',style: TextStyle(fontSize: 13,fontWeight: FontWeight.bold),),
                         items: widget.tmsProductMaster
                             .asMap()
                             .entries
@@ -194,16 +193,15 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomTextWidget(
-                      text: "Package",
-                      size: 16,
+                      text: "Package",fontWeight: FontWeight.bold,
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(left: 20, top: 8),
+                      padding: const EdgeInsets.only(top: 8),
                       child: DropdownButtonFormField<int>(
                         key: ValueKey<int>(selectedProductId ??
                             0), // Use ValueKey to track selectedProductId
                         value: selectedPackageId,
-                        hint: const Text('Select a Package'),
+                        hint: const Text('Select a Package',style: TextStyle(fontSize: 13,fontWeight: FontWeight.bold),),
                         items: selectedProductPackages.isNotEmpty
                             ? selectedProductPackages
                                 .asMap()
@@ -276,11 +274,10 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomTextWidget(
-                      text: "Quantity",
-                      size: 16,
+                      text: "Quantity",fontWeight: FontWeight.bold,
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(left: 20, top: 8),
+                      padding: const EdgeInsets.only( top: 8),
                       child: CustomDropdown(
                         title: "Quantity",
                         required: true,

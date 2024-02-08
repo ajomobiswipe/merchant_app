@@ -17,7 +17,7 @@ import 'package:sifr_latest/config/config.dart';
 //Global Mobile Field
 class CustomMobileField extends StatelessWidget {
   // LOCAL VARIABLE DECLARATION
-  final String title;
+  final String? title;
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
   final IconData? prefixIcon;
@@ -35,8 +35,7 @@ class CustomMobileField extends StatelessWidget {
   final ValueChanged<Country>? onCountryChanged;
 
   const CustomMobileField(
-      {Key? key,
-      required this.title,
+      {Key? key, this.title,
       this.keyboardType,
       this.textInputAction,
       this.prefixIcon,
@@ -72,13 +71,13 @@ class CustomMobileField extends StatelessWidget {
                             text: ' *', style: TextStyle(color: Colors.red))
                       ]),
                 )
-              : Text(
-                  title,
+              : title!=null?Text(
+                  title!,
                   style: Theme.of(context)
                       .textTheme
                       .bodySmall
                       ?.copyWith(fontWeight: FontWeight.normal),
-                ),
+                ):Container(),
           //Global Mobile Number Field
           IntlPhoneField(
             controller: controller,

@@ -100,7 +100,7 @@ class CustomDropdown extends StatelessWidget {
               style: Theme.of(context)
                   .textTheme
                   .displaySmall
-                  ?.copyWith(fontWeight: FontWeight.normal, fontSize: 16),
+                  ?.copyWith(fontWeight: FontWeight.bold, fontSize: 13),
             );
           },
           dropdownDecoratorProps: DropDownDecoratorProps(
