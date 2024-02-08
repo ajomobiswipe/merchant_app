@@ -15,11 +15,15 @@ class FormTitleWidget extends StatelessWidget {
       children: [
         CustomTextWidget(
           text: mainWord ?? 'Please Enter',
+          size: 18,
+          fontWeight: FontWeight.w600,
         ),
         defaultWidth(10),
         Column(
           children: [
             CustomTextWidget(
+              size: 18,
+              fontWeight: FontWeight.w400,
               text: subWord,
               color: AppColors.kLightGreen,
             ),

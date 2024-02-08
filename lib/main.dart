@@ -93,14 +93,14 @@ class MainPage extends StatelessWidget {
           locale: Locale(themeProvider.currentLanguage),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          theme: AppThemes.main(
-            primaryColor: themeProvider.selectedPrimaryColor,
-          ),
-          // Dark mode design
-          darkTheme: AppThemes.main(
-            isDark: true,
-            primaryColor: themeProvider.selectedPrimaryColor,
-          ),
+          // theme: AppThemes.main(
+          //   primaryColor: themeProvider.selectedPrimaryColor,
+          // ),
+          // // Dark mode design
+          // darkTheme: AppThemes.main(
+          //   isDark: true,
+          //   primaryColor: themeProvider.selectedPrimaryColor,
+          // ),
           // this is Theme Mode Selection
           themeMode: themeProvider.selectedThemeMode,
         ),

@@ -26,19 +26,19 @@ class MerchantRegnTypeSelector extends StatelessWidget {
     var screenHeight = MediaQuery.of(context).size.height;
     return Expanded(
       flex: flex,
-      child: Container(
-        padding:
-            EdgeInsets.symmetric(horizontal: 10, vertical: screenHeight * 0.02),
-        decoration: BoxDecoration(
-          color: AppColors.kTileColor,
-          border: Border.all(
-              width: 1.2, color: borderColor ?? AppColors.kBorderColor),
-          borderRadius: BorderRadius.circular(18.0),
-        ),
-        child: AspectRatio(
-          aspectRatio: 1,
-          child: GestureDetector(
-            onTap: onTap,
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: GestureDetector(
+          onTap: onTap,
+          child: Container(
+            padding: EdgeInsets.symmetric(
+                horizontal: 10, vertical: screenHeight * 0.02),
+            decoration: BoxDecoration(
+              color: AppColors.kTileColor,
+              border: Border.all(
+                  width: 1.2, color: borderColor ?? AppColors.kBorderColor),
+              borderRadius: BorderRadius.circular(18.0),
+            ),
             child: Column(
               children: [
                 Image.asset(

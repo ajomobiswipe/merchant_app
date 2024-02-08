@@ -15,6 +15,7 @@ import 'package:intl/intl.dart';
 import 'package:intl_phone_field/countries.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sifr_latest/common_widgets/app_appbar.dart';
+import 'package:sifr_latest/helpers/default_height.dart';
 import 'package:sifr_latest/models/merchant_requestmodel.dart';
 import 'package:sifr_latest/pages/mechant_order/merchant_order_details.dart';
 import 'package:sifr_latest/widgets/Forms/Business_info.dart';
@@ -72,8 +73,10 @@ class _MerchantSignupState extends State<MerchantSignup> {
   final _textFieldKey = GlobalKey<FormFieldState<String>>();
 
   /// PERSONAL INFORMATION
-  final TextEditingController _firstNameController = TextEditingController();
-  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _merchantLegalNameController =
+      TextEditingController();
+  final TextEditingController _contactPersonNameController =
+      TextEditingController();
   final TextEditingController _dateOfBirthController = TextEditingController();
   final TextEditingController _mobileCodeController = TextEditingController();
   final TextEditingController _mobileNoController = TextEditingController();
@@ -620,230 +623,136 @@ class _MerchantSignupState extends State<MerchantSignup> {
             // ),
             const FormTitleWidget(subWord: 'Merchant Details'),
             const SizedBox(height: 35),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Expanded(
-                  child: CustomTextFormField(
-                    title: 'First Name',
-                    controller: _firstNameController,
-                    required: true,
-                    maxLength: 26,
-                    inputFormatters: <TextInputFormatter>[
-                      FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z]'))
-                    ],
-                    prefixIcon: LineAwesome.user_circle,
-                    textCapitalization: TextCapitalization.words,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'First Name is Mandatory!';
-                      }
-                      if (value.length < 3) {
-                        return 'Minimum 3 characters';
-                      }
-                      return null;
-                    },
-                    onChanged: (String value) {
-                      if (value.isEmpty || value.length < 3) {
-                        setState(() {
-                          enabledLast = false;
-                        });
-                      } else {
-                        setState(() {
-                          enabledLast = true;
-                        });
-                      }
-                    },
-                    onSaved: (value) {
-                      merchantPersonalReq.firstName = value;
-                    },
-                  ),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                  child: CustomTextFormField(
-                    title: 'Last Name',
-                    controller: _lastNameController,
-                    required: true,
-                    textCapitalization: TextCapitalization.words,
-                    // enabled: _firstNameController.text.isEmpty ||
-                    //         _firstNameController.text.length < 3
-                    //     ? enabledLast = false
-                    //     : enabledLast = true,
-                    prefixIcon: LineAwesome.user_circle,
-                    validator: (value) {
-                      value = value.trim();
-                      if (value == null || value.isEmpty) {
-                        return 'Last Name is Mandatory!';
-                      }
-                      if (value.length < 3) {
-                        return 'Minimum 3 characters';
-                      }
-                      if (!Validators.isValidName(value)) {
-                        return 'Invalid Last Name';
-                      }
-                      return null;
-                    },
-                    onChanged: (String value) {
-                      value = value.trim();
-                      setState(() {
-                        value.isEmpty ||
-                                value.length < 3 ||
-                                !Validators.isValidName(value)
-                            ? enabledDob = false
-                            : enabledDob = enabledLast;
-                      });
-                    },
-                    onSaved: (value) {
-                      merchantPersonalReq.lastName = value;
-                    },
-                    onFieldSubmitted: (value) {
-                      _lastNameController.text = value.trim();
-                    },
-                  ),
-                ),
+            CustomTextFormField(
+              title: 'Merchant Legal name',
+              controller: _merchantLegalNameController,
+              required: true,
+              maxLength: 26,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z]'))
               ],
+              prefixIcon: LineAwesome.user_circle,
+              textCapitalization: TextCapitalization.words,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Merchant Legal name is Mandatory!';
+                }
+                if (value.length < 3) {
+                  return 'Minimum 3 characters';
+                }
+                return null;
+              },
+              onChanged: (String value) {
+                if (value.isEmpty || value.length < 3) {
+                  setState(() {
+                    enabledLast = false;
+                  });
+                } else {
+                  setState(() {
+                    enabledLast = true;
+                  });
+                }
+              },
+              onSaved: (value) {
+                //merchantPersonalReq.firstName = value;
+              },
             ),
             const SizedBox(
               height: 10,
             ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                // Expanded(
-                //   child: CustomTextFormField(
-                //     title: 'Nickname',
-                //     enabled: _lastNameController.text.trim().isEmpty ||
-                //             _lastNameController.text.trim().length < 3 ||
-                //             !Validators.isValidName(
-                //                 _lastNameController.text.trim())
-                //         ? false
-                //         : true,
-                //     controller: _nickNameController,
-                //     onTap: () {
-                //       _lastNameController.text =
-                //           _lastNameController.text.trim();
-                //     },
-                //     maxLength: 12,
-                //     textCapitalization: TextCapitalization.words,
-                //     prefixIcon: LineAwesome.user,
-                //     validator: (value) {
-                //       if (value == null || value.isEmpty) {
-                //         return null;
-                //       }
-                //       if (!Validators.isValidName(value)) {
-                //         return 'Invalid Nick Name';
-                //       }
-                //       return null;
-                //     },
-                //     onSaved: (value) {
-                //       requestModel.nickName = value;
-                //     },
-                //   ),
-                // ),
-                Expanded(
-                  child: CustomDropdown(
-                    title: "Nationality",
-                    // enabled: selectedState != '' && enabledState
-                    //     ? enabledcity = true
-                    //     : enabledcity = false,
-                    required: true,
-                    selectedItem: nationality != '' ? nationality : null,
-                    prefixIcon: FontAwesome.map,
-                    itemList: nationalityList
-                        .map((map) => map['label'].toString())
-                        .toList(),
-                    //countryList.map((e) => e['ctyName']).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        nationality = value;
-                        // requestModel.city = value;
-                      });
-                    },
-                    onSaved: (value) {
-                      merchantPersonalReq.currentNationality = value;
-                    },
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Nationality is Mandatory!';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-
-                const SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                  child: CustomTextFormField(
-                    key: _textFieldKey,
-                    controller: _dateOfBirthController,
-                    title: 'Date of Birth',
-                    required: true,
-                    readOnly: true,
-                    errorMaxLines: 2,
-                    maxLength: 26,
-                    // helperText: Constants.dobMessage,
-                    helperStyle: Theme.of(context)
-                        .textTheme
-                        .bodySmall
-                        ?.copyWith(color: Theme.of(context).primaryColor),
-                    prefixIcon: FontAwesome.calendar,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Date of Birth is Mandatory!';
-                      }
-                      return null;
-                    },
-                    onTap: () async {
-                      _dateOfBirthController.text =
-                          _dateOfBirthController.text.trim();
-                      DateTime? pickedDate = await showDatePicker(
-                        initialDatePickerMode: DatePickerMode.day,
-                        initialEntryMode: DatePickerEntryMode.calendarOnly,
-                        context: context,
-                        initialDate: dobSelectedDt,
-                        firstDate: DateTime(DateTime.now().year - 118),
-                        lastDate: DateTime(DateTime.now().year - 18,
-                            DateTime.now().month, DateTime.now().day),
-                      );
-                      if (pickedDate != null) {
-                        String formattedDate =
-                            DateFormat('dd-MM-yyyy').format(pickedDate);
-                        setState(() {
-                          dobSelectedDt = pickedDate;
-                          _dateOfBirthController.text = formattedDate;
-                        });
-                      } else {}
-
-                      if (pickedDate != null) {
-                        String formattedDate =
-                            DateFormat("yyyy-MM-ddTHH:mm:ss.SSS")
-                                .format(pickedDate);
-                        merchantPersonalReq.dob = formattedDate;
-                        print('Formatted Date: ${formattedDate}Z');
-                      }
-                    },
-                    // enabled: _lastNameController.text.trim().isEmpty ||
-                    //         _lastNameController.text.trim().length < 3 ||
-                    //         !Validators.isValidName(
-                    //             _lastNameController.text.trim())
-                    //     ? enabledDob = false
-                    //     : enabledDob = enabledLast,
-                  ),
-                ),
-              ],
+            CustomTextFormField(
+              title: 'Contact Persons name',
+              controller: _contactPersonNameController,
+              required: true,
+              textCapitalization: TextCapitalization.words,
+              // enabled: _firstNameController.text.isEmpty ||
+              //         _firstNameController.text.length < 3
+              //     ? enabledLast = false
+              //     : enabledLast = true,
+              prefixIcon: LineAwesome.user_circle,
+              validator: (value) {
+                value = value.trim();
+                if (value == null || value.isEmpty) {
+                  return 'Contact Persons Name is Mandatory!';
+                }
+                if (value.length < 3) {
+                  return 'Minimum 3 characters';
+                }
+                if (!Validators.isValidName(value)) {
+                  return 'Invalid  Name';
+                }
+                return null;
+              },
+              onChanged: (String value) {
+                value = value.trim();
+                setState(() {
+                  value.isEmpty ||
+                          value.length < 3 ||
+                          !Validators.isValidName(value)
+                      ? enabledDob = false
+                      : enabledDob = enabledLast;
+                });
+              },
+              onSaved: (value) {
+                merchantPersonalReq.lastName = value;
+              },
+              onFieldSubmitted: (value) {
+                _contactPersonNameController.text = value.trim();
+              },
             ),
+
             const SizedBox(
               height: 10,
             ),
-            CustomMobileField(
-              enabled: true,
+            CustomTextFormField(
+              title: 'Email',
+              controller: _emailController,
+              required: true,
+              textCapitalization: TextCapitalization.words,
+              // enabled: _firstNameController.text.isEmpty ||
+              //         _firstNameController.text.length < 3
+              //     ? enabledLast = false
+              //     : enabledLast = true,
+              prefixIcon: LineAwesome.user_circle,
+              validator: (value) {
+                value = value.trim();
+                if (value == null || value.isEmpty) {
+                  return 'Contact Persons Name is Mandatory!';
+                }
+                if (value.length < 3) {
+                  return 'Minimum 3 characters';
+                }
+                if (!Validators.isValidName(value)) {
+                  return 'Invalid  Name';
+                }
+                return null;
+              },
+              onChanged: (String value) {
+                value = value.trim();
+                setState(() {
+                  value.isEmpty ||
+                          value.length < 3 ||
+                          !Validators.isValidName(value)
+                      ? enabledDob = false
+                      : enabledDob = enabledLast;
+                });
+              },
+              onSaved: (value) {
+                merchantPersonalReq.lastName = value;
+              },
+              onFieldSubmitted: (value) {
+                _emailController.text = value.trim();
+              },
+            ),
+
+            const SizedBox(
+              height: 10,
+            ),
+            CustomTextFormField(
+              prefixWidget: TextButton(
+                  child: CustomTextWidget(
+                      text: "+91", color: Colors.black.withOpacity(0.7)),
+                  onPressed: () {}),
               controller: _mobileNoController,
               keyboardType: TextInputType.number,
               title: 'Mobile Number',
@@ -854,139 +763,55 @@ class _MerchantSignupState extends State<MerchantSignup> {
               helperText: mobileNoCheckMessage,
               helperStyle: style,
               prefixIcon: FontAwesome.mobile,
-              countryCode: countryCode,
+
               onChanged: (phone) {
-                merchantPersonalReq.currentMobileNo =
-                    phone.countryCode + phone.number;
-              },
-              onCountryChanged: (country) {
-                setState(() {
-                  countryCode = country.code;
-                  _country = country;
-                  _mobileNoController.text = countryCode;
-                });
+                merchantPersonalReq.currentMobileNo = phone;
               },
             ),
             const SizedBox(
               height: 10,
             ),
-            CustomMobileField(
-              enabled: true,
+            CustomTextFormField(
+              prefixWidget: TextButton(
+                  child: CustomTextWidget(
+                      text: "+91", color: Colors.black.withOpacity(0.7)),
+                  onPressed: () {}),
               controller: _altMobileNoController,
               keyboardType: TextInputType.number,
               title: 'WhatsApp Number',
-              // enabled: _dateController.text.isEmpty
-              //     ? enabledMobile = false
-              //     : enabledMobile = enabledDob,
               required: true,
               helperText: mobileNoCheckMessage,
               helperStyle: style,
               prefixIcon: FontAwesome.mobile,
-              countryCode: countryCode,
-              onChanged: (phone) {
-                merchantPersonalReq.currentAltMobNo =
-                    phone.countryCode + phone.number;
-              },
-              onCountryChanged: (country) {
-                setState(() {
-                  countryCode = country.code;
-                  _country = country;
-                  _alternativeMobileCodeController.text = countryCode;
-                });
-              },
+              onChanged: (phone) {},
             ),
             const SizedBox(
               height: 20,
             ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Expanded(
-                  child: CustomDropdown(
-                    title: "POA Type",
-                    required: true,
-                    selectedItem: selectedPOA != '' ? selectedPOA : null,
-                    prefixIcon: Icons.location_city_outlined,
-                    itemList:
-                        POIAList.map((map) => map['label'].toString()).toList(),
-                    //countryList.map((e) => e['ctyName']).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        selectedPOA = value;
-                        merchantPersonalReq.poaType =
-                            getValueByLabel(POIAList, value);
-                      });
-                    },
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'POA Type is Mandatory!';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                  child: CustomTextFormField(
-                    controller: _poaExiryController,
-                    title: 'POA Expiry',
-                    required: true,
-                    readOnly: true,
-                    errorMaxLines: 2,
-                    maxLength: 26,
-                    // helperText: Constants.dobMessage,
-                    helperStyle: Theme.of(context)
-                        .textTheme
-                        .bodySmall
-                        ?.copyWith(color: Theme.of(context).primaryColor),
-                    prefixIcon: FontAwesome.calendar,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Poa Expiry is Mandatory!';
-                      }
-                      return null;
-                    },
-                    onTap: () async {
-                      _poaExiryController.text =
-                          _poaExiryController.text.trim();
-                      DateTime? pickedDate = await showDatePicker(
-                        initialDatePickerMode: DatePickerMode.day,
-                        initialEntryMode: DatePickerEntryMode.calendarOnly,
-                        context: context,
-                        initialDate: poaExpiry,
-                        firstDate: DateTime.now().add(const Duration(days: 0)),
-                        lastDate: DateTime(DateTime.now().year + 10),
-                      );
-                      if (pickedDate != null) {
-                        String formattedDate =
-                            DateFormat('dd-MM-yyyy').format(pickedDate);
-                        setState(() {
-                          poaExpiry = pickedDate;
-
-                          _poaExiryController.text = formattedDate;
-                        });
-                      } else {}
-
-                      if (pickedDate != null) {
-                        String formattedDate =
-                            DateFormat("yyyy-MM-ddTHH:mm:ss.SSS")
-                                .format(pickedDate);
-                        merchantPersonalReq.poaExpiryDate = formattedDate;
-                        print('Formatted Date: ${formattedDate}Z');
-                      }
-                    },
-                  ),
-                ),
-              ],
+            CustomDropdown(
+              title: "Bussiness Type",
+              required: true,
+              selectedItem: selectedPOA != '' ? selectedPOA : null,
+              prefixIcon: Icons.location_city_outlined,
+              itemList: POIAList.map((map) => map['label'].toString()).toList(),
+              //countryList.map((e) => e['ctyName']).toList(),
+              onChanged: (value) {
+                setState(() {
+                  selectedPOA = value;
+                  merchantPersonalReq.poaType =
+                      getValueByLabel(POIAList, value);
+                });
+              },
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'POA Type is Mandatory!';
+                }
+                return null;
+              },
             ),
-            const SizedBox(
-              height: 10.0,
-            ),
+            defaultHeight(10),
             CustomTextFormField(
-              title: 'POA Number',
+              title: 'Merchant DBA Name',
               controller: _poaNumberController,
               required: true,
               keyboardType: TextInputType.number,
@@ -1017,153 +842,105 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 merchantPersonalReq.poaNumber = value;
               },
               onFieldSubmitted: (value) {
-                _lastNameController.text = value.trim();
+                _contactPersonNameController.text = value.trim();
               },
             ),
             const SizedBox(
               height: 20.0,
             ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Expanded(
-                  child: CustomDropdown(
-                    title: "POI Type",
-                    // enabled: selectedState != '' && enabledState
-                    //     ? enabledcity = true
-                    //     : enabledcity = false,
-                    required: true,
-                    selectedItem: selectedPOI != '' ? selectedPOI : null,
-                    prefixIcon: Icons.location_city_outlined,
-                    itemList:
-                        POIAList.map((map) => map['label'].toString()).toList(),
-                    // cityList.map((e) => e['citName']).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        selectedPOI = value;
-                        merchantPersonalReq.poiType =
-                            getValueByLabel(POIAList, value);
-                      });
-                    },
-                    onSaved: (value) {
-                      //merchantPersonalReq.poiType = value;
-                      merchantPersonalReq.poiType =
-                          getValueByLabel(POIAList, value);
-                    },
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'City is Mandatory!';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                  child: CustomTextFormField(
-                    controller: _poiExpryController,
-                    title: 'POI Expiry',
-                    required: true,
-                    readOnly: true,
-                    errorMaxLines: 2,
-                    maxLength: 26,
-                    // helperText: Constants.dobMessage,
-                    helperStyle: Theme.of(context)
-                        .textTheme
-                        .bodySmall
-                        ?.copyWith(color: Theme.of(context).primaryColor),
-                    prefixIcon: FontAwesome.calendar,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'POI Expiry is Mandatory!';
-                      }
-                      return null;
-                    },
-                    onTap: () async {
-                      _poiExpryController.text =
-                          _poiExpryController.text.trim();
-                      DateTime? pickedDate = await showDatePicker(
-                        initialDatePickerMode: DatePickerMode.day,
-                        initialEntryMode: DatePickerEntryMode.calendarOnly,
-                        context: context,
-                        initialDate: poiExpiry,
-                        firstDate: DateTime.now().add(const Duration(days: 0)),
-                        lastDate: DateTime(DateTime.now().year + 10),
-                      );
-                      if (pickedDate != null) {
-                        String formattedDate =
-                            DateFormat('dd-MM-yyyy').format(pickedDate);
-                        setState(() {
-                          poiExpiry = pickedDate;
-                          merchantPersonalReq.poiExpiryDate = formattedDate;
-                          _poiExpryController.text = formattedDate;
-                        });
-                      } else {}
-
-                      if (pickedDate != null) {
-                        String formattedDate =
-                            DateFormat("yyyy-MM-ddTHH:mm:ss.SSS")
-                                .format(pickedDate);
-                        merchantPersonalReq.poiExpiryDate = formattedDate;
-                        print('Formatted Date: ${formattedDate}Z');
-                      }
-                    },
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 10.0,
-            ),
-            CustomTextFormField(
-              title: 'POI Number',
-              controller: _poINumberController,
+            CustomDropdown(
+              title: "Merchant Bussines catogery",
+              // enabled: selectedState != '' && enabledState
+              //     ? enabledcity = true
+              //     : enabledcity = false,
               required: true,
-              keyboardType: TextInputType.number,
-              inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.allow(RegExp(r'\d'))
-              ],
-              // enabled: _firstNameController.text.isEmpty ||
-              //         _firstNameController.text.length < 3
-              //     ? enabledLast = false
-              //     : enabledLast = true,
-              prefixIcon: LineAwesome.user_circle,
-              validator: (value) {
-                value = value.trim();
-                if (value == null || value.isEmpty) {
-                  return 'POI Number is Mandatory!';
-                }
-                if (value.length < 10) {
-                  return 'Minimum 10 characters';
-                }
-
-                return null;
-              },
-              onChanged: (String value) {
-                value = value.trim();
+              selectedItem: selectedPOI != '' ? selectedPOI : null,
+              prefixIcon: Icons.location_city_outlined,
+              itemList: POIAList.map((map) => map['label'].toString()).toList(),
+              // cityList.map((e) => e['citName']).toList(),
+              onChanged: (value) {
                 setState(() {
-                  value.isEmpty ||
-                          value.length < 3 ||
-                          !Validators.isValidName(value)
-                      ? enabledDob = false
-                      : enabledDob = enabledLast;
+                  selectedPOI = value;
+                  merchantPersonalReq.poiType =
+                      getValueByLabel(POIAList, value);
                 });
               },
               onSaved: (value) {
-                merchantPersonalReq.poiNumber = value;
+                //merchantPersonalReq.poiType = value;
+                merchantPersonalReq.poiType = getValueByLabel(POIAList, value);
               },
-              onFieldSubmitted: (value) {
-                _poINumberController.text = value.trim();
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'City is Mandatory!';
+                }
+                return null;
               },
             ),
+            defaultHeight(10),
+
+            CustomDropdown(
+              title: "Merchant Bussines Sub catogery",
+              // enabled: selectedState != '' && enabledState
+              //     ? enabledcity = true
+              //     : enabledcity = false,
+              required: true,
+              selectedItem: selectedPOI != '' ? selectedPOI : null,
+              prefixIcon: Icons.location_city_outlined,
+              itemList: POIAList.map((map) => map['label'].toString()).toList(),
+              // cityList.map((e) => e['citName']).toList(),
+              onChanged: (value) {
+                setState(() {
+                  selectedPOI = value;
+                  merchantPersonalReq.poiType =
+                      getValueByLabel(POIAList, value);
+                });
+              },
+              onSaved: (value) {
+                //merchantPersonalReq.poiType = value;
+                merchantPersonalReq.poiType = getValueByLabel(POIAList, value);
+              },
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'City is Mandatory!';
+                }
+                return null;
+              },
+            ),
+            defaultHeight(10),
+            CustomDropdown(
+              title: "Merchant Bussines Annual Turnover",
+              // enabled: selectedState != '' && enabledState
+              //     ? enabledcity = true
+              //     : enabledcity = false,
+              required: true,
+              selectedItem: selectedPOI != '' ? selectedPOI : null,
+              prefixIcon: Icons.location_city_outlined,
+              itemList: POIAList.map((map) => map['label'].toString()).toList(),
+              // cityList.map((e) => e['citName']).toList(),
+              onChanged: (value) {
+                setState(() {
+                  selectedPOI = value;
+                  merchantPersonalReq.poiType =
+                      getValueByLabel(POIAList, value);
+                });
+              },
+              onSaved: (value) {
+                //merchantPersonalReq.poiType = value;
+                merchantPersonalReq.poiType = getValueByLabel(POIAList, value);
+              },
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'City is Mandatory!';
+                }
+                return null;
+              },
+            ),
+
             const SizedBox(
               height: 20.0,
             ),
             CustomTextFormField(
-              title: 'Current Address',
+              title: 'Merchant Bussines Address',
 
               controller: _currentAddressController,
               prefixIcon: Icons.home,
@@ -1197,82 +974,71 @@ class _MerchantSignupState extends State<MerchantSignup> {
             const SizedBox(
               height: 20.0,
             ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Expanded(
-                  child: CustomDropdown(
-                    title: "Current Country",
-                    // enabled: selectedState != '' && enabledState
-                    //     ? enabledcity = true
-                    //     : enabledcity = false,
-                    required: true,
-                    selectedItem: selectedCurrentCountry != ''
-                        ? selectedCurrentCountry
-                        : null,
-                    prefixIcon: Icons.location_city_outlined,
-                    itemList: countrysList.keys.toList(),
-                    //cityList.map((e) => e['citName']).toList(),
-                    onChanged: (value) {
-                      print(countrysList[value]);
-                      setState(() {
-                        selectedCurrentCountry = value;
-                        merchantPersonalReq.currentCountry =
-                            countrysList[value];
-                      });
-                    },
-                    onSaved: (value) {
-                      merchantPersonalReq.currentCountry = countrysList[value];
-                    },
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Country is Mandatory!';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                  child: CustomDropdown(
-                    title: "Current State",
-                    // enabled: selectedState != '' && enabledState
-                    //     ? enabledcity = true
-                    //     : enabledcity = false,
-                    required: true,
-                    selectedItem: selectedCurrentState != ''
-                        ? selectedCurrentState
-                        : null,
-                    prefixIcon: Icons.location_city_outlined,
-                    itemList: statesList,
-                    // cityList.map((e) => e['citName']).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        selectedCurrentState = value;
-                        merchantPersonalReq.currentState = value;
-                      });
-                    },
-                    onSaved: (value) {
-                      merchantPersonalReq.currentState = value;
-                    },
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Current state is Mandatory!';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-              ],
+
+            CustomDropdown(
+              title: "Current State",
+              // enabled: selectedState != '' && enabledState
+              //     ? enabledcity = true
+              //     : enabledcity = false,
+              required: true,
+              selectedItem:
+                  selectedCurrentState != '' ? selectedCurrentState : null,
+              prefixIcon: Icons.location_city_outlined,
+              itemList: statesList,
+              // cityList.map((e) => e['citName']).toList(),
+              onChanged: (value) {
+                setState(() {
+                  selectedCurrentState = value;
+                  merchantPersonalReq.currentState = value;
+                });
+              },
+              onSaved: (value) {
+                merchantPersonalReq.currentState = value;
+              },
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Current state is Mandatory!';
+                }
+                return null;
+              },
             ),
             const SizedBox(
               height: 10.0,
             ),
+            CustomDropdown(
+              title: "Current City",
+              // enabled: selectedState != '' && enabledState
+              //     ? enabledcity = true
+              //     : enabledcity = false,
+              required: true,
+              selectedItem:
+                  selectedCurrentCountry != '' ? selectedCurrentCountry : null,
+              prefixIcon: Icons.location_city_outlined,
+              itemList: countrysList.keys.toList(),
+              //cityList.map((e) => e['citName']).toList(),
+              onChanged: (value) {
+                print(countrysList[value]);
+                setState(() {
+                  selectedCurrentCountry = value;
+                  merchantPersonalReq.currentCountry = countrysList[value];
+                });
+              },
+              onSaved: (value) {
+                merchantPersonalReq.currentCountry = countrysList[value];
+              },
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Country is Mandatory!';
+                }
+                return null;
+              },
+            ),
+
+            const SizedBox(
+              height: 10.0,
+            ),
             CustomTextFormField(
-              title: 'Current Zip Code',
+              title: 'Pin Code',
               // enabled: selectedCity != '' && enabledcity ? true : false,
               maxLength: 6,
               required: true,
@@ -1299,148 +1065,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
             const SizedBox(
               height: 10.0,
             ),
-            CustomTextFormField(
-              title: 'Permanent Address',
-              minLines: 2,
-              controller: _permanentAddressController,
-              required: true,
-              textCapitalization: TextCapitalization.words,
-              enabled: true,
-              keyboardType: TextInputType.multiline,
-              prefixIcon: LineAwesome.home_solid,
-              validator: (value) {
-                value = value.trim();
-                if (value == null || value.isEmpty) {
-                  return 'Permanent Address is Mandatory!';
-                }
-                if (value.length < 10) {
-                  return 'Minimum 10 characters';
-                }
 
-                return null;
-              },
-              onChanged: (String value) {
-                value = value.trim();
-              },
-              onSaved: (value) {
-                merchantPersonalReq.permanentAddress = value;
-              },
-              onFieldSubmitted: (value) {
-                _permanentAddressController.text = value.trim();
-              },
-            ),
-            const SizedBox(
-              height: 20.0,
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Expanded(
-                  child: CustomDropdown(
-                    title: "Permanent Country",
-                    // enabled: selectedState != '' && enabledState
-                    //     ? enabledcity = true
-                    //     : enabledcity = false,
-                    required: true,
-                    selectedItem: selectedPermenentCountry != ''
-                        ? selectedPermenentCountry
-                        : null,
-                    prefixIcon: Icons.location_city_outlined,
-                    itemList: countrysList.keys.toList(),
-                    //cityList.map((e) => e['citName']).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        selectedPermenentCountry = value;
-                      });
-                    },
-                    onSaved: (value) {
-                      merchantPersonalReq.permanentCountry =
-                          countrysList[value];
-                    },
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Permanent Country is Mandatory!';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                  child: CustomDropdown(
-                    title: "Permanent State",
-                    // enabled: selectedState != '' && enabledState
-                    //     ? enabledcity = true
-                    //     : enabledcity = false,
-                    required: true,
-                    selectedItem: selectedPermenentState != ''
-                        ? selectedPermenentState
-                        : null,
-                    prefixIcon: Icons.location_city_outlined,
-                    itemList:
-                        statesList, // cityList.map((e) => e['citName']).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        selectedPermenentState = value;
-                        merchantPersonalReq.permanentState = value;
-                      });
-                    },
-                    onSaved: (value) {
-                      merchantPersonalReq.permanentState = value;
-                    },
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Permanent State is Mandatory!';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 10.0,
-            ),
-            CustomTextFormField(
-              title: 'Permanent Zip/Postal Code',
-              // enabled: selectedCity != '' && enabledcity ? true : false,
-              maxLength: 10,
-              required: true,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Zip Code is Mandatory!';
-                }
-                if (!value.isEmpty && value.length < 6) {
-                  return 'Minimum 6 digits';
-                }
-                return null;
-              },
-              controller: _permanentZipCodeCtrl,
-              keyboardType: TextInputType.number,
-              inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.allow(RegExp(r'\d'))
-              ],
-              prefixIcon: Icons.map_outlined,
-              onSaved: (value) {
-                merchantPersonalReq.permanentZipCode = value;
-              },
-            ),
-            const SizedBox(
-              height: 20.0,
-            ),
-            // Placeholder(
-            //   child: ElevatedButton(
-            //       onPressed: () {
-            //         setState(() {
-            //           currTabPosition = 2;
-            //           position = 2;
-            //         });
-            //       },
-            //       child: Text('next')),
-            // ),
             Row(
               children: [
                 CustomAppButton(
@@ -1457,30 +1082,18 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   width: 0.4,
                   title: "Next",
                   onPressed: () async {
-                    // // getCurrentPosition();
-
-                    // if (personalFormKey.currentState!.validate()
-                    //     //  &&
-                    //     //     mobileNoCheck == 'false' &&
-                    //     //     emailCheck == 'false' &&
-                    //     //     email
-
-                    //     ) {
+                    setState(() {
+                      currTabPosition = 2;
+                      position = 2;
+                    });
                     // personalFormKey.currentState!.save();
-                    // print(merchantPersonalReq.toJson());
-                    // print(jsonEncode(merchantPersonalReq.toJson()));
-                    // setState(() {
-                    //   position = 3;
-                    // });
+                    // if (personalFormKey.currentState!.validate()) {
+                    //   print(jsonEncode(merchantPersonalReq.toJson()));
+                    //   setState(() {
+                    //     currTabPosition = 2;
+                    //     position = 2;
+                    //   });
                     // }
-                    personalFormKey.currentState!.save();
-                    if (personalFormKey.currentState!.validate()) {
-                      print(jsonEncode(merchantPersonalReq.toJson()));
-                      setState(() {
-                        currTabPosition = 2;
-                        position = 2;
-                      });
-                    }
                   },
                 ),
               ],
@@ -2284,6 +1897,236 @@ class _MerchantSignupState extends State<MerchantSignup> {
               //     requestModel.confirmPin = value;
               //   },
               // ),
+              const SizedBox(
+                height: 30.0,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(
+                    width: 150,
+                    child: CustomAppButton(
+                      title: 'Previous',
+                      onPressed: () {
+                        // _userNameController.clear();
+                        // _passwordController.clear();
+                        // _cnfPasswordCtrl.clear();
+                        // _pinController.clear();
+                        // _confirmPinController.clear();
+                        setState(() {
+                          position = 2; //old 0
+                        });
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    width: 150,
+                    child: CustomAppButton(
+                      title: 'Next',
+                      width: 0.4,
+                      onPressed: () {
+                        if (loginFormKey.currentState!.validate()) {
+                          loginFormKey.currentState!.save();
+                          setState(() {
+                            position = 4; //old 2
+                          });
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+            ]));
+  }
+
+  Widget merchantBussinesProof() {
+    var screenHeight = MediaQuery.of(context).size.height;
+
+    return Form(
+        key: loginFormKey,
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: AppColors.kSelectedBackgroundColor,
+                ),
+                // height: screenHeight / 10,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    IconTextWidget(
+                        screenHeight: screenHeight,
+                        color: getIconColor(
+                          position: 1,
+                        ),
+                        iconPath: 'assets/merchant_icons/merchant_detials.png',
+                        title: "Merchant\nDetails"),
+                    IconTextWidget(
+                        screenHeight: screenHeight,
+                        color: getIconColor(position: 2),
+                        iconPath: 'assets/merchant_icons/id_proof_icon.png',
+                        title: "Id\nProofs"),
+                    IconTextWidget(
+                        screenHeight: screenHeight,
+                        color: getIconColor(position: 3),
+                        iconPath: 'assets/merchant_icons/bussiness_proofs.png',
+                        title: "Bussiness\nProofs"),
+                    IconTextWidget(
+                        screenHeight: screenHeight,
+                        color: getIconColor(position: 4),
+                        iconPath: 'assets/merchant_icons/bank_details.png',
+                        title: "Bank\nDetails"),
+                  ],
+                ),
+              ),
+              const FormTitleWidget(subWord: 'Merchant ID proof'),
+              const SizedBox(height: 10),
+              CustomTextFormField(
+                controller: _firmPanController,
+                title: 'Firm Pan number',
+                required: true,
+                prefixIcon: Icons.verified,
+                iconColor: showFirmPanVerify ? Colors.red : Colors.green,
+                onFieldSubmitted: (name) {
+                  //getUser();
+                },
+                onChanged: (String value) {
+                  setState(() {
+                    // if (value.isEmpty ||
+                    //     !userVerify ||
+                    //     userCheck.toString() == "true" ||
+                    //     !RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
+                    //         .hasMatch(value)) {
+                    //   enabledPassword = false;
+                    // } else {
+                    //   enabledPassword = true;
+                    // }
+                  });
+                },
+                suffixIconOnPressed: () {
+                  if (_firmPanController.text.length >= 10) {
+                    if (showFirmPanVerify) {
+                      validateFirmPan();
+                      print("validate");
+                      //validateAccountNumber();
+                    } else {
+                      print("change");
+
+                      setState(() {
+                        showFirmPanVerify = true;
+                      });
+                    }
+                  }
+                },
+                suffixIconTrue: true,
+                helperStyle: Theme.of(context)
+                    .textTheme
+                    .bodySmall
+                    ?.copyWith(color: Theme.of(context).primaryColor),
+                suffixText: showFirmPanVerify ? 'verify' : 'Change',
+                readOnly: !showFirmPanVerify,
+                helperText: showFirmPanVerify ? "click verify" : "verified",
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'FirnPan number Mandatory!';
+                  }
+                  if (value.length < 10) {
+                    return 'Minimum character length is 10';
+                  }
+                  // if (userVerify && userCheck == "true") {
+                  //   return Constants.userNameFailureMessage;
+                  // }
+                  if (!RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
+                      .hasMatch(value)) {
+                    return 'Invalid pan Number!';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  merchantAdditionalInfoReq.firmPanNo = value;
+                },
+              ),
+              const SizedBox(height: 30.0),
+              CustomTextFormField(
+                keyboardType: TextInputType.text,
+                controller: _gstController,
+                title: 'Merchant GST Number',
+                required: true,
+                maxLength: 15,
+                prefixIcon: Icons.verified,
+                iconColor: isgstVerify ? Colors.green : Colors.red,
+                onFieldSubmitted: (name) {
+                  getUser();
+                },
+                onChanged: (String value) {
+                  setState(() {
+                    // if (value.isEmpty ||
+                    //     !userVerify ||
+                    //     userCheck.toString() == "true" ||
+                    //     !RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
+                    //         .hasMatch(value)) {
+                    //   enabledPassword = false;
+                    // } else {
+                    //   enabledPassword = true;
+                    // }
+                  });
+                },
+                suffixIconOnPressed: () {
+                  if (_gstController.text.length >= 15) {
+                    print("clicked");
+                    if (isgstVerify) {
+                      validategst();
+                      print("validate");
+                      //validateAccountNumber();
+                    } else {
+                      print("change");
+
+                      setState(() {
+                        isgstVerify = true;
+                      });
+                    }
+                  }
+
+                  print("clicked");
+                  // isgstVerify
+                  // userServices.
+                  // if (_gstController.text.length >= 15) {
+                  //   // sendAddhaarOtp();
+                  // }
+                },
+                suffixIconTrue: true,
+
+                helperStyle: Theme.of(context)
+                    .textTheme
+                    .bodySmall
+                    ?.copyWith(color: Theme.of(context).primaryColor),
+                //inputFormatters: <TextInputFormatter>[AadhaarNumberFormatter()],
+                suffixText: isgstVerify ? 'Verify' : 'Change',
+                // readOnly: !isgstVerify,
+                helperText: isgstVerify ? "plese verfy" : "Verified",
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Gst Numberis Mandatory!';
+                  }
+
+                  // if (userVerify && userCheck == "true") {
+                  //   return Constants.userNameFailureMessage;
+                  // }
+                  if (!RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
+                      .hasMatch(value)) {
+                    return 'Invalid Gst Number!';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  merchantAdditionalInfoReq.gstnNo = value;
+                },
+              ),
               const SizedBox(
                 height: 30.0,
               ),

@@ -3,9 +3,10 @@ import 'package:icons_plus/icons_plus.dart';
 import 'package:sifr_latest/common_widgets/app_text_form_feild.dart';
 import 'package:sifr_latest/common_widgets/custom_otp_widget.dart';
 import 'package:sifr_latest/config/config.dart';
-import 'package:sifr_latest/pages/merchant_contact_verification_screen.dart/merchant_regn_type_selector.dart';
 import 'package:sifr_latest/widgets/custom_text_widget.dart';
 import 'package:sifr_latest/widgets/widget.dart';
+
+import 'merchant_regn_type_selector.dart';
 
 class MerchantNumVerify extends StatefulWidget {
   const MerchantNumVerify({super.key});

@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:sifr_latest/components/secure_screen.dart';
 import 'package:sifr_latest/pages/device_deployment/device_deployment.dart';
 import 'package:sifr_latest/pages/location_demo.dart';
-import 'package:sifr_latest/pages/merchant_contact_verification_screen.dart/merchnt_num_verify.dart';
+import 'package:sifr_latest/pages/merchant_regn_type/merchat_regn_type.dart';
 import 'package:sifr_latest/pages/user_types/user_type_selection.dart';
 import 'package:sifr_latest/pages/users/forgot_password.dart';
 
@@ -19,6 +19,7 @@ import '../pages/account_card_page/my_account_page.dart';
 import '../pages/customer_scan/customer_scan.dart';
 import '../pages/help/help.dart';
 import '../pages/mechant_order/merchant_order_details.dart';
+import '../pages/merchant_contact_verification/merchant_contact_verification.dart';
 import '../pages/merchant_pay/merchant.dart';
 import '../pages/my_account_menu/my_account_menu.dart';
 import '../pages/my_applications/my_applications.dart';
@@ -68,6 +69,8 @@ class CustomRoute {
           return const PaymentSuccessPage();
         case "settings":
           return const SettingsPage();
+        case "MerchantContactVerification":
+          return const MerchantContactVerification();
 
         case "forgotPage":
           String code = settings.arguments as String;

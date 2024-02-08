@@ -89,12 +89,10 @@ class CustomDropdown extends StatelessWidget {
               color: AppColors.kPrimaryColor),
           autoValidateMode: AutovalidateMode.onUserInteraction,
           popupProps: PopupProps.menu(
-              showSearchBox: true,
+              showSearchBox: false,
               menuProps: MenuProps(
-                  elevation: 16,
-                  backgroundColor: isDarkMode
-                      ? Theme.of(context).primaryColor
-                      : Theme.of(context).cardColor)),
+                elevation: 16,
+              )),
           dropdownBuilder: (context, selectedItem) {
             return Text(
               selectedItem ?? "Select $title",
@@ -107,7 +105,7 @@ class CustomDropdown extends StatelessWidget {
           },
           dropdownDecoratorProps: DropDownDecoratorProps(
             dropdownSearchDecoration: InputDecoration(
-              label: Text(title),
+              // label: Text(title),
               fillColor: AppColors.kTileColor,
               filled: true,
               contentPadding:

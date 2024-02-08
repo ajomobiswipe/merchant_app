@@ -12,6 +12,8 @@ import 'package:sifr_latest/widgets/app_scafold.dart';
 import 'package:sifr_latest/widgets/custom_text_widget.dart';
 import 'package:sifr_latest/widgets/widget.dart';
 
+import '../../decurations/dropdownDecurations.dart';
+
 class MerchantOrderDetails extends StatefulWidget {
   MerchantAdditionalInfoRequestmodel merchantAdditionalInfoReq;
   List tmsProductMaster;
@@ -122,260 +124,187 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                 //           widget.merchantAdditionalInfoReq.toJson()));
                 //     },
                 //     child: Text("demo")),
-                DropdownButtonFormField<int>(
-                  value: selectedProductId,
-                  hint: const Text('Select a Product'),
-                  items: widget.tmsProductMaster
-                      .asMap()
-                      .entries
-                      .map<DropdownMenuItem<int>>((entry) {
-                    Map<String, dynamic> product = entry.value;
-
-                    int productId = product['productId'];
-
-                    return DropdownMenuItem<int>(
-                      value: productId,
-                      child: Text(product['productName'].toString()),
-                    );
-                  }).toList(),
-                  onChanged: (int? value) {
-                    setState(() {
-                      selectedProductId = value;
-                      selectedProductPackages = [];
-
-                      var selectedProduct = widget.tmsProductMaster.firstWhere(
-                        (product) => (product['tmsPackage'] as List<dynamic>)
-                            .any((innerProduct) =>
-                                innerProduct['productId'] == selectedProductId),
-                        orElse: () => null,
-                      );
-
-                      if (selectedProduct != null) {
-                        selectedProductPackages =
-                            (selectedProduct['tmsPackage'] as List<dynamic>)
-                                .cast<Map<String, dynamic>>();
-                      }
-
-                      selectedPackageId = null;
-                    });
-                  },
-                  validator: (value) {
-                    if (value == null || value < 0) {
-                      return 'Please Select a Product!';
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    // label: Text(title),
-                    fillColor: AppColors.kTileColor,
-                    filled: true,
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 10),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                      borderSide: const BorderSide(
-                        color: Colors.black,
-                      ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CustomTextWidget(
+                      text: "Product",
+                      size: 16,
                     ),
-                    enabledBorder: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                        borderSide: BorderSide(color: Colors.transparent)),
-                    disabledBorder: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                        borderSide: BorderSide(color: Colors.transparent)),
-                    focusedBorder: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                        borderSide: BorderSide(color: Colors.transparent)),
-                    prefixIcon: Icon(Icons.ad_units,
-                        size: 25, color: Theme.of(context).primaryColor),
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                DropdownButtonFormField<int>(
-                  key: ValueKey<int>(selectedProductId ??
-                      0), // Use ValueKey to track selectedProductId
-                  value: selectedPackageId,
-                  hint: const Text('Select a Package'),
-                  items: selectedProductPackages.isNotEmpty
-                      ? selectedProductPackages
-                          .asMap()
-                          .entries
-                          .map<DropdownMenuItem<int>>((entry) {
-                          Map<String, dynamic> package = entry.value;
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20, top: 8),
+                      child: DropdownButtonFormField<int>(
+                        value: selectedProductId,
+                        icon: Icon(Icons.keyboard_arrow_down,
+                            color: AppColors.kPrimaryColor),
+                        hint: const Text('Select a Product'),
+                        items: widget.tmsProductMaster
+                            .asMap()
+                            .entries
+                            .map<DropdownMenuItem<int>>((entry) {
+                          Map<String, dynamic> product = entry.value;
+
+                          int productId = product['productId'];
+
                           return DropdownMenuItem<int>(
-                            value: package['packageId'] as int,
-                            child: Text(' ${package['description']}'),
+                            value: productId,
+                            child: Text(product['productName'].toString()),
                           );
-                        }).toList()
-                      : [
-                          const DropdownMenuItem<int>(
-                            value: 0,
-                            child: Text('No Packages'),
-                          )
-                        ],
+                        }).toList(),
+                        onChanged: (int? value) {
+                          setState(() {
+                            selectedProductId = value;
+                            selectedProductPackages = [];
 
-                  onChanged: (int? value) {
-                    setState(() {
-                      selectedPackageId = value == 0 ? null : value;
-                    });
-                  },
-                  validator: (value) {
-                    if (value == null || value < 0) {
-                      return 'Please Select a Package!';
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    // label: Text(title),
-                    fillColor: AppColors.kTileColor,
-                    filled: true,
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 10),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                      borderSide: const BorderSide(
-                        color: Colors.black,
+                            var selectedProduct =
+                                widget.tmsProductMaster.firstWhere(
+                              (product) =>
+                                  (product['tmsPackage'] as List<dynamic>).any(
+                                      (innerProduct) =>
+                                          innerProduct['productId'] ==
+                                          selectedProductId),
+                              orElse: () => null,
+                            );
+
+                            if (selectedProduct != null) {
+                              selectedProductPackages =
+                                  (selectedProduct['tmsPackage']
+                                          as List<dynamic>)
+                                      .cast<Map<String, dynamic>>();
+                            }
+
+                            selectedPackageId = null;
+                          });
+                        },
+                        validator: (value) {
+                          if (value == null || value < 0) {
+                            return 'Please Select a Product!';
+                          }
+                          return null;
+                        },
+                        decoration: dropdownDecoration(context),
                       ),
                     ),
-                    enabledBorder: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                        borderSide: BorderSide(color: Colors.transparent)),
-                    disabledBorder: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                        borderSide: BorderSide(color: Colors.transparent)),
-                    focusedBorder: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                        borderSide: BorderSide(color: Colors.transparent)),
-                    prefixIcon: Icon(Icons.ad_units,
-                        size: 25, color: Theme.of(context).primaryColor),
-                  ),
+                  ],
                 ),
-
-                const SizedBox(height: 16.0),
-
-                // CustomDropdown(
-                //   title: "Product",
-                //   // enabled: selectedState != '' && enabledState
-                //   //     ? enabledcity = true
-                //   //     : enabledcity = false,
-                //   required: true,
-                //   selectedItem: selectedProduct != '' ? selectedProduct : null,
-                //   prefixIcon: FontAwesome.product_hunt,
-                //   itemList: widget.tmsProductMaster
-                //       .map((e) => e['productName'].toString())
-                //       .toList(),
-
-                //   // nationalityList
-                //   //     .map((map) => map['label'].toString())
-                //   //     .toList(),
-                //   //countryList.map((e) => e['ctyName']).toList(),
-                //   onChanged: (value) {
-                //     setState(() {
-                //       selectedProduct = value;
-                //       // requestModel.city = value;
-                //     });
-                //   },
-                //   onSaved: (value) {
-                //     // merchantPersonalReq.currentNationality = value;
-                //   },
-                //   validator: (value) {
-                //     if (value == null || value.isEmpty) {
-                //       return 'Please select Product !';
-                //     }
-                //     return null;
-                //   },
-                // ),
-                // SizedBox(
-                //   height: 20,
-                // ),
-                // CustomDropdown(
-                //   title: "Package",
-                //   // enabled: selectedState != '' && enabledState
-                //   //     ? enabledcity = true
-                //   //     : enabledcity = false,
-
-                //   required: true,
-                //   selectedItem: selectedPackage != '' ? selectedPackage : null,
-                //   prefixIcon: FontAwesome.product_hunt,
-                //   itemList: packages,
-
-                //   // nationalityList
-                //   //     .map((map) => map['label'].toString())
-                //   //     .toList(),
-                //   //countryList.map((e) => e['ctyName']).toList(),
-                //   onChanged: (value) {
-                //     setState(() {
-                //       selectedPackage = value;
-                //       // requestModel.city = value;
-                //     });
-                //   },
-                //   onSaved: (value) {
-                //     // merchantPersonalReq.currentNationality = value;
-                //   },
-                //   validator: (value) {
-                //     if (value == null || value.isEmpty) {
-                //       return 'Please select package !';
-                //     }
-                //     return null;
-                //   },
-                // ),
                 SizedBox(
                   height: 20,
                 ),
-                CustomDropdown(
-                  title: "Quantity",
-                  // enabled: selectedState != '' && enabledState
-                  //     ? enabledcity = true
-                  //     : enabledcity = false,
-                  required: true,
-                  selectedItem:
-                      selectedQuantity != '' ? selectedQuantity : null,
-                  prefixIcon: Icons.production_quantity_limits,
-                  itemList: const ['1', '2', '3', '4', '5'],
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CustomTextWidget(
+                      text: "Package",
+                      size: 16,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20, top: 8),
+                      child: DropdownButtonFormField<int>(
+                        key: ValueKey<int>(selectedProductId ??
+                            0), // Use ValueKey to track selectedProductId
+                        value: selectedPackageId,
+                        hint: const Text('Select a Package'),
+                        items: selectedProductPackages.isNotEmpty
+                            ? selectedProductPackages
+                                .asMap()
+                                .entries
+                                .map<DropdownMenuItem<int>>((entry) {
+                                Map<String, dynamic> package = entry.value;
+                                return DropdownMenuItem<int>(
+                                  value: package['packageId'] as int,
+                                  child: Text(' ${package['description']}'),
+                                );
+                              }).toList()
+                            : [
+                                const DropdownMenuItem<int>(
+                                  value: 0,
+                                  child: Text('No Packages'),
+                                )
+                              ],
 
-                  // nationalityList
-                  //     .map((map) => map['label'].toString())
-                  //     .toList(),
-                  //countryList.map((e) => e['ctyName']).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      selectedQuantity = value;
-                      // requestModel.city = value;
-                    });
-                  },
-                  onSaved: (value) {
-                    // merchantPersonalReq.currentNationality = value;
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please Select Quantity!';
-                    }
-                    return null;
-                  },
+                        onChanged: (int? value) {
+                          setState(() {
+                            selectedPackageId = value == 0 ? null : value;
+                          });
+                        },
+                        validator: (value) {
+                          if (value == null || value < 0) {
+                            return 'Please Select a Package!';
+                          }
+                          return null;
+                        },
+                        icon: Icon(Icons.keyboard_arrow_down,
+                            color: AppColors.kPrimaryColor),
+
+                        decoration: InputDecoration(
+                          // label: Text(title),
+                          fillColor: AppColors.kTileColor,
+                          filled: true,
+                          contentPadding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 10),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5.0),
+                            borderSide: const BorderSide(
+                              color: Colors.black,
+                            ),
+                          ),
+                          enabledBorder: const OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5.0)),
+                              borderSide:
+                                  BorderSide(color: Colors.transparent)),
+                          disabledBorder: const OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5.0)),
+                              borderSide:
+                                  BorderSide(color: Colors.transparent)),
+                          focusedBorder: const OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5.0)),
+                              borderSide:
+                                  BorderSide(color: Colors.transparent)),
+                          prefixIcon: Icon(Icons.ad_units,
+                              size: 25, color: Theme.of(context).primaryColor),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
 
-                // Text('Selected Product ID: ${selectedProductId ?? "None"}'),
-                // Text('Selected Package ID: ${selectedPackageId ?? "None"}'),
-                // if (selectedPackageId != null &&
-                //     selectedProductPackages.isNotEmpty)
-                //   Text(
-                //       'Selected Package Name: ${selectedProductPackages.firstWhere((package) => package['packageId'] == selectedPackageId)['packageName']}'),
-                // if (selectedProductId != null &&
-                //     widget.tmsProductMaster.isNotEmpty)
-                //   Text(
-                //       'Selected Product Description: ${widget.tmsProductMaster.firstWhere((product) => product['productId'] == selectedProductId)['description']}'),
-                // ElevatedButton(
-                //   onPressed: () {
-                //     setState(() {
-                //       selectedProductId = null;
-                //       selectedPackageId = null;
-                //       selectedProductPackages = [];
-                //     });
-                //   },
-                //   child: Text('Clear Selection'),
-                // ),
+                defaultHeight(20),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CustomTextWidget(
+                      text: "Quantity",
+                      size: 16,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20, top: 8),
+                      child: CustomDropdown(
+                        title: "Quantity",
+                        required: true,
+                        selectedItem:
+                            selectedQuantity != '' ? selectedQuantity : null,
+                        prefixIcon: Icons.production_quantity_limits,
+                        itemList: const ['1', '2', '3', '4', '5'],
+                        onChanged: (value) {
+                          setState(() {
+                            selectedQuantity = value;
+                          });
+                        },
+                        onSaved: (value) {},
+                        validator: (value) {
+                          if (value == null) {
+                            return 'Please Select Quantity!';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+
                 defaultHeight(20),
                 IconButton(
                   onPressed: () {

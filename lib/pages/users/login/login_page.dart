@@ -167,6 +167,19 @@ class _LoginPageState extends State<LoginPage> {
             },
           ),
           // swipeButton(),
+          SizedBox(
+            height: 10,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              TextButton(
+                  onPressed: () {},
+                  child: CustomTextWidget(
+                    text: "Register Agent",
+                  )),
+            ],
+          ),
           const SizedBox(height: 10),
           CustomTextWidget(
             text: '--- Or ---',
