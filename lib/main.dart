@@ -101,7 +101,7 @@ class MainPage extends StatelessWidget {
           //   primaryColor: themeProvider.selectedPrimaryColor,
           // ),
           // // Dark mode design
-          // darkTheme: AppThemes.main(
+          // darkTheme: AppThemes.main(f
           //   isDark: true,
           //   primaryColor: themeProvider.selectedPrimaryColor,
           // ),

@@ -18,73 +18,77 @@ class PaymentSuccessPage extends StatelessWidget {
         ),
         Image.asset(
           "assets/app_icons/success_sumbol.png",
-          height: 100,
+          height: 60,
         ),
+        SizedBox(height: 10,),
         CustomTextWidget(
-          text: "Payment Successfull",
-          fontWeight: FontWeight.w900,
+          text: "Payment is successfull!",
+          fontWeight: FontWeight.bold,
           size: 24,
           color: AppColors.kLightGreen,
         ),
+        SizedBox(height: 30,),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CustomTextWidget(text: "Payment Of ", size: 16),
+            CustomTextWidget(text: "Payment Of ",  ),
             CustomTextWidget(
               text: "152454",
-              fontWeight: FontWeight.w800,
-              size: 16,
+              fontWeight: FontWeight.bold,
             ),
-            CustomTextWidget(text: "has been Recived", size: 16),
+            CustomTextWidget(text: " has been Recived",  ),
           ],
         ),
-        CustomTextWidget(text: "Successfully.", size: 16),
+        CustomTextWidget(text: "Successfully.",   ),
+
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CustomTextWidget(
               text: "Auto ",
-              size: 16,
+              size: 14,
               color: AppColors.kPrimaryColor,
             ),
             CustomTextWidget(
               text: " eNACH ",
               fontWeight: FontWeight.w800,
-              size: 16,
+              size: 14,
               color: AppColors.kPrimaryColor,
             ),
             CustomTextWidget(
               text: "Request is Initiated to the",
-              size: 16,
+              size: 14,
               color: AppColors.kPrimaryColor,
             ),
           ],
         ),
         CustomTextWidget(
           text: "merchant for Registration.",
-          size: 16,
+          size: 14,
           color: AppColors.kPrimaryColor,
         ),
+        SizedBox(height: 30,),
         CustomTextWidget(
           text: "Check for the Status in",
           fontWeight: FontWeight.w800,
           size: 18,
           color: Colors.grey.shade700,
         ),
-        TextButton(
-            onPressed: () {
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                'myApplications',
-                (route) => false,
-              );
-            },
-            child: CustomTextWidget(
-              text: "My Applications",
-              size: 16,
-              fontWeight: FontWeight.w700,
-              color: AppColors.kPrimaryColor,
-            )),
+        GestureDetector(
+          onTap: (){
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              'myApplications',
+                  (route) => false,
+            );
+          },
+          child:  CustomTextWidget(
+                text: "My Applications",
+                size: 16,
+                fontWeight: FontWeight.w700,
+                color: AppColors.kPrimaryColor,
+              )),
+
         Expanded(
           child: SizedBox(),
         ),
