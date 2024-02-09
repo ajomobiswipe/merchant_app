@@ -237,7 +237,7 @@ class _AddNewCardState extends State<AddNewCard> {
         CardNumberInputFormatter(),
       ],
       suffixIconTrue: true,
-      suffixIcon: LineAwesome.camera_solid,
+      // suffixIcon: LineAwesome.camera_solid,
       suffixIconOnPressed: scanCard,
       validator: (value) {
         if (value == null || value.isEmpty) {

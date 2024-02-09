@@ -27,11 +27,12 @@ class CustomTextFormField extends StatelessWidget {
   final ValueChanged<String>? onFieldSubmitted;
   final bool required;
   final bool? readOnly;
+  final bool titleEneabled;
   final bool? autofocus;
   final GestureTapCallback? onTap;
   final List<TextInputFormatter>? inputFormatters;
   final bool suffixIconTrue;
-  final IconData? suffixIcon;
+  final Widget? suffixIcon;
   final String? suffixText;
   final VoidCallback? suffixIconOnPressed;
   final String? helperText;
@@ -88,7 +89,7 @@ class CustomTextFormField extends StatelessWidget {
       this.minLines,
       this.maxLines,
       this.iconColor = Colors.black,
-      this.prefixWidget})
+      this.prefixWidget, this.titleEneabled=true})
       : super(key: key);
 
   @override
@@ -97,11 +98,11 @@ class CustomTextFormField extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
+          if(titleEneabled) SizedBox(
             height: 20,
           ),
-          CustomTextWidget(
-              text: "$title *", fontWeight: FontWeight.bold, size: 15),
+          if(titleEneabled) CustomTextWidget(
+              text: "$title *", fontWeight: FontWeight.w200, size: 14),
           Padding(
             padding: const EdgeInsets.only(top: 10),
             child: TextFormField(
@@ -162,8 +163,7 @@ class CustomTextFormField extends StatelessWidget {
                 suffixIcon: (suffixIconTrue && suffixText == null)
                     ? IconButton(
                         onPressed: suffixIconOnPressed,
-                        icon: Icon(suffixIcon,
-                            size: 25, color: Theme.of(context).primaryColor),
+                        icon: suffixIcon??Text("Eeeor"),
                       )
                     : suffixText != null
                         ? Container(

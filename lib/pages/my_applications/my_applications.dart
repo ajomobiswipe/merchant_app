@@ -370,7 +370,7 @@ class _MyApplicationsState extends State<MyApplications> {
           onFieldSubmitted: (value) {
             // _lastNameController.text = value.trim();
           },
-          suffixIcon: Icons.search,
+          suffixIcon: Icon(Icons.search),
           suffixIconTrue: true,
           suffixIconOnPressed: () {
             setState(() {

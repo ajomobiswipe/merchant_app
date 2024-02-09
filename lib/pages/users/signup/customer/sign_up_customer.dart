@@ -819,7 +819,7 @@ class _SignUpCustomerState extends State<SignUpCustomer> {
           keyboardType: TextInputType.visiblePassword,
           suffixIconTrue: true,
           maxLength: 14,
-          suffixIcon: hidePassword ? Icons.visibility : Icons.visibility_off,
+          // suffixIcon: hidePassword ? Icons.visibility : Icons.visibility_off,
           suffixIconOnPressed: () {
             setState(() {
               hidePassword = !hidePassword;
@@ -878,7 +878,7 @@ class _SignUpCustomerState extends State<SignUpCustomer> {
             });
           },
           suffixIconTrue: true,
-          suffixIcon: hideCnfPassword ? Icons.visibility : Icons.visibility_off,
+          // suffixIcon: hideCnfPassword ? Icons.visibility : Icons.visibility_off,
           suffixIconOnPressed: () {
             setState(() {
               hideCnfPassword = !hideCnfPassword;
@@ -928,7 +928,7 @@ class _SignUpCustomerState extends State<SignUpCustomer> {
           inputFormatters: <TextInputFormatter>[
             FilteringTextInputFormatter.digitsOnly
           ],
-          suffixIcon: hidePin ? Icons.visibility : Icons.visibility_off,
+          // suffixIcon: hidePin ? Icons.visibility : Icons.visibility_off,
           suffixIconOnPressed: () {
             setState(() {
               hidePin = !hidePin;
@@ -989,7 +989,7 @@ class _SignUpCustomerState extends State<SignUpCustomer> {
           textInputAction: TextInputAction.next,
           keyboardType: TextInputType.number,
           suffixIconTrue: true,
-          suffixIcon: hideCnfPin ? Icons.visibility : Icons.visibility_off,
+          // suffixIcon: hideCnfPin ? Icons.visibility : Icons.visibility_off,
           suffixIconOnPressed: () {
             setState(() {
               hideCnfPin = !hideCnfPin;

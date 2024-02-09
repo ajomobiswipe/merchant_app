@@ -386,9 +386,9 @@ class _ChangePasswordState extends State<ChangePassword> {
                                       ? Icons.lock
                                       : Icons.pin,
                                   suffixIconTrue: true,
-                                  suffixIcon: hideOldPassword
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
+                                  // suffixIcon: hideOldPassword
+                                  //     ? Icons.visibility_off
+                                  //     : Icons.visibility,
                                   suffixIconOnPressed: () {
                                     setState(() {
                                       hideOldPassword = !hideOldPassword;
@@ -450,9 +450,9 @@ class _ChangePasswordState extends State<ChangePassword> {
                                       ? Icons.check_circle_outline
                                       : icon,
                                   iconColor: isIcon ? Colors.green : null,
-                                  suffixIcon: hidePassword
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
+                                  // suffixIcon: hidePassword
+                                  //     ? Icons.visibility_off
+                                  //     : Icons.visibility,
                                   suffixIconOnPressed: () {
                                     setState(() {
                                       hidePassword = !hidePassword;
@@ -534,9 +534,9 @@ class _ChangePasswordState extends State<ChangePassword> {
                                       ? Icons.check_circle_outline
                                       : icon,
                                   iconColor: isIcon ? Colors.green : null,
-                                  suffixIcon: hideCnfPassword
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
+                                  // suffixIcon: hideCnfPassword
+                                  //     ? Icons.visibility_off
+                                  //     : Icons.visibility,
                                   suffixIconTrue: true,
                                   suffixIconOnPressed: () {
                                     setState(() {

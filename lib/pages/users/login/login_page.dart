@@ -10,7 +10,6 @@ import 'package:sifr_latest/common_widgets/custom_app_button.dart';
 import 'package:sifr_latest/common_widgets/copyright_widget.dart';
 import 'package:sifr_latest/config/config.dart';
 import 'package:sifr_latest/models/login/sales_team_login_model.dart';
-import 'package:sifr_latest/models/login_models.dart';
 import 'package:sifr_latest/services/user_services.dart';
 import 'package:sifr_latest/widgets/custom_text_widget.dart';
 import 'package:sifr_latest/widgets/widget.dart';
@@ -113,7 +112,7 @@ class _LoginPageState extends State<LoginPage> {
                     Navigator.pushNamedAndRemoveUntil(
                         context, 'userType', (route) => false);
                   },
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.arrow_back,
                     color: Colors.black,
                   )),
@@ -168,19 +167,7 @@ class _LoginPageState extends State<LoginPage> {
             },
           ),
           // swipeButton(),
-          SizedBox(
-            height: 10,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              TextButton(
-                  onPressed: () {},
-                  child: CustomTextWidget(
-                    text: "Register Agent",
-                  )),
-            ],
-          ),
+
           const SizedBox(height: 10),
           CustomTextWidget(
             text: '--- Or ---',

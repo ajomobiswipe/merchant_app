@@ -18,10 +18,12 @@ class CustomDropdown extends StatelessWidget {
   final IconData? prefixIcon;
   final List itemList;
   final bool enabled;
+  final bool titleEnabled;
   final FormFieldValidator? validator;
   final FormFieldSetter? onSaved;
   final ValueChanged? onChanged;
   final String? selectedItem;
+  final String? hintText;
   final DropdownSearchOnFind? asyncItems;
   final DropdownSearchItemAsString? itemAsString;
   final DropdownSearchFilterFn? filterFn;
@@ -42,7 +44,7 @@ class CustomDropdown extends StatelessWidget {
     this.filterFn,
     this.compareFn,
     this.autoValidateMode,
-    this.enabled = true,
+    this.enabled = true, this.hintText, this.titleEnabled=true,
   }) : super(key: key);
 
   @override
@@ -52,27 +54,27 @@ class CustomDropdown extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // required
-        //     ? RichText(
-        //         text: TextSpan(
-        //             text: title,
-        //             style: Theme.of(context)
-        //                 .textTheme
-        //                 .bodySmall
-        //                 ?.copyWith(fontWeight: FontWeight.normal),
-        //             children: const [
-        //               TextSpan(text: ' *', style: TextStyle(color: Colors.red))
-        //             ]),
-        //       )
-        //     : Text(
-        //         title,
-        //         style: Theme.of(context)
-        //             .textTheme
-        //             .bodySmall
-        //             ?.copyWith(fontWeight: FontWeight.normal),
-        //       ),
-        // //Global Drop Down
-
+       if(titleEnabled) required
+            ? RichText(
+                text: TextSpan(
+                    text: title,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(fontWeight: FontWeight.w300,fontSize: 14,color: Colors.black),
+                    children: const [
+                      TextSpan(text: ' *', style: TextStyle(color: Colors.red))
+                    ]),
+              )
+            : Text(
+                title,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge
+                    ?.copyWith(fontWeight: FontWeight.w300,fontSize: 16),
+              ),
+        //Global Drop Down
+        if(titleEnabled)SizedBox(height: 8,),
         DropdownSearch(
           items: itemList,
           onChanged: onChanged,
@@ -95,12 +97,12 @@ class CustomDropdown extends StatelessWidget {
               )),
           dropdownBuilder: (context, selectedItem) {
             return Text(
-              selectedItem ?? "Select $title",
+              selectedItem ?? "$hintText",
               overflow: TextOverflow.ellipsis,
               style: Theme.of(context)
                   .textTheme
                   .displaySmall
-                  ?.copyWith(fontWeight: FontWeight.bold, fontSize: 13),
+                  ?.copyWith(fontWeight: FontWeight.w300, fontSize: 13,color: Colors.black.withOpacity(0.7)),
             );
           },
           dropdownDecoratorProps: DropDownDecoratorProps(
@@ -126,7 +128,7 @@ class CustomDropdown extends StatelessWidget {
                   borderRadius: BorderRadius.all(Radius.circular(5.0)),
                   borderSide: BorderSide(color: Colors.transparent)),
               prefixIcon: Icon(prefixIcon,
-                  size: 25, color: Theme.of(context).primaryColor),
+                  size: 25, color: Colors.black.withOpacity(0.6)),
             ),
           ),
         ),

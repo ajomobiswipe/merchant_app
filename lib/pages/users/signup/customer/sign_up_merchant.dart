@@ -11,7 +11,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 import 'package:intl_phone_field/countries.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sifr_latest/common_widgets/app_appbar.dart';
@@ -35,6 +34,7 @@ import '../../../../providers/providers.dart';
 import '../../../../services/services.dart';
 import '../../../../widgets/Forms/kyc_form.dart';
 import '../../../../widgets/Forms/security_form.dart';
+import '../../../../widgets/image_button/verifivation_success_button.dart';
 import '../../../../widgets/widget.dart';
 import '../../../mechant_order/models/mechant_additionalingo_model.dart';
 import 'terms_and_conditions.dart';
@@ -84,7 +84,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
       TextEditingController();
   final TextEditingController _altMobileNoController = TextEditingController();
   final TextEditingController _poaExiryController = TextEditingController();
-  final TextEditingController _poaNumberController = TextEditingController();
+  final TextEditingController _merchantDBANameController =
+      TextEditingController();
   final TextEditingController _poiExpryController = TextEditingController();
   final TextEditingController _poINumberController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -119,6 +120,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
   String? mobileNoCheckMessage;
   TextStyle? style;
   String countryCode = 'IN';
+  String merchantPanHelperText = "Click verify";
   late Country _country =
       countries.firstWhere((element) => element.code == countryCode);
   List nationalityList =
@@ -142,11 +144,26 @@ class _MerchantSignupState extends State<MerchantSignup> {
     {"value": "ICI5445", "label": "ICICI"},
   ];
 
-  List<Map<String, dynamic>> POIAList = [
-    {"value": 1, "label": "PAN"},
-    {"value": 2, "label": "Passport"},
+  List<Map<String, dynamic>> bussinesCatogeryList = [
+    {"value": 1, "label": "Individual"},
+    {"value": 2, "label": "Sole Proprietorship"},
+    {"value": 3, "label": "Partnership Firm"},
   ];
-
+  List<Map<String, dynamic>> bussinesTurnoverList = [
+    {"value": 1, "label": "Up to 1 Cr"},
+    {"value": 2, "label": "2 to 5 Cr"},
+    {"value": 3, "label": "6 to 10 Cr"},
+  ];
+  List<Map<String, dynamic>> merchantBusinessSubList = [
+    {"value": 1, "label": "CAT001"},
+    {"value": 2, "label": "CAT002"},
+    {"value": 3, "label": "CAT003"},
+  ];
+  List<Map<String, dynamic>> BusinessTypeList = [
+    {"value": 1, "label": "Individual"},
+    {"value": 2, "label": "Sole Proprietorship"},
+    {"value": 3, "label": "Partnership Firm"},
+  ];
   Map<String, int> countrysList = {
     "India": 356,
   };
@@ -221,7 +238,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
   final TextEditingController selectedItem3 = TextEditingController();
   String nationality = '';
   String selectedPOA = '';
-  String selectedPOI = '';
+  String selectedBussinesCatogery = '';
+  String selectedBussinessubCatogery = '';
+  String selectedBussinesTurnOver = '';
   String selectedCountries = '';
   String selectedCity = '';
   String selectedState = '';
@@ -622,8 +641,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
             //   ),
             // ),
             const FormTitleWidget(subWord: 'Merchant Details'),
-            const SizedBox(height: 35),
+            defaultHeight(10),
             CustomTextFormField(
+              hintText: "Enter Your Business Name",
               title: 'Merchant Legal name',
               controller: _merchantLegalNameController,
               required: true,
@@ -657,11 +677,10 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 //merchantPersonalReq.firstName = value;
               },
             ),
-            const SizedBox(
-              height: 10,
-            ),
+
             CustomTextFormField(
               title: 'Contact Persons name',
+              hintText: "Enter Your Contact Person name",
               controller: _contactPersonNameController,
               required: true,
               textCapitalization: TextCapitalization.words,
@@ -701,19 +720,13 @@ class _MerchantSignupState extends State<MerchantSignup> {
               },
             ),
 
-            const SizedBox(
-              height: 10,
-            ),
             CustomTextFormField(
               title: 'Email',
+              hintText: "Enter Your Email Address",
               controller: _emailController,
               required: true,
               textCapitalization: TextCapitalization.words,
-              // enabled: _firstNameController.text.isEmpty ||
-              //         _firstNameController.text.length < 3
-              //     ? enabledLast = false
-              //     : enabledLast = true,
-              prefixIcon: LineAwesome.user_circle,
+              prefixIcon: Icons.email,
               validator: (value) {
                 value = value.trim();
                 if (value == null || value.isEmpty) {
@@ -745,10 +758,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
               },
             ),
 
-            const SizedBox(
-              height: 10,
-            ),
             CustomTextFormField(
+              hintText: "Enter Your Mobile Number",
               prefixWidget: TextButton(
                   child: CustomTextWidget(
                       text: "+91", color: Colors.black.withOpacity(0.7)),
@@ -768,10 +779,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 merchantPersonalReq.currentMobileNo = phone;
               },
             ),
-            const SizedBox(
-              height: 10,
-            ),
             CustomTextFormField(
+              hintText: "Enter Your WhatsApp number",
               prefixWidget: TextButton(
                   child: CustomTextWidget(
                       text: "+91", color: Colors.black.withOpacity(0.7)),
@@ -789,17 +798,19 @@ class _MerchantSignupState extends State<MerchantSignup> {
               height: 20,
             ),
             CustomDropdown(
-              title: "Bussiness Type",
+              title: "Business Type",
               required: true,
+              hintText: "Select merchant business type",
               selectedItem: selectedPOA != '' ? selectedPOA : null,
-              prefixIcon: Icons.location_city_outlined,
-              itemList: POIAList.map((map) => map['label'].toString()).toList(),
+              prefixIcon: Icons.maps_home_work_outlined,
+              itemList: BusinessTypeList.map((map) => map['label'].toString())
+                  .toList(),
               //countryList.map((e) => e['ctyName']).toList(),
               onChanged: (value) {
                 setState(() {
                   selectedPOA = value;
                   merchantPersonalReq.poaType =
-                      getValueByLabel(POIAList, value);
+                      getValueByLabel(BusinessTypeList, value);
                 });
               },
               validator: (value) {
@@ -809,10 +820,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 return null;
               },
             ),
-            defaultHeight(10),
+
             CustomTextFormField(
               title: 'Merchant DBA Name',
-              controller: _poaNumberController,
+              hintText: "Enter merchant DBA (Do Business As) name",
+              controller: _merchantDBANameController,
               required: true,
               keyboardType: TextInputType.number,
               inputFormatters: <TextInputFormatter>[
@@ -827,7 +839,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               validator: (value) {
                 value = value.trim();
                 if (value == null || value.isEmpty) {
-                  return 'POA Number Mandatory!';
+                  return 'Merchant DBA Name Mandatory!';
                 }
                 if (value.length < 10) {
                   return 'Minimum 10 characters';
@@ -850,28 +862,31 @@ class _MerchantSignupState extends State<MerchantSignup> {
             ),
             CustomDropdown(
               title: "Merchant Bussines catogery",
-              // enabled: selectedState != '' && enabledState
-              //     ? enabledcity = true
-              //     : enabledcity = false,
+              hintText: "Select merchant business category",
               required: true,
-              selectedItem: selectedPOI != '' ? selectedPOI : null,
+              selectedItem: selectedBussinesCatogery != ''
+                  ? selectedBussinesCatogery
+                  : null,
               prefixIcon: Icons.location_city_outlined,
-              itemList: POIAList.map((map) => map['label'].toString()).toList(),
+              itemList: bussinesCatogeryList
+                  .map((map) => map['label'].toString())
+                  .toList(),
               // cityList.map((e) => e['citName']).toList(),
               onChanged: (value) {
                 setState(() {
-                  selectedPOI = value;
-                  merchantPersonalReq.poiType =
-                      getValueByLabel(POIAList, value);
+                  // selectedBussinesCatogery = value;
+                  // merchantPersonalReq.poiType =
+                  //     getValueByLabel(bussinesCatogeryList, value);
                 });
               },
               onSaved: (value) {
                 //merchantPersonalReq.poiType = value;
-                merchantPersonalReq.poiType = getValueByLabel(POIAList, value);
+                merchantPersonalReq.poiType =
+                    getValueByLabel(bussinesCatogeryList, value);
               },
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'City is Mandatory!';
+                  return 'Merchant Bussines catogery is Mandatory!';
                 }
                 return null;
               },
@@ -879,54 +894,63 @@ class _MerchantSignupState extends State<MerchantSignup> {
             defaultHeight(10),
 
             CustomDropdown(
-              title: "Merchant Bussines Sub catogery",
-              // enabled: selectedState != '' && enabledState
-              //     ? enabledcity = true
-              //     : enabledcity = false,
+              title: "Merchant Business Sub category",
+              hintText: "Select merchant business sub category",
+
               required: true,
-              selectedItem: selectedPOI != '' ? selectedPOI : null,
+              selectedItem: selectedBussinessubCatogery != ''
+                  ? selectedBussinessubCatogery
+                  : null,
               prefixIcon: Icons.location_city_outlined,
-              itemList: POIAList.map((map) => map['label'].toString()).toList(),
+              itemList: merchantBusinessSubList
+                  .map((map) => map['label'].toString())
+                  .toList(),
               // cityList.map((e) => e['citName']).toList(),
               onChanged: (value) {
                 setState(() {
-                  selectedPOI = value;
+                  selectedBussinessubCatogery = value;
                   merchantPersonalReq.poiType =
-                      getValueByLabel(POIAList, value);
+                      getValueByLabel(merchantBusinessSubList, value);
                 });
               },
               onSaved: (value) {
                 //merchantPersonalReq.poiType = value;
-                merchantPersonalReq.poiType = getValueByLabel(POIAList, value);
+                // merchantPersonalReq.poiType = getValueByLabel(merchantBusinessSubList, value);
               },
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'City is Mandatory!';
+                  return 'Merchant Business Sub is Mandatory!';
                 }
                 return null;
               },
             ),
             defaultHeight(10),
             CustomDropdown(
-              title: "Merchant Bussines Annual Turnover",
+              hintText: "Select merchant annual business turnover",
+              title: "Merchant Business Annual Turnover",
               // enabled: selectedState != '' && enabledState
               //     ? enabledcity = true
               //     : enabledcity = false,
               required: true,
-              selectedItem: selectedPOI != '' ? selectedPOI : null,
+              selectedItem: selectedBussinesTurnOver != ''
+                  ? selectedBussinesTurnOver
+                  : null,
               prefixIcon: Icons.location_city_outlined,
-              itemList: POIAList.map((map) => map['label'].toString()).toList(),
+              itemList: bussinesTurnoverList
+                  .map((map) => map['label'].toString())
+                  .toList(),
               // cityList.map((e) => e['citName']).toList(),
               onChanged: (value) {
                 setState(() {
-                  selectedPOI = value;
+                  bussinesTurnoverList = value;
                   merchantPersonalReq.poiType =
-                      getValueByLabel(POIAList, value);
+                      getValueByLabel(bussinesCatogeryList, value);
                 });
               },
               onSaved: (value) {
                 //merchantPersonalReq.poiType = value;
-                merchantPersonalReq.poiType = getValueByLabel(POIAList, value);
+                merchantPersonalReq.poiType =
+                    getValueByLabel(bussinesCatogeryList, value);
               },
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -936,16 +960,14 @@ class _MerchantSignupState extends State<MerchantSignup> {
               },
             ),
 
-            const SizedBox(
-              height: 20.0,
-            ),
             CustomTextFormField(
-              title: 'Merchant Bussines Address',
+              hintText: "Enter merchant business address",
+              title: 'Merchant Business Address',
 
               controller: _currentAddressController,
               prefixIcon: Icons.home,
               required: true,
-              minLines: 2,
+
               keyboardType: TextInputType.multiline,
               textCapitalization: TextCapitalization.words,
               enabled: true,
@@ -972,10 +994,12 @@ class _MerchantSignupState extends State<MerchantSignup> {
               },
             ),
             const SizedBox(
-              height: 20.0,
+              height: 15.0,
             ),
 
             CustomDropdown(
+              titleEnabled: false,
+              hintText: "Select State",
               title: "Current State",
               // enabled: selectedState != '' && enabledState
               //     ? enabledcity = true
@@ -983,7 +1007,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               required: true,
               selectedItem:
                   selectedCurrentState != '' ? selectedCurrentState : null,
-              prefixIcon: Icons.location_city_outlined,
+              prefixIcon: Icons.flag_circle_outlined,
               itemList: statesList,
               // cityList.map((e) => e['citName']).toList(),
               onChanged: (value) {
@@ -1003,10 +1027,12 @@ class _MerchantSignupState extends State<MerchantSignup> {
               },
             ),
             const SizedBox(
-              height: 10.0,
+              height: 15.0,
             ),
             CustomDropdown(
+              titleEnabled: false,
               title: "Current City",
+              hintText: "Select City",
               // enabled: selectedState != '' && enabledState
               //     ? enabledcity = true
               //     : enabledcity = false,
@@ -1033,12 +1059,13 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 return null;
               },
             ),
-
             const SizedBox(
-              height: 10.0,
-            ),
+              height: 4,
+            ), //padding added in textfeild
             CustomTextFormField(
+              titleEneabled: false,
               title: 'Pin Code',
+              hintText: 'Pin Code',
               // enabled: selectedCity != '' && enabledcity ? true : false,
               maxLength: 6,
               required: true,
@@ -1062,41 +1089,39 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 merchantPersonalReq.currentZipCode = value;
               },
             ),
+            // const SizedBox(
+            //   height: 10.0,
+            // ),
+            // Placeholder(
+            //   child: CustomAppButton(
+            //     width: 0.4,
+            //     title: 'Back',
+            //     onPressed: () {
+            //       setState(() {
+            //         position = 0;
+            //       });
+            //     },
+            //   ),
+            // ),
             const SizedBox(
-              height: 10.0,
+              height: 20.0,
             ),
-
-            Row(
-              children: [
-                CustomAppButton(
-                  width: 0.4,
-                  title: 'Back',
-                  onPressed: () {
-                    setState(() {
-                      position = 0;
-                    });
-                  },
-                ),
-                Expanded(child: SizedBox()),
-                CustomAppButton(
-                  width: 0.4,
-                  title: "Next",
-                  onPressed: () async {
-                    setState(() {
-                      currTabPosition = 2;
-                      position = 2;
-                    });
-                    // personalFormKey.currentState!.save();
-                    // if (personalFormKey.currentState!.validate()) {
-                    //   print(jsonEncode(merchantPersonalReq.toJson()));
-                    //   setState(() {
-                    //     currTabPosition = 2;
-                    //     position = 2;
-                    //   });
-                    // }
-                  },
-                ),
-              ],
+            CustomAppButton(
+              title: "Next",
+              onPressed: () async {
+                setState(() {
+                  currTabPosition = 2;
+                  position = 3;
+                });
+                // personalFormKey.currentState!.save();
+                // if (personalFormKey.currentState!.validate()) {
+                //   print(jsonEncode(merchantPersonalReq.toJson()));
+                //   setState(() {
+                //     currTabPosition = 2;
+                //     position = 2;
+                //   });
+                // }
+              },
             ),
             const SizedBox(
               height: 20.0,
@@ -1328,132 +1353,202 @@ class _MerchantSignupState extends State<MerchantSignup> {
     var screenHeight = MediaQuery.of(context).size.height;
 
     return Form(
-        key: loginFormKey,
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: AppColors.kSelectedBackgroundColor,
-                ),
-                // height: screenHeight / 10,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    IconTextWidget(
-                        screenHeight: screenHeight,
-                        color: getIconColor(
-                          position: 1,
-                        ),
-                        iconPath: 'assets/merchant_icons/merchant_detials.png',
-                        title: "Merchant\nDetails"),
-                    IconTextWidget(
-                        screenHeight: screenHeight,
-                        color: getIconColor(position: 2),
-                        iconPath: 'assets/merchant_icons/id_proof_icon.png',
-                        title: "Id\nProofs"),
-                    IconTextWidget(
-                        screenHeight: screenHeight,
-                        color: getIconColor(position: 3),
-                        iconPath: 'assets/merchant_icons/bussiness_proofs.png',
-                        title: "Bussiness\nProofs"),
-                    IconTextWidget(
-                        screenHeight: screenHeight,
-                        color: getIconColor(position: 4),
-                        iconPath: 'assets/merchant_icons/bank_details.png',
-                        title: "Bank\nDetails"),
-                  ],
-                ),
+      key: loginFormKey,
+      child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: AppColors.kSelectedBackgroundColor,
               ),
-
-              const FormTitleWidget(subWord: 'Merchant ID proof'),
-              const SizedBox(height: 10),
-              CustomTextFormField(
-                controller: _merchantPanController,
-                title: 'Merchant Pan',
-                required: true,
-                prefixIcon: Icons.verified,
-                iconColor: showVerify ? Colors.red : Colors.green,
-                onFieldSubmitted: (name) {
-                  // getUser();
-                  // validatePan();
-                },
-                onChanged: (String value) {
-                  setState(() {
-                    if (value.isEmpty ||
-                        !userVerify ||
-                        userCheck.toString() == "true" ||
-                        !RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
-                            .hasMatch(value)) {
-                      enabledPassword = false;
-                    } else {
-                      enabledPassword = true;
-                    }
-                  });
-                },
-                suffixIconOnPressed: () {
-                  if (_merchantPanController.text.length >= 10) {
-                    print("clicked");
-                    if (showVerify) {
-                      validatePan();
-                      print("validate");
-                      //validateAccountNumber();
-                    } else {
-                      print("change");
-
-                      setState(() {
-                        showVerify = true;
-                      });
-                    }
-                  }
-                },
-                suffixIconTrue: true,
-                helperStyle: Theme.of(context)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(color: Theme.of(context).primaryColor),
-                inputFormatters: <TextInputFormatter>[PanNumberFormatter()],
-                suffixText: showVerify ? 'Verify' : 'Change',
-                readOnly: !showVerify,
-                helperText:
-                    showVerify ? 'click Verify to verify the pan ' : 'Verified',
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Merchant Pan is Mandatory!';
-                  }
-                  if (value.length < 10) {
-                    return 'Minimum character length is 10';
-                  }
-                  if (userVerify && userCheck == "true") {
-                    return Constants.userNameFailureMessage;
-                  }
-                  if (!RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
-                      .hasMatch(value)) {
-                    return 'Invalid Merchant Pan Number!';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  requestModel.userName = value;
-                },
+              // height: screenHeight / 10,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  IconTextWidget(
+                      screenHeight: screenHeight,
+                      color: getIconColor(
+                        position: 1,
+                      ),
+                      iconPath: 'assets/merchant_icons/merchant_detials.png',
+                      title: "Merchant\nDetails"),
+                  IconTextWidget(
+                      screenHeight: screenHeight,
+                      color: getIconColor(position: 2),
+                      iconPath: 'assets/merchant_icons/id_proof_icon.png',
+                      title: "Id\nProofs"),
+                  IconTextWidget(
+                      screenHeight: screenHeight,
+                      color: getIconColor(position: 3),
+                      iconPath: 'assets/merchant_icons/bussiness_proofs.png',
+                      title: "Bussiness\nProofs"),
+                  IconTextWidget(
+                      screenHeight: screenHeight,
+                      color: getIconColor(position: 4),
+                      iconPath: 'assets/merchant_icons/bank_details.png',
+                      title: "Bank\nDetails"),
+                ],
               ),
-              // userNameWidget(),
-              const SizedBox(height: 30.0),
+            ),
 
+            const FormTitleWidget(subWord: 'Merchant ID proof'),
+            const SizedBox(height: 10),
+            CustomTextFormField(
+              hintText: "Enter merchant PAN number",
+              controller: _merchantPanController,
+              title: 'Merchant Pan',
+              required: true,
+              prefixIcon: Icons.format_list_numbered,
+              //iconColor: showVerify ? Colors.red : Colors.green,
+              onFieldSubmitted: (name) {
+                // getUser();
+                // validatePan();
+              },
+              onChanged: (String value) {
+                setState(() {
+                  if (value.isEmpty ||
+                      !userVerify ||
+                      userCheck.toString() == "true" ||
+                      !RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
+                          .hasMatch(value)) {
+                    enabledPassword = false;
+                  } else {
+                    enabledPassword = true;
+                  }
+                });
+              },
+
+              suffixIconTrue: true,
+              suffixIcon: showVerify
+                  ? TextButton(
+                      onPressed: () {
+                        if (_merchantPanController.text.length >= 10) {
+                          print("clicked");
+                          if (showVerify) {
+                            validatePan();
+                            print("validate");
+                            //validateAccountNumber();
+                          } else {
+                            print("change");
+
+                            setState(() {
+                              showVerify = true;
+                            });
+                          }
+                        }
+                      },
+                      child: Text("Verify"))
+                  : VerificationSuccessButton(),
+              helperStyle: Theme.of(context)
+                  .textTheme
+                  .bodySmall
+                  ?.copyWith(color: Theme.of(context).primaryColor),
+              inputFormatters: <TextInputFormatter>[PanNumberFormatter()],
+              // suffixText: showVerify ? 'Verify' : 'Change',
+              readOnly: !showVerify,
+              helperText: merchantPanHelperText,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Merchant Pan is Mandatory!';
+                }
+                if (value.length < 10) {
+                  return 'Minimum character length is 10';
+                }
+                if (userVerify && userCheck == "true") {
+                  return Constants.userNameFailureMessage;
+                }
+                if (!RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
+                    .hasMatch(value)) {
+                  return 'Invalid Merchant Pan Number!';
+                }
+                return null;
+              },
+              onSaved: (value) {
+                requestModel.userName = value;
+              },
+            ),
+            // userNameWidget(),
+
+            CustomTextFormField(
+              hintText: "Enter merchant Aadhaar number",
+              keyboardType: TextInputType.number,
+              controller: _merchantAddharController,
+              title: 'Merchant Aadhaar Number',
+              required: true,
+              prefixIcon: Icons.format_list_numbered,
+              onFieldSubmitted: (name) {
+                //getUser();
+              },
+              helperText: isOtpVerifird ? "Verified" : "",
+ suffixIcon: showaddharverify?TextButton(onPressed: ()
+
+     {
+       if (_merchantAddharController.text.length >= 12) {
+         print("clicked");
+         if (showaddharverify) {
+           sendAddhaarOtp();
+           print("validate");
+
+         } else {
+           print("change");
+
+           setState(() {
+             showaddharverify = true;
+             isaddhaarOTPsent = false;
+             isOtpVerifird = false;
+           });
+         }
+       }
+     }
+
+     ,
+
+    child: Text("Verify"))
+        : VerificationSuccessButton(),
+
+              suffixIconTrue: true,
+              helperStyle: Theme.of(context)
+                  .textTheme
+                  .bodySmall
+                  ?.copyWith(color: Theme.of(context).primaryColor),
+              suffixText: showaddharverify ? 'Send OTP' : 'Change',
+              readOnly: !showaddharverify,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Aadhaar Numberis Mandatory!';
+                }
+                if (value.length < 12) {
+                  return 'Minimum character length is 12';
+                }
+                // if (userVerify && userCheck == "true") {
+                //   return Constants.userNameFailureMessage;
+                // }
+                if (!RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
+                    .hasMatch(value)) {
+                  return 'InvalidAddhaar Number!';
+                }
+                return null;
+              },
+              onSaved: (value) {
+                requestModel.userName = value;
+              },
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            if (isaddhaarOTPsent)
               CustomTextFormField(
                 keyboardType: TextInputType.number,
-                controller: _merchantAddharController,
-                title: 'Merchant Aadhaar Number',
+                controller: _otpController,
+                title: 'Enter OTP',
                 required: true,
-                prefixIcon: Icons.verified,
-                iconColor: isOtpVerifird ? Colors.green : Colors.red,
+                // prefixIcon: Icons.verified,
                 onFieldSubmitted: (name) {
                   getUser();
                 },
-                helperText: isOtpVerifird ? "Verified" : "",
                 onChanged: (String value) {
                   setState(() {
                     // if (value.isEmpty ||
@@ -1468,22 +1563,10 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   });
                 },
                 suffixIconOnPressed: () {
-                  if (_merchantAddharController.text.length >= 12) {
-                    print("clicked");
-                    if (showaddharverify) {
-                      sendAddhaarOtp();
-                      print("validate");
-
-                      //validateAccountNumber();
-                    } else {
-                      print("change");
-
-                      setState(() {
-                        showaddharverify = true;
-                        isaddhaarOTPsent = false;
-                        isOtpVerifird = false;
-                      });
-                    }
+                  print("clicked");
+                  print(_otpController.text.length);
+                  if (_otpController.text.isNotEmpty) {
+                    validateAddhaarOtp();
                   }
                 },
                 suffixIconTrue: true,
@@ -1491,14 +1574,15 @@ class _MerchantSignupState extends State<MerchantSignup> {
                     .textTheme
                     .bodySmall
                     ?.copyWith(color: Theme.of(context).primaryColor),
-                suffixText: showaddharverify ? 'Send OTP' : 'Change',
-                readOnly: !showaddharverify,
+
+                suffixText: "Verify",
+                helperText: "Click verify",
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Aadhaar Numberis Mandatory!';
+                    return 'Otp is Mandatory!';
                   }
-                  if (value.length < 12) {
-                    return 'Minimum character length is 12';
+                  if (value.length < 6) {
+                    return 'Minimum length is 6 digit';
                   }
                   // if (userVerify && userCheck == "true") {
                   //   return Constants.userNameFailureMessage;
@@ -1513,432 +1597,50 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   requestModel.userName = value;
                 },
               ),
-              SizedBox(
-                height: 20,
-              ),
-              if (isaddhaarOTPsent)
-                CustomTextFormField(
-                  keyboardType: TextInputType.number,
-                  controller: _otpController,
-                  title: 'Enter OTP',
-                  required: true,
-                  // prefixIcon: Icons.verified,
-                  onFieldSubmitted: (name) {
-                    getUser();
-                  },
-                  onChanged: (String value) {
-                    setState(() {
-                      // if (value.isEmpty ||
-                      //     !userVerify ||
-                      //     userCheck.toString() == "true" ||
-                      //     !RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
-                      //         .hasMatch(value)) {
-                      //   enabledPassword = false;
-                      // } else {
-                      //   enabledPassword = true;
-                      // }
-                    });
-                  },
-                  suffixIconOnPressed: () {
-                    print("clicked");
-                    print(_otpController.text.length);
-                    if (_otpController.text.isNotEmpty) {
-                      validateAddhaarOtp();
-                    }
-                  },
-                  suffixIconTrue: true,
-                  helperStyle: Theme.of(context)
-                      .textTheme
-                      .bodySmall
-                      ?.copyWith(color: Theme.of(context).primaryColor),
 
-                  suffixText: "Verify",
-                  helperText: "Click verify",
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Otp is Mandatory!';
-                    }
-                    if (value.length < 6) {
-                      return 'Minimum length is 6 digit';
-                    }
-                    // if (userVerify && userCheck == "true") {
-                    //   return Constants.userNameFailureMessage;
-                    // }
-                    if (!RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
-                        .hasMatch(value)) {
-                      return 'InvalidAddhaar Number!';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    requestModel.userName = value;
-                  },
+            if (isaddhaarOTPsent) const SizedBox(height: 30.0),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(
+                  width: 150,
+                  child: CustomAppButton(
+                    title: 'Previous',
+                    onPressed: () {
+                      // _userNameController.clear();
+                      // _passwordController.clear();
+                      // _cnfPasswordCtrl.clear();
+                      // _pinController.clear();
+                      // _confirmPinController.clear();
+                      setState(() {
+                        position = 2; //old 0
+                      });
+                    },
+                  ),
                 ),
-
-              if (isaddhaarOTPsent) const SizedBox(height: 30.0),
-              CustomTextFormField(
-                controller: _firmPanController,
-                title: 'Firm Pan number',
-                required: true,
-                prefixIcon: Icons.verified,
-                iconColor: showFirmPanVerify ? Colors.red : Colors.green,
-                onFieldSubmitted: (name) {
-                  //getUser();
-                },
-                onChanged: (String value) {
-                  setState(() {
-                    // if (value.isEmpty ||
-                    //     !userVerify ||
-                    //     userCheck.toString() == "true" ||
-                    //     !RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
-                    //         .hasMatch(value)) {
-                    //   enabledPassword = false;
-                    // } else {
-                    //   enabledPassword = true;
-                    // }
-                  });
-                },
-                suffixIconOnPressed: () {
-                  if (_firmPanController.text.length >= 10) {
-                    if (showFirmPanVerify) {
-                      validateFirmPan();
-                      print("validate");
-                      //validateAccountNumber();
-                    } else {
-                      print("change");
-
-                      setState(() {
-                        showFirmPanVerify = true;
-                      });
-                    }
-                  }
-                },
-                suffixIconTrue: true,
-                helperStyle: Theme.of(context)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(color: Theme.of(context).primaryColor),
-                suffixText: showFirmPanVerify ? 'verify' : 'Change',
-                readOnly: !showFirmPanVerify,
-                helperText: showFirmPanVerify ? "click verify" : "verified",
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'FirnPan number Mandatory!';
-                  }
-                  if (value.length < 10) {
-                    return 'Minimum character length is 10';
-                  }
-                  // if (userVerify && userCheck == "true") {
-                  //   return Constants.userNameFailureMessage;
-                  // }
-                  if (!RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
-                      .hasMatch(value)) {
-                    return 'Invalid pan Number!';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  merchantAdditionalInfoReq.firmPanNo = value;
-                },
-              ),
-              const SizedBox(height: 30.0),
-              CustomTextFormField(
-                keyboardType: TextInputType.text,
-                controller: _gstController,
-                title: 'Merchant GST Number',
-                required: true,
-                maxLength: 15,
-                prefixIcon: Icons.verified,
-                iconColor: isgstVerify ? Colors.green : Colors.red,
-                onFieldSubmitted: (name) {
-                  getUser();
-                },
-                onChanged: (String value) {
-                  setState(() {
-                    // if (value.isEmpty ||
-                    //     !userVerify ||
-                    //     userCheck.toString() == "true" ||
-                    //     !RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
-                    //         .hasMatch(value)) {
-                    //   enabledPassword = false;
-                    // } else {
-                    //   enabledPassword = true;
-                    // }
-                  });
-                },
-                suffixIconOnPressed: () {
-                  if (_gstController.text.length >= 15) {
-                    print("clicked");
-                    if (isgstVerify) {
-                      validategst();
-                      print("validate");
-                      //validateAccountNumber();
-                    } else {
-                      print("change");
-
-                      setState(() {
-                        isgstVerify = true;
-                      });
-                    }
-                  }
-
-                  print("clicked");
-                  // isgstVerify
-                  // userServices.
-                  // if (_gstController.text.length >= 15) {
-                  //   // sendAddhaarOtp();
-                  // }
-                },
-                suffixIconTrue: true,
-
-                helperStyle: Theme.of(context)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(color: Theme.of(context).primaryColor),
-                //inputFormatters: <TextInputFormatter>[AadhaarNumberFormatter()],
-                suffixText: isgstVerify ? 'Verify' : 'Change',
-                // readOnly: !isgstVerify,
-                helperText: isgstVerify ? "plese verfy" : "Verified",
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Gst Numberis Mandatory!';
-                  }
-
-                  // if (userVerify && userCheck == "true") {
-                  //   return Constants.userNameFailureMessage;
-                  // }
-                  if (!RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
-                      .hasMatch(value)) {
-                    return 'Invalid Gst Number!';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  merchantAdditionalInfoReq.gstnNo = value;
-                },
-              ),
-              //_firmPanController
-
-              // const SizedBox(height: 10.0),
-              // CustomTextFormField(
-              //   minLines: 1,
-              //   maxLines: 1,
-              //   controller: _cnfPasswordCtrl,
-              //   title: 'Confirm Password',
-              //   required: true,
-              //   maxLength: 14,
-              //   enabled: _passwordController.text.isEmpty ||
-              //           !Validators.isPassword(_passwordController.text)
-              //       ? enabledConfirmPass = false
-              //       : enabledConfirmPass = enabledPassword,
-              //   prefixIcon: _passwordController.text.isNotEmpty &&
-              //           _passwordController.text == _cnfPasswordCtrl.text
-              //       ? Icons.check_circle_outline
-              //       : Icons.password,
-              //   iconColor: _passwordController.text.isNotEmpty &&
-              //           _passwordController.text == _cnfPasswordCtrl.text
-              //       ? Colors.green
-              //       : null,
-              //   obscureText: hideCnfPassword,
-              //   textInputAction: TextInputAction.next,
-              //   keyboardType: TextInputType.visiblePassword,
-              //   onChanged: (String value) {
-              //     setState(() {
-              //       if (value.isEmpty || value != _passwordController.text) {
-              //         enabledPin = false;
-              //       } else {
-              //         enabledPin = enabledConfirmPass;
-              //       }
-              //     });
-              //   },
-              //   suffixIconTrue: true,
-              //   suffixIcon:
-              //       hideCnfPassword ? Icons.visibility : Icons.visibility_off,
-              //   suffixIconOnPressed: () {
-              //     setState(() {
-              //       hideCnfPassword = !hideCnfPassword;
-              //     });
-              //   },
-              //   validator: (value) {
-              //     if (value == null || value.isEmpty) {
-              //       return 'Confirm Password is Mandatory!';
-              //     }
-              //     if (value != _passwordController.text) {
-              //       return Constants.passwordMissMatch;
-              //     }
-              //     return null;
-              //   },
-              //   onSaved: (value) {
-              //     requestModel.confirmPassword = value;
-              //   },
-              // ),
-              // const SizedBox(
-              //   height: 30.0,
-              // ),
-              // CustomTextFormField(
-              //   minLines: 1,
-              //   maxLines: 1,
-              //   controller: _pinController,
-              //   title: 'Login PIN',
-              //   required: true,
-              //   maxLength: 4,
-              //   enabled: _cnfPasswordCtrl.text.isEmpty ||
-              //           _cnfPasswordCtrl.text != _passwordController.text
-              //       ? enabledPin = false
-              //       : enabledPin = enabledConfirmPass,
-              //   prefixIcon: _pinController.text.isNotEmpty &&
-              //           _pinController.text == _confirmPinController.text
-              //       ? Icons.check_circle_outline
-              //       : Icons.pin,
-              //   iconColor: _pinController.text.isNotEmpty &&
-              //           _pinController.text == _confirmPinController.text
-              //       ? Colors.green
-              //       : null,
-              //   //prefixIcon: Icons.pin,
-              //   obscureText: hidePin,
-              //   helperText:
-              //       _pinController.text.isEmpty ? Constants.pinMessage : null,
-              //   helperStyle: Theme.of(context)
-              //       .textTheme
-              //       .bodySmall
-              //       ?.copyWith(color: Theme.of(context).primaryColor),
-              //   textInputAction: TextInputAction.next,
-              //   keyboardType: TextInputType.number,
-              //   suffixIconTrue: true,
-              //   inputFormatters: <TextInputFormatter>[
-              //     FilteringTextInputFormatter.digitsOnly
-              //   ],
-              //   suffixIcon: hidePin ? Icons.visibility : Icons.visibility_off,
-              //   suffixIconOnPressed: () {
-              //     setState(() {
-              //       hidePin = !hidePin;
-              //     });
-              //   },
-              //   onChanged: (String value) {
-              //     setState(() {
-              //       if (value.isEmpty ||
-              //           value.length != 4 ||
-              //           Validators.isConsecutive(value) != -1) {
-              //         enabledConfirmPin = false;
-              //       } else {
-              //         enabledConfirmPin = enabledPin;
-              //       }
-              //     });
-              //   },
-              //   validator: (value) {
-              //     if (value == null || value.isEmpty) {
-              //       return 'Login PIN is Mandatory!';
-              //     }
-              //     if (value.length != 4) {
-              //       return 'Login PIN must be 4 digits';
-              //     }
-              //     if (Validators.isConsecutive(value) != -1) {
-              //       return 'Login PIN should not be consecutive digits.';
-              //     }
-
-              //     return null;
-              //   },
-              //   onSaved: (value) {
-              //     requestModel.pin = value;
-              //   },
-              // ),
-              // const SizedBox(height: 10.0),
-              // CustomTextFormField(
-              //   minLines: 1,
-              //   maxLines: 1,
-              //   controller: _confirmPinController,
-              //   title: 'Confirm Login PIN',
-              //   required: true,
-              //   maxLength: 4,
-              //   //prefixIcon: Icons.pin,
-              //   prefixIcon: _pinController.text.isNotEmpty &&
-              //           _pinController.text == _confirmPinController.text
-              //       ? Icons.check_circle_outline
-              //       : Icons.pin,
-              //   iconColor: _pinController.text.isNotEmpty &&
-              //           _pinController.text == _confirmPinController.text
-              //       ? Colors.green
-              //       : null,
-              //   inputFormatters: <TextInputFormatter>[
-              //     FilteringTextInputFormatter.digitsOnly
-              //   ],
-              //   obscureText: hideCnfPin,
-              //   enabled: _pinController.text.isEmpty ||
-              //           _pinController.text.length != 4 ||
-              //           Validators.isConsecutive(_pinController.text) != -1
-              //       ? enabledConfirmPin = false
-              //       : enabledConfirmPin = enabledPin,
-              //   textInputAction: TextInputAction.next,
-              //   keyboardType: TextInputType.number,
-              //   suffixIconTrue: true,
-              //   suffixIcon:
-              //       hideCnfPin ? Icons.visibility : Icons.visibility_off,
-              //   suffixIconOnPressed: () {
-              //     setState(() {
-              //       hideCnfPin = !hideCnfPin;
-              //     });
-              //   },
-              //   onChanged: (String value) {
-              //     setState(() {});
-              //   },
-              //   validator: (value) {
-              //     if (value == null || value.isEmpty) {
-              //       return 'Confirm Login PIN is Mandatory!';
-              //     }
-              //     if (value != _pinController.text) {
-              //       return 'Login PIN & Confirm Login PIN do not match';
-              //     }
-              //     if (Validators.isConsecutive(value) != -1) {
-              //       return 'Login PIN should not be consecutive digits.';
-              //     }
-              //     return null;
-              //   },
-              //   onSaved: (value) {
-              //     requestModel.confirmPin = value;
-              //   },
-              // ),
-              const SizedBox(
-                height: 30.0,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(
-                    width: 150,
-                    child: CustomAppButton(
-                      title: 'Previous',
-                      onPressed: () {
-                        // _userNameController.clear();
-                        // _passwordController.clear();
-                        // _cnfPasswordCtrl.clear();
-                        // _pinController.clear();
-                        // _confirmPinController.clear();
+                SizedBox(
+                  width: 150,
+                  child: CustomAppButton(
+                    title: 'Next',
+                    width: 0.4,
+                    onPressed: () {
+                      if (loginFormKey.currentState!.validate()) {
+                        loginFormKey.currentState!.save();
                         setState(() {
-                          position = 2; //old 0
+                          position = 4; //old 2
                         });
-                      },
-                    ),
+                      }
+                    },
                   ),
-                  SizedBox(
-                    width: 150,
-                    child: CustomAppButton(
-                      title: 'Next',
-                      width: 0.4,
-                      onPressed: () {
-                        if (loginFormKey.currentState!.validate()) {
-                          loginFormKey.currentState!.save();
-                          setState(() {
-                            position = 4; //old 2
-                          });
-                        }
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-            ]));
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+          ]),
+    );
   }
+
 
   Widget merchantBussinesProof() {
     var screenHeight = MediaQuery.of(context).size.height;
@@ -3308,16 +3010,22 @@ class _MerchantSignupState extends State<MerchantSignup> {
     if (_merchantPanController.text.isNotEmpty) {
       debugPrint("Calling pan validation API");
       setState(() {
-        userCheck = "Loading...";
+        merchantPanHelperText = "Loading...";
       });
       var panNumber = _merchantPanController.text.toString();
       // var user = await Validators.encrypt(_merchantPanController.text.toString());
       userServices.panValidation(panNumber).then((response) async {
         if (response.toString() == "true") {
           setState(() {
+            merchantPanHelperText = "Verified";
             showVerify = false;
           });
-          print("body is true");
+          print("Pan Api response is true");
+        } else {
+          setState(() {
+            print("Pan Api response is false");
+            merchantPanHelperText = "Failed Try Again";
+          });
         }
       });
     }

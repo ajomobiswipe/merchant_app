@@ -76,8 +76,8 @@ class _AddNewMpinState extends State<AddNewMpin> {
                           FilteringTextInputFormatter.digitsOnly
                         ],
                         suffixIconTrue: true,
-                        suffixIcon:
-                            hidePin ? Icons.visibility : Icons.visibility_off,
+                        // suffixIcon:
+                        //     hidePin ? Icons.visibility : Icons.visibility_off,
                         suffixIconOnPressed: () {
                           setState(() {
                             hidePin = !hidePin;
@@ -135,9 +135,9 @@ class _AddNewMpinState extends State<AddNewMpin> {
                           FilteringTextInputFormatter.digitsOnly
                         ],
                         suffixIconTrue: true,
-                        suffixIcon: hideConfirmPin
-                            ? Icons.visibility
-                            : Icons.visibility_off,
+                        // suffixIcon: hideConfirmPin
+                        //     ? Icons.visibility
+                        //     : Icons.visibility_off,
                         suffixIconOnPressed: () {
                           setState(() {
                             hideConfirmPin = !hideConfirmPin;

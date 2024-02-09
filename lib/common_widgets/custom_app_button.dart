@@ -14,7 +14,7 @@ class CustomAppButton extends StatelessWidget {
       required this.title,
       this.onPressed,
       this.backgroundColor,
-      this.width = 0.8,
+      this.width = 1,
       this.height = 50})
       : super(key: key);
 

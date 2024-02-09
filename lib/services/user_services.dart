@@ -210,7 +210,7 @@ class UserServices {
 
       final newreqbody = {
         "requestType": "PAN",
-        "panNumber": "EYVPS3146G",
+        "panNumber": panNumber,
         "userId": "65a4f0adcd1c770023dd5ace"
       };
 

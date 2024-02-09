@@ -46,7 +46,7 @@ class _MerchantContactVerificationState
             keyboardType: TextInputType.number,
             required: true,
             onChanged: (phone) {},
-            suffixIcon: Icons.send_rounded,
+            suffixIcon: Icon(Icons.send_rounded),
             suffixIconTrue: true,
             suffixIconOnPressed: () {
               print("otp sent to ${_mobileNoController.text}");
