@@ -187,7 +187,7 @@ class _BusinessInfoState extends State<BusinessInfo> {
     var screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppAppbar(title: "Merchant Company Information"),
+        appBar: AppAppbar(),
 
         //  const AppBarWidget(
         //   action: false,

@@ -8,14 +8,15 @@ import 'package:sifr_latest/widgets/widget.dart';
 
 import 'merchant_regn_type_selector.dart';
 
-class MerchantNumVerify extends StatefulWidget {
-  const MerchantNumVerify({super.key});
+class MerchantOTPVerifyScreen extends StatefulWidget {
+  const MerchantOTPVerifyScreen({super.key});
 
   @override
-  State<MerchantNumVerify> createState() => _MerchantNumVerifyState();
+  State<MerchantOTPVerifyScreen> createState() =>
+      _MerchantOTPVerifyScreenState();
 }
 
-class _MerchantNumVerifyState extends State<MerchantNumVerify> {
+class _MerchantOTPVerifyScreenState extends State<MerchantOTPVerifyScreen> {
   final TextEditingController _mobileNoController = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -214,7 +215,8 @@ class _MerchantNumVerifyState extends State<MerchantNumVerify> {
                   title: 'New \nMerchant',
                   iconColor: AppColors.kLightGreen,
                   borderColor: AppColors.kPrimaryColor,
-                  flex: 8,titleColor: Colors.black54,
+                  flex: 8,
+                  titleColor: Colors.black54,
                 ),
                 Expanded(
                   flex: 1,
@@ -223,7 +225,8 @@ class _MerchantNumVerifyState extends State<MerchantNumVerify> {
                 MerchantRegnTypeSelector(
                   iconPath: "assets/app_icons/existing_merchant.png",
                   title: 'Existing\nMerchant',
-                  flex: 8,titleColor: Colors.black54,
+                  flex: 8,
+                  titleColor: Colors.black54,
                 ),
                 Expanded(
                   flex: 1,
@@ -245,34 +248,21 @@ class _MerchantNumVerifyState extends State<MerchantNumVerify> {
             const SizedBox(
               height: 10,
             ),
-            CustomMobileField(
+            CustomTextFormField(
+              titleEneabled: false,
+              title: "Merchant Mobile Number",
+              hintText: "Enter Merchant Mobile Number",
               enabled: true,
               controller: _mobileNoController,
               keyboardType: TextInputType.number,
-              // enabled: _dateController.text.isEmpty
-              //     ? enabledMobile = false
-              //     : enabledMobile = enabledDob,
 
-              // required: true,
+              prefixIcon: Icons.phone,
 
-              // helperText: mobileNoCheckMessage,
-              //helperStyle: style,
-              prefixIcon: FontAwesome.mobile,
-              countryCode: 'IN',
               onChanged: (phone) {
                 // merchantPersonalReq.currentMobileNo =
                 //     phone.countryCode + phone.number;
               },
-              onCountryChanged: (country) {
-                setState(() {
-                  // countryCode = country.code;
-                  // _country = country;
-                  // _mobileNoController.text = countryCode;
-                });
-              },
-              onTap: () {
-                print("ontap");
-              },
+
               // validator: (value) {
               //   print(value);
               //   return '';
@@ -295,10 +285,17 @@ class _MerchantNumVerifyState extends State<MerchantNumVerify> {
                 Column(
                   children: [
                     CustomTextWidget(
-                        text: "Verify the Number with OTP",color: Colors.black.withOpacity(.6),size: 13,fontWeight: FontWeight.bold,
-                        ),
+                      text: "Verify the Number with OTP",
+                      color: Colors.black.withOpacity(.6),
+                      size: 13,
+                      fontWeight: FontWeight.bold,
+                    ),
                     CustomTextWidget(
-                        text: "sent on the Merchant Mobile Number",color: Colors.black.withOpacity(.6),size: 13,fontWeight: FontWeight.bold,),
+                      text: "sent on the Merchant Mobile Number",
+                      color: Colors.black.withOpacity(.6),
+                      size: 13,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ],
                 ),
               ],
@@ -319,7 +316,8 @@ class _MerchantNumVerifyState extends State<MerchantNumVerify> {
                 child: CustomTextWidget(
                   text: 'Resend OTP',
                   color: Colors.green,
-                  size: 15,fontWeight: FontWeight.bold,
+                  size: 15,
+                  fontWeight: FontWeight.bold,
                 )),
             const SizedBox(
               height: 20,

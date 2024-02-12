@@ -16,7 +16,7 @@ class FormTitleWidget extends StatelessWidget {
         CustomTextWidget(
           text: mainWord ?? 'Please Enter',
           size: 18,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w400,
         ),
         defaultWidth(10),
         Column(

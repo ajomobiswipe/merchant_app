@@ -20,9 +20,9 @@ class MerchantOrderDetails extends StatefulWidget {
   Function orderNext;
   MerchantOrderDetails(
       {super.key,
-        required this.orderNext,
-        required this.tmsProductMaster,
-        required this.merchantAdditionalInfoReq});
+      required this.orderNext,
+      required this.tmsProductMaster,
+      required this.merchantAdditionalInfoReq});
 
   @override
   State<MerchantOrderDetails> createState() => _MerchantOrderDetailsState();
@@ -62,12 +62,12 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
     widget.merchantAdditionalInfoReq.merchantProductDetails == null
         ? []
         : widget.merchantAdditionalInfoReq.merchantProductDetails!.add(
-        MerchantProductDetail(
-            productName: "aadf",
-            productId: 1,
-            package: "package",
-            packagetId: 2,
-            qty: 5));
+            MerchantProductDetail(
+                productName: "aadf",
+                productId: 1,
+                package: "package",
+                packagetId: 2,
+                qty: 5));
     print(widget.merchantAdditionalInfoReq.merchantProductDetails);
   }
 
@@ -83,7 +83,6 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
     return AppScafofld(
       child: ListView(
         children: [
-          defaultHeight(20),
           Row(
             children: [
               CustomTextWidget(
@@ -92,7 +91,6 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                   size: 24),
             ],
           ),
-          defaultHeight(20),
           Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
@@ -128,15 +126,20 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomTextWidget(
-                      text: "Product",fontWeight: FontWeight.bold,
+                      text: "Product",
+                      fontWeight: FontWeight.bold,
                     ),
                     Padding(
-                      padding: const EdgeInsets.only( top: 8),
+                      padding: const EdgeInsets.only(top: 8),
                       child: DropdownButtonFormField<int>(
                         value: selectedProductId,
                         icon: Icon(Icons.keyboard_arrow_down,
                             color: AppColors.kPrimaryColor),
-                        hint: const Text('Select a Product',style: TextStyle(fontSize: 13,fontWeight: FontWeight.bold),),
+                        hint: const Text(
+                          'Select product type',
+                          style: TextStyle(
+                              fontSize: 13, fontWeight: FontWeight.bold),
+                        ),
                         items: widget.tmsProductMaster
                             .asMap()
                             .entries
@@ -156,11 +159,11 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                             selectedProductPackages = [];
 
                             var selectedProduct =
-                            widget.tmsProductMaster.firstWhere(
-                                  (product) =>
+                                widget.tmsProductMaster.firstWhere(
+                              (product) =>
                                   (product['tmsPackage'] as List<dynamic>).any(
-                                          (innerProduct) =>
-                                      innerProduct['productId'] ==
+                                      (innerProduct) =>
+                                          innerProduct['productId'] ==
                                           selectedProductId),
                               orElse: () => null,
                             );
@@ -168,7 +171,7 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                             if (selectedProduct != null) {
                               selectedProductPackages =
                                   (selectedProduct['tmsPackage']
-                                  as List<dynamic>)
+                                          as List<dynamic>)
                                       .cast<Map<String, dynamic>>();
                             }
 
@@ -193,7 +196,8 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomTextWidget(
-                      text: "Package",fontWeight: FontWeight.bold,
+                      text: "Package",
+                      fontWeight: FontWeight.bold,
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 8),
@@ -201,24 +205,28 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                         key: ValueKey<int>(selectedProductId ??
                             0), // Use ValueKey to track selectedProductId
                         value: selectedPackageId,
-                        hint: const Text('Select a Package',style: TextStyle(fontSize: 13,fontWeight: FontWeight.bold),),
+                        hint: const Text(
+                          'Select package type',
+                          style: TextStyle(
+                              fontSize: 13, fontWeight: FontWeight.bold),
+                        ),
                         items: selectedProductPackages.isNotEmpty
                             ? selectedProductPackages
-                            .asMap()
-                            .entries
-                            .map<DropdownMenuItem<int>>((entry) {
-                          Map<String, dynamic> package = entry.value;
-                          return DropdownMenuItem<int>(
-                            value: package['packageId'] as int,
-                            child: Text(' ${package['description']}'),
-                          );
-                        }).toList()
+                                .asMap()
+                                .entries
+                                .map<DropdownMenuItem<int>>((entry) {
+                                Map<String, dynamic> package = entry.value;
+                                return DropdownMenuItem<int>(
+                                  value: package['packageId'] as int,
+                                  child: Text(' ${package['description']}'),
+                                );
+                              }).toList()
                             : [
-                          const DropdownMenuItem<int>(
-                            value: 0,
-                            child: Text('No Packages'),
-                          )
-                        ],
+                                const DropdownMenuItem<int>(
+                                  value: 0,
+                                  child: Text('No Packages'),
+                                )
+                              ],
 
                         onChanged: (int? value) {
                           setState(() {
@@ -248,19 +256,19 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                           ),
                           enabledBorder: const OutlineInputBorder(
                               borderRadius:
-                              BorderRadius.all(Radius.circular(5.0)),
+                                  BorderRadius.all(Radius.circular(5.0)),
                               borderSide:
-                              BorderSide(color: Colors.transparent)),
+                                  BorderSide(color: Colors.transparent)),
                           disabledBorder: const OutlineInputBorder(
                               borderRadius:
-                              BorderRadius.all(Radius.circular(5.0)),
+                                  BorderRadius.all(Radius.circular(5.0)),
                               borderSide:
-                              BorderSide(color: Colors.transparent)),
+                                  BorderSide(color: Colors.transparent)),
                           focusedBorder: const OutlineInputBorder(
                               borderRadius:
-                              BorderRadius.all(Radius.circular(5.0)),
+                                  BorderRadius.all(Radius.circular(5.0)),
                               borderSide:
-                              BorderSide(color: Colors.transparent)),
+                                  BorderSide(color: Colors.transparent)),
                           prefixIcon: Icon(Icons.ad_units,
                               size: 25, color: Theme.of(context).primaryColor),
                         ),
@@ -274,15 +282,18 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomTextWidget(
-                      text: "Quantity",fontWeight: FontWeight.bold,
+                      text: "Quantity",
+                      fontWeight: FontWeight.bold,
                     ),
                     Padding(
-                      padding: const EdgeInsets.only( top: 8),
+                      padding: const EdgeInsets.only(top: 8),
                       child: CustomDropdown(
+                        hintText: "Select product quantity",
+                        titleEnabled: false,
                         title: "Quantity",
                         required: true,
                         selectedItem:
-                        selectedQuantity != '' ? selectedQuantity : null,
+                            selectedQuantity != '' ? selectedQuantity : null,
                         prefixIcon: Icons.production_quantity_limits,
                         itemList: const ['1', '2', '3', '4', '5'],
                         onChanged: (value) {
@@ -307,12 +318,12 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       var Product = selectedProductPackages.firstWhere(
-                              (package) =>
-                          package['packageId'] ==
+                          (package) =>
+                              package['packageId'] ==
                               selectedPackageId)['packageName'];
                       var package = widget.tmsProductMaster.firstWhere(
-                              (product) =>
-                          product['productId'] ==
+                          (product) =>
+                              product['productId'] ==
                               selectedProductId)['description'];
                       SelectedProduct newItem = SelectedProduct(
                         productName: Product,

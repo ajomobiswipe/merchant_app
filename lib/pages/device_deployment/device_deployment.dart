@@ -87,9 +87,7 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
 
     //Global Background Pattern Widget
     return Scaffold(
-      appBar: const AppAppbar(
-        title: 'Deployment Details',
-      ),
+      appBar: const AppAppbar(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 15),
         child: Column(

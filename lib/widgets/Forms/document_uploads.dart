@@ -65,9 +65,7 @@ class _DocumentUploadsState extends State<DocumentUploads> {
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
-        appBar: const AppAppbar(
-          title: 'Document Uploads',
-        ),
+        appBar: const AppAppbar(),
         body: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Column(

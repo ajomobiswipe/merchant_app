@@ -152,18 +152,18 @@ class _LoginPageState extends State<LoginPage> {
               },
             ),
             CustomTextWidget(
-              text: "Remember me",fontWeight: FontWeight.bold,
+              text: "Remember me", fontWeight: FontWeight.bold,
               // color: AppColors.kPrimaryColor,
             ),
-            Expanded(child: SizedBox()),
+            const Expanded(child: SizedBox()),
             forgotPassword(),
           ]),
           const SizedBox(height: 10),
           CustomAppButton(
             title: 'Log In',
             onPressed: () {
-              // Navigator.pushNamed(context, 'MerchantNumVerify');
-              submitLoginForm();
+              Navigator.pushNamed(context, 'MerchantNumVerify');
+              // submitLoginForm();
             },
           ),
           // swipeButton(),
@@ -176,66 +176,50 @@ class _LoginPageState extends State<LoginPage> {
           const SizedBox(height: 10),
           CustomTextWidget(
             text: 'Connect With',
-            size: 16,fontWeight: FontWeight.bold,
+            size: 16,
+            fontWeight: FontWeight.bold,
           ),
           const SizedBox(height: 20),
           Row(
             children: [
-              Expanded(
-                child: SizedBox(),
+              const Expanded(
                 flex: 4,
-              ),
-              connectWithOptions(icon: Icon(Icons.phone,color: Colors.white,), title: 'Phone'),
-              Expanded(
                 child: SizedBox(),
+              ),
+              connectWithOptions(
+                  icon: const Icon(
+                    Icons.phone,
+                    color: Colors.white,
+                  ),
+                  title: 'Phone'),
+              const Expanded(
                 flex: 1,
-              ),
-              connectWithOptions(icon: Icon(Icons.email,color: Colors.white,), title: 'E-mail'),
-              Expanded(
                 child: SizedBox(),
+              ),
+              connectWithOptions(
+                  icon: const Icon(
+                    Icons.email,
+                    color: Colors.white,
+                  ),
+                  title: 'E-mail'),
+              const Expanded(
                 flex: 1,
-              ),
-              connectWithOptions(icon: Icon(Icons.more_horiz,color: Colors.white,), title: 'Other'),
-              Expanded(
                 child: SizedBox(),
+              ),
+              connectWithOptions(
+                  icon: const Icon(
+                    Icons.more_horiz,
+                    color: Colors.white,
+                  ),
+                  title: 'Other'),
+              const Expanded(
                 flex: 4,
+                child: SizedBox(),
               ),
             ],
           ),
           const SizedBox(height: 20),
           CopyRightWidget(),
-
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.center,
-          //   children: [
-          //     Padding(
-          //       padding: const EdgeInsets.all(8.0),
-          //       child: GestureDetector(
-          //         onTap: () async {
-          //           _launchInBrowser(_url);
-          //           // print(await Validators.encrypt('8776'));
-          //         },
-          //         child: Text('Privacy Policy',
-          //             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-          //                 fontWeight: FontWeight.bold,
-          //                 decoration: TextDecoration.underline)),
-          //       ),
-          //     ),
-          //     const Text('|'),
-          //     Padding(
-          //       padding: const EdgeInsets.all(8.0),
-          //       child: GestureDetector(
-          //         onTap: () async {
-          //           _launchInBrowser(_url1);
-          //         },
-          //         child: Text('Terms of Service',
-          //             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-          //                 fontWeight: FontWeight.bold,
-          //                 decoration: TextDecoration.underline)),
-          //       ),
-          //     ),
-          //   ],
-          // )
         ],
       ),
     ));
@@ -250,8 +234,13 @@ class _LoginPageState extends State<LoginPage> {
           child: CircleAvatar(
               backgroundColor: AppColors.kPrimaryColor, child: icon),
         ),
-        SizedBox(height: 5,),
-        Text(title,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 13),)
+        const SizedBox(
+          height: 5,
+        ),
+        Text(
+          title,
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+        )
       ],
     );
   }
@@ -408,7 +397,10 @@ class _LoginPageState extends State<LoginPage> {
         children: [
           Padding(
             padding: const EdgeInsets.only(bottom: 5),
-            child: CustomTextWidget(text: "Username",fontWeight: FontWeight.bold,),
+            child: CustomTextWidget(
+              text: "Username",
+              fontWeight: FontWeight.bold,
+            ),
           ),
           TextFormField(
               keyboardType: TextInputType.text,
@@ -434,10 +426,10 @@ class _LoginPageState extends State<LoginPage> {
                 fillColor:
                     AppColors.kTileColor, // Set the background color here
                 filled: true,
-                hintStyle: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 13// Set the hint text color here
-                ),
+                hintStyle: const TextStyle(
+                    color: Colors.grey,
+                    fontSize: 13 // Set the hint text color here
+                    ),
                 // prefixIcon: Icon(Icons.verified_user_rounded,
                 //     size: 25, color: Theme.of(context).primaryColor),
               ),
@@ -471,7 +463,10 @@ class _LoginPageState extends State<LoginPage> {
         children: [
           Padding(
             padding: const EdgeInsets.only(bottom: 5),
-            child: CustomTextWidget(text: "Password",fontWeight: FontWeight.bold,),
+            child: CustomTextWidget(
+              text: "Password",
+              fontWeight: FontWeight.bold,
+            ),
           ),
           TextFormField(
             controller: _passwordController,
@@ -527,10 +522,7 @@ class _LoginPageState extends State<LoginPage> {
                   const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
               fillColor: AppColors.kTileColor,
               filled: true,
-              hintStyle: TextStyle(
-                color: Colors.grey,
-                  fontSize: 13
-              ),
+              hintStyle: const TextStyle(color: Colors.grey, fontSize: 13),
               suffixIcon: IconButton(
                 onPressed: () {
                   setState(() {
@@ -592,7 +584,8 @@ class _LoginPageState extends State<LoginPage> {
       },
       child: CustomTextWidget(
         text: "Forgot Password?",
-        color: AppColors.kPrimaryColor,fontWeight: FontWeight.bold,
+        color: AppColors.kPrimaryColor,
+        fontWeight: FontWeight.bold,
       ),
       // Text("Forgot $password?",
       //     style: Theme.of(context)

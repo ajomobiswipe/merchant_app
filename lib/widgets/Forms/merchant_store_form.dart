@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:icons_plus/icons_plus.dart';
@@ -8,6 +9,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:sifr_latest/common_widgets/app_appbar.dart';
 import 'package:sifr_latest/common_widgets/custom_app_button.dart';
 import 'package:sifr_latest/pages/mechant_order/models/mechant_additionalingo_model.dart';
+import 'package:sifr_latest/widgets/tabbar/tabbar.dart';
+import 'package:sifr_latest/widgets/widget.dart';
 import '../../common_widgets/icon_text_widget.dart';
 import '../../config/config.dart';
 import '../../config/constants.dart';
@@ -25,7 +28,14 @@ class MerchantStoreImagesForm extends StatefulWidget {
   final TextEditingController storeFrontImage;
   final TextEditingController insideStoreImage;
   final MerchantAdditionalInfoRequestmodel merchantAdditionalInfoReq;
-  Function previous;
+
+  final TextEditingController merchantStoreAddressController;
+  String selectedStoreState;
+  String selectedStoreCity;
+  final Map<String, int> storecitysList;
+  final List storeStatesList;
+  final TextEditingController storePinCodeCtrl;
+  Function()? previous;
   Function next;
 
   MerchantStoreImagesForm({
@@ -35,6 +45,12 @@ class MerchantStoreImagesForm extends StatefulWidget {
     required this.storeFrontImage,
     required this.insideStoreImage,
     required this.merchantAdditionalInfoReq,
+    required this.merchantStoreAddressController,
+    required this.storePinCodeCtrl,
+    required this.storecitysList,
+    required this.storeStatesList,
+    required this.selectedStoreState,
+    required this.selectedStoreCity,
   }) : super(key: key);
 
   @override
@@ -118,9 +134,7 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
 
     //Global Background Pattern Widget
     return Scaffold(
-      appBar: const AppAppbar(
-        title: 'Merchant Store Info',
-      ),
+      appBar: AppAppbar(onPressed: widget.previous),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 15),
         child: Column(
@@ -129,55 +143,33 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
             const SizedBox(
               height: 20.0,
             ),
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: AppColors.kSelectedBackgroundColor,
-              ),
-              // height: screenHeight / 10,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  IconTextWidget(
-                      screenHeight: screenHeight,
-                      color: getIconColor(
-                        position: 1,
-                      ),
-                      iconPath: 'assets/merchant_icons/merchant_detials.png',
-                      title: "Merchant\nDetails"),
-                  IconTextWidget(
-                      screenHeight: screenHeight,
-                      color: getIconColor(position: 2),
-                      iconPath: 'assets/merchant_icons/id_proof_icon.png',
-                      title: "Id\nProofs"),
-                  IconTextWidget(
-                      screenHeight: screenHeight,
-                      color: getIconColor(position: 3),
-                      iconPath: 'assets/merchant_icons/bussiness_proofs.png',
-                      title: "Bussiness\nProofs"),
-                  IconTextWidget(
-                      screenHeight: screenHeight,
-                      color: getIconColor(position: 4),
-                      iconPath: 'assets/merchant_icons/bank_details.png',
-                      title: "Bank\nDetails"),
-                ],
-              ),
+            Row(
+              children: [
+                CustomTextWidget(
+                  text: "Merchant KYC",
+                  fontWeight: FontWeight.w500,
+                  size: 18,
+                ),
+              ],
             ),
-            const SizedBox(height: 20.0),
-            CustomTextWidget(
-                text:
-                    'lat ${_currentPosition?.latitude ?? ""} long ${_currentPosition?.longitude ?? ""}'),
-            Center(
-              child: Text(
-                  "Uploading your store's inside image, outside image, and store Address.",
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodySmall
-                      ?.copyWith(color: Colors.grey)),
+            appTabbar(
+              screenHeight: screenHeight,
+              currTabPosition: currTabPosition,
             ),
-            const SizedBox(height: 20.0),
+
+            // CustomTextWidget(
+            //     text:
+            //         'lat ${_currentPosition?.latitude ?? ""} long ${_currentPosition?.longitude ?? ""}'),
+            // Center(
+            //   child: Text(
+            //       "Uploading your store's inside image, outside image, and store Address.",
+            //       textAlign: TextAlign.center,
+            //       style: Theme.of(context)
+            //           .textTheme
+            //           .bodySmall
+            //           ?.copyWith(color: Colors.grey)),
+            // ),
+
             Padding(
               padding: const EdgeInsets.all(6.0),
               child: Column(
@@ -187,19 +179,18 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: RichText(
                       text: TextSpan(
-                          text: 'Merchant Store image',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall
-                              ?.copyWith(
-                                  color: Theme.of(context).primaryColor,
-                                  fontWeight: FontWeight.bold,
-                                  decoration: TextDecoration.underline),
+                          text: 'Merchant Store Image',
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Colors.black.withOpacity(0.7),
+                                    fontWeight: FontWeight.bold,
+                                    // decoration: TextDecoration.underline,
+                                  ),
                           children: const [
                             TextSpan(
                                 text: ' *',
                                 style: TextStyle(
-                                    color: Colors.red,
+                                    color: Colors.grey,
                                     decoration: TextDecoration.none))
                           ]),
                     ),
@@ -219,77 +210,41 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                             onTap: () {
                               cameraPhotoDialog(context, 'storeFrontImage');
                             },
-                            child: Card(
-                              elevation: 10,
-                              // margin: const EdgeInsets.all(10.0),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15.0)),
-                              child: SizedBox(
-                                width: double.maxFinite,
-                                height: 150,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      Icon(
-                                        LineAwesome.camera_retro_solid,
-                                        size: 40,
-                                        color: Theme.of(context).primaryColor,
-                                      ),
-
-                                      Text(
-                                        'Take Photo',
-                                        style: TextStyle(
-                                            color:
-                                                Theme.of(context).primaryColor,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      Text(
-                                        'Valid File formats: JPG, PNG. Maximum size < 1 MB',
-                                        style: TextStyle(
-                                            color: Colors.grey.shade500,
-                                            fontSize: 12),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                      // Image.asset('assets/logo.jpg'),
-                                    ],
-                                  ),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                color: AppColors.kTileColor,
+                              ),
+                              width: double.maxFinite,
+                              height: 100,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        CustomTextWidget(
+                                            text:
+                                                "Click the front image of the store",
+                                            color: Colors.grey),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    const Icon(
+                                      Icons.camera_sharp,
+                                      size: 40,
+                                      color: AppColors.kPrimaryColor,
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
                           )),
-                  const SizedBox(height: 40),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: RichText(
-                      text: TextSpan(
-                          text: 'Inside Image Of Store',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall
-                              ?.copyWith(
-                                  color: Theme.of(context).primaryColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14,
-                                  decoration: TextDecoration.underline),
-                          children: const [
-                            TextSpan(
-                                text: ' *',
-                                style: TextStyle(
-                                    color: Colors.red,
-                                    decoration: TextDecoration.none))
-                          ]),
-                    ),
-                  ),
+                  const SizedBox(height: 20),
                   widget.insideStoreImage.text != ''
                       ? GestureDetector(
                           onTap: () {
@@ -305,50 +260,36 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                             onTap: () {
                               cameraPhotoDialog(context, 'insideStoreImage');
                             },
-                            child: Card(
-                              elevation: 10,
-                              // margin: const EdgeInsets.all(10.0),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15.0)),
-                              child: SizedBox(
-                                width: double.maxFinite,
-                                height: 150,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      Icon(
-                                        LineAwesome.camera_retro_solid,
-                                        size: 40,
-                                        color: Theme.of(context).primaryColor,
-                                      ),
-
-                                      Text(
-                                        'Take Photo',
-                                        style: TextStyle(
-                                            color:
-                                                Theme.of(context).primaryColor,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      Text(
-                                        'Valid File formats: JPG, PNG. Maximum size < 1 MB',
-                                        style: TextStyle(
-                                            color: Colors.grey.shade500,
-                                            fontSize: 12),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                      // Image.asset('assets/logo.jpg'),
-                                    ],
-                                  ),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                color: AppColors.kTileColor,
+                              ),
+                              width: double.maxFinite,
+                              height: 100,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        CustomTextWidget(
+                                            text:
+                                                "Click the inside image of the store",
+                                            color: Colors.grey),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    const Icon(
+                                      Icons.camera_sharp,
+                                      size: 40,
+                                      color: AppColors.kPrimaryColor,
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
@@ -377,36 +318,152 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                 ),
               ],
             ),
-            const SizedBox(height: 20.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 150,
-                  child: CustomAppButton(
-                    title: 'Previous',
-                    onPressed: () {
-                      widget.previous();
-                    },
-                  ),
-                ),
-                SizedBox(
-                  width: 150,
-                  child: CustomAppButton(
-                    title: "Next",
-                    onPressed: () {
-                      if (widget.storeFrontImage.text != '' &&
-                          widget.insideStoreImage.text != '') {
-                        widget.next();
-                      } else {
-                        alertWidget.failure(
-                            context, '', 'Please upload Store Images!');
-                      }
-                    },
-                  ),
-                )
+
+            CustomTextFormField(
+              hintText: "Enter merchant business address",
+              title: 'Merchant Business Address',
+
+              controller: widget.merchantStoreAddressController,
+              prefixIcon: Icons.home,
+              required: true,
+
+              keyboardType: TextInputType.multiline,
+              textCapitalization: TextCapitalization.words,
+              enabled: true,
+              // prefixIcon: LineAwesome.address_book,
+              validator: (value) {
+                value = value.trim();
+                if (value == null || value.isEmpty) {
+                  return 'Merchant Business Address is Mandatory!';
+                }
+                if (value.length < 10) {
+                  return 'Minimum 10 characters';
+                }
+
+                return null;
+              },
+              onChanged: (String value) {
+                value = value.trim();
+              },
+              onSaved: (value) {
+                // merchantPersonalReq.currentAddress = value;
+              },
+              onFieldSubmitted: (value) {
+                // _merchantBusinessAddressController.text = value.trim();
+              },
+            ),
+            const SizedBox(
+              height: 15.0,
+            ),
+
+            CustomDropdown(
+              titleEnabled: false,
+              hintText: "Select State",
+              title: "Current State",
+              // enabled: selectedState != '' && enabledState
+              //     ? enabledcity = true
+              //     : enabledcity = false,
+              required: true,
+              selectedItem: widget.selectedStoreState != ''
+                  ? widget.selectedStoreState
+                  : null,
+              prefixIcon: Icons.flag_circle_outlined,
+              itemList: widget.storeStatesList,
+              // cityList.map((e) => e['citName']).toList(),
+              onChanged: (value) {
+                setState(() {
+                  widget.selectedStoreState = value;
+                  // merchantPersonalReq.currentState = value;
+                });
+              },
+              onSaved: (value) {
+                // merchantPersonalReq.currentState = value;
+              },
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Current state is Mandatory!';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(
+              height: 15.0,
+            ),
+            CustomDropdown(
+              titleEnabled: false,
+              title: "Current City",
+              hintText: "Select City",
+              required: true,
+              selectedItem: widget.selectedStoreCity != ''
+                  ? widget.selectedStoreCity
+                  : null,
+              prefixIcon: Icons.location_city_outlined,
+              itemList: widget.storecitysList.keys.toList(),
+              //cityList.map((e) => e['citName']).toList(),
+              onChanged: (value) {
+                // print(citysList[value]);
+                setState(() {
+                  widget.selectedStoreCity = value;
+                  // merchantPersonalReq.currentCountry = citysList[value];
+                });
+              },
+              onSaved: (value) {
+                //  merchantPersonalReq.currentCountry = citysList[value];
+              },
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Current City is Mandatory!';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(
+              height: 4,
+            ), //padding added in textfeild
+            CustomTextFormField(
+              titleEneabled: false,
+              title: 'Pin Code',
+              hintText: 'Pin Code',
+              // enabled: selectedCity != '' && enabledcity ? true : false,
+              maxLength: 6,
+              required: true,
+
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Pin Code is Mandatory!';
+                }
+                if (!value.isEmpty && value.length < 6) {
+                  return 'Minimum 6 digits';
+                }
+                return null;
+              },
+              controller: widget.storePinCodeCtrl,
+              keyboardType: TextInputType.number,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.allow(RegExp(r'\d'))
               ],
+              prefixIcon: Icons.map_outlined,
+              onSaved: (value) {
+                // merchantPersonalReq.currentZipCode = value;
+              },
+            ),
+
+            const SizedBox(height: 20.0),
+            // SizedBox(
+            //   child: CustomAppButton(
+            //     title: 'Previous',
+            //     onPressed: () {
+            //       widget.previous();
+            //     },
+            //   ),
+            // ),
+            SizedBox(
+              child: CustomAppButton(
+                title: "Next",
+                onPressed: () {
+                  widget.next();
+                },
+              ),
             ),
             const SizedBox(height: 20.0),
           ],

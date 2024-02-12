@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:sifr_latest/widgets/custom_text_widget.dart';
 
 class AppAppbar extends StatelessWidget implements PreferredSizeWidget {
-  final String title;
-  const AppAppbar({super.key, this.title = ''});
+  final Function()? onPressed;
+  const AppAppbar({super.key, this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -12,11 +11,8 @@ class AppAppbar extends StatelessWidget implements PreferredSizeWidget {
       surfaceTintColor: Colors.white,
       leading: IconButton(
         icon: Icon(Icons.arrow_back),
-        onPressed: () {
-          Navigator.pop(context);
-        },
+        onPressed: onPressed,
       ),
-      title: CustomTextWidget(text: title),
       actions: [
         IconButton(
           icon: Icon(Icons.notifications_none_outlined),
