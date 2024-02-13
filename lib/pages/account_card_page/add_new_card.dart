@@ -206,17 +206,17 @@ class _AddNewCardState extends State<AddNewCard> {
   // GET BRAND NAME USING USER GIVEN THE CARD NUMBER.
   void getBrandIcon(String brand) {
     if (brand == 'CreditCardType.visa') {
-      brandIcon = FontAwesome.cc_visa;
+      brandIcon = FontAwesome.cc_visa_brand;
     } else if (brand == 'CreditCardType.mastercard') {
-      brandIcon = FontAwesome.cc_mastercard;
+      brandIcon = FontAwesome.cc_mastercard_brand;
     } else if (brand == 'CreditCardType.amex') {
-      brandIcon = FontAwesome.cc_amex;
+      brandIcon = FontAwesome.cc_amex_brand;
     } else if (brand == 'CreditCardType.discover') {
-      brandIcon = FontAwesome.cc_discover;
+      brandIcon = FontAwesome.cc_discover_brand;
     } else if (brand == 'CreditCardType.jcb') {
-      brandIcon = FontAwesome.cc_jcb;
+      brandIcon = FontAwesome.cc_jcb_brand;
     } else if (brand == 'CreditCardType.dinersclub') {
-      brandIcon = FontAwesome.cc_diners_club;
+      brandIcon = FontAwesome.cc_diners_club_brand;
     } else {
       brandIcon = FontAwesome.credit_card;
     }

@@ -266,7 +266,7 @@ class _ViewMyAccountState extends State<ViewMyAccount> {
               : Container(),
           !list['primary'] && list['linked'] && list['verified']
               ? ListTile(
-                  leading: const Icon(FontAwesome.repeat),
+                  leading: const Icon(FontAwesome.repeat_solid),
                   title: const Text(
                     "Set as Primary Account",
                   ),

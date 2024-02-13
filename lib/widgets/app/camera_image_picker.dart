@@ -72,7 +72,7 @@ class _CameraImagePickerState extends State<CameraImagePicker> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Icon(
-                          FontAwesome.camera,
+                          FontAwesome.camera_solid,
                           color: Theme.of(context).primaryColor,
                           size: 30,
                         ),

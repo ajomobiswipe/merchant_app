@@ -823,7 +823,7 @@ class _HomePageState extends State<HomePage> {
                           radius: 25,
                           backgroundColor: Colors.white.withOpacity(0.9),
                           child: const Icon(
-                            FontAwesome.power_off,
+                            FontAwesome.power_off_solid,
                             color: Colors.black54,
                           ),
                         ),

@@ -322,7 +322,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
         title: 'Mobile Number',
         initialValue: data[0]['mobileCountryCode'] + data[0]['mobileNumber'],
         required: false,
-        prefixIcon: FontAwesome.mobile,
+        prefixIcon: FontAwesome.mobile_solid,
         enabled: false,
         keyboardType: TextInputType.text,
         onSaved: (value) {

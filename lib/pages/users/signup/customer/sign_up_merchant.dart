@@ -754,7 +754,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               required: true,
               helperText: mobileNoCheckMessage,
               helperStyle: style,
-              prefixIcon: FontAwesome.mobile,
+              prefixIcon: FontAwesome.mobile_solid,
               suffixIcon: const Icon(
                 Icons.edit_outlined,
                 color: AppColors.kPrimaryColor,
@@ -777,7 +777,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               required: true,
               helperText: mobileNoCheckMessage,
               helperStyle: style,
-              prefixIcon: FontAwesome.mobile,
+              prefixIcon: FontAwesome.mobile_solid,
               onChanged: (phone) {},
               suffixIcon: const Icon(
                 Icons.edit_outlined,
@@ -1943,7 +1943,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 required: true,
                 enabled: accountVerify,
                 selectedItem: ifscCode != '' ? ifscCode : null,
-                prefixIcon: FontAwesome.building_columns,
+                prefixIcon: FontAwesome.building_solid,
                 itemList:
                     bankList.map((map) => map['label'].toString()).toList(),
                 //countryList.map((e) => e['ctyName']).toList(),
@@ -2351,7 +2351,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
             title: "MDR Type",
             required: true,
             selectedItem: mdrType != '' ? mdrType : null,
-            prefixIcon: FontAwesome.building_columns,
+            prefixIcon: FontAwesome.building,
             itemList: [
               'Flat rate',
               'Tier based pricing',

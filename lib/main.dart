@@ -95,7 +95,7 @@ class MainPage extends StatelessWidget {
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           theme: ThemeData(
-            fontFamily: GoogleFonts.telex().fontFamily,
+            fontFamily: "Mont",
           ),
           // theme: AppThemes.main(
           //   primaryColor: themeProvider.selectedPrimaryColor,

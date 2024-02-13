@@ -350,7 +350,7 @@ class _ChangeEmailState extends State<ChangeEmail> {
                                       required: true,
                                       helperText: mobileNoCheckMessage,
                                       helperStyle: style,
-                                      prefixIcon: FontAwesome.mobile,
+                                      prefixIcon: FontAwesome.mobile_solid,
                                       countryCode: countryCode,
                                       onChanged: (phone) {
                                         emailOrMobileChangeModel

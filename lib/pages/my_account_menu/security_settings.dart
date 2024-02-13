@@ -69,7 +69,7 @@ class SecuritySetting extends State<SecuritySettings> {
             leading: CircleAvatar(
               backgroundColor: Theme.of(context).primaryColor,
               child: Icon(
-                FontAwesome.lock,
+                FontAwesome.lock_solid,
                 color: Theme.of(context).iconTheme.color,
               ),
             ),
@@ -123,7 +123,7 @@ class SecuritySetting extends State<SecuritySettings> {
             leading: CircleAvatar(
               backgroundColor: Theme.of(context).primaryColor,
               child: Icon(
-                FontAwesome.key,
+                FontAwesome.key_solid,
                 color: Theme.of(context).iconTheme.color,
               ),
             ),

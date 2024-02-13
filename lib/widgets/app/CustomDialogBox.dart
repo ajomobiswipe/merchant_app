@@ -72,7 +72,7 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Icon(
-                          FontAwesome.camera,
+                          FontAwesome.camera_solid,
                           color: Theme.of(context).primaryColor,
                           size: 30,
                         ),
@@ -93,7 +93,7 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Icon(
-                          FontAwesome.photo_film,
+                          FontAwesome.photo_film_solid,
                           size: 30,
                           color: Theme.of(context).primaryColor,
                         ),

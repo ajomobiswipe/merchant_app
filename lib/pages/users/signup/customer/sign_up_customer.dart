@@ -540,7 +540,7 @@ class _SignUpCustomerState extends State<SignUpCustomer> {
             required: true,
             helperText: mobileNoCheckMessage,
             helperStyle: style,
-            prefixIcon: FontAwesome.mobile,
+            prefixIcon: FontAwesome.mobile_solid,
             countryCode: countryCode,
             onChanged: (phone) {
               registerRequestModel.mobileNumber = phone.number;

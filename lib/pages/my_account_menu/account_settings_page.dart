@@ -301,7 +301,7 @@ class _MyAccountPageState extends State<MyAccountPage> {
             leading: CircleAvatar(
               backgroundColor: Theme.of(context).primaryColor,
               child: Icon(
-                FontAwesome.gear,
+                FontAwesome.gear_solid,
                 color: Theme.of(context).iconTheme.color,
               ),
             ),

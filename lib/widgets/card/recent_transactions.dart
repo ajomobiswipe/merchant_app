@@ -43,7 +43,7 @@ class RecentTransactions extends StatelessWidget {
                   radius: 25,
                   backgroundColor: Colors.grey.withOpacity(0.2),
                   child: Icon(
-                    FontAwesome.money_bill,
+                    FontAwesome.money_bill_solid,
                     color: Theme.of(context).primaryColor,
                   ),
                 ),

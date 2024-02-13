@@ -773,7 +773,7 @@ class _BusinessInfoState extends State<BusinessInfo> {
                   required: true,
                   helperText: mobileNoCheckMessage,
                   helperStyle: style,
-                  prefixIcon: FontAwesome.mobile,
+                  prefixIcon: FontAwesome.mobile_solid,
                   countryCode: countryCode,
                   onChanged: (phone) {
                     setState(() {

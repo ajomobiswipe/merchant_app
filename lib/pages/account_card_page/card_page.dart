@@ -476,7 +476,7 @@ class _CardPageState extends State<CardPage> {
               : Container(),
           !list['primary'] && list['linked'] && list['verified']
               ? ListTile(
-                  leading: const Icon(FontAwesome.repeat),
+                  leading: const Icon(FontAwesome.repeat_solid),
                   title: Text(
                     "Set as Primary $pageType",
                   ),
