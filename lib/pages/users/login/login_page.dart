@@ -162,8 +162,8 @@ class _LoginPageState extends State<LoginPage> {
           CustomAppButton(
             title: 'Log In',
             onPressed: () {
-              Navigator.pushNamed(context, 'MerchantNumVerify');
-              // submitLoginForm();
+              //Navigator.pushNamed(context, 'MerchantNumVerify');
+              submitLoginForm();
             },
           ),
           // swipeButton(),

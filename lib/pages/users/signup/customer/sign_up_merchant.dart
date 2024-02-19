@@ -23,7 +23,6 @@ import 'package:sifr_latest/widgets/loading.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../common_widgets/custom_app_button.dart';
 import '../../../../common_widgets/form_title_widget.dart';
-import '../../../../common_widgets/icon_text_widget.dart';
 import '../../../../config/config.dart';
 import '../../../../helpers/pan_validateer.dart';
 import '../../../../models/models.dart';
@@ -68,6 +67,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
   // Merchant order Detials
   TextEditingController canceledChequeControler = TextEditingController();
+  List<SelectedProduct> selectedItems = [];
 // Merchant Detials stage 2
   final TextEditingController _merchantLegalNameController =
       TextEditingController();
@@ -415,6 +415,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
         orderNext: orderNext,
         tmsProductMaster: tmsProductMasterlist,
         merchantAdditionalInfoReq: merchantAdditionalInfoReq,
+        selectedItems: selectedItems,
       );
     }
     if (position == 1) {
@@ -559,6 +560,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                     position--;
                   });
                 } else {
+                  print("else executed");
                   Navigator.pop(context);
                 }
               },

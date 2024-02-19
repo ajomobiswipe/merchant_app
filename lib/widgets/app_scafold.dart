@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sifr_latest/common_widgets/app_appbar.dart';
 
@@ -17,7 +16,13 @@ class AppScafofld extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: eneableAppbar ? AppAppbar() : null,
+      appBar: eneableAppbar
+          ? AppAppbar(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            )
+          : null,
       body: Padding(
           padding: padding ??
               EdgeInsets.only(left: 15, right: 15, top: eneableAppbar ? 0 : 40),

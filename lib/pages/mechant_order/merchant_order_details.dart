@@ -18,10 +18,12 @@ class MerchantOrderDetails extends StatefulWidget {
   MerchantAdditionalInfoRequestmodel merchantAdditionalInfoReq;
   List tmsProductMaster;
   Function orderNext;
+  List<SelectedProduct> selectedItems;
   MerchantOrderDetails(
       {super.key,
       required this.orderNext,
       required this.tmsProductMaster,
+      required this.selectedItems,
       required this.merchantAdditionalInfoReq});
 
   @override
@@ -32,7 +34,7 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
   int? selectedProductId;
   int? selectedPackageId;
   List<Map<String, dynamic>> selectedProductPackages = [];
-  List<SelectedProduct> selectedItems = [];
+
   // String? selectedProduct;
   // String? selectedPackage;
   String selectedPackage = '';
@@ -333,15 +335,15 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                         packagetId: selectedPackageId!,
                       );
 
-                      widget.merchantAdditionalInfoReq.merchantProductDetails ==
-                          [
-                            MerchantProductDetail(
-                                productName: Product,
-                                productId: selectedProductId!,
-                                package: package,
-                                packagetId: selectedPackageId!,
-                                qty: int.parse(selectedQuantity))
-                          ];
+                      // widget.merchantAdditionalInfoReq.merchantProductDetails ==
+                      //     [
+                      //       MerchantProductDetail(
+                      //           productName: Product,
+                      //           productId: selectedProductId!,
+                      //           package: package,
+                      //           packagetId: selectedPackageId!,
+                      //           qty: int.parse(selectedQuantity))
+                      //     ];
                       //     null
                       // ? widget
                       //     .merchantAdditionalInfoReq.merchantProductDetails!
@@ -362,9 +364,9 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                       setState(() {
                         selectedProductId = null;
                         selectedPackageId = null;
-                        selectedProductPackages = [];
-                        selectedItems.add(newItem);
                         selectedQuantity = '';
+                        selectedProductPackages = [];
+                        widget.selectedItems.add(newItem);
                       });
                     }
                   },
@@ -440,9 +442,9 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                             DataColumn(label: Text('Product')),
                             DataColumn(label: Text('Package')),
                             DataColumn(label: Text('Quantity')),
-                            // DataColumn(label: Text('Actions')),
+                            DataColumn(label: Text('Actions')),
                           ],
-                          rows: selectedItems.map((item) {
+                          rows: widget.selectedItems.map((item) {
                             return DataRow(cells: [
                               DataCell(CustomTextWidget(
                                 text: item.package,
@@ -459,19 +461,19 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                                 size: 12,
                                 fontWeight: FontWeight.w900,
                               )),
-                              // DataCell(
-                              //   IconButton(
-                              //     icon: Icon(
-                              //       Icons.remove_circle_outline_rounded,
-                              //       color: Colors.red,
-                              //     ),
-                              //     onPressed: () {
-                              //       setState(() {
-                              //         selectedItems.remove(item);
-                              //       });
-                              //     },
-                              //   ),
-                              // ),
+                              DataCell(
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.cancel_outlined,
+                                    color: Colors.red,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      widget.selectedItems.remove(item);
+                                    });
+                                  },
+                                ),
+                              ),
                             ]);
                           }).toList(),
                         ),
@@ -531,6 +533,22 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
 
                     //print(widget.merchantAdditionalInfoReq.toJson());
                     print(widget.merchantAdditionalInfoReq.toJson());
+
+                    final List<Map<String, dynamic>> productList =
+                        widget.selectedItems.map((product) {
+                      return {
+                        "productId": product.productId.toString(),
+                        "packageId": product.packagetId.toString(),
+                        "qty": product.quantity.toString(),
+                      };
+                    }).toList();
+
+                    final Map<String, dynamic> jsonMap = {
+                      "merchantProductDetails": productList,
+                    };
+
+                    final String jsonString = json.encode(jsonMap);
+                    print(jsonString);
 
                     // if (selectedItems.isEmpty) {
                     //   print("add atlest one product");

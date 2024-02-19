@@ -448,7 +448,7 @@ class UserServices {
   Future<dynamic> GetMerchantOnboardingValues() async {
     Connection connection = Connection();
     var url =
-        'http://172.29.100.221:9508/NanoPay/Middleware/UiApi/GetMerchantOnboardingValues';
+        'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/GetMerchantOnboardingValues';
     var response = await connection.get(url);
     print("Defaultvalues Api response code" + response.statusCode.toString());
     return response;
@@ -483,7 +483,7 @@ class UserServices {
     Connection connection = Connection();
     final requestBody = {"stage": stage, "merchantName": merchantname};
     var url =
-        'http://172.29.100.221:9508/NanoPay/Middleware/UiApi/MerchantOnboardList';
+        'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/MerchantOnboardList';
     var response = await connection.post(url, requestBody);
     print("Defaultvalues Api response code" + response.statusCode.toString());
     return response;

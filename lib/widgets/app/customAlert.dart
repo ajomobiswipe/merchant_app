@@ -10,6 +10,7 @@ import 'dart:io' show Platform, exit;
 // Dependencies
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:sifr_latest/config/app_color.dart';
 
 // Custom Alert Class
 class CustomAlert {
@@ -22,7 +23,7 @@ class CustomAlert {
         context: context,
         builder: (context) {
           return AlertDialog(
-            backgroundColor: Theme.of(context).primaryColor,
+            backgroundColor: AppColors.kPrimaryColor,
             title: const Text(
               'Alert',
               style: TextStyle(color: Colors.white),
