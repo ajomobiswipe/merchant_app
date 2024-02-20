@@ -32,7 +32,7 @@ class MerchantStoreImagesForm extends StatefulWidget {
   final TextEditingController merchantStoreAddressController;
   String selectedStoreState;
   String selectedStoreCity;
-  final Map<String, int> storecitysList;
+  final List storeCitysList;
   final List storeStatesList;
   final TextEditingController storePinCodeCtrl;
   Function()? previous;
@@ -47,7 +47,7 @@ class MerchantStoreImagesForm extends StatefulWidget {
     required this.merchantAdditionalInfoReq,
     required this.merchantStoreAddressController,
     required this.storePinCodeCtrl,
-    required this.storecitysList,
+    required this.storeCitysList,
     required this.storeStatesList,
     required this.selectedStoreState,
     required this.selectedStoreCity,
@@ -95,7 +95,7 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
       widget.merchantAdditionalInfoReq.longitude = position.longitude;
       //_getAddressFromLatLng(_currentPosition!);
     }).catchError((e) {
-      debugPrint(e);
+      // debugPrint(e);
     });
   }
 
@@ -320,8 +320,9 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
             ),
 
             CustomTextFormField(
-              hintText: "Enter merchant business address",
-              title: 'Merchant Business Address',
+              titleEneabled: false,
+              hintText: "Enter merchant Store address",
+              title: '',
 
               controller: widget.merchantStoreAddressController,
               prefixIcon: Icons.home,
@@ -368,7 +369,7 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                   ? widget.selectedStoreState
                   : null,
               prefixIcon: Icons.flag_circle_outlined,
-              itemList: widget.storeStatesList,
+              itemList: widget.storeStatesList.map((item)=>item['stateName']).toList(),
               // cityList.map((e) => e['citName']).toList(),
               onChanged: (value) {
                 setState(() {
@@ -398,7 +399,7 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                   ? widget.selectedStoreCity
                   : null,
               prefixIcon: Icons.location_city_outlined,
-              itemList: widget.storecitysList.keys.toList(),
+              itemList: widget.storeCitysList.map((item)=>item['cityName']).toList(),
               //cityList.map((e) => e['citName']).toList(),
               onChanged: (value) {
                 // print(citysList[value]);

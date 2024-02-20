@@ -135,3 +135,7 @@ flutter:
       fonts:
         - asset: assets/fonts/Mont-Bold.otf
 
+    - family: Mont-regular
+      fonts:
+        - asset: assets/fonts/Mont-Regular.otf
+

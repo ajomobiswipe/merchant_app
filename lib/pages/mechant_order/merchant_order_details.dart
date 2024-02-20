@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:icons_plus/icons_plus.dart';
 import 'package:sifr_latest/common_widgets/custom_app_button.dart';
 import 'package:sifr_latest/common_widgets/form_title_widget.dart';
 import 'package:sifr_latest/common_widgets/icon_text_widget.dart';
@@ -85,12 +84,11 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
     return AppScafofld(
       child: ListView(
         children: [
-          Row(
+          const Row(
             children: [
               CustomTextWidget(
-                  text: "Merchant order",
-                  fontWeight: FontWeight.w500,
-                  size: 24),
+                  text: "Merchant Order",
+                  size: 24,),
             ],
           ),
           Container(
@@ -283,10 +281,12 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CustomTextWidget(
+                    const CustomTextWidget(
                       text: "Quantity",
                       fontWeight: FontWeight.bold,
                     ),
+
+
                     Padding(
                       padding: const EdgeInsets.only(top: 8),
                       child: CustomDropdown(
@@ -305,6 +305,9 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                         },
                         onSaved: (value) {},
                         validator: (value) {
+
+                          print('value12345563545$value');
+
                           if (value == null) {
                             return 'Please Select Quantity!';
                           }
@@ -318,6 +321,7 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                 defaultHeight(20),
                 IconButton(
                   onPressed: () {
+
                     if (_formKey.currentState!.validate()) {
                       var Product = selectedProductPackages.firstWhere(
                           (package) =>
@@ -369,6 +373,7 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                         widget.selectedItems.add(newItem);
                       });
                     }
+
                   },
                   icon: Row(
                     children: [

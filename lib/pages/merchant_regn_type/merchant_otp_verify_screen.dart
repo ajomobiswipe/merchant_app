@@ -185,27 +185,27 @@ class _MerchantOTPVerifyScreenState extends State<MerchantOTPVerifyScreen> {
             const SizedBox(
               height: 20,
             ),
-            Row(
+            const Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(
+                Icon(
                   Icons.location_on_outlined,
                   color: AppColors.kLightGreen,
                 ),
-                const SizedBox(
+                SizedBox(
                   width: 20,
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomTextWidget(
-                        text: 'Please select your merchant type', size: 14),
+                        text: 'Please select your merchant type', size: 12,isBold: false),
                     CustomTextWidget(
                         text:
                             'You are onboarding a new or an \nexisting merchant',
-                        size: 15,
+                        size: 14,
                         fontWeight: FontWeight.w500,
-                        textAlign: TextAlign.left),
+                        textAlign: TextAlign.left,isBold: false),
                   ],
                 ),
               ],

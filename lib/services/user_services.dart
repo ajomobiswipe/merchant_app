@@ -177,53 +177,60 @@ class UserServices {
   panValidation(
     String panNumber,
   ) async {
-    String token = boxStorage.getToken();
+    try {
+      String token = boxStorage.getToken();
 
-// Ensure token is not null or empty
-    final headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    };
-    // final headers = {'Authorization': 'Bearer $token'};
-    var urlnew = Uri.parse(
-        'http://172.29.100.221:9508/NanoPay/Middleware/UiApi/addOrUpdateLogin');
-    var body = jsonEncode(
-        {"username": "omaEmirates_preprod_v2", "password": "doXpr3KeKT"});
-
-    var response = await http.post(urlnew, headers: headers, body: body);
-    print("Fist Api responsecode ${response.statusCode}");
-    if (response.statusCode == 200) {
-      Map<String, dynamic> jsonResponse = jsonDecode(response.body);
-      String id = jsonResponse['id'];
-      String userId = jsonResponse['userId'];
-
-      print("id from response  $id");
-      print("userId from response $userId");
-      var newheader = {
-        'Authorization': 'Bearer $token',
-        'accessToken': id,
+      // Ensure token is not null or empty
+      final headers = {
         'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
       };
+      // final headers = {'Authorization': 'Bearer $token'};
+      var urlnew = Uri.parse(
+          'http://172.29.100.221:9508/NanoPay/Middleware/UiApi/addOrUpdateLogin');
+      var body = jsonEncode(
+          {"username": "omaEmirates_preprod_v2", "password": "doXpr3KeKT"});
 
-      var gstVerify = Uri.parse(
-          "http://172.29.100.221:9508/NanoPay/Middleware/UiApi/validatePanAadhar");
+      var response = await http
+          .post(urlnew, headers: headers, body: body)
+          .timeout(Duration(seconds: 10));
 
-      final newreqbody = {
-        "requestType": "PAN",
-        "panNumber": panNumber,
-        "userId": "65a4f0adcd1c770023dd5ace"
-      };
+      print("Fist Api responsecode ${response.statusCode}");
+      if (response.statusCode == 200) {
+        Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+        String id = jsonResponse['id'];
+        String userId = jsonResponse['userId'];
 
-      var responseapi = await http.post(gstVerify,
-          headers: newheader, body: jsonEncode(newreqbody));
-      // print(newheader);
-      // print(userId);
-      print("second api reponseStatus code ${responseapi.statusCode}");
-      print(responseapi.body);
-      return responseapi.body;
+        print("id from response  $id");
+        print("userId from response $userId");
+        var newheader = {
+          'Authorization': 'Bearer $token',
+          'accessToken': id,
+          'Content-Type': 'application/json',
+        };
+
+        var gstVerify = Uri.parse(
+            "http://172.29.100.221:9508/NanoPay/Middleware/UiApi/validatePanAadhar");
+
+        final newreqbody = {
+          "requestType": "PAN",
+          "panNumber": panNumber,
+          "userId": "65a4f0adcd1c770023dd5ace"
+        };
+
+        var responseapi = await http.post(gstVerify,
+            headers: newheader, body: jsonEncode(newreqbody));
+        // print(newheader);
+        // print(userId);
+        print("second api reponseStatus code ${responseapi.statusCode}");
+        print(responseapi.body);
+        return responseapi.body;
+      }
+
+      return false;
+    } catch (e) {
+      print('hellooo');
     }
-
-    return false;
   }
 
   sendAddhaarOtp(String addhaarNumber) async {

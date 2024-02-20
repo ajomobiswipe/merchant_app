@@ -7,18 +7,17 @@
 // Dependencies or Plugins - Models - Services - Global Functions
 import 'dart:async';
 import 'dart:io';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:sifr_latest/theme/app_themes.dart';
 import 'package:sifr_latest/theme/hive_storage_services.dart';
 import 'package:sifr_latest/theme/theme_provider.dart';
-import 'package:sifr_latest/utilities/dataGenerator.dart';
+
 import 'config/config.dart';
 import 'config/state_key.dart';
 import 'providers/providers.dart';

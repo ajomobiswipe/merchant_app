@@ -29,6 +29,8 @@ class CustomDropdown extends StatelessWidget {
   final DropdownSearchFilterFn? filterFn;
   final DropdownSearchCompareFn? compareFn;
   final AutovalidateMode? autoValidateMode;
+  final bool dropDownIsEnabled;
+
   const CustomDropdown({
     Key? key,
     required this.title,
@@ -44,7 +46,7 @@ class CustomDropdown extends StatelessWidget {
     this.filterFn,
     this.compareFn,
     this.autoValidateMode,
-    this.enabled = true, this.hintText, this.titleEnabled=true,
+    this.enabled = true, this.hintText, this.titleEnabled=true,this.dropDownIsEnabled=true
   }) : super(key: key);
 
   @override
@@ -63,7 +65,7 @@ class CustomDropdown extends StatelessWidget {
                         .bodySmall
                         ?.copyWith(fontWeight: FontWeight.w300,fontSize: 14,color: Colors.black),
                     children: const [
-                      TextSpan(text: ' *', style: TextStyle(color: Colors.red))
+                      TextSpan(text: ' *', style: TextStyle(color: Colors.black))
                     ]),
               )
             : Text(
@@ -74,8 +76,8 @@ class CustomDropdown extends StatelessWidget {
                     ?.copyWith(fontWeight: FontWeight.w300,fontSize: 16),
               ),
         //Global Drop Down
-        if(titleEnabled)SizedBox(height: 8,),
-        DropdownSearch(
+        if(titleEnabled)const SizedBox(height: 8,),
+        if(dropDownIsEnabled)DropdownSearch(
           items: itemList,
           onChanged: onChanged,
           onSaved: onSaved,
@@ -90,7 +92,7 @@ class CustomDropdown extends StatelessWidget {
               icon: Icon(Icons.keyboard_arrow_down),
               color: AppColors.kPrimaryColor),
           autoValidateMode: AutovalidateMode.onUserInteraction,
-          popupProps: PopupProps.menu(
+          popupProps: const PopupProps.menu(
               showSearchBox: false,
               menuProps: MenuProps(
                 elevation: 16,
@@ -102,37 +104,43 @@ class CustomDropdown extends StatelessWidget {
               style: Theme.of(context)
                   .textTheme
                   .displaySmall
-                  ?.copyWith(fontWeight: FontWeight.w300, fontSize: 13,color: Colors.black.withOpacity(0.7)),
+                  ?.copyWith(fontWeight: FontWeight.normal, fontSize: 13,color: selectedItem==null?Colors.black.withOpacity(0.25):Colors.black),
             );
           },
           dropdownDecoratorProps: DropDownDecoratorProps(
-            dropdownSearchDecoration: InputDecoration(
-              // label: Text(title),
-              fillColor: AppColors.kTileColor,
-              filled: true,
-              contentPadding:
-                  const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5.0),
-                borderSide: const BorderSide(
-                  color: Colors.black,
-                ),
-              ),
-              enabledBorder: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                  borderSide: BorderSide(color: Colors.transparent)),
-              disabledBorder: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                  borderSide: BorderSide(color: Colors.transparent)),
-              focusedBorder: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                  borderSide: BorderSide(color: Colors.transparent)),
-              prefixIcon: Icon(prefixIcon,
-                  size: 25, color: Colors.black.withOpacity(0.6)),
-            ),
+            dropdownSearchDecoration: commonInputDecoration(prefixIcon),
           ),
         ),
       ],
     );
   }
+}
+
+
+InputDecoration commonInputDecoration(prefixIcon, {String? hintText}){
+  return InputDecoration(
+    // label: Text(title),
+    hintText: hintText??'',
+    fillColor: AppColors.kTileColor,
+    filled: true,
+    contentPadding:
+    const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(5.0),
+      borderSide: const BorderSide(
+        color: Colors.black,
+      ),
+    ),
+    enabledBorder: const OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+        borderSide: BorderSide(color: Colors.transparent)),
+    disabledBorder: const OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+        borderSide: BorderSide(color: Colors.transparent)),
+    focusedBorder: const OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+        borderSide: BorderSide(color: Colors.transparent)),
+    prefixIcon: Icon(prefixIcon,
+        size: 25, color: Colors.black.withOpacity(0.6)),
+  );
 }

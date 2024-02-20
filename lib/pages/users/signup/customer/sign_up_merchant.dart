@@ -35,6 +35,7 @@ import '../../../mechant_order/models/mechant_additionalingo_model.dart';
 
 class MerchantSignup extends StatefulWidget {
   final TextEditingController verifiednumber;
+
   const MerchantSignup({Key? key, required this.verifiednumber})
       : super(key: key);
 
@@ -70,6 +71,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
   // Merchant order Detials
   TextEditingController canceledChequeControler = TextEditingController();
   List<SelectedProduct> selectedItems = [];
+
 // Merchant Detials stage 2
   final TextEditingController _merchantLegalNameController =
       TextEditingController();
@@ -80,51 +82,42 @@ class _MerchantSignupState extends State<MerchantSignup> {
   final TextEditingController _whatsAppNumberController =
       TextEditingController();
   String businessType = '';
-  List<Map<String, dynamic>> BusinessTypeList = [
-    {"value": 1, "label": "Individual"},
-    {"value": 2, "label": "Sole Proprietorship"},
-    {"value": 3, "label": "Partnership Firm"},
-  ];
+
+  // List<Map<String, dynamic>> BusinessTypeList = [
+  //   {"value": 1, "label": "Individual"},
+  //   {"value": 2, "label": "Sole Proprietorship"},
+  //   {"value": 3, "label": "Partnership Firm"},
+  // ];
 
 // Merchant Detials screen 3
   final TextEditingController _merchantDBANameController =
       TextEditingController();
-  String selectedBussinesCatogery = '';
+  dynamic selectedBusinessCategory;
 
-  List<Map<String, dynamic>> bussinesCatogeryList = [
-    {"value": 1, "label": "Individual"},
-    {"value": 2, "label": "Sole Proprietorship"},
-    {"value": 3, "label": "Partnership Firm"},
-  ];
-  String selectedBussinessubCatogery = '';
-  List<Map<String, dynamic>> merchantBusinessSubList = [
-    {"value": 1, "label": "CAT001"},
-    {"value": 2, "label": "CAT002"},
-    {"value": 3, "label": "CAT003"},
-  ];
+  // List<Map<String, dynamic>> bussinesCatogeryList = [
+  //   {"value": 1, "label": "Individual"},
+  //   {"value": 2, "label": "Sole Proprietorship"},
+  //   {"value": 3, "label": "Partnership Firm"},
+  // ];
+  dynamic selectedBusinessSubCategory;
+
+  // List<Map<String, dynamic>> merchantBusinessSubList = [
+  //   {"value": 1, "label": "CAT001"},
+  //   {"value": 2, "label": "CAT002"},
+  //   {"value": 3, "label": "CAT003"},
+  // ];
   String selectedBussinesTurnOver = '';
-  List<Map<String, dynamic>> bussinesTurnoverList = [
-    {"value": 1, "label": "Up to 1 Cr"},
-    {"value": 2, "label": "2 to 5 Cr"},
-    {"value": 3, "label": "6 to 10 Cr"},
-  ];
+
+  List businessTurnoverList = [];
+
   final TextEditingController _merchantBusinessAddressController =
       TextEditingController();
-  String selectedtState = '';
+  dynamic selectedState;
   String selectedCity = '';
-  Map<String, int> citysList = {
-    "Chennai": 356,
-    "Banglore": 345,
-    "Goa": 376,
-  };
-  List statesList = [
-    'TamilNadu',
-    'Andhra Pradesh',
-    'Telangana',
-    "Karnataka",
-    "Kerala",
-    'Others'
-  ];
+
+  List citiesList = [];
+  List statesList = [];
+
   final TextEditingController _PinCodeCtrl = TextEditingController();
 
   // merchant id proof  stage 4
@@ -149,19 +142,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
       TextEditingController();
   String selectedStoreState = '';
   String selectedStoreCity = '';
-  Map<String, int> storecitysList = {
-    "Chennai": 356,
-    "Banglore": 345,
-    "Goa": 376,
-  };
-  List storeStatesList = [
-    'TamilNadu',
-    'Andhra Pradesh',
-    'Telangana',
-    "Karnataka",
-    "Kerala",
-    'Others'
-  ];
+
   final TextEditingController _storePinCodeCtrl = TextEditingController();
 
   /// merchsant  Merchant Bank Details
@@ -184,26 +165,22 @@ class _MerchantSignupState extends State<MerchantSignup> {
   String countryCode = 'IN';
   String merchantPanHelperText = "Click verify";
 
-  List bankList =
-
-      //  ['Europien', 'Emirates', 'American', 'Britan'];
-      //     var aa =
-
-      [
-    {"value": "HDF1212", "label": "Hdfc"},
-    {"value": "SBI5454", "label": "SBI"},
-    {"value": "AXI5454", "label": "AXIS"},
-    {"value": "ICI5445", "label": "ICICI"},
-  ];
+  List merchantBankList = [];
+  List merchantProofDocumentList = [];
 
   List countryList = [];
   List acquirerList = [];
-  List mmcGroupList = [];
+
+  List merchantBusinessTypeList = [];
+
   List tmsMasterCountriesList = [];
   List tmsMasterCitiesList = [];
   List tmsMasterCurrenciesList = [];
   List tmsProductMasterlist = [];
-  List mmcTypeList = [];
+
+  List merchantBusinessSubCategory = [];
+  List merchantBusinessCategory = [];
+
   List stateList = [];
   List cityList = [];
 
@@ -253,7 +230,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
   String selectedCountries = '';
 
   String selectedPermenentState = '';
-  String selectedState = '';
+
+
+  String selectedBusinessState = '';
+
+
   String selectedPermenentCountry = '';
   final TextEditingController selectedMcc = TextEditingController();
   final TextEditingController selectedBusinessType = TextEditingController();
@@ -297,6 +278,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
 // merchant Aggrement
   String mdrType = '';
+
+  List mdrTypeList = [];
+  List mdrSummaryList = [];
 
   // Merchant company detials feilda
   TextEditingController merchantCommercialNameCtrl = TextEditingController();
@@ -351,7 +335,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
     });
   }
 
-  int? getValueByLabel(List<Map<String, dynamic>> list, String? label) {
+  int? getValueByLabel(List list, String? label) {
     for (var map in list) {
       if (map['label'] == label) {
         return map['value'];
@@ -397,6 +381,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
   }
 
   int currTabPosition = 1;
+
   //int completedTab = 3;
 
   Color getIconColor({
@@ -487,8 +472,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
         merchantAdditionalInfoReq: merchantAdditionalInfoReq,
         merchantStoreAddressController: _merchantStoreAddressController,
         storePinCodeCtrl: _storePinCodeCtrl,
-        storecitysList: storecitysList,
-        storeStatesList: storeStatesList,
+        storeCitysList: citiesList,
+        storeStatesList: statesList,
         selectedStoreState: selectedStoreState,
         selectedStoreCity: selectedStoreCity,
       );
@@ -594,6 +579,18 @@ class _MerchantSignupState extends State<MerchantSignup> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             const SizedBox(height: 10),
+
+            const Row(
+              children: [
+                CustomTextWidget(
+                  text: "Merchant KYC",
+                  size: 18,
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 10),
+
             appTabbar(
               screenHeight: screenHeight,
               currTabPosition: currTabPosition,
@@ -822,14 +819,15 @@ class _MerchantSignupState extends State<MerchantSignup> {
               hintText: "Select merchant business type",
               selectedItem: businessType != '' ? businessType : null,
               prefixIcon: Icons.maps_home_work_outlined,
-              itemList: BusinessTypeList.map((map) => map['label'].toString())
+              itemList: merchantBusinessTypeList
+                  .map((map) => map['businessName'].toString())
                   .toList(),
               //countryList.map((e) => e['ctyName']).toList(),
               onChanged: (value) {
                 setState(() {
                   businessType = value;
                   merchantPersonalReq.poaType =
-                      getValueByLabel(BusinessTypeList, value);
+                      getValueByLabel(merchantBusinessTypeList, value);
                 });
               },
               validator: (value) {
@@ -872,6 +870,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
         key: personalFormKey,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 10),
             appTabbar(
@@ -949,74 +948,190 @@ class _MerchantSignupState extends State<MerchantSignup> {
             const SizedBox(
               height: 20.0,
             ),
-            CustomDropdown(
-              title: "Merchant Bussines catogery",
-              hintText: "Select merchant business category",
+
+            const CustomDropdown(
+              title: "Merchant Business category",
+              itemList: [],
+              dropDownIsEnabled: false,
               required: true,
-              selectedItem: selectedBussinesCatogery != ''
-                  ? selectedBussinesCatogery
-                  : null,
-              prefixIcon: Icons.location_city_outlined,
-              itemList: bussinesCatogeryList
-                  .map((map) => map['label'].toString())
-                  .toList(),
-              // cityList.map((e) => e['citName']).toList(),
-              onChanged: (value) {
+            ),
+
+            DropdownButtonFormField(
+              isDense: true,
+              isExpanded: true,
+              decoration: commonInputDecoration(
+                Icons.location_city_outlined,
+                hintText: "Merchant Business category"
+              ).copyWith(hintStyle: Theme.of(context)
+                  .textTheme
+                  .displaySmall
+                  ?.copyWith(fontWeight: FontWeight.normal, fontSize: 13,color: Colors.black.withOpacity(0.25))),
+              value: selectedBusinessCategory,
+              items: merchantBusinessCategory
+                  .map<DropdownMenuItem>((dynamic value) {
+                return DropdownMenuItem(
+                  value: value,
+                  child: Text(
+                    value['description'],
+                    style: TextStyle(fontSize: 13),
+                  ),
+                );
+              }).toList(),
+              onChanged: (newValue) {
                 setState(() {
-                  // selectedBussinesCatogery = value;
-                  // merchantPersonalReq.poiType =
-                  //     getValueByLabel(bussinesCatogeryList, value);
+                  selectedBusinessCategory = newValue;
                 });
               },
-              onSaved: (value) {
-                //merchantPersonalReq.poiType = value;
-                merchantPersonalReq.poiType =
-                    getValueByLabel(bussinesCatogeryList, value);
-              },
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Merchant Bussines catogery is Mandatory!';
-                }
-                return null;
-              },
             ),
+
+            // SimpleDropDown(
+            //
+            //   dropDownList: merchantBusinessCategory
+            //       .map<DropdownMenuItem>((dynamic value) {
+            //     return DropdownMenuItem(
+            //       value: value,
+            //       child: Text(value),
+            //     );
+            //   }).toList(),
+            //
+            //     selectedItem:selectedBusinessCatogery,
+            //     setSelectedItem: _setSelectedItem,
+            //
+            // ),
+
+            // CustomDropdown(
+            //   title: "Merchant Business category",
+            //   hintText: "Select merchant business category",
+            //   required: true,
+            //
+            //   selectedItem: selectedBusinessCatogery != null
+            //       ? selectedBusinessCatogery['description']
+            //       : null,
+            //
+            //   prefixIcon: Icons.location_city_outlined,
+            //
+            //   itemList: merchantBusinessCategory
+            //       .map((item) => item['description'])
+            //       .toList(),
+            //
+            //   // cityList.map((e) => e['citName']).toList(),
+            //   onChanged: (value) {
+            //     setState(() {
+            //       selectedBusinessCatogery = value;
+            //       // merchantPersonalReq.poiType =
+            //       //     getValueByLabel(bussinesCatogeryList, value);
+            //     });
+            //   },
+            //   onSaved: (value) {
+            //     //merchantPersonalReq.poiType = value;
+            //     merchantPersonalReq.poiType =
+            //         getValueByLabel(merchantBusinessCategory, value);
+            //   },
+            //   validator: (value) {
+            //     if (value == null || value.isEmpty) {
+            //       return 'Merchant Bussines catogery is Mandatory!';
+            //     }
+            //     return null;
+            //   },
+            // ),
+
             defaultHeight(10),
 
-            CustomDropdown(
+            const CustomDropdown(
               title: "Merchant Business Sub category",
-              hintText: "Select merchant business sub category",
-
+              itemList: [],
+              dropDownIsEnabled: false,
               required: true,
-              selectedItem: selectedBussinessubCatogery != ''
-                  ? selectedBussinessubCatogery
-                  : null,
-              prefixIcon: Icons.location_city_outlined,
-              itemList: merchantBusinessSubList
-                  .map((map) => map['label'].toString())
-                  .toList(),
-              // cityList.map((e) => e['citName']).toList(),
-              onChanged: (value) {
+            ),
+
+            DropdownButtonFormField(
+              isDense: true,
+              isExpanded: true,
+              decoration: commonInputDecoration(
+                  Icons.location_city_outlined,
+                  hintText: "Select merchant business sub category"
+              ).copyWith(hintStyle: Theme.of(context)
+                  .textTheme
+                  .displaySmall
+                  ?.copyWith(fontWeight: FontWeight.normal, fontSize: 13,color: Colors.black.withOpacity(0.25))),
+              value: selectedBusinessSubCategory,
+              items: selectedBusinessCategory != null
+                  ? merchantBusinessSubCategory
+                      .where((item) =>
+                          item['mccGroupId']['mccGroupId'] ==
+                          selectedBusinessCategory['mccGroupId'])
+                      .map<DropdownMenuItem>((dynamic value) {
+                      return DropdownMenuItem(
+                        value: value,
+                        child: Text(
+                          value['mccTypeDesc'],
+                          style: const TextStyle(fontSize: 13),
+                        ),
+                      );
+                    }).toList()
+                  : [],
+              onChanged: (newValue) {
                 setState(() {
-                  selectedBussinessubCatogery = value;
-                  merchantPersonalReq.poiType =
-                      getValueByLabel(merchantBusinessSubList, value);
+                  selectedBusinessSubCategory = newValue;
                 });
               },
-              onSaved: (value) {
-                //merchantPersonalReq.poiType = value;
-                // merchantPersonalReq.poiType = getValueByLabel(merchantBusinessSubList, value);
-              },
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Merchant Business Sub is Mandatory!';
-                }
-                return null;
-              },
             ),
+
+            // CustomDropdown(
+            //   title: "Merchant Business Sub category",
+            //   hintText: "Select merchant business sub category",
+            //
+            //   required: true,
+            //   selectedItem: selectedBusinessSubCategory != null
+            //       ? selectedBusinessSubCategory['mccTypeDesc']
+            //       : null,
+            //   prefixIcon: Icons.location_city_outlined,
+            //
+            //   // itemList: merchantBusinessSubCategory
+            //   //     .map((map) => map['mccTypeDesc'].toString())
+            //   //     .toList(),
+            //
+            //   itemList: merchantBusinessSubCategory
+            //       .where((item) =>
+            //           item['mccGroupId']['mccGroupId'] ==
+            //           selectedBusinessCatogery['mccGroupId'])
+            //       .toList(),
+            //
+            //   // itemList: merchantBusinessSubCategory.where((item) =>
+            //   // item['mccGroupId']['mccGroupId'] ==
+            //   //     selectedMccGroupid)
+            //   //     .map<DropdownMenuItem<Map<String, dynamic>>>((item) {
+            //   //   return DropdownMenuItem<Map<String, dynamic>>(
+            //   //     value: item,
+            //   //     child: Text(item['mccTypeDesc'].toString()),
+            //   //   );
+            //   // }),
+            //
+            //   // cityList.map((e) => e['citName']).toList(),
+            //   onChanged: (value) {
+            //     setState(() {
+            //       selectedBusinessSubCategory = value;
+            //       merchantPersonalReq.poiType =
+            //           getValueByLabel(merchantBusinessSubCategory, value);
+            //     });
+            //   },
+            //   onSaved: (value) {
+            //     //merchantPersonalReq.poiType = value;
+            //     // merchantPersonalReq.poiType = getValueByLabel(merchantBusinessSubList, value);
+            //   },
+            //   validator: (value) {
+            //     if (value == null || value.isEmpty) {
+            //       return 'Merchant Business Sub is Mandatory!';
+            //     }
+            //     return null;
+            //   },
+            // ),
+
             defaultHeight(10),
+
             CustomDropdown(
-              hintText: "Select merchant annual business turnover",
-              title: "Merchant Business Annual Turnover",
+              hintText: "Select Merchant Annual Business Turnover",
+              title: "Merchant Annual Business Turnover",
               // enabled: selectedState != '' && enabledState
               //     ? enabledcity = true
               //     : enabledcity = false,
@@ -1025,21 +1140,21 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   ? selectedBussinesTurnOver
                   : null,
               prefixIcon: Icons.location_city_outlined,
-              itemList: bussinesTurnoverList
-                  .map((map) => map['label'].toString())
+              itemList: businessTurnoverList
+                  .map((map) => map['turnoverAmount'].toString())
                   .toList(),
               // cityList.map((e) => e['citName']).toList(),
               onChanged: (value) {
                 setState(() {
-                  bussinesTurnoverList = value;
+                  businessTurnoverList = value;
                   merchantPersonalReq.poiType =
-                      getValueByLabel(bussinesCatogeryList, value);
+                      getValueByLabel(businessTurnoverList, value);
                 });
               },
               onSaved: (value) {
                 //merchantPersonalReq.poiType = value;
                 merchantPersonalReq.poiType =
-                    getValueByLabel(bussinesCatogeryList, value);
+                    getValueByLabel(businessTurnoverList, value);
               },
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -1048,6 +1163,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 return null;
               },
             ),
+
 
             CustomTextFormField(
               hintText: "Enter merchant business address",
@@ -1082,9 +1198,41 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 _merchantBusinessAddressController.text = value.trim();
               },
             ),
+
+
             const SizedBox(
               height: 15.0,
             ),
+
+
+
+            // DropdownButtonFormField(
+            //   isDense: true,
+            //   isExpanded: true,
+            //   decoration: commonInputDecoration(
+            //       Icons.location_city_outlined,
+            //       hintText: "Select State"
+            //   ).copyWith(hintStyle: Theme.of(context)
+            //       .textTheme
+            //       .displaySmall
+            //       ?.copyWith(fontWeight: FontWeight.normal, fontSize: 13,color: Colors.black.withOpacity(0.25))),
+            //   value: selectedBusinessState,
+            //   items: statesList
+            //       .map<DropdownMenuItem>((dynamic value) {
+            //     return DropdownMenuItem(
+            //       value: value,
+            //       child: Text(
+            //         value['stateName'],
+            //         style: TextStyle(fontSize: 13),
+            //       ),
+            //     );
+            //   }).toList(),
+            //   onChanged: (newValue) {
+            //     setState(() {
+            //       selectedBusinessState = newValue;
+            //     });
+            //   },
+            // ),
 
             CustomDropdown(
               titleEnabled: false,
@@ -1094,13 +1242,15 @@ class _MerchantSignupState extends State<MerchantSignup> {
               //     ? enabledcity = true
               //     : enabledcity = false,
               required: true,
-              selectedItem: selectedtState != '' ? selectedtState : null,
+              selectedItem: selectedBusinessState != '' ? selectedBusinessState : null,
               prefixIcon: Icons.flag_circle_outlined,
-              itemList: statesList,
+
+              itemList: statesList.map((item) => item['stateName']).toList(),
+
               // cityList.map((e) => e['citName']).toList(),
               onChanged: (value) {
                 setState(() {
-                  selectedtState = value;
+                  selectedBusinessState = value;
                   merchantPersonalReq.currentState = value;
                 });
               },
@@ -1114,9 +1264,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 return null;
               },
             ),
+
             const SizedBox(
               height: 15.0,
             ),
+
             CustomDropdown(
               titleEnabled: false,
               title: "Current City",
@@ -1124,18 +1276,26 @@ class _MerchantSignupState extends State<MerchantSignup> {
               required: true,
               selectedItem: selectedCity != '' ? selectedCity : null,
               prefixIcon: Icons.location_city_outlined,
-              itemList: citysList.keys.toList(),
+
+              itemList: citiesList.map((item) => item['cityName']).toList(),
+
               //cityList.map((e) => e['citName']).toList(),
+
               onChanged: (value) {
-                print(citysList[value]);
+
+                print(value);
                 setState(() {
+
                   selectedCity = value;
-                  merchantPersonalReq.currentCountry = citysList[value];
+                  // merchantPersonalReq.currentCountry = citiesList[value];
+
                 });
               },
+
               onSaved: (value) {
-                merchantPersonalReq.currentCountry = citysList[value];
+                merchantPersonalReq.currentCountry = citiesList[value];
               },
+
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Current City is Mandatory!';
@@ -1143,9 +1303,12 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 return null;
               },
             ),
+
             const SizedBox(
               height: 4,
-            ), //padding added in textfeild
+            ),
+
+            //padding added in textfeild
             CustomTextFormField(
               titleEneabled: false,
               title: 'Pin Code',
@@ -1177,6 +1340,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
             const SizedBox(
               height: 20.0,
             ),
+
             CustomAppButton(
               title: "Next",
               onPressed: () async {
@@ -1204,16 +1368,32 @@ class _MerchantSignupState extends State<MerchantSignup> {
   /// PERSONAL INFORMATION
   Widget merchantBusinessProof() {
     var screenHeight = MediaQuery.of(context).size.height;
+
+    print('currTabPosition$currTabPosition');
+
     return Form(
         key: personalFormKey,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             const SizedBox(height: 10),
+
+            const Row(
+              children: [
+                CustomTextWidget(
+                  text: "Merchant KYC",
+                  size: 18,
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 10),
+
             appTabbar(
               screenHeight: screenHeight,
               currTabPosition: currTabPosition,
             ),
+
             const SizedBox(height: 30.0),
             const FormTitleWidget(subWord: 'Merchant Business Proofs'),
             CustomTextFormField(
@@ -1360,6 +1540,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
             SizedBox(
               height: 20,
             ),
+
             CustomDropdown(
               title: "Merchant Business Proof Document",
               titleEnabled: true,
@@ -1367,14 +1548,15 @@ class _MerchantSignupState extends State<MerchantSignup> {
               hintText: "Select merchant business proof document",
               selectedItem: businessType != '' ? businessType : null,
               prefixIcon: Icons.maps_home_work_outlined,
-              itemList: BusinessTypeList.map((map) => map['label'].toString())
+              itemList: merchantProofDocumentList
+                  .map((map) => map['businessType'].toString())
                   .toList(),
               //countryList.map((e) => e['ctyName']).toList(),
               onChanged: (value) {
                 setState(() {
                   businessType = value;
                   merchantPersonalReq.poaType =
-                      getValueByLabel(BusinessTypeList, value);
+                      getValueByLabel(merchantProofDocumentList, value);
                 });
               },
               validator: (value) {
@@ -1384,6 +1566,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 return null;
               },
             ),
+
             CustomTextFormField(
               title: 'Upload Business Proof Document',
               hintText:
@@ -1420,7 +1603,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 required: true,
                 enabled: true,
                 controller: documentExpiryController,
-                prefixIcon: LineAwesome.calendar_alt_solid,
+                prefixIcon: LineAwesome.calendar,
                 readOnly: true,
                 onTap: () async {
                   DateTime? pickedDate = await showDatePicker(
@@ -1467,7 +1650,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                       color: AppColors.kPrimaryColor,
                     ),
                     defaultWidth(10),
-                    CustomTextWidget(
+                    const CustomTextWidget(
                       text: 'Add Document',
                       color: AppColors.kLightGreen,
                       fontWeight: FontWeight.w500,
@@ -1581,10 +1764,20 @@ class _MerchantSignupState extends State<MerchantSignup> {
     print("----default value called----");
     await userServices.GetMerchantOnboardingValues().then((response) async {
       final Map<String, dynamic> data = json.decode(response.body);
-      List<dynamic> acquirerDetails =
-          data['data'][0]['acquirerAcquirerDetails'];
+
+      // List<dynamic> acquirerDetails =
+      //     data['data'][0]['acquirerAcquirerDetails'];
+
+      merchantBusinessTypeList = data['data'][0]['mmsBusinessType'];
+      merchantBankList = data['data'][0]['mmsBanks'];
+      merchantProofDocumentList = data['data'][0]['mmsDocumentType'];
+
+      mdrTypeList = data['data'][0]['mmsMdrType'];
+      mdrSummaryList = data['data'][0]['mmsMdrDetails'];
+
       List<dynamic> mccGroups = data['data'][0]['tmsMasterMccGroup'];
       List<dynamic> mccTypes = data['data'][0]['tmsMasterMccTypes'];
+
       List<dynamic> tmsMasterCountries = data['data'][0]['tmsMasterCountries'];
       List<dynamic> tmsMasterCities = data['data'][0]['tmsMasterCities'];
       List<dynamic> tmsMasterCurrencies =
@@ -1599,9 +1792,15 @@ class _MerchantSignupState extends State<MerchantSignup> {
       //     .map((item) => item['currencyDesc']));
 
       setState(() {
-        acquirerList = acquirerDetails;
-        mmcGroupList = mccGroups;
-        mmcTypeList = mccTypes;
+        // acquirerList = acquirerDetails;
+
+        merchantBusinessCategory = mccGroups;
+        merchantBusinessSubCategory = mccTypes;
+        businessTurnoverList = data['data'][0]['mmsTurnOver'];
+
+        citiesList = data['data'][0]['tmsMasterCities'];
+        statesList = data['data'][0]['states'];
+
         tmsMasterCountriesList = tmsMasterCountries;
         tmsMasterCitiesList = tmsMasterCities;
         tmsMasterCurrenciesList = tmsMasterCurrencies;
@@ -1618,10 +1817,10 @@ class _MerchantSignupState extends State<MerchantSignup> {
         //userServices.getAcqApplicationid('1');
       });
 
-      for (var acquirer in acquirerDetails) {
-        String acquirerName = acquirer['acquirerName'];
-        print('Acquirer Name: $acquirerName');
-      }
+      // for (var acquirer in acquirerDetails) {
+      //   String acquirerName = acquirer['acquirerName'];
+      //   print('Acquirer Name: $acquirerName');
+      // }
 
       for (var mccGroup in mccGroups) {
         String mccGroupId = mccGroup['mccGroupId'].toString();
@@ -1650,6 +1849,16 @@ class _MerchantSignupState extends State<MerchantSignup> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            const Row(
+              children: [
+                CustomTextWidget(
+                  text: "Merchant KYC",
+                  size: 18,
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 10),
             appTabbar(
               screenHeight: screenHeight,
               currTabPosition: currTabPosition,
@@ -1660,7 +1869,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
             CustomTextFormField(
               hintText: "Enter merchant PAN number",
               controller: _merchantPanController,
-              title: 'Merchant Pan',
+              title: 'Merchant PAN',
               required: true,
               prefixIcon: Icons.format_list_numbered,
               //iconColor: showVerify ? Colors.red : Colors.green,
@@ -1887,6 +2096,16 @@ class _MerchantSignupState extends State<MerchantSignup> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
+              const Row(
+                children: [
+                  CustomTextWidget(
+                    text: "Merchant KYC",
+                    size: 18,
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 10),
               appTabbar(
                 screenHeight: screenHeight,
                 currTabPosition: currTabPosition,
@@ -2043,8 +2262,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 enabled: accountVerify,
                 selectedItem: ifscCode != '' ? ifscCode : null,
                 prefixIcon: FontAwesome.building_solid,
-                itemList:
-                    bankList.map((map) => map['label'].toString()).toList(),
+                itemList: merchantBankList
+                    .map((map) => map['bankName'].toString())
+                    .toList(),
                 //countryList.map((e) => e['ctyName']).toList(),
                 onChanged: (value) {
                   setState(() {
@@ -2086,77 +2306,77 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   return null;
                 },
               ),
-              CustomTextFormField(
-                controller: merchantphoneNumberCtrl,
-                title: 'Phone Number',
-                hintText: "Phone Number",
-                titleEneabled: false,
-                required: true,
-                prefixIcon: Icons.phone,
-                onFieldSubmitted: (name) {
-                  getUser();
-                },
-                onChanged: (String value) {
-                  setState(() {
-                    if (value.isEmpty ||
-                        !userVerify ||
-                        userCheck.toString() == "true" ||
-                        !RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
-                            .hasMatch(value)) {
-                      enabledPassword = false;
-                    } else {
-                      enabledPassword = true;
-                    }
-                  });
-                },
-                // suffixIconOnPressed: () {
-                //   if (merchantAccountNumberCtrl.text.length >= 10) {
-                //     setState(() {
-                //       if (!showVerify && userVerify) {
-                //         userVerify = false;
-                //       } else {
-                //         userVerify = true;
-                //       }
-                //     });
-                //     showVerify = true;
-                //     if (userVerify) {
-                //       getUser();
-                //     }
-                //   }
-                // },
-                // suffixIconTrue: true,
-                helperStyle: Theme.of(context)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(color: Theme.of(context).primaryColor),
-                inputFormatters: <TextInputFormatter>[
-                  FilteringTextInputFormatter.digitsOnly,
-                ],
-                // suffixText: showVerify ? 'Verify' : 'Change',
-                keyboardType: TextInputType.number,
-                maxLength: 18,
-                readOnly: !accountVerify,
-                // helperText: customHelperHelper(text: 'Account Number'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Phone Number is Mandatory!';
-                  }
-                  if (value.length < 10) {
-                    return 'Minimum character length is 10';
-                  }
-                  if (userVerify && userCheck == "true") {
-                    return Constants.userNameFailureMessage;
-                  }
-                  if (!RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
-                      .hasMatch(value)) {
-                    return 'Invalid Phone Number Number!';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  merchantAdditionalInfoReq.bankAccountNo = value;
-                },
-              ),
+              // CustomTextFormField(
+              //   controller: merchantphoneNumberCtrl,
+              //   title: 'Phone Number',
+              //   hintText: "Phone Number",
+              //   titleEneabled: false,
+              //   required: true,
+              //   prefixIcon: Icons.phone,
+              //   onFieldSubmitted: (name) {
+              //     getUser();
+              //   },
+              //   onChanged: (String value) {
+              //     setState(() {
+              //       if (value.isEmpty ||
+              //           !userVerify ||
+              //           userCheck.toString() == "true" ||
+              //           !RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
+              //               .hasMatch(value)) {
+              //         enabledPassword = false;
+              //       } else {
+              //         enabledPassword = true;
+              //       }
+              //     });
+              //   },
+              //   // suffixIconOnPressed: () {
+              //   //   if (merchantAccountNumberCtrl.text.length >= 10) {
+              //   //     setState(() {
+              //   //       if (!showVerify && userVerify) {
+              //   //         userVerify = false;
+              //   //       } else {
+              //   //         userVerify = true;
+              //   //       }
+              //   //     });
+              //   //     showVerify = true;
+              //   //     if (userVerify) {
+              //   //       getUser();
+              //   //     }
+              //   //   }
+              //   // },
+              //   // suffixIconTrue: true,
+              //   helperStyle: Theme.of(context)
+              //       .textTheme
+              //       .bodySmall
+              //       ?.copyWith(color: Theme.of(context).primaryColor),
+              //   inputFormatters: <TextInputFormatter>[
+              //     FilteringTextInputFormatter.digitsOnly,
+              //   ],
+              //   // suffixText: showVerify ? 'Verify' : 'Change',
+              //   keyboardType: TextInputType.number,
+              //   maxLength: 18,
+              //   readOnly: !accountVerify,
+              //   // helperText: customHelperHelper(text: 'Account Number'),
+              //   validator: (value) {
+              //     if (value == null || value.isEmpty) {
+              //       return 'Phone Number is Mandatory!';
+              //     }
+              //     if (value.length < 10) {
+              //       return 'Minimum character length is 10';
+              //     }
+              //     if (userVerify && userCheck == "true") {
+              //       return Constants.userNameFailureMessage;
+              //     }
+              //     if (!RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
+              //         .hasMatch(value)) {
+              //       return 'Invalid Phone Number Number!';
+              //     }
+              //     return null;
+              //   },
+              //   onSaved: (value) {
+              //     merchantAdditionalInfoReq.bankAccountNo = value;
+              //   },
+              // ),
               const SizedBox(height: 20.0),
               CustomTextWidget(text: "Cheque Image"),
               canceledChequeControler.text != ''
@@ -2415,6 +2635,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CustomTextWidget(text: "Merchant Agreement"),
+
           appTabbar(
             screenHeight: screenHeight,
             currTabPosition: currTabPosition,
@@ -2453,14 +2674,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
             required: true,
             selectedItem: mdrType != '' ? mdrType : null,
             prefixIcon: FontAwesome.building,
-            itemList: [
-              'Flat rate',
-              'Tier based pricing',
-              'Cost plus(Interchange)',
-              'Blended',
-              'Location based',
-              'Fixed subscription-based'
-            ],
+            itemList:
+                mdrTypeList.map((item) => item['mdrType'].toString()).toList(),
             //countryList.map((e) => e['ctyName']).toList(),
             onChanged: (value) {
               setState(() {
@@ -2478,10 +2693,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
               return null;
             },
           ),
+
           const SizedBox(
             height: 20,
           ),
-          CustomTextWidget(text: "MDR Summary"),
+          const CustomTextWidget(text: "MDR Summary"),
           const SizedBox(
             height: 5,
           ),
@@ -2491,14 +2707,19 @@ class _MerchantSignupState extends State<MerchantSignup> {
               padding: const EdgeInsets.all(15.0),
               child: Column(
                 children: [
-                  Row(
-                    children: [
+                  Wrap(children: [
+                    for (var item in mdrSummaryList)
                       CustomTextWidget(
-                          text:
-                              "UPI - 0% |  UPI (Credit) - 1.5%\nDebit Card - 0.4%  \nDebit Card(Rupay) - 0%\nCredit (Domestic - 1.99%)"),
-                    ],
-                  ),
-                  SizedBox(
+                          text: '${item['schemeName']}-${item['schemeType']}',
+                          isBold: false)
+                  ]
+                      // CustomTextWidget(
+                      //     text:
+                      //         "UPI - 0% |  UPI (Credit) - 1.5%\nDebit Card - 0.4%  \nDebit Card(Rupay) - 0%\nCredit (Domestic - 1.99%)",
+                      //     isBold: false),
+
+                      ),
+                  const SizedBox(
                     height: 15,
                   ),
                   Container(
@@ -2509,9 +2730,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
                         color: Colors.grey.shade600,
                         size: 10,
                       ),
-                      children: [
+                      children: const [
                         Padding(
-                          padding: const EdgeInsets.all(16.0),
+                          padding: EdgeInsets.all(16.0),
                           child: Text("content"),
                         ),
                       ],
@@ -2525,7 +2746,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
             height: 20.0,
           ),
           const FormTitleWidget(
-              subWord: 'Merchant Aggrement', mainWord: 'Acceptance of'),
+              subWord: 'Merchant Agreement', mainWord: 'Acceptance of'),
 
           // Text(
           //   "You are in the final step of registration process. Please click on Get Started below to complete your registration",
@@ -2666,7 +2887,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 Expanded(
                   child: RichText(
                     text: TextSpan(
-                      text: "Merchant Service Aggrement",
+                      text: "Merchant Service agreement",
                       style: Theme.of(context)
                           .textTheme
                           .bodyMedium
