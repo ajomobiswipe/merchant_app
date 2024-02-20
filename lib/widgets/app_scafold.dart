@@ -5,12 +5,13 @@ class AppScafofld extends StatelessWidget {
   final bool eneableAppbar;
   final Widget child;
   final EdgeInsetsGeometry? padding;
-  const AppScafofld({
-    super.key,
-    required this.child,
-    this.padding,
-    this.eneableAppbar = true,
-  });
+  dynamic Function()? onPressed;
+  AppScafofld(
+      {super.key,
+      required this.child,
+      this.padding,
+      this.eneableAppbar = true,
+      this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -18,9 +19,10 @@ class AppScafofld extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: eneableAppbar
           ? AppAppbar(
-              onPressed: () {
-                Navigator.pop(context);
-              },
+              onPressed: onPressed ??
+                  () {
+                    Navigator.pop(context);
+                  },
             )
           : null,
       body: Padding(
