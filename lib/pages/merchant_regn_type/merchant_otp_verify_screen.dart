@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:sifr_latest/common_widgets/app_text_form_feild.dart';
 import 'package:sifr_latest/common_widgets/custom_otp_widget.dart';
@@ -18,6 +19,14 @@ class MerchantOTPVerifyScreen extends StatefulWidget {
 
 class _MerchantOTPVerifyScreenState extends State<MerchantOTPVerifyScreen> {
   final TextEditingController _mobileNoController = TextEditingController();
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _mobileNoController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -256,13 +265,41 @@ class _MerchantOTPVerifyScreenState extends State<MerchantOTPVerifyScreen> {
               controller: _mobileNoController,
               keyboardType: TextInputType.number,
 
+              maxLength: 10,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
+              ],
+
               prefixIcon: Icons.phone,
 
               onChanged: (phone) {
                 // merchantPersonalReq.currentMobileNo =
                 //     phone.countryCode + phone.number;
               },
+              suffixIcon: Column(
+                children: [
+                  Icon(
+                    Icons.send,
+                    color: AppColors.kLightGreen,
+                  ),
+                  CustomTextWidget(
+                    text: "Send",
+                    size: 10,
+                    color: AppColors.kLightGreen,
+                  )
+                ],
+              ),
+              suffixIconTrue: true,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Phone Number is Mandatory!';
+                }
+                if (value.length < 10) {
+                  return 'Length shuld be equal to 10 numbers';
+                }
 
+                return null;
+              },
               // validator: (value) {
               //   print(value);
               //   return '';
@@ -306,6 +343,14 @@ class _MerchantOTPVerifyScreenState extends State<MerchantOTPVerifyScreen> {
             CustomOtpWidget(
               onCompleted: (pin) {
                 print('onCompleted: $pin');
+              },
+              phonemumbercontroller: _mobileNoController,
+              validator: (pin) {
+                if (pin == "2222") {
+                  return null;
+                } else {
+                  return "invalid otp";
+                }
               },
             ),
             // const SizedBox(

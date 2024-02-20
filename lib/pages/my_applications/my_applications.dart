@@ -237,49 +237,52 @@ class _MyApplicationsState extends State<MyApplications> {
   @override
   Widget build(BuildContext context) {
     return AppScafofld(
+        onPressed: () {},
         child: Column(
-      children: [
-        CustomTextWidget(
-            text: 'MY APPLICATIONS', fontWeight: FontWeight.bold, size: 16),
-
-        // ElevatedButton(
-        //     onPressed: () {
-        //       Navigator.of(context)
-        //           .pushNamed('merchantQrCode', arguments: {'params': "200"});
-        //     },
-        //     child: Text("qrdata")),
-        // QRCode(
-        //   qrSize: 250,
-        //   qrBackgroundColor: Colors.white,
-        //   qrPadding: 13,
-        //   qrBorderRadius: 10,
-        //   qrForegroundColor: Theme.of(context).primaryColor,
-        //   qrData:
-        //       //"upi://pay?pa=7558877098@apl&pn=Ajo Sebastian&am=500&cu=INR&tn=justForFun",
-        //       "000201010212260800043456520499953039785406100.235802IT5907Druidia6005MILAN6233012910000001#QRID00000421##10001#",
-        //   gapLess: false,
-        //   // embeddedImage: AssetImage("assets/logo.jpg"),
-        // ),
-        Row(
           children: [
-            const SizedBox(
-              height: 150,
-              width: 150,
-              child: DashboardChart(),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            CustomTextWidget(
+                text: 'MY APPLICATIONS', fontWeight: FontWeight.bold, size: 16),
+
+            // ElevatedButton(
+            //     onPressed: () {
+            //       Navigator.of(context)
+            //           .pushNamed('merchantQrCode', arguments: {'params': "200"});
+            //     },
+            //     child: Text("qrdata")),
+            // QRCode(
+            //   qrSize: 250,
+            //   qrBackgroundColor: Colors.white,
+            //   qrPadding: 13,
+            //   qrBorderRadius: 10,
+            //   qrForegroundColor: Theme.of(context).primaryColor,
+            //   qrData:
+            //       //"upi://pay?pa=7558877098@apl&pn=Ajo Sebastian&am=500&cu=INR&tn=justForFun",
+            //       "000201010212260800043456520499953039785406100.235802IT5907Druidia6005MILAN6233012910000001#QRID00000421##10001#",
+            //   gapLess: false,
+            //   // embeddedImage: AssetImage("assets/logo.jpg"),
+            // ),
+            Row(
               children: [
-                chartLabels(
-                    color: Colors.yellow, label: 'Pending For  Kyc Approval'),
-                chartLabels(color: Colors.cyan, label: 'Pending For payment'),
-                chartLabels(
-                    color: Colors.purple, label: 'Pending For Deployment'),
-                chartLabels(color: Colors.green, label: 'Live'),
+                const SizedBox(
+                  height: 150,
+                  width: 150,
+                  child: DashboardChart(),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    chartLabels(
+                        color: Colors.yellow,
+                        label: 'Pending For  Kyc Approval'),
+                    chartLabels(
+                        color: Colors.cyan, label: 'Pending For payment'),
+                    chartLabels(
+                        color: Colors.purple, label: 'Pending For Deployment'),
+                    chartLabels(color: Colors.green, label: 'Live'),
+                  ],
+                )
               ],
-            )
-          ],
-        ),
+            ),
 //         DropdownButton<int>(
 //   value: selectedStatusIndex,
 //   onChanged: (int newIndex) {
@@ -295,204 +298,205 @@ class _MyApplicationsState extends State<MyApplications> {
 //     );
 //   }).toList(),
 // ),
-        SizedBox(
-          height: 20,
-        ),
-        DropdownButtonFormField(
-          // hint: const Text('Select Stage'),
-          value: selectedValue ?? 0,
-          items: [
-            DropdownMenuItem(
-              value: 0,
-              child: Text('All'),
+            SizedBox(
+              height: 20,
             ),
-            ...applicationStatus.map((value) {
-              return DropdownMenuItem(
-                value: value,
-                child: Text(value["statusName"].toString()),
-              );
-            }),
-          ],
-          onChanged: (value) {
-            setState(() {
-              selectedValue = value;
-              selectesStage = value == 0 ? 0 : selectedValue["statusInfoId"];
+            DropdownButtonFormField(
+              // hint: const Text('Select Stage'),
+              value: selectedValue ?? 0,
+              items: [
+                DropdownMenuItem(
+                  value: 0,
+                  child: Text('All'),
+                ),
+                ...applicationStatus.map((value) {
+                  return DropdownMenuItem(
+                    value: value,
+                    child: Text(value["statusName"].toString()),
+                  );
+                }),
+              ],
+              onChanged: (value) {
+                setState(() {
+                  selectedValue = value;
+                  selectesStage =
+                      value == 0 ? 0 : selectedValue["statusInfoId"];
 
-              // packagelist = selectedValue["tmsPackage"];
-              // print(value);
-            });
-          },
-          decoration: InputDecoration(
-            label: Text(
-              "Select Stage",
-              style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                  // packagelist = selectedValue["tmsPackage"];
+                  // print(value);
+                });
+              },
+              decoration: InputDecoration(
+                label: Text(
+                  "Select Stage",
+                  style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                ),
+                // hintText:"Select Stage",
+                // counterText: counterText ?? '',
+                // errorMaxLines: errorMaxLines,
+                // helperText: "helperText",
+                // errorText: errorText,
+                // helperStyle: helperStyle,
+                fillColor: AppColors.kTileColor,
+                filled: true,
+                hintStyle: Theme.of(context)
+                    .textTheme
+                    .displaySmall
+                    ?.copyWith(fontSize: 16, fontWeight: FontWeight.normal),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                  borderSide: const BorderSide(
+                    color: Colors.transparent,
                   ),
-            ),
-            // hintText:"Select Stage",
-            // counterText: counterText ?? '',
-            // errorMaxLines: errorMaxLines,
-            // helperText: "helperText",
-            // errorText: errorText,
-            // helperStyle: helperStyle,
-            fillColor: AppColors.kTileColor,
-            filled: true,
-            hintStyle: Theme.of(context)
-                .textTheme
-                .displaySmall
-                ?.copyWith(fontSize: 16, fontWeight: FontWeight.normal),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(5.0),
-              borderSide: const BorderSide(
-                color: Colors.transparent,
+                ),
+                enabledBorder: const OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                    borderSide: BorderSide(color: Colors.transparent)),
+                disabledBorder: const OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                    borderSide: BorderSide(color: Colors.transparent)),
+                focusedBorder: const OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                    borderSide: BorderSide(color: Colors.transparent)),
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 4, vertical: 10),
+                prefixIcon:
+                    Icon(Icons.storage, color: Theme.of(context).primaryColor),
               ),
             ),
-            enabledBorder: const OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                borderSide: BorderSide(color: Colors.transparent)),
-            disabledBorder: const OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                borderSide: BorderSide(color: Colors.transparent)),
-            focusedBorder: const OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                borderSide: BorderSide(color: Colors.transparent)),
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 4, vertical: 10),
-            prefixIcon:
-                Icon(Icons.storage, color: Theme.of(context).primaryColor),
-          ),
-        ),
-        SizedBox(
-          height: 20,
-        ),
-        CustomTextFormField(
-          title: 'Search with Merchant Name',
-          controller: _merchantNameController,
-          required: true,
-          textCapitalization: TextCapitalization.words,
-          // enabled: _firstNameController.text.isEmpty ||
-          //         _firstNameController.text.length < 3
-          //     ? enabledLast = false
-          //     : enabledLast = true,
-          // prefixIcon: LineAwesome.user_circle,
-          // validator: (value) {
-          //   if (value.trim() == null || value.trim().isEmpty) {
-          //     return 'Last Name is Mandatory!';
-          //   }
-          //   if (value.trim().length < 3) {
-          //     return 'Minimum 3 characters';
-          //   }
-          //   return null;
-          // },
-          onChanged: (String value) {
-            value = value.trim();
-          },
-          onSaved: (value) {
-            // registerRequestModel.lastName = value.trim();
-          },
-          onFieldSubmitted: (value) {
-            // _lastNameController.text = value.trim();
-          },
-          suffixIcon: Icon(Icons.search),
-          suffixIconTrue: true,
-          suffixIconOnPressed: () {
-            setState(() {
-              print("sufix pressed");
-              print(_merchantNameController.text);
-              print(selectesStage);
-              // getAllMerchantApplications();
-              allOnboardingApplications.clear();
-              getAllMerchantApplications();
-            });
-          },
-        ),
-        // if (selectedValue != null)
-        //   Text(selectedValue["statusInfoId"].toString()),
-        allOnboardingApplications.isNotEmpty
-            ? Expanded(
-                child: ListView(
-                  children:
-                      List.generate(allOnboardingApplications.length, (index) {
-                    return ListTile(
-                      leading: Text((index + 1).toString()),
-                      title: Row(
-                        children: [
-                          CustomTextWidget(
-                              size: 14,
-                              fontWeight: FontWeight.w800,
-                              color: Colors.black87,
-                              text: "Name : "),
-                          Expanded(
-                            child: CustomTextWidget(
-                                size: 14,
-                                fontWeight: FontWeight.w800,
-                                color: AppColors.kLightGreen,
-                                text: allOnboardingApplications[index]
-                                    ["merchantName"]),
-                          ),
-                        ],
-                      ),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
+            SizedBox(
+              height: 20,
+            ),
+            CustomTextFormField(
+              title: 'Search with Merchant Name',
+              controller: _merchantNameController,
+              required: true,
+              textCapitalization: TextCapitalization.words,
+              // enabled: _firstNameController.text.isEmpty ||
+              //         _firstNameController.text.length < 3
+              //     ? enabledLast = false
+              //     : enabledLast = true,
+              // prefixIcon: LineAwesome.user_circle,
+              // validator: (value) {
+              //   if (value.trim() == null || value.trim().isEmpty) {
+              //     return 'Last Name is Mandatory!';
+              //   }
+              //   if (value.trim().length < 3) {
+              //     return 'Minimum 3 characters';
+              //   }
+              //   return null;
+              // },
+              onChanged: (String value) {
+                value = value.trim();
+              },
+              onSaved: (value) {
+                // registerRequestModel.lastName = value.trim();
+              },
+              onFieldSubmitted: (value) {
+                // _lastNameController.text = value.trim();
+              },
+              suffixIcon: Icon(Icons.search),
+              suffixIconTrue: true,
+              suffixIconOnPressed: () {
+                setState(() {
+                  print("sufix pressed");
+                  print(_merchantNameController.text);
+                  print(selectesStage);
+                  // getAllMerchantApplications();
+                  allOnboardingApplications.clear();
+                  getAllMerchantApplications();
+                });
+              },
+            ),
+            // if (selectedValue != null)
+            //   Text(selectedValue["statusInfoId"].toString()),
+            allOnboardingApplications.isNotEmpty
+                ? Expanded(
+                    child: ListView(
+                      children: List.generate(allOnboardingApplications.length,
+                          (index) {
+                        return ListTile(
+                          leading: Text((index + 1).toString()),
+                          title: Row(
                             children: [
-                              CustomTextWidget(size: 12, text: "Number : "),
                               CustomTextWidget(
-                                  size: 12,
-                                  text: allOnboardingApplications[index]
-                                      ["mobileNo"]),
+                                  size: 14,
+                                  fontWeight: FontWeight.w800,
+                                  color: Colors.black87,
+                                  text: "Name : "),
+                              Expanded(
+                                child: CustomTextWidget(
+                                    size: 14,
+                                    fontWeight: FontWeight.w800,
+                                    color: AppColors.kLightGreen,
+                                    text: allOnboardingApplications[index]
+                                        ["merchantName"]),
+                              ),
                             ],
                           ),
-                          // CustomTextWidget(
-                          //     size: 12,
-                          //     text: allOnboardingApplications[index]
-                          //             ["insertDatetime"]
-                          //         .toString())
-                        ],
-                      ),
-                      trailing: SizedBox(
-                        width: 100,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text(
-                              allOnboardingApplications[index]
-                                          ["statusInfoId"] ==
-                                      null
-                                  ? "Unknown"
-                                  : "${allOnboardingApplications[index]["statusInfoId"]["statusName"]}",
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  CustomTextWidget(size: 12, text: "Number : "),
+                                  CustomTextWidget(
+                                      size: 12,
+                                      text: allOnboardingApplications[index]
+                                          ["mobileNo"]),
+                                ],
+                              ),
+                              // CustomTextWidget(
+                              //     size: 12,
+                              //     text: allOnboardingApplications[index]
+                              //             ["insertDatetime"]
+                              //         .toString())
+                            ],
+                          ),
+                          trailing: SizedBox(
+                            width: 100,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  allOnboardingApplications[index]
+                                              ["statusInfoId"] ==
+                                          null
+                                      ? "Unknown"
+                                      : "${allOnboardingApplications[index]["statusInfoId"]["statusName"]}",
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                InkWell(
+                                  child: CustomTextWidget(
+                                      text: "Check Status",
+                                      color: AppColors.kPrimaryColor,
+                                      size: 12),
+                                  onTap: () {
+                                    _showMyDialog(
+                                        data: ststusdata[index],
+                                        Phonenumber:
+                                            allOnboardingApplications[index]
+                                                ["mobileNo"],
+                                        name: allOnboardingApplications[index]
+                                            ["merchantName"]);
+                                  },
+                                ),
+                              ],
                             ),
-                            InkWell(
-                              child: CustomTextWidget(
-                                  text: "Check Status",
-                                  color: AppColors.kPrimaryColor,
-                                  size: 12),
-                              onTap: () {
-                                _showMyDialog(
-                                    data: ststusdata[index],
-                                    Phonenumber:
-                                        allOnboardingApplications[index]
-                                            ["mobileNo"],
-                                    name: allOnboardingApplications[index]
-                                        ["merchantName"]);
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  }),
-                ),
-              )
-            : const Expanded(
-                child: Center(
-                    child: SizedBox(child: Text("No Application Found")))),
-      ],
-    ));
+                          ),
+                        );
+                      }),
+                    ),
+                  )
+                : const Expanded(
+                    child: Center(
+                        child: SizedBox(child: Text("No Application Found")))),
+          ],
+        ));
   }
 
   Row chartLabels({

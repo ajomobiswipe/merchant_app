@@ -27,6 +27,7 @@ import '../pages/payment/payment_success_page.dart';
 import '../pages/transactions/qr_transaction_list.dart';
 import '../pages/transactions/transaction_list.dart';
 import '../pages/users/profile/profile.dart';
+import '../pages/users/signup/customer/signup_success_screen.dart';
 import '../pages/users/users.dart';
 import '../pages/wallet/wallet.dart';
 import '../providers/providers.dart';
@@ -51,8 +52,8 @@ class CustomRoute {
           return const UserTypeSelection();
         case "MerchantNumVerify":
           return const MerchantOTPVerifyScreen();
-        case "merchantOnboarding":
-          return const MerchantSignup();
+        // case "merchantOnboarding":
+        //   return const MerchantSignup();
         case "myApplications":
           return const MyApplications();
         case "LocationPage":
@@ -65,6 +66,9 @@ class CustomRoute {
           return const PaymentPage();
         case "PaymentSuccessPage":
           return const PaymentSuccessPage();
+        case "SignUpSucessScreen":
+          return const SignUpSucessScreen();
+
         case "settings":
           return const SettingsPage();
 
@@ -98,8 +102,8 @@ class CustomRoute {
         case "splash":
           return const SplashScreen();
 
-        case "merchantSignUp":
-          return const MerchantSignup();
+        // case "merchantSignUp":
+        //   return const MerchantSignup();
 
         case "checkYourMail":
           return const CheckYourMail();

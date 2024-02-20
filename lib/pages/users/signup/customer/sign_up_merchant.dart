@@ -34,7 +34,9 @@ import '../../../../widgets/widget.dart';
 import '../../../mechant_order/models/mechant_additionalingo_model.dart';
 
 class MerchantSignup extends StatefulWidget {
-  const MerchantSignup({Key? key}) : super(key: key);
+  final TextEditingController verifiednumber;
+  const MerchantSignup({Key? key, required this.verifiednumber})
+      : super(key: key);
 
   @override
   State<MerchantSignup> createState() => _MerchantSignupState();
@@ -326,6 +328,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
   @override
   initState() {
+    _mobileNoController.text = widget.verifiednumber.text;
     DevicePermission().checkPermission();
     getCurrentPosition();
     //getSecurityQuestions();
@@ -417,10 +420,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
         merchantAdditionalInfoReq: merchantAdditionalInfoReq,
         selectedItems: selectedItems,
       );
-    }
-    if (position == 1) {
-      return mainControl(merchantDetials());
+    } else if (position == 1) {
+      return mainControl(merchantDetialsPartOne());
     } else if (position == 2) {
+      return mainControl(merchantDetialsPartTwo());
+    } else if (position == 3) {
       return mainControl(merchantIdproof());
     }
 
@@ -472,9 +476,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
     //   );
     // }
 
-    else if (position == 3) {
+    else if (position == 4) {
       return mainControl(merchantBusinessProof());
-    } else if (position == 4) {
+    } else if (position == 5) {
       return MerchantStoreImagesForm(
         previous: storePrevious,
         next: storeNext,
@@ -488,7 +492,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
         selectedStoreState: selectedStoreState,
         selectedStoreCity: selectedStoreCity,
       );
-    } else if (position == 5) {
+    } else if (position == 6) {
       return mainControl(merchantBankDetails());
     }
     // else if (position == 6) {
@@ -510,7 +514,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
     //       kycBackImage: kycBack);
     // }
 
-    else if (position == 6) {
+    else if (position == 7) {
       return mainControl(review());
     }
   }
@@ -582,7 +586,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
   }
 
   /// PERSONAL INFORMATION
-  Widget merchantDetials() {
+  Widget merchantDetialsPartOne() {
     var screenHeight = MediaQuery.of(context).size.height;
     return Form(
         key: personalFormKey,
@@ -641,7 +645,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   return 'Merchant Legal name is Mandatory!';
                 }
                 if (value.length < 3) {
-                  return 'Minimum 3 characters';
+                  return 'The minimum length 3 characters';
                 }
                 return null;
               },
@@ -667,10 +671,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
               controller: _contactPersonNameController,
               required: true,
               textCapitalization: TextCapitalization.words,
-              // enabled: _firstNameController.text.isEmpty ||
-              //         _firstNameController.text.length < 3
-              //     ? enabledLast = false
-              //     : enabledLast = true,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z . ]'))
+              ],
               prefixIcon: LineAwesome.user_circle,
               validator: (value) {
                 value = value.trim();
@@ -678,7 +681,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   return 'Contact Persons Name is Mandatory!';
                 }
                 if (value.length < 3) {
-                  return 'Minimum 3 characters';
+                  return 'The minimum length 3 characters';
                 }
                 if (!Validators.isValidName(value)) {
                   return 'Invalid  Name';
@@ -713,13 +716,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
               validator: (value) {
                 value = value.trim();
                 if (value == null || value.isEmpty) {
-                  return 'Contact Persons Name is Mandatory!';
+                  return 'Enter Your Email Address is Mandatory!';
                 }
-                if (value.length < 3) {
-                  return 'Minimum 3 characters';
-                }
-                if (!Validators.isValidName(value)) {
-                  return 'Invalid  Name';
+
+                if (!Validators.isValidEmail(value)) {
+                  return 'Invalid  Email';
                 }
                 return null;
               },
@@ -734,7 +735,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 });
               },
               onSaved: (value) {
-                merchantPersonalReq.lastName = value;
+                // merchantPersonalReq.lastName = value;
               },
               onFieldSubmitted: (value) {
                 _emailController.text = value.trim();
@@ -750,9 +751,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
               controller: _mobileNoController,
               keyboardType: TextInputType.number,
               title: 'Phone Number',
-              // enabled: _dateController.text.isEmpty
-              //     ? enabledMobile = false
-              //     : enabledMobile = enabledDob,
+              maxLength: 10,
+              enabled: false,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
+              ],
               required: true,
               helperText: mobileNoCheckMessage,
               helperStyle: style,
@@ -762,9 +765,18 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 color: AppColors.kPrimaryColor,
               ),
               suffixIconTrue: true,
-
               onChanged: (phone) {
                 merchantPersonalReq.currentMobileNo = phone;
+              },
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Phone Number is Mandatory!';
+                }
+                if (value.length < 10) {
+                  return 'Length shuld be equal to 10 numbers';
+                }
+
+                return null;
               },
             ),
             CustomTextFormField(
@@ -779,6 +791,10 @@ class _MerchantSignupState extends State<MerchantSignup> {
               required: true,
               helperText: mobileNoCheckMessage,
               helperStyle: style,
+              maxLength: 10,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
+              ],
               prefixIcon: FontAwesome.mobile_solid,
               onChanged: (phone) {},
               suffixIcon: const Icon(
@@ -786,6 +802,16 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 color: AppColors.kPrimaryColor,
               ),
               suffixIconTrue: true,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Phone Number is Mandatory!';
+                }
+                if (value.length < 10) {
+                  return 'Length shuld be equal to 10 numbers';
+                }
+
+                return null;
+              },
             ),
             const SizedBox(
               height: 20,
@@ -813,6 +839,76 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 return null;
               },
             ),
+
+            const SizedBox(
+              height: 20.0,
+            ),
+            CustomAppButton(
+              title: "Next",
+              onPressed: () async {
+                setState(() {
+                  position++;
+                });
+                // personalFormKey.currentState!.save();
+                // if (personalFormKey.currentState!.validate()) {
+                //   print(jsonEncode(merchantPersonalReq.toJson()));
+                //   setState(() {
+                //     currTabPosition = 2;
+                //     position = 2;
+                //   });
+                // }
+              },
+            ),
+            const SizedBox(
+              height: 20.0,
+            ),
+          ],
+        ));
+  }
+
+  Widget merchantDetialsPartTwo() {
+    var screenHeight = MediaQuery.of(context).size.height;
+    return Form(
+        key: personalFormKey,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const SizedBox(height: 10),
+            appTabbar(
+              screenHeight: screenHeight,
+              currTabPosition: currTabPosition,
+            ),
+
+            // Placeholder(
+            //   child: Row(
+            //     children: [
+            //       ElevatedButton(
+            //           onPressed: () {
+            //             setState(() {
+            //               currTabPosition = 1;
+            //             });
+            //           },
+            //           child: Text('reset')),
+            //       ElevatedButton(
+            //           onPressed: () {
+            //             setState(() {
+            //               currTabPosition--;
+            //             });
+            //           },
+            //           child: Text('back')),
+            //       ElevatedButton(
+            //           onPressed: () {
+            //             setState(() {
+            //               currTabPosition++;
+            //             });
+            //           },
+            //           child: Text('next')),
+            //     ],
+            //   ),
+            // ),
+            // defaultHeight(30),
+            // const FormTitleWidget(subWord: 'Merchant Details'),
+            // defaultHeight(10),
 
             CustomTextFormField(
               title: 'Merchant DBA Name',
@@ -1085,8 +1181,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
               title: "Next",
               onPressed: () async {
                 setState(() {
+                  position++;
                   currTabPosition = 2;
-                  position = 2;
                 });
                 // personalFormKey.currentState!.save();
                 // if (personalFormKey.currentState!.validate()) {
@@ -1404,7 +1500,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               onPressed: () async {
                 setState(() {
                   currTabPosition = 2;
-                  position = 4;
+                  position++;
                 });
                 // personalFormKey.currentState!.save();
                 // if (personalFormKey.currentState!.validate()) {
@@ -1768,7 +1864,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
               title: 'Next',
               onPressed: () {
                 setState(() {
-                  position = 3; //old 2
+                  position++; //old 2
+                  currTabPosition = 3;
                 });
                 // if (loginFormKey.currentState!.validate()) {
                 //   loginFormKey.currentState!.save();
@@ -2119,7 +2216,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 title: 'Next',
                 onPressed: () {
                   setState(() {
-                    position = 6; //old 6//2
+                    position++; //old 6//2
+                    currTabPosition = 5;
                   });
                   // if (loginFormKey.currentState!.validate()) {
                   //   loginFormKey.currentState!.save();
@@ -2195,7 +2293,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
   storeNext() {
     setState(() {
-      position = 5;
+      position++;
+      currTabPosition = 4;
     });
   }
 
@@ -2626,7 +2725,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
             child: CustomAppButton(
               title: "Submit",
               onPressed: () {
-                submitUserRegistration();
+                Navigator.pushNamedAndRemoveUntil(
+                    context, "SignUpSucessScreen", (route) => false);
+                //  submitUserRegistration();
                 // if (requestModel.acceptLicense == true) {
                 //   submitUserRegistration();
                 // } else {

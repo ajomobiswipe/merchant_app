@@ -1,10 +1,19 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
 import 'package:sifr_latest/common_widgets/custom_app_button.dart';
+import 'package:sifr_latest/pages/users/signup/customer/customer.dart';
 
 class CustomOtpWidget extends StatefulWidget {
   final Function(String)? onCompleted;
-  const CustomOtpWidget({Key? key, this.onCompleted}) : super(key: key);
+  String? Function(String?)? validator;
+  final TextEditingController phonemumbercontroller;
+  CustomOtpWidget(
+      {Key? key,
+      this.onCompleted,
+      this.validator,
+      required this.phonemumbercontroller})
+      : super(key: key);
 
   @override
   State<CustomOtpWidget> createState() => _CustomOtpWidgetState();
@@ -59,9 +68,7 @@ class _CustomOtpWidgetState extends State<CustomOtpWidget> {
               listenForMultipleSmsOnAndroid: true,
               defaultPinTheme: defaultPinTheme,
               separatorBuilder: (index) => const SizedBox(width: 8),
-              validator: (value) {
-                return value == '2580' ? null : 'Pin is incorrect';
-              },
+              validator: widget.validator,
               // onClipboardFound: (value) {
               //   debugPrint('onClipboardFound: $value');
               //   pinController.setText(value);
@@ -112,9 +119,19 @@ class _CustomOtpWidgetState extends State<CustomOtpWidget> {
             onPressed: () {
               focusNode.unfocus();
               formKey.currentState!.save();
-              formKey.currentState!.validate();
+              if (formKey.currentState!.validate()) {
+                Navigator.push<void>(
+                  context,
+                  CupertinoPageRoute<void>(
+                    builder: (BuildContext context) => MerchantSignup(
+                        verifiednumber: widget.phonemumbercontroller),
+                  ),
+                );
+              }
+              ;
               print(pinController.text);
-              Navigator.pushNamed(context, 'merchantOnboarding');
+              // Navigator.pushNamed(context, 'merchantOnboarding');
+              // Navigator.push(context, route);
             },
           ),
         ],
