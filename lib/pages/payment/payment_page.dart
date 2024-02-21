@@ -9,12 +9,9 @@ class PaymentPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-
-    TextStyle _textStyle(){
+    TextStyle _textStyle() {
       return const TextStyle(fontWeight: FontWeight.bold);
     }
-
 
     return AppScafofld(
         child: ListView(
@@ -32,7 +29,6 @@ class PaymentPage extends StatelessWidget {
         SizedBox(
           height: 20,
         ),
-
         Padding(
           padding: const EdgeInsets.only(left: 20),
           child: Column(
@@ -49,7 +45,6 @@ class PaymentPage extends StatelessWidget {
             ],
           ),
         ),
-
         SizedBox(
           height: 20,
         ),
@@ -58,10 +53,26 @@ class PaymentPage extends StatelessWidget {
           dataRowMinHeight: 20,
           dataRowMaxHeight: 30,
           columns: [
-            DataColumn(label: Text('Product',style: _textStyle(),)),
-            DataColumn(label: Text('Quantity',style: _textStyle(),)),
-            DataColumn(label: Text('Unit Price',style: _textStyle(),)),
-            DataColumn(label: Text('Amount',style: _textStyle(),)),
+            DataColumn(
+                label: Text(
+              'Product',
+              style: _textStyle(),
+            )),
+            DataColumn(
+                label: Text(
+              'Quantity',
+              style: _textStyle(),
+            )),
+            DataColumn(
+                label: Text(
+              'Unit Price',
+              style: _textStyle(),
+            )),
+            DataColumn(
+                label: Text(
+              'Amount',
+              style: _textStyle(),
+            )),
           ],
           rows: [
             DataRow(cells: [
@@ -97,11 +108,17 @@ class PaymentPage extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      CustomTextWidget(text: "Total",fontWeight: FontWeight.bold,),
+                      CustomTextWidget(
+                        text: "Total",
+                        fontWeight: FontWeight.bold,
+                      ),
                       SizedBox(
                         width: 20,
                       ),
-                      CustomTextWidget(text: "10000",fontWeight: FontWeight.bold,)
+                      CustomTextWidget(
+                        text: "10000",
+                        fontWeight: FontWeight.bold,
+                      )
                     ],
                   ),
                   SizedBox(
@@ -109,11 +126,17 @@ class PaymentPage extends StatelessWidget {
                   ),
                   Row(
                     children: [
-                      CustomTextWidget(text: "GST 18%",fontWeight: FontWeight.bold,),
+                      CustomTextWidget(
+                        text: "GST 18%",
+                        fontWeight: FontWeight.bold,
+                      ),
                       SizedBox(
                         width: 20,
                       ),
-                      CustomTextWidget(text: "1800",fontWeight: FontWeight.bold,)
+                      CustomTextWidget(
+                        text: "1800",
+                        fontWeight: FontWeight.bold,
+                      )
                     ],
                   ),
                   SizedBox(
@@ -121,11 +144,17 @@ class PaymentPage extends StatelessWidget {
                   ),
                   Row(
                     children: [
-                      CustomTextWidget(text: "Payeable Amount",fontWeight: FontWeight.bold,),
+                      CustomTextWidget(
+                        text: "Payeable Amount",
+                        fontWeight: FontWeight.bold,
+                      ),
                       SizedBox(
                         width: 40,
                       ),
-                      CustomTextWidget(text: "11800",fontWeight: FontWeight.bold,)
+                      CustomTextWidget(
+                        text: "11800",
+                        fontWeight: FontWeight.bold,
+                      )
                     ],
                   )
                 ],
@@ -156,7 +185,10 @@ class PaymentPage extends StatelessWidget {
                 SizedBox(
                   height: 20,
                 ),
-                CustomTextWidget(text: "Scan The QR ",fontWeight: FontWeight.bold,),
+                CustomTextWidget(
+                  text: "Scan The QR ",
+                  fontWeight: FontWeight.bold,
+                ),
                 SizedBox(
                   height: 20,
                 ),
@@ -168,16 +200,11 @@ class PaymentPage extends StatelessWidget {
         SizedBox(
           height: 20,
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CustomAppButton(
-              title: 'Payment Link',
-              onPressed: () {
-                Navigator.pushNamed(context, "PaymentSuccessPage");
-              },
-            ),
-          ],
+        CustomAppButton(
+          title: 'Payment Link',
+          onPressed: () {
+            Navigator.pushNamed(context, "PaymentSuccessPage");
+          },
         ),
         SizedBox(
           height: 40,

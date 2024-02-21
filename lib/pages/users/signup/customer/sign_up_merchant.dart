@@ -873,6 +873,17 @@ class _MerchantSignupState extends State<MerchantSignup> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 10),
+
+            const Row(
+              children: [
+                CustomTextWidget(
+                  text: "Merchant KYC",
+                  size: 18,
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+
             appTabbar(
               screenHeight: screenHeight,
               currTabPosition: currTabPosition,

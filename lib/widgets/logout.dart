@@ -92,7 +92,7 @@ class Logout {
                                             textStyle: const TextStyle(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.bold)),
-                                        child: const Text('No'),
+                                        child: const Text('No',style: TextStyle(color: Colors.white),),
                                       ),
                                       ElevatedButton(
                                         onPressed: () async {
@@ -113,8 +113,8 @@ class Logout {
                                                 horizontal: 30),
                                             textStyle: const TextStyle(
                                                 fontSize: 16,
-                                                fontWeight: FontWeight.bold)),
-                                        child: const Text('Yes'),
+                                                fontWeight: FontWeight.bold,color: Colors.white)),
+                                        child: const Text('Yes',style: TextStyle(color: Colors.white)),
                                       ),
                                     ]))),
                         const SizedBox(height: 30),
