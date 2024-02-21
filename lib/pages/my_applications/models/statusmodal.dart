@@ -22,6 +22,7 @@ class ApplicationStatus {
   bool? live;
   List<Device>? devices;
   dynamic map;
+  dynamic merchantProductDetailsResponse;
 
   ApplicationStatus({
     this.errorMessage,
@@ -34,7 +35,7 @@ class ApplicationStatus {
     this.allDevicesOnboarded,
     this.live,
     this.devices,
-    this.map,
+    this.map,this.merchantProductDetailsResponse
   });
 
   factory ApplicationStatus.fromJson(Map<String, dynamic> json) =>
@@ -73,7 +74,7 @@ class ApplicationStatus {
 }
 
 class Device {
-  int? productId;
+  String? productId;
   String? productName;
   int? packageId;
   String? package;

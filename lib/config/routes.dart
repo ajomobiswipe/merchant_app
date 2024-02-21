@@ -27,6 +27,7 @@ import '../pages/payment/payment_success_page.dart';
 import '../pages/transactions/qr_transaction_list.dart';
 import '../pages/transactions/transaction_list.dart';
 import '../pages/users/profile/profile.dart';
+import '../pages/users/profile/profile_new_page.dart';
 import '../pages/users/signup/customer/signup_success_screen.dart';
 import '../pages/users/users.dart';
 import '../pages/wallet/wallet.dart';
@@ -37,6 +38,9 @@ import '../widgets/widget.dart';
 // Custom route Class
 class CustomRoute {
   static Route<dynamic> allRoutes(RouteSettings settings) {
+
+    var args=settings.arguments;
+
     return CupertinoPageRoute(builder: (context) {
       final isOnline = Provider.of<ConnectivityProvider>(context).isOnline;
       if (!isOnline) {
@@ -62,8 +66,10 @@ class CustomRoute {
           return const DeviceDeploymentScreen();
         case "forgotPassword":
           return const ForgotPassword();
+
         case "PaymentPage":
-          return const PaymentPage();
+          return  PaymentPage(merchantDetails: args as Map<String,dynamic>?,);
+
         case "PaymentSuccessPage":
           return const PaymentSuccessPage();
         case "SignUpSucessScreen":
@@ -168,6 +174,11 @@ class CustomRoute {
         /// USERS UPDATE PAGE
         case "profile":
           return const ProfilePage();
+
+        case "profileNewScreen":
+          return const ProfileNewScreen();
+
+
         case "updatePersonalInfo":
           Map args = settings.arguments as Map;
           return UpdatePersonalInfo(

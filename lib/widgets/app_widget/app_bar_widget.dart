@@ -51,7 +51,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
         style: Theme.of(context)
             .textTheme
             .titleMedium
-            ?.copyWith(color: Colors.white),
+            ?.copyWith(color: Colors.black),
       ),
       actions: [
         action == false
@@ -64,7 +64,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                   padding: const EdgeInsets.only(right: 20),
                   child: const Icon(
                     LineAwesome.sign_out_alt_solid,
-                    color: Colors.white,
+                    color: Colors.black,
                     size: 25,
                   ),
                 ),

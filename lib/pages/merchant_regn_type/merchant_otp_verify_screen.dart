@@ -121,7 +121,7 @@ class _MerchantOTPVerifyScreenState extends State<MerchantOTPVerifyScreen> {
 
           onSelected: (value) {
             if (value == 1) {
-              Navigator.pushNamed(context, 'PaymentPage');
+              Navigator.pushNamed(context, 'profileNewScreen');
             } else if (value == 2) {
               Navigator.pushNamed(context, 'myApplications');
             } else if (value == 3) {

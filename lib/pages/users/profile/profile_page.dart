@@ -451,6 +451,8 @@ class _ProfilePageState extends State<ProfilePage> {
           data.clear();
           data = [response['customer']];
           mDetails = [response];
+
+
           if (data[0]['dob'] != null) {
             var a = DateFormat('yyyy-MM-dd').parse(data[0]['dob'].toString());
             _dateController.text = DateFormat('dd-MM-yyyy').format(a);

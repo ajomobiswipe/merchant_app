@@ -485,14 +485,91 @@ class UserServices {
     // return resonr;
   }
 
+  // Future<dynamic> getMerchantInvoiceDetails(merchantId) async {
+  //   Connection connection = Connection();
+  //   var url =
+  //       'http://172.29.100.221:9508/NanoPay/Middleware/UiApi/merchantInvoiceDetails/$merchantId';
+  //   var response = await connection.get(url);
+  //   print("Defaultvalues Api response code" +url);
+  //   return response;
+  //
+  //   // old merchant onboarding implimentation
+  //   // SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   // String? barrertoken = prefs.getString('bearerToken');
+  //   // print(barrertoken);
+  //   // http.Response resonr = await http.get(
+  //   //   Uri.parse(
+  //   //       'http://omasoftposqc.omaemirates.com:9508/NanoPay/Middleware/UiApi/GetMerchantDefaultValues'),
+  //   //   headers: {
+  //   //     'Content-Type': 'application/json; charset=UTF-8',
+  //   //     'Authorization': 'Bearer $barrertoken',
+  //   //   },
+  //   // );
+  //
+  //   // con
+  //   // print(resonr.body);
+  //   // // print(prefs.getString('bearerToken') ?? 'error in reciving token');
+  //
+  //   // // print('length  : ${acquirerDetails.length}');
+  //   // // for (var acquirer in acquirerDetails) {
+  //   // //   String acquirerName = acquirer['acquirerName'];
+  //   // //   print('Acquirer Name: $acquirerName');
+  //   // // }
+  //   // return resonr;
+  // }
+
   Future<dynamic> getMerchantApplication(
       {required int stage, required String merchantname}) async {
+
     Connection connection = Connection();
-    final requestBody = {"stage": stage, "merchantName": merchantname};
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String? userName=prefs.getString('userName');
+
+    print(userName);
+
+
+    final requestBody = {"stage": stage, "merchantName": merchantname,"userId":userName};
+
     var url =
         'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/MerchantOnboardList';
     var response = await connection.post(url, requestBody);
     print("Defaultvalues Api response code" + response.statusCode.toString());
+    return response;
+
+    // old merchant onboarding implimentation
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    // String? barrertoken = prefs.getString('bearerToken');
+    // print(barrertoken);
+    // http.Response resonr = await http.get(
+    //   Uri.parse(
+    //       'http://omasoftposqc.omaemirates.com:9508/NanoPay/Middleware/UiApi/GetMerchantDefaultValues'),
+    //   headers: {
+    //     'Content-Type': 'application/json; charset=UTF-8',
+    //     'Authorization': 'Bearer $barrertoken',
+    //   },
+    // );
+
+    // con
+    // print(resonr.body);
+    // // print(prefs.getString('bearerToken') ?? 'error in reciving token');
+
+    // // print('length  : ${acquirerDetails.length}');
+    // // for (var acquirer in acquirerDetails) {
+    // //   String acquirerName = acquirer['acquirerName'];
+    // //   print('Acquirer Name: $acquirerName');
+    // // }
+    // return resonr;
+  }
+
+  Future<dynamic> getMerchantApplicationStatus(merchantInd) async {
+    Connection connection = Connection();
+    final requestBody = {"merchantId":"$merchantInd"};
+    var url =
+        'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/MerchantOnboardingStatus';
+    var response = await connection.post(url, requestBody);
+
     return response;
 
     // old merchant onboarding implimentation

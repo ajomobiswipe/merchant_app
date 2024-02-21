@@ -285,7 +285,7 @@ class _LoginPageState extends State<LoginPage> {
         var code = response.statusCode;
         if (code == 200 || code == 201) {
           if (result['responseCode'] == "00") {
-            saveSecureStorage(result);
+            saveSecureStorage(result,userName: requestModel.userName);
             Navigator.pushReplacementNamed(context, 'MerchantNumVerify');
             setLoading(false);
           } else if (result['responseCode'] == "03") {
@@ -307,7 +307,7 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  saveSecureStorage(decodeData) async {
+  saveSecureStorage(decodeData,{String? userName}) async {
     /// NEW HIVE STORAGE CONTROLS
     var datetime = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
     String dateStr = datetime.toString();
@@ -323,7 +323,11 @@ class _LoginPageState extends State<LoginPage> {
     /// OLD Shared Preferences STORAGE CONTROLS
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('token', decodeData['bearerToken'].toString());
-    prefs.setString('userName', decodeData['userName'].toString());
+
+    // prefs.setString('userName', decodeData['userName'].toString());
+    prefs.setString('userName', userName!);
+
+
     prefs.setString('role', decodeData['role'].toString());
     prefs.setString('lastLogin', dateStr);
     prefs.setBool('isLogged', true);
@@ -395,8 +399,8 @@ class _LoginPageState extends State<LoginPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 5),
+          const Padding(
+            padding: EdgeInsets.only(bottom: 5),
             child: CustomTextWidget(
               text: "Username",
               fontWeight: FontWeight.bold,
@@ -461,8 +465,8 @@ class _LoginPageState extends State<LoginPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 5),
+          const Padding(
+            padding: EdgeInsets.only(bottom: 5),
             child: CustomTextWidget(
               text: "Password",
               fontWeight: FontWeight.bold,
@@ -582,7 +586,7 @@ class _LoginPageState extends State<LoginPage> {
       onPressed: () {
         Navigator.pushNamed(context, 'forgotPassword');
       },
-      child: CustomTextWidget(
+      child: const CustomTextWidget(
         text: "Forgot Password?",
         color: AppColors.kPrimaryColor,
         fontWeight: FontWeight.bold,

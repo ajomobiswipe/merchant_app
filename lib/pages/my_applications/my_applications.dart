@@ -28,205 +28,206 @@ class _MyApplicationsState extends State<MyApplications> {
   int selectesStage = 0;
   dynamic selectedValue;
   List<ApplicationStatus> ststusdata = [
-    ApplicationStatus(
-      kycApproved: true,
-      amountToPay: 2000,
-      eNach: true,
-      payment: true,
-      midtidGenerated: true,
-      allDevicesOnboarded: true,
-      errorMessage: '5456455',
-      live: true,
-      statusCode: 200,
-      map: "null",
-      devices: [
-        Device(
-          deploymentStatus: true,
-          package: "tactiacl",
-          packageId: 1,
-          price: 3000,
-          productId: 2,
-          productName: "Softpos",
-        ),
-        Device(
-          deploymentStatus: true,
-          package: "tactiacl",
-          packageId: 1,
-          price: 3000,
-          productId: 2,
-          productName: "AndroidPos",
-        ),
-      ],
-    ),
-    ApplicationStatus(
-      kycApproved: true,
-      amountToPay: 2000,
-      eNach: true,
-      payment: true,
-      midtidGenerated: false,
-      allDevicesOnboarded: false,
-      errorMessage: 'success',
-      live: false,
-      statusCode: 200,
-      map: "null",
-      devices: [
-        Device(
-          deploymentStatus: false,
-          package: "tactiacl",
-          packageId: 1,
-          price: 3000,
-          productId: 2,
-          productName: "Softpos",
-        ),
-        Device(
-          deploymentStatus: false,
-          package: "tactiacl",
-          packageId: 1,
-          price: 3000,
-          productId: 2,
-          productName: "Softpos",
-        ),
-        Device(
-          deploymentStatus: false,
-          package: "tactiacl",
-          packageId: 1,
-          price: 3000,
-          productId: 2,
-          productName: "Softpos",
-        ),
-        Device(
-          deploymentStatus: false,
-          package: "tactiacl",
-          packageId: 1,
-          price: 3000,
-          productId: 2,
-          productName: "Softpos",
-        ),
-      ],
-    ),
-    ApplicationStatus(
-      kycApproved: true,
-      amountToPay: 2000,
-      eNach: true,
-      payment: true,
-      midtidGenerated: false,
-      allDevicesOnboarded: false,
-      errorMessage: 'success',
-      live: false,
-      statusCode: 200,
-      map: "null",
-      devices: [
-        Device(
-          deploymentStatus: false,
-          package: "tactiacl",
-          packageId: 1,
-          price: 3000,
-          productId: 2,
-          productName: "Softpos",
-        ),
-        Device(
-          deploymentStatus: false,
-          package: "tactiacl",
-          packageId: 1,
-          price: 3000,
-          productId: 2,
-          productName: "Softpos",
-        ),
-        Device(
-          deploymentStatus: false,
-          package: "tactiacl",
-          packageId: 1,
-          price: 3000,
-          productId: 2,
-          productName: "Softpos",
-        ),
-        Device(
-          deploymentStatus: false,
-          package: "tactiacl",
-          packageId: 1,
-          price: 3000,
-          productId: 2,
-          productName: "Softpos",
-        ),
-      ],
-    ),
-    ApplicationStatus(
-      kycApproved: true,
-      amountToPay: 2000,
-      eNach: true,
-      payment: true,
-      midtidGenerated: true,
-      allDevicesOnboarded: false,
-      errorMessage: 'success',
-      live: true,
-      statusCode: 200,
-      map: "null",
-      devices: [
-        Device(
-          deploymentStatus: true,
-          package: "tactiacl",
-          packageId: 1,
-          price: 3000,
-          productId: 2,
-          productName: "Softpos",
-        ),
-        Device(
-          deploymentStatus: true,
-          package: "tactiacl",
-          packageId: 1,
-          price: 3000,
-          productId: 2,
-          productName: "Softpos",
-        ),
-        Device(
-          deploymentStatus: true,
-          package: "tactiacl",
-          packageId: 1,
-          price: 3000,
-          productId: 2,
-          productName: "Softpos",
-        ),
-        Device(
-          deploymentStatus: false,
-          package: "tactiacl",
-          packageId: 1,
-          price: 3000,
-          productId: 2,
-          productName: "Softpos",
-        ),
-      ],
-    ),
-    ApplicationStatus(
-      kycApproved: true,
-      amountToPay: 2000,
-      eNach: false,
-      payment: false,
-      midtidGenerated: false,
-      allDevicesOnboarded: false,
-      errorMessage: 'success',
-      live: false,
-      statusCode: 200,
-      map: "null",
-      devices: [
-        Device(
-          deploymentStatus: false,
-          package: "tactiacl",
-          packageId: 1,
-          price: 3000,
-          productId: 2,
-          productName: "Softpos",
-        ),
-        Device(
-          deploymentStatus: false,
-          package: "tactiacl",
-          packageId: 1,
-          price: 3000,
-          productId: 2,
-          productName: "Softpos",
-        ),
-      ],
-    ),
+    // ApplicationStatus(
+    //   kycApproved: true,
+    //   amountToPay: 2000,
+    //   eNach: true,
+    //   payment: true,
+    //   midtidGenerated: true,
+    //   allDevicesOnboarded: true,
+    //   errorMessage: '5456455',
+    //   live: true,
+    //   statusCode: 200,
+    //   map: "null",
+    //   devices: [
+    //     Device(
+    //       deploymentStatus: true,
+    //       package: "tactiacl",
+    //       packageId: 1,
+    //       price: 3000,
+    //       productId: 2,
+    //       productName: "Softpos",
+    //     ),
+    //     Device(
+    //       deploymentStatus: true,
+    //       package: "tactiacl",
+    //       packageId: 1,
+    //       price: 3000,
+    //       productId: 2,
+    //       productName: "AndroidPos",
+    //     ),
+    //   ],
+    // ),
+    // ApplicationStatus(
+    //   kycApproved: true,
+    //   amountToPay: 2000,
+    //   eNach: true,
+    //   payment: true,
+    //   midtidGenerated: false,
+    //   allDevicesOnboarded: false,
+    //   errorMessage: 'success',
+    //   live: false,
+    //   statusCode: 200,
+    //   map: "null",
+    //   devices: [
+    //     Device(
+    //       deploymentStatus: false,
+    //       package: "tactiacl",
+    //       packageId: 1,
+    //       price: 3000,
+    //       productId: 2,
+    //       productName: "Softpos",
+    //     ),
+    //     Device(
+    //       deploymentStatus: false,
+    //       package: "tactiacl",
+    //       packageId: 1,
+    //       price: 3000,
+    //       productId: 2,
+    //       productName: "Softpos",
+    //     ),
+    //     Device(
+    //       deploymentStatus: false,
+    //       package: "tactiacl",
+    //       packageId: 1,
+    //       price: 3000,
+    //       productId: 2,
+    //       productName: "Softpos",
+    //     ),
+    //     Device(
+    //       deploymentStatus: false,
+    //       package: "tactiacl",
+    //       packageId: 1,
+    //       price: 3000,
+    //       productId: 2,
+    //       productName: "Softpos",
+    //     ),
+    //   ],
+    // ),
+    // ApplicationStatus(
+    //   kycApproved: true,
+    //   amountToPay: 2000,
+    //   eNach: true,
+    //   payment: true,
+    //   midtidGenerated: false,
+    //   allDevicesOnboarded: false,
+    //   errorMessage: 'success',
+    //   live: false,
+    //   statusCode: 200,
+    //   map: "null",
+    //   devices: [
+    //     Device(
+    //       deploymentStatus: false,
+    //       package: "tactiacl",
+    //       packageId: 1,
+    //       price: 3000,
+    //       productId: 2,
+    //       productName: "Softpos",
+    //     ),
+    //     Device(
+    //       deploymentStatus: false,
+    //       package: "tactiacl",
+    //       packageId: 1,
+    //       price: 3000,
+    //       productId: 2,
+    //       productName: "Softpos",
+    //     ),
+    //     Device(
+    //       deploymentStatus: false,
+    //       package: "tactiacl",
+    //       packageId: 1,
+    //       price: 3000,
+    //       productId: 2,
+    //       productName: "Softpos",
+    //     ),
+    //     Device(
+    //       deploymentStatus: false,
+    //       package: "tactiacl",
+    //       packageId: 1,
+    //       price: 3000,
+    //       productId: 2,
+    //       productName: "Softpos",
+    //     ),
+    //   ],
+    // ),
+    // ApplicationStatus(
+    //   kycApproved: true,
+    //   amountToPay: 2000,
+    //   eNach: true,
+    //   payment: true,
+    //   midtidGenerated: true,
+    //   allDevicesOnboarded: false,
+    //   errorMessage: 'success',
+    //   live: true,
+    //   statusCode: 200,
+    //   map: "null",
+    //   devices: [
+    //     Device(
+    //       deploymentStatus: true,
+    //       package: "tactiacl",
+    //       packageId: 1,
+    //       price: 3000,
+    //       productId: 2,
+    //       productName: "Softpos",
+    //     ),
+    //     Device(
+    //       deploymentStatus: true,
+    //       package: "tactiacl",
+    //       packageId: 1,
+    //       price: 3000,
+    //       productId: 2,
+    //       productName: "Softpos",
+    //     ),
+    //     Device(
+    //       deploymentStatus: true,
+    //       package: "tactiacl",
+    //       packageId: 1,
+    //       price: 3000,
+    //       productId: 2,
+    //       productName: "Softpos",
+    //     ),
+    //     Device(
+    //       deploymentStatus: false,
+    //       package: "tactiacl",
+    //       packageId: 1,
+    //       price: 3000,
+    //       productId: 2,
+    //       productName: "Softpos",
+    //     ),
+    //   ],
+    // ),
+    // ApplicationStatus(
+    //   kycApproved: true,
+    //   amountToPay: 2000,
+    //   eNach: false,
+    //   payment: false,
+    //   midtidGenerated: false,
+    //   allDevicesOnboarded: false,
+    //   errorMessage: 'success',
+    //   live: false,
+    //   statusCode: 200,
+    //   map: "null",
+    //   devices: [
+    //     Device(
+    //       deploymentStatus: false,
+    //       package: "tactiacl",
+    //       packageId: 1,
+    //       price: 3000,
+    //       productId: 2,
+    //       productName: "Softpos",
+    //     ),
+    //     Device(
+    //       deploymentStatus: false,
+    //       package: "tactiacl",
+    //       packageId: 1,
+    //       price: 3000,
+    //       productId: 2,
+    //       productName: "Softpos",
+    //     ),
+    //   ],
+    // ),
   ];
+
   @override
   void initState() {
     super.initState();
@@ -237,7 +238,10 @@ class _MyApplicationsState extends State<MyApplications> {
   @override
   Widget build(BuildContext context) {
     return AppScafofld(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pushNamedAndRemoveUntil(
+              context, 'MerchantNumVerify', (route) => false);
+        },
         child: Column(
           children: [
             CustomTextWidget(
@@ -301,11 +305,12 @@ class _MyApplicationsState extends State<MyApplications> {
             SizedBox(
               height: 20,
             ),
+
             DropdownButtonFormField(
               // hint: const Text('Select Stage'),
               value: selectedValue ?? 0,
               items: [
-                DropdownMenuItem(
+                const DropdownMenuItem(
                   value: 0,
                   child: Text('All'),
                 ),
@@ -321,6 +326,8 @@ class _MyApplicationsState extends State<MyApplications> {
                   selectedValue = value;
                   selectesStage =
                       value == 0 ? 0 : selectedValue["statusInfoId"];
+
+                  getAllMerchantApplications();
 
                   // packagelist = selectedValue["tmsPackage"];
                   // print(value);
@@ -367,6 +374,7 @@ class _MyApplicationsState extends State<MyApplications> {
                     Icon(Icons.storage, color: Theme.of(context).primaryColor),
               ),
             ),
+
             SizedBox(
               height: 20,
             ),
@@ -413,6 +421,7 @@ class _MyApplicationsState extends State<MyApplications> {
             ),
             // if (selectedValue != null)
             //   Text(selectedValue["statusInfoId"].toString()),
+
             allOnboardingApplications.isNotEmpty
                 ? Expanded(
                     child: ListView(
@@ -422,7 +431,7 @@ class _MyApplicationsState extends State<MyApplications> {
                           leading: Text((index + 1).toString()),
                           title: Row(
                             children: [
-                              CustomTextWidget(
+                              const CustomTextWidget(
                                   size: 14,
                                   fontWeight: FontWeight.w800,
                                   color: Colors.black87,
@@ -442,11 +451,13 @@ class _MyApplicationsState extends State<MyApplications> {
                             children: [
                               Row(
                                 children: [
-                                  CustomTextWidget(size: 12, text: "Number : "),
+                                  const CustomTextWidget(
+                                      size: 12, text: "Number : "),
                                   CustomTextWidget(
                                       size: 12,
                                       text: allOnboardingApplications[index]
-                                          ["mobileNo"]),
+                                              ["mobileNo"] ??
+                                          ''),
                                 ],
                               ),
                               // CustomTextWidget(
@@ -471,18 +482,75 @@ class _MyApplicationsState extends State<MyApplications> {
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 InkWell(
-                                  child: CustomTextWidget(
+                                  child: const CustomTextWidget(
                                       text: "Check Status",
                                       color: AppColors.kPrimaryColor,
                                       size: 12),
-                                  onTap: () {
+                                  onTap: () async {
+                                    var response;
+
+                                    response = await _getApplicationStatus(
+                                        allOnboardingApplications[index]
+                                            ['merchantId']);
+
+                                    // response ??= await _getApplicationStatus(
+                                    //     "ADIBM0000000375");
+
+                                    List<Device> _devices = [];
+
+                                    if (response['data'][0][
+                                                'merchantProductDetailsResponse']
+                                            ['merchantProductDetails'] !=
+                                        null) {
+                                      for (var item in response['data'][0]
+                                              ['merchantProductDetailsResponse']
+                                          ['merchantProductDetails']) {
+                                        _devices.add(Device(
+                                            productId: item['productId'],
+                                            productName: item['productName'],
+                                            deploymentStatus:
+                                                item['deploymentStatus'],
+                                            package: item['packageId'],
+                                            packageId: item['packageId'],
+                                            quantity: item['qty'],
+                                            price: item['unitPrice']));
+                                      }
+                                    }
+
+                                    ApplicationStatus dataResponse =
+                                        ApplicationStatus(
+                                            errorMessage:
+                                                response['errorMessage'],
+                                            statusCode: response['statusCode'],
+                                            amountToPay: 200,
+                                            kycApproved: response['data'][0]
+                                                ['appStatus'],
+                                            // payment: response['data'][0]
+                                            //     ['paymentStatus'],
+                                            payment: false,
+                                            eNach: response['data'][0]
+                                                ['paymentStatus'],
+                                            midtidGenerated: response['data'][0]
+                                                ['onboardingStatus'],
+                                            allDevicesOnboarded: true,
+                                            live: response['data'][0]
+                                                ['liveStatus'],
+                                            devices: _devices,
+                                            map: response['map'],
+                                            merchantProductDetailsResponse:
+                                                response['data'][0][
+                                                    'merchantProductDetailsResponse']);
+
                                     _showMyDialog(
-                                        data: ststusdata[index],
-                                        Phonenumber:
+                                        data: dataResponse,
+                                        phoneNumber:
                                             allOnboardingApplications[index]
                                                 ["mobileNo"],
                                         name: allOnboardingApplications[index]
-                                            ["merchantName"]);
+                                            ["merchantName"],
+                                        merchantId:
+                                            allOnboardingApplications[index]
+                                                ['merchantId']);
                                   },
                                 ),
                               ],
@@ -605,8 +673,6 @@ class _MyApplicationsState extends State<MyApplications> {
         String applicationStatusis = applications['merchantName'].toString();
         print('merchant Name: $applicationStatusis');
         print('Merchant Mobile number : ${applications['mobileNo']}');
-        print(
-            'Application Status: ${applications['statusInfoId']["statusName"]}');
       }
 
       print("Total Irems" "${allOnboardingApplications.length}");
@@ -629,17 +695,30 @@ class _MyApplicationsState extends State<MyApplications> {
     });
   }
 
-  Future<void> _showMyDialog(
-      {required ApplicationStatus data,
-      required String name,
-      required String Phonenumber}) async {
+  _getApplicationStatus(merchantId) async {
+    print("----AllMerchantApplications called$merchantId");
+    var response = await userServices.getMerchantApplicationStatus(merchantId);
+    final Map<String, dynamic> data = json.decode(response.body);
+    List<dynamic> applicationsFromJson = data['data'];
+    if (applicationsFromJson.isEmpty) return null;
+    print('response before  return$applicationsFromJson');
+    return data;
+  }
+
+  Future<void> _showMyDialog({
+    required ApplicationStatus data,
+    required String name,
+    required String phoneNumber,
+    required String merchantId,
+  }) async {
     //if(data.devices!.isNotEmpty)
     return showDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Colors.white, shadowColor: Colors.white,
+          backgroundColor: Colors.white,
+          shadowColor: Colors.white,
           surfaceTintColor: Colors.white,
           title: Row(
             children: [
@@ -647,25 +726,26 @@ class _MyApplicationsState extends State<MyApplications> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    Phonenumber,
-                    style: TextStyle(fontSize: 16),
+                    phoneNumber,
+                    style: const TextStyle(fontSize: 16),
                   ),
                   Text(
                     name,
-                    style: TextStyle(fontSize: 20),
+                    style: const TextStyle(fontSize: 20),
                   ),
                 ],
               ),
-              Expanded(child: SizedBox()),
+              const Expanded(child: SizedBox()),
               IconButton(
-                icon: Icon(Icons.cancel_outlined, color: Color(0xFF97098D)),
+                icon:
+                    const Icon(Icons.cancel_outlined, color: Color(0xFF97098D)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               )
             ],
           ),
-          content: Container(
+          content: SizedBox(
             height: 600,
             width: 400,
             child: ListView(
@@ -691,13 +771,13 @@ class _MyApplicationsState extends State<MyApplications> {
                   ),
                   endChild: Row(
                     children: [
-                      Text(
+                      const Text(
                         " Application",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Expanded(child: SizedBox()),
+                      const Expanded(child: SizedBox()),
                       statusTextWidget(
                           title: "Kyc Approved", status: data.kycApproved!),
                     ],
@@ -721,23 +801,30 @@ class _MyApplicationsState extends State<MyApplications> {
                   ),
                   endChild: Row(
                     children: [
-                      Text(
+                      const Text(
                         " payment",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Expanded(child: SizedBox()),
+                      const Expanded(child: SizedBox()),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           data.payment!
                               ? statusTextWidget(
-                                  title: "Recived", status: data.payment!)
+                                  title: "Received", status: data.payment!)
                               : ElevatedButton(
                                   onPressed: () {
-                                    Navigator.pushNamed(context, "PaymentPage");
+                                    Navigator.pushNamed(context, "PaymentPage",
+                                        arguments: {
+                                          "merchantId": merchantId,
+                                          "merchantProductDetailsResponse": data
+                                              .merchantProductDetailsResponse,
+                                          "mobile": phoneNumber,
+                                          "name": name
+                                        });
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.red,
@@ -746,7 +833,7 @@ class _MyApplicationsState extends State<MyApplications> {
                                     ),
                                     minimumSize: Size(60.0, 30.0),
                                   ),
-                                  child: Text(
+                                  child: const Text(
                                     "Collect",
                                     style: TextStyle(color: Colors.white),
                                   )),
@@ -888,7 +975,7 @@ class _MyApplicationsState extends State<MyApplications> {
                     ],
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 40,
                 ),
                 Column(

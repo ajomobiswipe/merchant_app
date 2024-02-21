@@ -23,7 +23,10 @@ class BoxStorage {
 
   //Save User Details
   saveUserDetails(user) {
+
+
     box.put('user', user);
+
   }
 
   //Get User Details
