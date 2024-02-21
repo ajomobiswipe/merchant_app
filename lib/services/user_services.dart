@@ -521,17 +521,19 @@ class UserServices {
 
   Future<dynamic> getMerchantApplication(
       {required int stage, required String merchantname}) async {
-
     Connection connection = Connection();
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    String? userName=prefs.getString('userName');
+    String? userName = prefs.getString('userName');
 
     print(userName);
 
-
-    final requestBody = {"stage": stage, "merchantName": merchantname,"userId":userName};
+    final requestBody = {
+      "stage": stage,
+      "merchantName": merchantname,
+      "userId": userName
+    };
 
     var url =
         'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/MerchantOnboardList';
@@ -566,7 +568,7 @@ class UserServices {
 
   Future<dynamic> getMerchantApplicationStatus(merchantInd) async {
     Connection connection = Connection();
-    final requestBody = {"merchantId":"$merchantInd"};
+    final requestBody = {"merchantId": "$merchantInd"};
     var url =
         'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/MerchantOnboardingStatus';
     var response = await connection.post(url, requestBody);
@@ -716,26 +718,30 @@ class UserServices {
   * Params: RegisterRequestModel,newProfilePicture,kycFrontImage,kycBackImage,tradeLicense,nationalIdFront,nationalIdBack and cancelCheque
   */
   newMerchantSignup(
+    merchantProductInfoReq,
     companyDetailsInforeq,
     merchantIdProofReq,
     businessIdProofReq,
     merchantStoreInfoReq,
     merchantAgreeMentReq,
-    merchantPersonalReq,
-    merchantCompanyDetailsReq,
-    kycFront,
-    kycBack,
-    tradeLicense,
-    nationalIdFront,
-    nationalIdBack,
-    cancelCheque,
+    merchantBankInfoReq,
+    merchantStoreFrontImage,
+    merchantStoreInsideImage,
+    cancelledChequeImg,
+    // merchantPersonalReq,
+    // merchantCompanyDetailsReq,
+    // kycFront,
+    // kycBack,
+    // tradeLicense,
+    // nationalIdFront,
+    // nationalIdBack,
   ) async {
     //var url = EndPoints.baseApi9502 + EndPoints.registerAPI;
     BoxStorage boxStorage = BoxStorage();
     String barrertoken = boxStorage.getToken();
 
     var url =
-        'http://omasoftposqc.omaemirates.com:9508/NanoPay/Middleware/UiApi/merchantRegistration';
+        'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/merchantMobileOnboarding';
     // Set up the headers
     Map<String, String> headers = {
       'Content-Type': 'multipart/form-data',
@@ -744,149 +750,49 @@ class UserServices {
 
     final request = http.MultipartRequest('POST', Uri.parse(url))
       ..headers.addAll(headers);
-    final kf = await http.MultipartFile.fromPath('shopLicenseFile', kycFront);
-    final kb = await http.MultipartFile.fromPath('gstFile', kycBack);
-    final tl = await http.MultipartFile.fromPath('poiFile', tradeLicense);
-    final nf = await http.MultipartFile.fromPath('poaFile', nationalIdFront);
-    final nb = await http.MultipartFile.fromPath('chequeFile', nationalIdBack);
+    // final kf = await http.MultipartFile.fromPath('shopLicenseFile', kycFront);
+    // final kb = await http.MultipartFile.fromPath('gstFile', kycBack);
+    // final tl = await http.MultipartFile.fromPath('poiFile', tradeLicense);
+    final storeInsideImg = await http.MultipartFile.fromPath(
+        'storeInsideImg', merchantStoreFrontImage);
+    final storeOutsideImg = await http.MultipartFile.fromPath(
+        'storeOutsideImg', merchantStoreInsideImage);
+    final cancelledCheqImg = await http.MultipartFile.fromPath(
+        'cancelledChequeImg', cancelledChequeImg);
 
-    if (cancelCheque != '') {
-      var cc =
-          await http.MultipartFile.fromPath('canceledCheque', cancelCheque);
-      request.files.add(cc);
-    }
+    // if (cancelCheque != '') {
+    //   var cc =
+
+    // }
     // if (profilePic != '') {
     //   var pp = await http.MultipartFile.fromPath('profilePic', profilePic);
     //   request.files.add(pp);
     // }
 
-    request.files.add(kf);
-    request.files.add(kb);
-    request.files.add(tl);
-    request.files.add(nf);
-    request.files.add(nb);
+    // request.files.add(kf);
+    // request.files.add(kb);
+    // request.files.add(tl);merchantProductInfo
 
-    // request.fields['instId'] = Constants.instId;
-    // request.fields['notificationToken'] = req.notificationToken;
-    // request.fields['deviceType'] = Constants.deviceType;
-    // request.fields['deviceId'] = req.deviceId;
-    // request.fields['userName'] = req.userName;
-    // request.fields['firstName'] = req.firstName;
-    // request.fields['lastName'] = req.lastName;
-    // request.fields['nickName'] = req.nickName;
-    // request.fields['password'] = req.password;
-    // request.fields['pin'] = req.pin;
-    // request.fields['mobileCountryCode'] = req.mobileCountryCode;
-    // request.fields['mobileNumber'] = req.mobileNumber;
-    // request.fields['emailId'] = req.emailId;
-    // request.fields['dob'] = req.dob;
-    // request.fields['role'] = req.role;
-    // request.fields['questionOne'] = req.questionOne;
-    // request.fields['answerOne'] = req.answerOne;
-    // request.fields['questionTwo'] = req.questionTwo;
-    // request.fields['answerTwo'] = req.answerTwo;
-    // request.fields['questionThree'] = req.questionThree;
-    // request.fields['answerThree'] = req.answerThree;
-    // request.fields['country'] = req.country;
-    // request.fields['state'] = req.state;
-    // request.fields['city'] = req.city;
-    // request.fields['latitude'] = req.latitude.toString();
-    // request.fields['longitude'] = req.longitude.toString();
-    // request.fields['merchantZipCode'] = req.merchantZipCode;
-    // request.fields['currencyId'] = req.currencyId ?? "784";
-    // request.fields['kycType'] = req.kycType ?? "E-KYC";
-
-    // request.fields['merchantName'] = req.merchantName;
-    // request.fields['mcc'] = req.mcc;
-    // request.fields['businessType'] = req.businessType;
-    // request.fields['companyRegNumber'] = req.companyRegNumber;
-    // request.fields['nationalId'] = req.nationalId;
-    // request.fields['nationalIdExpiry'] = req.nationalIdExpiry;
-    // request.fields['tradeLicenseCode'] = req.tradeLicenseCode;
-    // request.fields['tradeLicenseExpiry'] = req.tradeLicenseExpiry;
-    // var personInfo = {
-    //   "firstName": "HiFromApp",
-    //   "lastName": "NewTest",
-    //   "dob": "2022-11-16T20:00:00.000Z",
-    //   "poiType": 1,
-    //   "poiNumber": "18765432",
-    //   "poiExpiryDate": "2023-11-03T20:00:00.000Z",
-    //   "poaType": 1,
-    //   "poaNumber": "18765432",
-    //   "poaExpiryDate": "2023-11-03T20:00:00.000Z",
-    //   "currentAddress": "KM Trade,Rolla",
-    //   "currentCountry": 784,
-    //   "permanentState": "Sharjah",
-    //   "currentState": "Sharjah",
-    //   "currentNationality": "Emirates",
-    //   "currentMobileNo": "0567890987",
-    //   "currentAltMobNo": "0567890987",
-    //   "permanentAddress": "KM Trade ,Rolla",
-    //   "permanentCountry": 784,
-    //   "permanentZipCode": "870978",
-    //   "currentZipCode": "870978"
-    // };
-    // var cpmpanyin = {
-    //   "acquirerId": "ADIBOMA0001",
-    //   "merchantId": null,
-    //   "merchantName": "madhina",
-    //   "merchantAddress": "Al madina Al soor",
-    //   "merchantAddr2": "Rolla",
-    //   "description": "test merchant",
-    //   "cityCode": 2,
-    //   "countryId": 784,
-    //   "currency": 784,
-    //   "mobileNo": "0567898765",
-    //   "emailId": "subi@gmail.com",
-    //   "status": true,
-    //   "zipCode": "876545",
-    //   "mccTypeCode": 1,
-    //   "merchantLogoImage": "ADIB1.png",
-    //   "commercialName": "al madina",
-    //   "tradeLicenseNumber": "8765678",
-    //   "tradeLicenseExpiryDate": "2023-11-03T20:00:00.000Z",
-    //   "ownership": "test ownership",
-    //   "shareholderPercent": "test value",
-    //   "relationshipManagerId": 100,
-    //   "vatApplicable": true,
-    //   "vatRegistrationNumber": "98765",
-    //   "vatValue": "65",
-    //   "maxAuthAmount": "1000",
-    //   "maxTerminalCount": "50"
-    // };
-    var additionalinfi = {
-      "businessTypeId": 1,
-      "panNo": "EYVPS3146G",
-      "aadharCardNo": "626137263863",
-      "gstnNo": "08CQAPM2974B1ZZ",
-      "firmPanNo": "EYVPS3146G",
-      "annualTurnOver": "1 to 5 cr",
-      "bankAccountNo": "917558877098",
-      "bankIfscCode": "PYTM0123456",
-      "bankNameId": "1",
-      "beneficiaryName": "Ajo Sebastian",
-      "mdrType": "test",
-      "latitude": 20.658745,
-      "longitude": 22.354445,
-      "termsCondition": true,
-      "serviceAgreement": true,
-      "gstnVerifyStatus": true,
-      "panNumberVerifyStatus": true,
-      "aadhaarNumberVerifyStatus": true,
-      "firmPanNumberVerifyStatus": true,
-      "merchantBankVerifyStatus": true,
-      "merchantProductDetails": [
-        {"productId": "1", "packagetId": "1", "qty; ": 2},
-        {"productId": "2", "packagetId": "3", "qty; ": 3}
-      ]
-    };
-    request.fields['personalInfo'] = jsonEncode(merchantPersonalReq.toJson());
-    print(jsonEncode(merchantPersonalReq.toJson()));
+    print(jsonEncode(businessIdProofReq.toJson()));
+    print(jsonEncode(merchantStoreInfoReq.toJson()));
+    print(jsonEncode(merchantIdProofReq.toJson()));
+    print(jsonEncode(companyDetailsInforeq.toJson()));
+    print(jsonEncode(merchantBankInfoReq.toJson()));
+    print(jsonEncode(merchantAgreeMentReq.toJson()));
+    request.files.add(storeInsideImg);
+    request.files.add(storeOutsideImg);
+    request.files.add(cancelledCheqImg);
+    request.fields["userId"] = "softposadmin";
+    request.fields['merchantProductInfo'] = jsonEncode(merchantProductInfoReq);
     request.fields['companyDetailsInfo'] =
-        jsonEncode(merchantCompanyDetailsReq.toJson());
-
-    print(jsonEncode(merchantCompanyDetailsReq.toJson()));
-    request.fields['merchantAdditionalInfo'] = jsonEncode(additionalinfi);
+        jsonEncode(companyDetailsInforeq.toJson());
+    request.fields['merchantIdProof'] = jsonEncode(merchantIdProofReq.toJson());
+    request.fields['businessIDProof'] = jsonEncode(businessIdProofReq.toJson());
+    request.fields['merchantLocation'] =
+        jsonEncode(merchantStoreInfoReq.toJson());
+    request.fields['bankInfo'] = jsonEncode(merchantBankInfoReq.toJson());
+    request.fields['merchantAgreeMentInfo'] =
+        jsonEncode(merchantAgreeMentReq.toJson());
     final streamedResponse = await request.send();
     final response = await http.Response.fromStream(streamedResponse);
     return response;

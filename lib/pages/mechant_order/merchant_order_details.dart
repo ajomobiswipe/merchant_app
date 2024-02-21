@@ -87,8 +87,9 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
           const Row(
             children: [
               CustomTextWidget(
-                  text: "Merchant Order",
-                  size: 24,),
+                text: "Merchant Order",
+                size: 24,
+              ),
             ],
           ),
           Container(
@@ -285,8 +286,6 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                       text: "Quantity",
                       fontWeight: FontWeight.bold,
                     ),
-
-
                     Padding(
                       padding: const EdgeInsets.only(top: 8),
                       child: CustomDropdown(
@@ -305,7 +304,6 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                         },
                         onSaved: (value) {},
                         validator: (value) {
-
                           print('value12345563545$value');
 
                           if (value == null) {
@@ -321,7 +319,6 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                 defaultHeight(20),
                 IconButton(
                   onPressed: () {
-
                     if (_formKey.currentState!.validate()) {
                       var Product = selectedProductPackages.firstWhere(
                           (package) =>
@@ -373,7 +370,6 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                         widget.selectedItems.add(newItem);
                       });
                     }
-
                   },
                   icon: Row(
                     children: [
@@ -534,33 +530,16 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                 defaultHeight(20),
                 CustomAppButton(
                   onPressed: () async {
-                    widget.orderNext();
+                    // widget.orderNext();
 
-                    //print(widget.merchantAdditionalInfoReq.toJson());
-                    print(widget.merchantAdditionalInfoReq.toJson());
-
-                    final List<Map<String, dynamic>> productList =
-                        widget.selectedItems.map((product) {
-                      return {
-                        "productId": product.productId.toString(),
-                        "packageId": product.packagetId.toString(),
-                        "qty": product.quantity.toString(),
-                      };
-                    }).toList();
-
-                    final Map<String, dynamic> jsonMap = {
-                      "merchantProductDetails": productList,
-                    };
-
-                    final String jsonString = json.encode(jsonMap);
-                    print(jsonString);
-
-                    // if (selectedItems.isEmpty) {
-                    //   print("add atlest one product");
-                    // } else {
-                    //   print("no of products: ${selectedItems.length}");
-                    //   widget.orderNext;
-                    // }
+                    if (widget.selectedItems.isEmpty) {
+                      AlertService alert = AlertService();
+                      alert.error("please add a product");
+                      print("add atlest one product");
+                    } else {
+                      print("no of products: ${widget.selectedItems.length}");
+                      widget.orderNext();
+                    }
                   },
                   title: 'Next',
                 ),

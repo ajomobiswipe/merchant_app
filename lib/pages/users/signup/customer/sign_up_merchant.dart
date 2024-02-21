@@ -1011,7 +1011,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 companyDetailsInforeq.mccTypeCode = newValue["mccTypeCode"];
               },
               onSaved: (dynamic value) {
-                companyDetailsInforeq.mccTypeCode = value["mccTypeCode"];
+                // companyDetailsInforeq.mccTypeCode = value["mccTypeCode"];
+                companyDetailsInforeq.mccTypeCode = 1;
               },
             ),
 
@@ -1553,7 +1554,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             const SizedBox(height: 10),
-
             const Row(
               children: [
                 CustomTextWidget(
@@ -1562,14 +1562,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 ),
               ],
             ),
-
             const SizedBox(height: 10),
-
             appTabbar(
               screenHeight: screenHeight,
               currTabPosition: currTabPosition,
             ),
-
             const SizedBox(height: 30.0),
             const FormTitleWidget(subWord: 'Merchant Business Proofs'),
             CustomTextFormField(
@@ -1703,7 +1700,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
             SizedBox(
               height: 20,
             ),
-
             CustomDropdown(
               title: "Merchant Business Proof Document",
               titleEnabled: true,
@@ -1730,7 +1726,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 return null;
               },
             ),
-
             CustomTextFormField(
               onTap: _openFilePicker,
               title: 'Upload Business Proof Document',
@@ -1739,20 +1734,15 @@ class _MerchantSignupState extends State<MerchantSignup> {
               controller: businessProofDocumentCtrl,
               required: true,
               enabled: true,
+              readOnly: true,
               prefixIcon: LineAwesome.file,
               validator: (value) {
                 value = value.trim();
                 if (value == null || value.isEmpty) {
-                  return 'Merchant DBA Name Mandatory!';
-                }
-                if (value.length < 10) {
-                  return 'Minimum 10 characters';
+                  return ' please select Business Proof Document!';
                 }
 
                 return null;
-              },
-              onChanged: (String value) {
-                value = value.trim();
               },
               onSaved: (value) {
                 merchantPersonalReq.poaNumber = value;
@@ -1823,23 +1813,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
                     )
                   ],
                 )),
-            // CustomAppButton(
-            //   title: "back",
-            //   onPressed: () async {
-            //     setState(() {
-            //       currTabPosition = 2;
-            //       position = 1;
-            //     });
-            //     // personalFormKey.currentState!.save();
-            //     // if (personalFormKey.currentState!.validate()) {
-            //     //   print(jsonEncode(merchantPersonalReq.toJson()));
-            //     //   setState(() {
-            //     //     currTabPosition = 2;
-            //     //     position = 2;
-            //     //   });
-            //     // }
-            //   },
-            // ),
             const SizedBox(
               height: 40.0,
             ),
@@ -2139,16 +2112,13 @@ class _MerchantSignupState extends State<MerchantSignup> {
               CustomAppButton(
                 title: 'Next',
                 onPressed: () {
-                  setState(() {
-                    position++; //old 6//2
-                    currTabPosition = 5;
-                  });
-                  // if (loginFormKey.currentState!.validate()) {
-                  //   loginFormKey.currentState!.save();
-                  //   setState(() {
-                  //     position = 6; //old 6//2
-                  //   });
-                  // }
+                  if (loginFormKey.currentState!.validate()) {
+                    loginFormKey.currentState!.save();
+                    setState(() {
+                      position++;
+                      currTabPosition = 5;
+                    });
+                  }
                 },
               ),
               const SizedBox(height: 20),
@@ -2249,61 +2219,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
           const FormTitleWidget(
               subWord: 'Merchant Agreement', mainWord: 'Acceptance of'),
 
-          // Text(
-          //   "You are in the final step of registration process. Please click on Get Started below to complete your registration",
-          //   textAlign: TextAlign.center,
-          //   style: Theme.of(context).textTheme.bodyMedium?.copyWith(),
-          // ),
-          // const SizedBox(height: 20),
-          // Card(
-          //   elevation: 10,
-          //   margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 10.0),
-          //   child: ListTile(
-          //     title: Text(
-          //       'Name ',
-          //       style: Theme.of(context)
-          //           .textTheme
-          //           .displaySmall
-          //           ?.copyWith(fontWeight: FontWeight.bold),
-          //     ),
-          //     subtitle: Text(
-          //       '',
-          //       style: Theme.of(context).textTheme.bodyMedium,
-          //     ),
-          //   ),
-          // ),
-          // Card(
-          //   elevation: 10,
-          //   margin: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 10.0),
-          //   child: ListTile(
-          //     title: Text(
-          //       'Email ID',
-          //       style: Theme.of(context)
-          //           .textTheme
-          //           .displaySmall
-          //           ?.copyWith(fontWeight: FontWeight.bold),
-          //     ),
-          //     subtitle: Text(
-          //       " merchantCompanyDetailsReq.emailId!",
-          //       style: Theme.of(context).textTheme.bodyMedium,
-          //     ),
-          //   ),
-          // ),
-          // Card(
-          //   elevation: 10,
-          //   margin: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 10.0),
-          //   child: ListTile(
-          //     title: Text(
-          //       'Mobile Number',
-          //       style: Theme.of(context)
-          //           .textTheme
-          //           .displaySmall
-          //           ?.copyWith(fontWeight: FontWeight.bold),
-          //     ),
-          //     subtitle: Text("merchantCompanyDetailsReq.mobileNo!"),
-          //   ),
-          // ),
-
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
             child: RichText(
@@ -2352,25 +2267,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
                       acceptTnc = newValue!;
                     });
                     merchantAgreeMentReq.termsCondition = newValue!;
-                    // if (!accept) {
-                    //   var results =
-                    //       await Navigator.of(context).push(MaterialPageRoute(
-                    //           builder: (BuildContext context) {
-                    //             return const TermsAndConditionPage();
-                    //           },
-                    //           fullscreenDialog: true));
-                    //   setState(() {
-                    //     if (results != null) {
-                    //       accept = results;
-                    //       requestModel.acceptLicense = accept;
-                    //     }
-                    //   });
-                    // } else {
-                    //   setState(() {
-                    //     accept = false;
-                    //     requestModel.acceptLicense = accept;
-                    //   });
-                    // }
                   },
                 ),
               ],
@@ -2432,13 +2328,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
               ],
             ),
           ),
-          // ElevatedButton(
-          //     onPressed: () {
-          //       setState(() {
-          //         position = 6;
-          //       });
-          //     },
-          //     child: Text('back')),
           SizedBox(
             height: 30,
           ),
@@ -2447,9 +2336,16 @@ class _MerchantSignupState extends State<MerchantSignup> {
             child: CustomAppButton(
               title: "Submit",
               onPressed: () {
-                Navigator.pushNamedAndRemoveUntil(
-                    context, "SignUpSucessScreen", (route) => false);
-                submitUserRegistration();
+                if (loginFormKey.currentState!.validate()) {
+                  loginFormKey.currentState!.save();
+                  setState(() {
+                    submitUserRegistration();
+                  });
+                } else {
+                  alertWidget.failure(
+                      context, '', 'Please accept our Terms and Conditions');
+                }
+
                 // if (requestModel.acceptLicense == true) {
                 //   submitUserRegistration();
                 // } else {
@@ -2819,7 +2715,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
   submitUserRegistration() async {
     setState(() {
-      _isLoading = true;
+      //_isLoading = true;
       // requestModel.role = "MERCHANT";
       // requestModel.currencyId = '784';
       // requestModel.latitude = _lat;
@@ -2838,6 +2734,21 @@ class _MerchantSignupState extends State<MerchantSignup> {
     // requestModel.deviceId =
     //     await Validators.encrypt(await Global.getUniqueId());
 
+    final List<Map<String, dynamic>> productList = selectedItems.map((product) {
+      return {
+        "productId": product.productId.toString(),
+        "packageId": product.packagetId.toString(),
+        "qty": product.quantity.toString(),
+      };
+    }).toList();
+
+    final Map<String, dynamic> merchantProductInfoReq = {
+      "merchantProductDetails": productList,
+    };
+
+    final String jsonString = json.encode(merchantProductInfoReq);
+    print(jsonString);
+
     print("Image kyc  ${_merchantStoreFrontImageCtrl.text}");
     print("Image kycBack  ${_merchantStoreInsideImageCtrl.text}");
     print("Image tradeLicense  ${tradeLicense.text}");
@@ -2846,24 +2757,30 @@ class _MerchantSignupState extends State<MerchantSignup> {
     print("Image cancelCheque  ${cancelCheque.text}");
     userServices
         .newMerchantSignup(
-            companyDetailsInforeq,
-            merchantIdProofReq,
-            businessIdProofReq,
-            merchantStoreInfoReq,
-            merchantAgreeMentReq,
-            merchantPersonalReq,
-            merchantCompanyDetailsReq,
-            _merchantStoreFrontImageCtrl.text,
-            _merchantStoreInsideImageCtrl.text,
-            tradeLicense.text,
-            nationalIdFront.text,
-            nationalIdBack.text,
-            cancelCheque.text)
+      merchantProductInfoReq,
+      companyDetailsInforeq,
+      merchantIdProofReq,
+      businessIdProofReq,
+      merchantStoreInfoReq,
+      merchantAgreeMentReq,
+      merchantBankInfoReq,
+      _merchantStoreFrontImageCtrl.text,
+      _merchantStoreInsideImageCtrl.text,
+      cancelledChequeImg,
+      // merchantPersonalReq,
+      // merchantCompanyDetailsReq,
+      // _merchantStoreFrontImageCtrl.text,
+      // _merchantStoreInsideImageCtrl.text,
+      // tradeLicense.text,
+      // nationalIdFront.text,
+      // nationalIdBack.text,
+      // cancelCheque.text,
+    )
         .then((response) {
       var decodeData = jsonDecode(response.body);
       print(response.body);
       if (response.statusCode == 200 || response.statusCode == 201) {
-        if (decodeData['statusCode'].toString() == "200") {
+        if (decodeData['statusCode'].toString() == "00") {
           setState(() {
             _isLoading = false;
           });
