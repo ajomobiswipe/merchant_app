@@ -231,8 +231,11 @@ class _MyApplicationsState extends State<MyApplications> {
   @override
   void initState() {
     super.initState();
-    getDefaultMerchantValues();
-    getAllMerchantApplications();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getDefaultMerchantValues();
+      getAllMerchantApplications();
+    });
   }
 
   @override

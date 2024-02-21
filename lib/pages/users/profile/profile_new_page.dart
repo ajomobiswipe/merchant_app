@@ -9,7 +9,7 @@ class ProfileNewScreen extends StatelessWidget {
         appBar: AppBar(
           title: const Text('Profile'),
           centerTitle: true,
-        ),);
-        // body: const Center(child: Text('Profile data will come here')));
+        ),
+        body: const Center(child: Text('Coming soon...')));
   }
 }
