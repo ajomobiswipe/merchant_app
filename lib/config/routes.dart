@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:sifr_latest/components/secure_screen.dart';
 import 'package:sifr_latest/pages/device_deployment/device_deployment.dart';
 import 'package:sifr_latest/pages/location_demo.dart';
-import 'package:sifr_latest/pages/merchant_regn_type/merchant_otp_verify_screen.dart';
+import 'package:sifr_latest/pages/merchant_phone_number_verification/merchant_otp_verify_screen.dart';
 import 'package:sifr_latest/pages/user_types/user_type_selection.dart';
 import 'package:sifr_latest/pages/users/forgot_password.dart';
 

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:icons_plus/icons_plus.dart';
 import 'package:sifr_latest/common_widgets/app_text_form_feild.dart';
 import 'package:sifr_latest/common_widgets/custom_otp_widget.dart';
 import 'package:sifr_latest/config/config.dart';
@@ -199,13 +198,16 @@ class _MerchantOTPVerifyScreenState extends State<MerchantOTPVerifyScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomTextWidget(
-                        text: 'Please select your merchant type', size: 12,isBold: false),
+                        text: 'Please select your merchant type',
+                        size: 12,
+                        isBold: false),
                     CustomTextWidget(
                         text:
                             'You are onboarding a new or an \nexisting merchant',
                         size: 14,
                         fontWeight: FontWeight.w500,
-                        textAlign: TextAlign.left,isBold: false),
+                        textAlign: TextAlign.left,
+                        isBold: false),
                   ],
                 ),
               ],
@@ -257,89 +259,7 @@ class _MerchantOTPVerifyScreenState extends State<MerchantOTPVerifyScreen> {
             const SizedBox(
               height: 10,
             ),
-            CustomTextFormField(
-              titleEneabled: false,
-              title: "Merchant Mobile Number",
-              hintText: "Enter Merchant Mobile Number",
-              enabled: true,
-              controller: _mobileNoController,
-              keyboardType: TextInputType.number,
 
-              maxLength: 10,
-              inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
-              ],
-
-              prefixIcon: Icons.phone,
-
-              onChanged: (phone) {
-                // merchantPersonalReq.currentMobileNo =
-                //     phone.countryCode + phone.number;
-              },
-              suffixIcon: Column(
-                children: [
-                  Icon(
-                    Icons.send,
-                    color: AppColors.kLightGreen,
-                  ),
-                  CustomTextWidget(
-                    text: "Send",
-                    size: 10,
-                    color: AppColors.kLightGreen,
-                  )
-                ],
-              ),
-              suffixIconTrue: true,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Phone Number is Mandatory!';
-                }
-                if (value.length < 10) {
-                  return 'Length shuld be equal to 10 numbers';
-                }
-
-                return null;
-              },
-              // validator: (value) {
-              //   print(value);
-              //   return '';
-              // },
-            ),
-            // const AppTextFormField(
-            //   title: 'Enther the Merchant Mobile Number',
-            //   required: false,
-            //   suffixIcon: Icons.send_outlined,
-            //   iconColor: AppColors.kLightGreen,
-            //   eneablrTitle: false,
-            //   suffixIconTrue: true,
-            // ),
-            const SizedBox(
-              height: 40,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Column(
-                  children: [
-                    CustomTextWidget(
-                      text: "Verify the Number with OTP",
-                      color: Colors.black.withOpacity(.6),
-                      size: 13,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    CustomTextWidget(
-                      text: "sent on the Merchant Mobile Number",
-                      color: Colors.black.withOpacity(.6),
-                      size: 13,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 20,
-            ),
             CustomOtpWidget(
               onCompleted: (pin) {
                 print('onCompleted: $pin');

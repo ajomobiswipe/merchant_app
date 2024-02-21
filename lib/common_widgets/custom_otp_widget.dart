@@ -1,19 +1,24 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:pinput/pinput.dart';
 import 'package:sifr_latest/common_widgets/custom_app_button.dart';
 import 'package:sifr_latest/pages/users/signup/customer/customer.dart';
+
+import '../config/app_color.dart';
+import '../widgets/custom_text_widget.dart';
+import '../widgets/form_field/custom_text.dart';
 
 class CustomOtpWidget extends StatefulWidget {
   final Function(String)? onCompleted;
   String? Function(String?)? validator;
   final TextEditingController phonemumbercontroller;
-  CustomOtpWidget(
-      {Key? key,
-      this.onCompleted,
-      this.validator,
-      required this.phonemumbercontroller})
-      : super(key: key);
+  CustomOtpWidget({
+    Key? key,
+    this.onCompleted,
+    this.validator,
+    required this.phonemumbercontroller,
+  }) : super(key: key);
 
   @override
   State<CustomOtpWidget> createState() => _CustomOtpWidgetState();
@@ -56,6 +61,89 @@ class _CustomOtpWidgetState extends State<CustomOtpWidget> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          CustomTextFormField(
+            titleEneabled: false,
+            title: "Merchant Mobile Number",
+            hintText: "Enter Merchant Mobile Number",
+            enabled: true,
+            controller: widget.phonemumbercontroller,
+            keyboardType: TextInputType.number,
+
+            maxLength: 10,
+            inputFormatters: <TextInputFormatter>[
+              FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
+            ],
+
+            prefixIcon: Icons.phone,
+
+            onChanged: (phone) {
+              // merchantPersonalReq.currentMobileNo =
+              //     phone.countryCode + phone.number;
+            },
+            suffixIcon: Column(
+              children: [
+                Icon(
+                  Icons.send,
+                  color: AppColors.kLightGreen,
+                ),
+                CustomTextWidget(
+                  text: "Send",
+                  size: 10,
+                  color: AppColors.kLightGreen,
+                )
+              ],
+            ),
+            suffixIconTrue: true,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Phone Number is Mandatory!';
+              }
+              if (value.length < 10) {
+                return 'Length shuld be equal to 10 numbers';
+              }
+
+              return null;
+            },
+            // validator: (value) {
+            //   print(value);
+            //   return '';
+            // },
+          ),
+          // const AppTextFormField(
+          //   title: 'Enther the Merchant Mobile Number',
+          //   required: false,
+          //   suffixIcon: Icons.send_outlined,
+          //   iconColor: AppColors.kLightGreen,
+          //   eneablrTitle: false,
+          //   suffixIconTrue: true,
+          // ),
+          const SizedBox(
+            height: 40,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Column(
+                children: [
+                  CustomTextWidget(
+                    text: "Verify the Number with OTP",
+                    color: Colors.black.withOpacity(.6),
+                    size: 13,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  CustomTextWidget(
+                    text: "sent on the Merchant Mobile Number",
+                    color: Colors.black.withOpacity(.6),
+                    size: 13,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 20,
+          ),
           Directionality(
             // Specify direction if desired
             textDirection: TextDirection.ltr,

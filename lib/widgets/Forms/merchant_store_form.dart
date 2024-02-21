@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,6 +15,7 @@ import 'package:sifr_latest/widgets/widget.dart';
 import '../../common_widgets/icon_text_widget.dart';
 import '../../config/config.dart';
 import '../../config/constants.dart';
+import '../../pages/users/signup/customer/models/merchant_store_info_requestmodel.dart';
 import '../app/CustomDialogBox.dart';
 import '../app/alert_service.dart';
 import '../app/camera_image_picker.dart';
@@ -25,13 +27,13 @@ import '../custom_text_widget.dart';
 
 // STATEFUL WIDGET
 class MerchantStoreImagesForm extends StatefulWidget {
+  final MerchantStoreInfoRequestmodel merchantStoreInfoReq;
   final TextEditingController storeFrontImage;
   final TextEditingController insideStoreImage;
-  final MerchantAdditionalInfoRequestmodel merchantAdditionalInfoReq;
 
   final TextEditingController merchantStoreAddressController;
-  String selectedStoreState;
-  String selectedStoreCity;
+  final TextEditingController selectedStoreState;
+  final TextEditingController selectedStoreCity;
   final List storeCitysList;
   final List storeStatesList;
   final TextEditingController storePinCodeCtrl;
@@ -44,7 +46,7 @@ class MerchantStoreImagesForm extends StatefulWidget {
     required this.next,
     required this.storeFrontImage,
     required this.insideStoreImage,
-    required this.merchantAdditionalInfoReq,
+    required this.merchantStoreInfoReq,
     required this.merchantStoreAddressController,
     required this.storePinCodeCtrl,
     required this.storeCitysList,
@@ -64,6 +66,7 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
   bool isChecked = true;
 
   int currTabPosition = 3;
+  final GlobalKey<FormState> storeFormKey = GlobalKey<FormState>();
 
   Color getIconColor({
     required int position,
@@ -91,8 +94,9 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
     await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
         .then((Position position) {
       setState(() => _currentPosition = position);
-      widget.merchantAdditionalInfoReq.latitude = position.latitude;
-      widget.merchantAdditionalInfoReq.longitude = position.longitude;
+      widget.merchantStoreInfoReq.latitude = position.latitude;
+      widget.merchantStoreInfoReq.longitude = position.longitude;
+      widget.merchantStoreInfoReq.currentCountry = "IND";
       //_getAddressFromLatLng(_currentPosition!);
     }).catchError((e) {
       // debugPrint(e);
@@ -137,337 +141,353 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
       appBar: AppAppbar(onPressed: widget.previous),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 15),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            const SizedBox(
-              height: 20.0,
-            ),
-            Row(
-              children: [
-                CustomTextWidget(
-                  text: "Merchant KYC",
-                  fontWeight: FontWeight.w500,
-                  size: 18,
-                ),
-              ],
-            ),
-            appTabbar(
-              screenHeight: screenHeight,
-              currTabPosition: currTabPosition,
-            ),
-
-            // CustomTextWidget(
-            //     text:
-            //         'lat ${_currentPosition?.latitude ?? ""} long ${_currentPosition?.longitude ?? ""}'),
-            // Center(
-            //   child: Text(
-            //       "Uploading your store's inside image, outside image, and store Address.",
-            //       textAlign: TextAlign.center,
-            //       style: Theme.of(context)
-            //           .textTheme
-            //           .bodySmall
-            //           ?.copyWith(color: Colors.grey)),
-            // ),
-
-            Padding(
-              padding: const EdgeInsets.all(6.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        child: Form(
+          key: storeFormKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const SizedBox(
+                height: 20.0,
+              ),
+              Row(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: RichText(
-                      text: TextSpan(
-                          text: 'Merchant Store Image',
-                          style:
-                              Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: Colors.black.withOpacity(0.7),
-                                    fontWeight: FontWeight.bold,
-                                    // decoration: TextDecoration.underline,
-                                  ),
-                          children: const [
-                            TextSpan(
-                                text: ' *',
-                                style: TextStyle(
-                                    color: Colors.grey,
-                                    decoration: TextDecoration.none))
-                          ]),
-                    ),
+                  CustomTextWidget(
+                    text: "Merchant KYC",
+                    fontWeight: FontWeight.w500,
+                    size: 18,
                   ),
-                  widget.storeFrontImage.text != ''
-                      ? GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              widget.storeFrontImage.text = '';
-                            });
-                          },
-                          child: afterSelect(widget.storeFrontImage.text),
-                        )
-                      : Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: GestureDetector(
+                ],
+              ),
+              appTabbar(
+                screenHeight: screenHeight,
+                currTabPosition: currTabPosition,
+              ),
+
+              // CustomTextWidget(
+              //     text:
+              //         'lat ${_currentPosition?.latitude ?? ""} long ${_currentPosition?.longitude ?? ""}'),
+              // Center(
+              //   child: Text(
+              //       "Uploading your store's inside image, outside image, and store Address.",
+              //       textAlign: TextAlign.center,
+              //       style: Theme.of(context)
+              //           .textTheme
+              //           .bodySmall
+              //           ?.copyWith(color: Colors.grey)),
+              // ),
+
+              Padding(
+                padding: const EdgeInsets.all(6.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: RichText(
+                        text: TextSpan(
+                            text: 'Merchant Store Image',
+                            style:
+                                Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      color: Colors.black.withOpacity(0.7),
+                                      fontWeight: FontWeight.bold,
+                                      // decoration: TextDecoration.underline,
+                                    ),
+                            children: const [
+                              TextSpan(
+                                  text: ' *',
+                                  style: TextStyle(
+                                      color: Colors.grey,
+                                      decoration: TextDecoration.none))
+                            ]),
+                      ),
+                    ),
+                    widget.storeFrontImage.text != ''
+                        ? GestureDetector(
                             onTap: () {
-                              cameraPhotoDialog(context, 'storeFrontImage');
+                              setState(() {
+                                widget.storeFrontImage.text = '';
+                              });
                             },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                color: AppColors.kTileColor,
-                              ),
-                              width: double.maxFinite,
-                              height: 100,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        CustomTextWidget(
-                                            text:
-                                                "Click the front image of the store",
-                                            color: Colors.grey),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    const Icon(
-                                      Icons.camera_sharp,
-                                      size: 40,
-                                      color: AppColors.kPrimaryColor,
-                                    ),
-                                  ],
+                            child: afterSelect(widget.storeFrontImage.text),
+                          )
+                        : Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: GestureDetector(
+                              onTap: () {
+                                cameraPhotoDialog(context, 'storeFrontImage');
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  color: AppColors.kTileColor,
+                                ),
+                                width: double.maxFinite,
+                                height: 100,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          CustomTextWidget(
+                                              text:
+                                                  "Click the front image of the store",
+                                              color: Colors.grey),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      const Icon(
+                                        Icons.camera_sharp,
+                                        size: 40,
+                                        color: AppColors.kPrimaryColor,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          )),
-                  const SizedBox(height: 20),
-                  widget.insideStoreImage.text != ''
-                      ? GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              widget.insideStoreImage.text = '';
-                            });
-                          },
-                          child: afterSelect(widget.insideStoreImage.text),
-                        )
-                      : Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: GestureDetector(
+                            )),
+                    const SizedBox(height: 20),
+                    widget.insideStoreImage.text != ''
+                        ? GestureDetector(
                             onTap: () {
-                              cameraPhotoDialog(context, 'insideStoreImage');
+                              setState(() {
+                                widget.insideStoreImage.text = '';
+                              });
                             },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                color: AppColors.kTileColor,
-                              ),
-                              width: double.maxFinite,
-                              height: 100,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        CustomTextWidget(
-                                            text:
-                                                "Click the inside image of the store",
-                                            color: Colors.grey),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    const Icon(
-                                      Icons.camera_sharp,
-                                      size: 40,
-                                      color: AppColors.kPrimaryColor,
-                                    ),
-                                  ],
+                            child: afterSelect(widget.insideStoreImage.text),
+                          )
+                        : Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: GestureDetector(
+                              onTap: () {
+                                cameraPhotoDialog(context, 'insideStoreImage');
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  color: AppColors.kTileColor,
+                                ),
+                                width: double.maxFinite,
+                                height: 100,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          CustomTextWidget(
+                                              text:
+                                                  "Click the inside image of the store",
+                                              color: Colors.grey),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      const Icon(
+                                        Icons.camera_sharp,
+                                        size: 40,
+                                        color: AppColors.kPrimaryColor,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
+                  ],
+                ),
+              ),
+              Row(
+                children: [
+                  CustomTextWidget(
+                    text: "Merchant Store Address",
+                    // color: AppColors.kPrimaryColor,
+                  ),
+                  Checkbox(
+                    value: isChecked,
+                    onChanged: (value) {
+                      setState(() {
+                        isChecked = value!;
+                      });
+                    },
+                  ),
+                  CustomTextWidget(
+                    text: "Same as Bussiness",
+                    size: 10,
+                  ),
                 ],
               ),
-            ),
-            Row(
-              children: [
-                CustomTextWidget(
-                  text: "Merchant Store Address",
-                  // color: AppColors.kPrimaryColor,
-                ),
-                Checkbox(
-                  value: isChecked,
-                  onChanged: (value) {
-                    setState(() {
-                      isChecked = value!;
-                    });
-                  },
-                ),
-                CustomTextWidget(
-                  text: "Same as Bussiness",
-                  size: 10,
-                ),
-              ],
-            ),
 
-            CustomTextFormField(
-              titleEneabled: false,
-              hintText: "Enter merchant Store address",
-              title: '',
+              CustomTextFormField(
+                titleEneabled: false,
+                hintText: "Enter merchant Store address",
+                title: '',
 
-              controller: widget.merchantStoreAddressController,
-              prefixIcon: Icons.home,
-              required: true,
+                controller: widget.merchantStoreAddressController,
+                prefixIcon: Icons.home,
+                required: true,
 
-              keyboardType: TextInputType.multiline,
-              textCapitalization: TextCapitalization.words,
-              enabled: true,
-              // prefixIcon: LineAwesome.address_book,
-              validator: (value) {
-                value = value.trim();
-                if (value == null || value.isEmpty) {
-                  return 'Merchant Business Address is Mandatory!';
-                }
-                if (value.length < 10) {
-                  return 'Minimum 10 characters';
-                }
+                keyboardType: TextInputType.multiline,
+                textCapitalization: TextCapitalization.words,
+                enabled: true,
+                // prefixIcon: LineAwesome.address_book,
+                validator: (value) {
+                  value = value.trim();
+                  if (value == null || value.isEmpty) {
+                    return 'Merchant Business Address is Mandatory!';
+                  }
+                  if (value.length < 10) {
+                    return 'Minimum 10 characters';
+                  }
 
-                return null;
-              },
-              onChanged: (String value) {
-                value = value.trim();
-              },
-              onSaved: (value) {
-                // merchantPersonalReq.currentAddress = value;
-              },
-              onFieldSubmitted: (value) {
-                // _merchantBusinessAddressController.text = value.trim();
-              },
-            ),
-            const SizedBox(
-              height: 15.0,
-            ),
-
-            CustomDropdown(
-              titleEnabled: false,
-              hintText: "Select State",
-              title: "Current State",
-              // enabled: selectedState != '' && enabledState
-              //     ? enabledcity = true
-              //     : enabledcity = false,
-              required: true,
-              selectedItem: widget.selectedStoreState != ''
-                  ? widget.selectedStoreState
-                  : null,
-              prefixIcon: Icons.flag_circle_outlined,
-              itemList: widget.storeStatesList.map((item)=>item['stateName']).toList(),
-              // cityList.map((e) => e['citName']).toList(),
-              onChanged: (value) {
-                setState(() {
-                  widget.selectedStoreState = value;
-                  // merchantPersonalReq.currentState = value;
-                });
-              },
-              onSaved: (value) {
-                // merchantPersonalReq.currentState = value;
-              },
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Current state is Mandatory!';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(
-              height: 15.0,
-            ),
-            CustomDropdown(
-              titleEnabled: false,
-              title: "Current City",
-              hintText: "Select City",
-              required: true,
-              selectedItem: widget.selectedStoreCity != ''
-                  ? widget.selectedStoreCity
-                  : null,
-              prefixIcon: Icons.location_city_outlined,
-              itemList: widget.storeCitysList.map((item)=>item['cityName']).toList(),
-              //cityList.map((e) => e['citName']).toList(),
-              onChanged: (value) {
-                // print(citysList[value]);
-                setState(() {
-                  widget.selectedStoreCity = value;
-                  // merchantPersonalReq.currentCountry = citysList[value];
-                });
-              },
-              onSaved: (value) {
-                //  merchantPersonalReq.currentCountry = citysList[value];
-              },
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Current City is Mandatory!';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(
-              height: 4,
-            ), //padding added in textfeild
-            CustomTextFormField(
-              titleEneabled: false,
-              title: 'Pin Code',
-              hintText: 'Pin Code',
-              // enabled: selectedCity != '' && enabledcity ? true : false,
-              maxLength: 6,
-              required: true,
-
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Pin Code is Mandatory!';
-                }
-                if (!value.isEmpty && value.length < 6) {
-                  return 'Minimum 6 digits';
-                }
-                return null;
-              },
-              controller: widget.storePinCodeCtrl,
-              keyboardType: TextInputType.number,
-              inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.allow(RegExp(r'\d'))
-              ],
-              prefixIcon: Icons.map_outlined,
-              onSaved: (value) {
-                // merchantPersonalReq.currentZipCode = value;
-              },
-            ),
-
-            const SizedBox(height: 20.0),
-            // SizedBox(
-            //   child: CustomAppButton(
-            //     title: 'Previous',
-            //     onPressed: () {
-            //       widget.previous();
-            //     },
-            //   ),
-            // ),
-            SizedBox(
-              child: CustomAppButton(
-                title: "Next",
-                onPressed: () {
-                  widget.next();
+                  return null;
+                },
+                onChanged: (String value) {
+                  value = value.trim();
+                },
+                onSaved: (value) {
+                  widget.merchantStoreInfoReq.currentAddress = value;
+                  // merchantPersonalReq.currentAddress = value;
+                },
+                onFieldSubmitted: (value) {
+                  // _merchantBusinessAddressController.text = value.trim();
                 },
               ),
-            ),
-            const SizedBox(height: 20.0),
-          ],
+              const SizedBox(
+                height: 15.0,
+              ),
+
+              CustomDropdown(
+                titleEnabled: false,
+                hintText: "Select State",
+                title: "Current State",
+                // enabled: selectedState != '' && enabledState
+                //     ? enabledcity = true
+                //     : enabledcity = false,
+                required: true,
+                selectedItem: widget.selectedStoreState.text != ''
+                    ? widget.selectedStoreState.text
+                    : null,
+                prefixIcon: Icons.flag_circle_outlined,
+                itemList: widget.storeStatesList
+                    .map((item) => item['stateName'])
+                    .toList(),
+                // cityList.map((e) => e['citName']).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    widget.selectedStoreState.text = value;
+                    // merchantPersonalReq.currentState = value;
+                  });
+                },
+                onSaved: (value) {
+                  widget.merchantStoreInfoReq.currentState = value;
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Current state is Mandatory!';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(
+                height: 15.0,
+              ),
+              CustomDropdown(
+                titleEnabled: false,
+                title: "Current City",
+                hintText: "Select City",
+                required: true,
+                selectedItem: widget.selectedStoreCity.text != ''
+                    ? widget.selectedStoreCity.text
+                    : null,
+                prefixIcon: Icons.location_city_outlined,
+                itemList: widget.storeCitysList
+                    .map((item) => item['cityName'])
+                    .toList(),
+                //cityList.map((e) => e['citName']).toList(),
+                onChanged: (value) {
+                  // print(citysList[value]);
+                  setState(() {
+                    widget.selectedStoreCity.text = value;
+                    // merchantPersonalReq.currentCountry = citysList[value];
+                  });
+                },
+                onSaved: (value) {
+                  widget.merchantStoreInfoReq.currentCity = value;
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Current City is Mandatory!';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(
+                height: 4,
+              ), //padding added in textfeild
+              CustomTextFormField(
+                titleEneabled: false,
+                title: 'Pin Code',
+                hintText: 'Pin Code',
+                // enabled: selectedCity != '' && enabledcity ? true : false,
+                maxLength: 6,
+                required: true,
+
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Pin Code is Mandatory!';
+                  }
+                  if (!value.isEmpty && value.length < 6) {
+                    return 'Minimum 6 digits';
+                  }
+                  return null;
+                },
+                controller: widget.storePinCodeCtrl,
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.allow(RegExp(r'\d'))
+                ],
+                prefixIcon: Icons.map_outlined,
+                onSaved: (value) {
+                  widget.merchantStoreInfoReq.currentZipCode = value;
+                },
+              ),
+
+              const SizedBox(height: 20.0),
+              // SizedBox(
+              //   child: CustomAppButton(
+              //     title: 'Previous',
+              //     onPressed: () {
+              //       widget.previous();
+              //     },
+              //   ),
+              // ),
+              SizedBox(
+                child: CustomAppButton(
+                  title: "Next",
+                  onPressed: () {
+                    storeFormKey.currentState!.save();
+                    if (storeFormKey.currentState!.validate()) {
+                      print(jsonEncode(widget.merchantStoreInfoReq.toJson()));
+                      setState(() {
+                        widget.next();
+                      });
+                    }
+                  },
+                ),
+              ),
+              const SizedBox(height: 20.0),
+            ],
+          ),
         ),
       ),
     );

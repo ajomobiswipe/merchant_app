@@ -187,7 +187,7 @@ class UserServices {
       };
       // final headers = {'Authorization': 'Bearer $token'};
       var urlnew = Uri.parse(
-          'http://172.29.100.221:9508/NanoPay/Middleware/UiApi/addOrUpdateLogin');
+          'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/addOrUpdateLogin');
       var body = jsonEncode(
           {"username": "omaEmirates_preprod_v2", "password": "doXpr3KeKT"});
 
@@ -196,6 +196,7 @@ class UserServices {
           .timeout(Duration(seconds: 10));
 
       print("Fist Api responsecode ${response.statusCode}");
+      print("Fist Api responsecode ${response.body}");
       if (response.statusCode == 200) {
         Map<String, dynamic> jsonResponse = jsonDecode(response.body);
         String id = jsonResponse['id'];
@@ -210,7 +211,7 @@ class UserServices {
         };
 
         var gstVerify = Uri.parse(
-            "http://172.29.100.221:9508/NanoPay/Middleware/UiApi/validatePanAadhar");
+            "http://213.42.225.250:9508/NanoPay/Middleware/UiApi/validatePanAadhar");
 
         final newreqbody = {
           "requestType": "PAN",
@@ -229,7 +230,7 @@ class UserServices {
 
       return false;
     } catch (e) {
-      print('hellooo');
+      print(e);
     }
   }
 
@@ -715,9 +716,13 @@ class UserServices {
   * Params: RegisterRequestModel,newProfilePicture,kycFrontImage,kycBackImage,tradeLicense,nationalIdFront,nationalIdBack and cancelCheque
   */
   newMerchantSignup(
+    companyDetailsInforeq,
+    merchantIdProofReq,
+    businessIdProofReq,
+    merchantStoreInfoReq,
+    merchantAgreeMentReq,
     merchantPersonalReq,
     merchantCompanyDetailsReq,
-    profilePic,
     kycFront,
     kycBack,
     tradeLicense,
