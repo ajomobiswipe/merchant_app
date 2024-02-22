@@ -87,6 +87,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
   MerchantAgreeMentRequestmodel merchantAgreeMentReq =
       MerchantAgreeMentRequestmodel();
+
   // --------- FORM KEYs ------------
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<FormState> personalFormKey = GlobalKey<FormState>();
@@ -105,7 +106,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
   final TextEditingController _mobileNoController = TextEditingController();
   final TextEditingController _whatsAppNumberController =
       TextEditingController();
-  String businessType = '';
+  dynamic businessType;
 
   // List<Map<String, dynamic>> BusinessTypeList = [
   //   {"value": 1, "label": "Individual"},
@@ -117,6 +118,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
   final TextEditingController _merchantDBANameController =
       TextEditingController();
   dynamic selectedBusinessCategory;
+
+  int selectedBusinessStateId = 0;
+  int selectedBusinessCityId = 0;
 
   // List<Map<String, dynamic>> bussinesCatogeryList = [
   //   {"value": 1, "label": "Individual"},
@@ -532,6 +536,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
         key: personalFormKey,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 10),
             const Row(
@@ -557,7 +562,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               required: true,
               maxLength: 26,
               inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z]'))
+                FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z ]'))
               ],
               prefixIcon: LineAwesome.user_circle,
               textCapitalization: TextCapitalization.words,
@@ -741,34 +746,78 @@ class _MerchantSignupState extends State<MerchantSignup> {
             const SizedBox(
               height: 20,
             ),
-            CustomDropdown(
+
+            const CustomDropdown(
               title: "Business Type",
+              itemList: [],
+              dropDownIsEnabled: false,
               required: true,
-              hintText: "Select merchant business type",
-              selectedItem: businessType != '' ? businessType : null,
-              prefixIcon: Icons.maps_home_work_outlined,
-              itemList: merchantBusinessTypeList
-                  .map((map) => map['businessName'].toString())
-                  .toList(),
-              //countryList.map((e) => e['ctyName']).toList(),
-              onChanged: (value) {
+            ),
+
+            DropdownButtonFormField(
+              isDense: true,
+              isExpanded: true,
+              decoration: commonInputDecoration(Icons.maps_home_work_outlined,
+                      hintText: "Select merchant business type")
+                  .copyWith(
+                      hintStyle: Theme.of(context)
+                          .textTheme
+                          .displaySmall
+                          ?.copyWith(
+                              fontWeight: FontWeight.normal,
+                              fontSize: 13,
+                              color: Colors.black.withOpacity(0.25))),
+              value: businessType,
+              items: merchantBusinessTypeList
+                  .map<DropdownMenuItem>((dynamic value) {
+                return DropdownMenuItem(
+                  value: value,
+                  child: Text(
+                    value['businessName'],
+                    style: TextStyle(fontSize: 13),
+                  ),
+                );
+              }).toList(),
+              onChanged: (newValue) {
                 setState(() {
-                  businessType = value;
-                  merchantPersonalReq.poaType =
-                      getValueByLabel(merchantBusinessTypeList, value);
+                  print(newValue['businessType'].runtimeType);
+                  businessType = newValue;
+                  companyDetailsInforeq.businessTypeId =
+                      newValue['businessType'].runtimeType==String?int.parse(newValue['businessType']):newValue['businessType'];
+                  // companyDetailsInforeq.businessTypeId = 1;
                 });
               },
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Business Type is Mandatory!';
-                }
-                return null;
-              },
-              onSaved: (value) {
-                //NeedChange
-                companyDetailsInforeq.businessTypeId = 1;
-              },
             ),
+
+            // CustomDropdown(
+            //   title: "Business Type",
+            //   required: true,
+            //   hintText: "Select merchant business type",
+            //   selectedItem: businessType != '' ? businessType : null,
+            //   prefixIcon: Icons.maps_home_work_outlined,
+            //   itemList: merchantBusinessTypeList
+            //       .map((map) => map['businessName'].toString())
+            //       .toList(),
+            //   //countryList.map((e) => e['ctyName']).toList(),
+            //   onChanged: (value) {
+            //     setState(() {
+            //       businessType = value;
+            //       merchantPersonalReq.poaType =
+            //           getValueByLabel(merchantBusinessTypeList, value);
+            //     });
+            //   },
+            //   validator: (value) {
+            //     if (value == null || value.isEmpty) {
+            //       return 'Business Type is Mandatory!';
+            //     }
+            //     return null;
+            //   },
+            //   onSaved: (value) {
+            //     //NeedChange
+            //     companyDetailsInforeq.businessTypeId = 1;
+            //   },
+            // ),
+
             const SizedBox(
               height: 20.0,
             ),
@@ -877,6 +926,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               onChanged: (newValue) {
                 setState(() {
                   selectedBusinessCategory = newValue;
+                  // selectedBusinessSubCategory=null;
                 });
               },
             ),
@@ -1155,12 +1205,24 @@ class _MerchantSignupState extends State<MerchantSignup> {
               // cityList.map((e) => e['citName']).toList(),
               onChanged: (value) {
                 setState(() {
+                  // selectedBusinessState = value;
+
                   selectedBusinessState = value;
-                  merchantPersonalReq.currentState = value;
+                  selectedBusinessStateId = (statesList
+                      .where((element) => element['stateName'] == value)
+                      .toList())[0]['stateId'];
+
+                  print(selectedBusinessStateId);
+
+                  merchantPersonalReq.currentState = selectedBusinessStateId;
+
+                  print(merchantPersonalReq.currentState);
+
+                  // String stateString=;
                 });
               },
               onSaved: (value) {
-                merchantPersonalReq.currentState = value;
+                merchantPersonalReq.currentState = selectedBusinessStateId;
               },
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -1182,20 +1244,56 @@ class _MerchantSignupState extends State<MerchantSignup> {
               selectedItem: selectedCity != '' ? selectedCity : null,
               prefixIcon: Icons.location_city_outlined,
 
-              itemList: citiesList.map((item) => item['cityName']).toList(),
+              // itemList: citiesList.map((item) => item['cityName']).toList(),
+
+                itemList: citiesList
+                    .where( (item) => item['stateId'] == selectedBusinessStateId)
+                    .map((item) => item['cityName'])
+                    .toList(),
+
+                // itemList= citiesList
+                //     .map(
+                //         (item) => item['stateId'] == selectedBusinessStateId)
+                //     .map((item) => item['cityName']),
+
+              // itemList:  citiesList
+              //         .where(
+              //             (item) => item['stateId'] == selectedBusinessStateId)
+              //         .map<DropdownMenuItem>((dynamic value) {
+              //         return DropdownMenuItem<dynamic>(
+              //           value: value,
+              //           child: Text(
+              //             value['cityName'],
+              //             style: const TextStyle(fontSize: 13),
+              //           ),
+              //         );
+              //       }).toList()
+
 
               //cityList.map((e) => e['citName']).toList(),
 
               onChanged: (value) {
                 print(value);
                 setState(() {
+
                   selectedCity = value;
-                  // merchantPersonalReq.currentCountry = citiesList[value];
+
+                  selectedBusinessCityId = (citiesList
+                      .where((element) => element['cityName'] == value)
+                      .toList())[0]['cityId'];
+
+                  print(selectedBusinessCityId);
+
+                  merchantCompanyDetailsReq.cityCode = selectedBusinessCityId;
+
+                  print(selectedBusinessCityId);
+
+
                 });
               },
 
               onSaved: (value) {
-                // merchantPersonalReq.currentCountry = citiesList[value];
+                // merchantPersonalReq.cityCode = selectedBusinessCityId;
               },
 
               validator: (value) {
@@ -1254,6 +1352,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 personalFormKey.currentState!.save();
                 if (personalFormKey.currentState!.validate()) {
                   print(companyDetailsInforeq.toJson());
+                  print(.toJson());
                   setState(() {
                     position++;
                     currTabPosition = 2;

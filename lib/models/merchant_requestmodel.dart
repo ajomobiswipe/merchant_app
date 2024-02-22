@@ -11,7 +11,7 @@ class MerchantRegPersonalReqModel {
   String? currentAddress;
   int? currentCountry;
   String? permanentState;
-  String? currentState;
+  int? currentState;
   String? currentNationality;
   String? currentMobileNo;
   String? currentAltMobNo;
