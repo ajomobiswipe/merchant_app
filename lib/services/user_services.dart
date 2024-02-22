@@ -569,6 +569,7 @@ class UserServices {
   Future<dynamic> getMerchantApplicationStatus(merchantInd) async {
     Connection connection = Connection();
     final requestBody = {"merchantId": "$merchantInd"};
+    print(requestBody);
     var url =
         'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/MerchantOnboardingStatus';
     var response = await connection.post(url, requestBody);

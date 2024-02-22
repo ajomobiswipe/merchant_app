@@ -496,6 +496,9 @@ class _MyApplicationsState extends State<MyApplications> {
                                         allOnboardingApplications[index]
                                             ['merchantId']);
 
+                                    if(response==null)return;
+                                    if(response['data'].length==0)return;
+
                                     // response ??= await _getApplicationStatus(
                                     //     "ADIBM0000000375");
 
@@ -702,7 +705,7 @@ class _MyApplicationsState extends State<MyApplications> {
     print("----AllMerchantApplications called$merchantId");
     var response = await userServices.getMerchantApplicationStatus(merchantId);
     final Map<String, dynamic> data = json.decode(response.body);
-    List<dynamic> applicationsFromJson = data['data'];
+    List<dynamic> applicationsFromJson = data['data']??[];
     if (applicationsFromJson.isEmpty) return null;
     print('response before  return$applicationsFromJson');
     return data;
@@ -757,7 +760,7 @@ class _MyApplicationsState extends State<MyApplications> {
               children: [
                 TimelineTile(
                   afterLineStyle: LineStyle(
-                      color: data.kycApproved! ? Colors.blue : Colors.grey),
+                      color: data.kycApproved==true ? Colors.blue : Colors.grey),
                   alignment: TimelineAlign.manual,
                   lineXY: 0.1,
                   isFirst: true,
@@ -767,7 +770,7 @@ class _MyApplicationsState extends State<MyApplications> {
                     width: 20,
                     color: Colors.white,
                     iconStyle: IconStyle(
-                      color: data.kycApproved! ? Colors.blue : Colors.grey,
+                      color: data.kycApproved==true ? Colors.blue : Colors.grey,
                       fontSize: 26,
                       iconData: Icons.radio_button_checked,
                     ),
@@ -782,7 +785,7 @@ class _MyApplicationsState extends State<MyApplications> {
                       ),
                       const Expanded(child: SizedBox()),
                       statusTextWidget(
-                          title: "Kyc Approved", status: data.kycApproved!),
+                          title: "Kyc Approved", status: data.kycApproved??false),
                     ],
                   ),
                 ),

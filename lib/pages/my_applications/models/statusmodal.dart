@@ -28,12 +28,12 @@ class ApplicationStatus {
     this.errorMessage,
     this.statusCode,
     this.amountToPay,
-    this.kycApproved,
-    this.payment,
-    this.eNach,
-    this.midtidGenerated,
-    this.allDevicesOnboarded,
-    this.live,
+    this.kycApproved=false,
+    this.payment=false,
+    this.eNach=false,
+    this.midtidGenerated=false,
+    this.allDevicesOnboarded=false,
+    this.live=true,
     this.devices,
     this.map,this.merchantProductDetailsResponse
   });
@@ -43,12 +43,12 @@ class ApplicationStatus {
         errorMessage: json["errorMessage"],
         statusCode: json["statusCode"],
         amountToPay: json["amountToPay"],
-        kycApproved: json["kycApproved"],
-        payment: json["payment"],
-        eNach: json["eNACH"],
-        midtidGenerated: json["MIDTIDGenerated"],
-        allDevicesOnboarded: json["allDevicesOnboarded"],
-        live: json["live"],
+        kycApproved: json["kycApproved"]??false,
+        payment: json["payment"]??false,
+        eNach: json["eNACH"]??false,
+        midtidGenerated: json["MIDTIDGenerated"]??false,
+        allDevicesOnboarded: json["allDevicesOnboarded"]??false,
+        live: json["live"]??true,
         devices: json["devices"] == null
             ? []
             : List<Device>.from(
