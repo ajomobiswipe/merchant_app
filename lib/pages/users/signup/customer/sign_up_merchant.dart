@@ -1476,6 +1476,23 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 //getUser();
               },
               helperText: isOtpVerifird ? "Verified" : "",
+              suffixIconOnPressed: () {
+                if (_merchantAddharController.text.length >= 12) {
+                  print("clicked");
+                  if (showaddharverify) {
+                    sendAddhaarOtp();
+                    print("validate");
+                  } else {
+                    print("change");
+
+                    setState(() {
+                      showaddharverify = true;
+                      isaddhaarOTPsent = false;
+                      isOtpVerifird = false;
+                    });
+                  }
+                }
+              },
               suffixIcon: showaddharverify
                   ? TextButton(
                       onPressed: () {
@@ -1647,7 +1664,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               prefixIcon: Icons.format_list_numbered,
 
               onFieldSubmitted: (name) {
-                getUser();
+                // getUser();
               },
               onChanged: (String value) {
                 setState(() {
@@ -2082,7 +2099,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 hintText: "Select bank",
                 titleEnabled: false,
                 required: true,
-                enabled: accountVerify,
+                //enabled: accountVerify,
                 selectedItem: ifscCode != '' ? ifscCode : null,
                 prefixIcon: FontAwesome.building_solid,
                 itemList: merchantBankList
@@ -2119,7 +2136,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 hintText: "Beneficiary name",
                 titleEneabled: false,
                 required: true,
-                readOnly: !accountVerify,
+                // readOnly: !accountVerify,
                 controller: merchantBeneficiaryNamrCodeCtrl,
                 maxLength: 24,
                 keyboardType: TextInputType.visiblePassword,
@@ -3129,27 +3146,25 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
   validateAccountNumber() async {
     if (merchantIfscCodeCtrl.text.isNotEmpty &&
-        merchantAccountNumberCtrl.text.isNotEmpty &&
-        merchantphoneNumberCtrl.text.isNotEmpty) {
+        merchantAccountNumberCtrl.text.isNotEmpty) {
       debugPrint("Calling Accountvalidation API");
       setState(() {
         accountCheck = "Loading...";
       });
       var accNumber = merchantAccountNumberCtrl.text.toString();
       var ifscNumber = merchantIfscCodeCtrl.text.toString();
-      var phoneNumber = merchantphoneNumberCtrl.text.toString();
-      var name = merchantBeneficiaryNamrCodeCtrl.text.toString();
+
       print(accNumber);
       print(ifscNumber);
-      print(phoneNumber);
-      print(name);
 
       // var user = await Validators.encrypt(_merchantPanController.text.toString());
       userServices
-          .accountValidation(accNumber, ifscNumber, name, phoneNumber)
+          .accountValidation(accNumber, ifscNumber)
           .then((response) async {
         print("response in");
         print(response);
+        merchantBankInfoReq.merchantBankVerifyStatus = true;
+
         if (response.toString() == "true") {
           setState(() {
             merchantAdditionalInfoReq.merchantBankVerifyStatus = true;
@@ -3175,7 +3190,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
           });
           print("body is true");
         }
-        {}
+
+        setState(() {
+          accountVerify = false;
+        });
+        merchantBankInfoReq.merchantBankVerifyStatus = true;
       });
     }
   }
@@ -3183,12 +3202,14 @@ class _MerchantSignupState extends State<MerchantSignup> {
   sendAddhaarOtp() async {
     if (_merchantAddharController.text.isNotEmpty) {
       debugPrint("Calling AddhaarOtp API");
+      //debugPrint(_merchantAddharController.text);
       setState(() {
         addhaarCheck = "Loading...";
       });
       // var user =
       //     await Validators.encrypt(_merchantAddharController.text.toString());
-      var addhaarNumber = _merchantAddharController.text.toString();
+      var addhaarNumber = _merchantAddharController.text;
+      print(addhaarNumber);
       userServices.sendAddhaarOtp(addhaarNumber).then((response) async {
         print("response in");
         print(response);
