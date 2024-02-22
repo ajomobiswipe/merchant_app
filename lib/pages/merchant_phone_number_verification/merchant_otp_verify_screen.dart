@@ -265,7 +265,7 @@ class _MerchantOTPVerifyScreenState extends State<MerchantOTPVerifyScreen> {
               },
               phonemumbercontroller: _mobileNoController,
               validator: (pin) {
-                if (pin == "2222") {
+                if (pin == "1234") {
                   return null;
                 } else {
                   return "invalid otp";
