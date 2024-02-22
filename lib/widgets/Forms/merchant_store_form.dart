@@ -393,12 +393,31 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                 // cityList.map((e) => e['citName']).toList(),
                 onChanged: (value) {
                   setState(() {
+
+                    print(widget.storeStatesList);
+
+                    widget.selectedStoreCity.text = '';
                     widget.selectedStoreState.text = value;
+
+                    widget.merchantStoreInfoReq.currentState = (widget
+                            .storeStatesList
+                            .where((item) => item['stateName']==value).toList())[0]['stateId'].toString();
+
                     // merchantPersonalReq.currentState = value;
                   });
                 },
                 onSaved: (value) {
-                  widget.merchantStoreInfoReq.currentState = value;
+                  // widget.merchantStoreInfoReq.currentState = value;
+                  // widget.merchantStoreInfoReq.currentState = (widget
+                  //         .storeStatesList
+                  //         .where((item) =>
+                  //             item['tmsMasterCountry'] != null &&
+                  //             item['tmsMasterCountry']['countryIsoNumId'] ==
+                  //                 356)
+                  //         .toList())[0]['stateId']
+                  //     .toString();
+
+                  print(widget.merchantStoreInfoReq.currentState);
                 },
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -407,9 +426,11 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                   return null;
                 },
               ),
+
               const SizedBox(
                 height: 15.0,
               ),
+
               CustomDropdown(
                 titleEnabled: false,
                 title: "Current City",
@@ -419,19 +440,45 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                     ? widget.selectedStoreCity.text
                     : null,
                 prefixIcon: Icons.location_city_outlined,
+
+                // itemList: widget.storeCitysList
+                //     .map((item) => item['cityName'])
+                //     .toList(),
+
                 itemList: widget.storeCitysList
+                    .where((item) =>
+                        item['stateId'].toString() ==
+                        widget.merchantStoreInfoReq.currentState.toString())
                     .map((item) => item['cityName'])
                     .toList(),
+
                 //cityList.map((e) => e['citName']).toList(),
                 onChanged: (value) {
                   // print(citysList[value]);
                   setState(() {
+
+                    print(widget.storeCitysList);
+                    print(widget.merchantStoreInfoReq.currentState);
+
                     widget.selectedStoreCity.text = value;
+
                     // merchantPersonalReq.currentCountry = citysList[value];
                   });
                 },
                 onSaved: (value) {
-                  widget.merchantStoreInfoReq.currentCity = value;
+                  // widget.merchantStoreInfoReq.currentCity = value;
+
+                  if (widget.storeCitysList
+                          .where((element) => element['cityName'] == value)
+                          .toList().isEmpty) return;
+
+                  widget.merchantStoreInfoReq.currentCity = (widget
+                          .storeCitysList
+                          .where((element) => element['cityName'] == value)
+                          .toList())[0]['cityId']
+                      .toString();
+
+                  print(widget.merchantStoreInfoReq.currentCity);
                 },
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -442,7 +489,8 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
               ),
               const SizedBox(
                 height: 4,
-              ), //padding added in textfeild
+              ),
+              //padding added in textfeild
               CustomTextFormField(
                 titleEneabled: false,
                 title: 'Pin Code',

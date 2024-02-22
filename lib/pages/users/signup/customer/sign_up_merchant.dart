@@ -928,7 +928,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               onChanged: (newValue) {
                 setState(() {
                   selectedBusinessCategory = newValue;
-                  selectedBusinessSubCategory=null;
+                  selectedBusinessSubCategory = null;
                   print(selectedBusinessSubCategory);
                 });
               },
@@ -993,7 +993,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
               required: true,
             ),
 
-
             DropdownButtonFormField(
               isDense: true,
               isExpanded: true,
@@ -1008,7 +1007,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                               fontSize: 13,
                               color: Colors.black.withOpacity(0.25))),
               value: selectedBusinessSubCategory,
-              items:selectedBusinessCategory!=null?merchantBusinessSubCategory
+              items: selectedBusinessCategory != null
+                  ? merchantBusinessSubCategory
                       .where((item) =>
                           item['mccGroupId']['mccGroupId'] ==
                           selectedBusinessCategory['mccGroupId'])
@@ -1020,10 +1020,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
                           style: const TextStyle(fontSize: 13),
                         ),
                       );
-                    }).toList():[],
+                    }).toList()
+                  : [],
               onChanged: (dynamic newValue) {
                 setState(() {
-                  selectedBusinessSubCategory=newValue;
+                  selectedBusinessSubCategory = newValue;
                   var a = newValue["mccTypeId"];
                   companyDetailsInforeq.mccTypeCode = newValue["mccTypeId"];
                 });
@@ -1033,7 +1034,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 companyDetailsInforeq.mccTypeCode = value["mccTypeId"];
               },
             ),
-
 
             // CustomDropdown(
             //   title: "Merchant Business Sub category",
@@ -1210,7 +1210,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               onChanged: (value) {
                 setState(() {
                   // selectedBusinessState = value;
-                  selectedCity='';
+                  selectedCity = '';
                   selectedBusinessState = value;
                   selectedBusinessStateId = (statesList
                       .where((element) => element['stateName'] == value)
@@ -1782,6 +1782,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
               //countryList.map((e) => e['ctyName']).toList(),
               onChanged: (value) {
                 setState(() {
+                  print(merchantProofDocumentList);
+
                   businessDocumentType = value;
                   merchantPersonalReq.poaType =
                       getValueByLabel(merchantProofDocumentList, value);
@@ -1794,7 +1796,14 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 return null;
               },
               onSaved: (newValue) {
-                businessIdProofReq.businessProofDocumntType = newValue;
+                // businessIdProofReq.businessProofDocumntType = newValue;
+                businessIdProofReq.businessProofDocumntType =
+                    (merchantProofDocumentList
+                        .where((element) => element['businessType'] == newValue)
+                        .toList())[0]['businessDocId'];
+
+                // print(businessIdProofReq.businessProofDocumntType);
+
               },
             ),
             CustomTextFormField(
@@ -2082,12 +2091,21 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 //countryList.map((e) => e['ctyName']).toList(),
                 onChanged: (value) {
                   setState(() {
+
+                    // print(merchantBankList);
                     ifscCode = value;
+
                     // requestModel.city = value;
                   });
                 },
                 onSaved: (value) {
-                  merchantBankInfoReq.bankNameId = value;
+
+
+                  // merchantBankInfoReq.bankNameId = value;
+                  merchantBankInfoReq.bankNameId = (merchantBankList.where((element) => element['bankName']==value).toList())[0]['bankId'].toString();
+                  print(merchantBankInfoReq.bankNameId);
+
+
                 },
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -2224,9 +2242,13 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 });
               },
               onSaved: (value) {
-                merchantAgreeMentReq.mdrType = 1;
+
+                // merchantAgreeMentReq.mdrType = 1;
+                merchantAgreeMentReq.mdrType = (mdrTypeList.where((element) => element['mdrType']==mdrType).toList())[0]['mdrId'];
+
                 merchantAgreeMentReq.serviceAgreement = true;
                 merchantAgreeMentReq.termsCondition = true;
+
               },
               validator: (value) {
                 if (value == null || value.isEmpty) {
