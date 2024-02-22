@@ -46,7 +46,7 @@ class MerchantRegnTypeSelector extends StatelessWidget {
                   height: 50.0,
                   color: iconColor,
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Text(
                   title,
                   textAlign: TextAlign.center,

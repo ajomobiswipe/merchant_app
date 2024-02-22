@@ -415,7 +415,7 @@ class _LoginPageState extends State<LoginPage> {
                 FilteringTextInputFormatter.allow(RegExp(r'\w'))
               ],
               decoration: InputDecoration(
-                hintText: 'Insert your Username here',
+                hintText: 'Username',
                 labelStyle: Theme.of(context)
                     .textTheme
                     .bodyLarge

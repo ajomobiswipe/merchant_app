@@ -100,9 +100,10 @@ class _PaymentPageState extends State<PaymentPage> {
                     height: 20,
                   ),
                   DataTable(
-                    columnSpacing: 20,
+                    columnSpacing: 10,
                     dataRowMinHeight: 20,
                     dataRowMaxHeight: 30,
+
                     columns: [
                       DataColumn(
                           label: Text(
@@ -114,17 +115,21 @@ class _PaymentPageState extends State<PaymentPage> {
                         'Quantity',
                         style: textStyle(),
                       )),
+
                       DataColumn(
                           label: Text(
                         'Unit Price',
                         style: textStyle(),
                       )),
+
                       DataColumn(
                           label: Text(
                         'Amount',
                         style: textStyle(),
                       )),
                     ],
+
+
                     rows: [
                       for (var item
                           in invoiceDetails!['merchantProductDetails'])

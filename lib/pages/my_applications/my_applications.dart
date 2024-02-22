@@ -910,17 +910,23 @@ class _MyApplicationsState extends State<MyApplications> {
                   endChild: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+
+
+
                       Text(
                         " Deployment",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+
+
                       Expanded(
                         child: SizedBox(),
                         //flex: 1,
                       ),
-                      if (data.midtidGenerated!)
+
+                      // if (data.midtidGenerated!)
                         Column(
                           mainAxisAlignment: MainAxisAlignment.end,
                           crossAxisAlignment: CrossAxisAlignment.end,
