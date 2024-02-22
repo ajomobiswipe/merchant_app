@@ -259,7 +259,6 @@ class _MerchantOTPVerifyScreenState extends State<MerchantOTPVerifyScreen> {
             const SizedBox(
               height: 10,
             ),
-
             CustomOtpWidget(
               onCompleted: (pin) {
                 print('onCompleted: $pin');
@@ -273,9 +272,6 @@ class _MerchantOTPVerifyScreenState extends State<MerchantOTPVerifyScreen> {
                 }
               },
             ),
-            // const SizedBox(
-            //   height: 20,
-            // ),
             TextButton(
                 onPressed: () {},
                 child: CustomTextWidget(

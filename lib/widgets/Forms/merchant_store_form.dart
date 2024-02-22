@@ -343,7 +343,7 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                 validator: (value) {
                   value = value.trim();
                   if (value == null || value.isEmpty) {
-                    return 'Merchant Business Address is Mandatory!';
+                    return 'Merchant Store Address is Mandatory!';
                   }
                   if (value.length < 10) {
                     return 'Minimum 10 characters';
@@ -378,9 +378,17 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                     ? widget.selectedStoreState.text
                     : null,
                 prefixIcon: Icons.flag_circle_outlined,
+                // itemList: widget.storeStatesList
+                //     .map((item) => item['stateName'])
+                //     .toList(),
+
                 itemList: widget.storeStatesList
+                    .where((item) =>
+                        item['tmsMasterCountry'] != null &&
+                        item['tmsMasterCountry']['countryIsoNumId'] == 356)
                     .map((item) => item['stateName'])
                     .toList(),
+
                 // cityList.map((e) => e['citName']).toList(),
                 onChanged: (value) {
                   setState(() {
@@ -586,12 +594,12 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
           child: SizedBox(
             width: double.maxFinite,
-            height: 150,
+            height: 120,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Image.file(
                 File(path),
-                fit: BoxFit.contain,
+                fit: BoxFit.fitWidth,
               ),
             ),
           ),

@@ -534,7 +534,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             const SizedBox(height: 10),
-
             const Row(
               children: [
                 CustomTextWidget(
@@ -543,41 +542,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 ),
               ],
             ),
-
             const SizedBox(height: 10),
-
             appTabbar(
               screenHeight: screenHeight,
               currTabPosition: currTabPosition,
             ),
-
-            // Placeholder(
-            //   child: Row(
-            //     children: [
-            //       ElevatedButton(
-            //           onPressed: () {
-            //             setState(() {
-            //               currTabPosition = 1;
-            //             });
-            //           },
-            //           child: Text('reset')),
-            //       ElevatedButton(
-            //           onPressed: () {
-            //             setState(() {
-            //               currTabPosition--;
-            //             });
-            //           },
-            //           child: Text('back')),
-            //       ElevatedButton(
-            //           onPressed: () {
-            //             setState(() {
-            //               currTabPosition++;
-            //             });
-            //           },
-            //           child: Text('next')),
-            //     ],
-            //   ),
-            // ),
             defaultHeight(30),
             const FormTitleWidget(subWord: 'Merchant Details'),
             defaultHeight(10),
@@ -617,7 +586,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 //merchantPersonalReq.firstName = value;
               },
             ),
-
             CustomTextFormField(
               title: 'Contact Persons name',
               hintText: "Enter Your Contact Person name",
@@ -658,7 +626,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 _contactPersonNameController.text = value.trim();
               },
             ),
-
             CustomTextFormField(
               title: 'Email Address',
               hintText: "Enter Your Email Address",
@@ -694,7 +661,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 _emailController.text = value.trim();
               },
             ),
-
             CustomTextFormField(
               hintText: "Enter Your Mobile Number",
               prefixWidget: TextButton(
@@ -803,7 +769,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 companyDetailsInforeq.businessTypeId = 1;
               },
             ),
-
             const SizedBox(
               height: 20.0,
             ),
@@ -1177,8 +1142,16 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   selectedBusinessState != '' ? selectedBusinessState : null,
               prefixIcon: Icons.flag_circle_outlined,
 
-              itemList: statesList.map((item) => item['stateName']).toList(),
-
+              // itemList: statesList.map((item) => item['stateName']).toList(),
+              itemList: statesList
+                  .where((item) =>
+                      item['tmsMasterCountry'] != null &&
+                      item['tmsMasterCountry']['countryIsoNumId'] == 356)
+                  .map((item) => item['stateName'])
+                  .toList(),
+// ((item) =>
+//                           item['mccGroupId']['mccGroupId'] ==
+//                           selectedBusinessCategory['mccGroupId'])
               // cityList.map((e) => e['citName']).toList(),
               onChanged: (value) {
                 setState(() {
@@ -1339,10 +1312,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                       userCheck.toString() == "true" ||
                       !RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
                           .hasMatch(value)) {
-                    enabledPassword = false;
-                  } else {
-                    enabledPassword = true;
-                  }
+                  } else {}
                 });
               },
 
@@ -1876,10 +1846,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                         userCheck.toString() == "true" ||
                         !RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
                             .hasMatch(value)) {
-                      enabledPassword = false;
-                    } else {
-                      enabledPassword = true;
-                    }
+                    } else {}
                   });
                 },
                 // suffixIconOnPressed: () {
@@ -2128,260 +2095,261 @@ class _MerchantSignupState extends State<MerchantSignup> {
   Widget review() {
     var screenHeight = MediaQuery.of(context).size.height;
     return SingleChildScrollView(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CustomTextWidget(text: "Merchant Agreement"),
+      child: Form(
+        key: loginFormKey,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CustomTextWidget(text: "Merchant Agreement"),
 
-          appTabbar(
-            screenHeight: screenHeight,
-            currTabPosition: currTabPosition,
-          ),
+            appTabbar(
+              screenHeight: screenHeight,
+              currTabPosition: currTabPosition,
+            ),
 
-          CustomDropdown(
-            hintText: "Select applicable MDR type",
-            title: "MDR Type",
-            required: true,
-            selectedItem: mdrType != '' ? mdrType : null,
-            prefixIcon: FontAwesome.building,
-            itemList:
-                mdrTypeList.map((item) => item['mdrType'].toString()).toList(),
-            //countryList.map((e) => e['ctyName']).toList(),
-            onChanged: (value) {
-              setState(() {
-                mdrType = value;
-                // requestModel.city = value;
-              });
-            },
-            onSaved: (value) {
-              // merchantAgreeMentReq.mdrType
-            },
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'MDR Type is Mandatory!';
-              }
-              return null;
-            },
-          ),
+            CustomDropdown(
+              hintText: "Select applicable MDR type",
+              title: "MDR Type",
+              required: true,
+              selectedItem: mdrType != '' ? mdrType : null,
+              prefixIcon: FontAwesome.building,
+              itemList: mdrTypeList
+                  .map((item) => item['mdrType'].toString())
+                  .toList(),
+              //countryList.map((e) => e['ctyName']).toList(),
+              onChanged: (value) {
+                setState(() {
+                  mdrType = value;
+                  // requestModel.city = value;
+                });
+              },
+              onSaved: (value) {
+                // merchantAgreeMentReq.mdrType
+              },
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'MDR Type is Mandatory!';
+                }
+                return null;
+              },
+            ),
 
-          const SizedBox(
-            height: 20,
-          ),
-          const CustomTextWidget(text: "MDR Summary"),
-          const SizedBox(
-            height: 5,
-          ),
-          Container(
-            color: AppColors.kTileColor,
-            child: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Column(
-                children: [
-                  Wrap(children: [
-                    for (var item in mdrSummaryList)
-                      CustomTextWidget(
-                          text: '${item['schemeName']}-${item['schemeType']}',
-                          isBold: false)
-                  ]
-                      // CustomTextWidget(
-                      //     text:
-                      //         "UPI - 0% |  UPI (Credit) - 1.5%\nDebit Card - 0.4%  \nDebit Card(Rupay) - 0%\nCredit (Domestic - 1.99%)",
-                      //     isBold: false),
+            const SizedBox(
+              height: 20,
+            ),
+            const CustomTextWidget(text: "MDR Summary"),
+            const SizedBox(
+              height: 5,
+            ),
+            Container(
+              color: AppColors.kTileColor,
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Column(
+                  children: [
+                    Wrap(children: [
+                      for (var item in mdrSummaryList)
+                        CustomTextWidget(
+                            text: '${item['schemeName']}-${item['schemeType']}',
+                            isBold: false)
+                    ]
+                        // CustomTextWidget(
+                        //     text:
+                        //         "UPI - 0% |  UPI (Credit) - 1.5%\nDebit Card - 0.4%  \nDebit Card(Rupay) - 0%\nCredit (Domestic - 1.99%)",
+                        //     isBold: false),
 
-                      ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  Container(
-                    color: AppColors.kSelectedBackgroundColor,
-                    child: ExpansionTile(
-                      title: CustomTextWidget(
-                        text: "View Complete MDR Summary",
-                        color: Colors.grey.shade600,
-                        size: 10,
-                      ),
-                      children: const [
-                        Padding(
-                          padding: EdgeInsets.all(16.0),
-                          child: Text("content"),
                         ),
-                      ],
+                    const SizedBox(
+                      height: 15,
                     ),
-                  )
+                    Container(
+                      color: AppColors.kSelectedBackgroundColor,
+                      child: ExpansionTile(
+                        title: CustomTextWidget(
+                          text: "View Complete MDR Summary",
+                          color: Colors.grey.shade600,
+                          size: 10,
+                        ),
+                        children: const [
+                          Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: Text("content"),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 20.0,
+            ),
+            const FormTitleWidget(
+                subWord: 'Merchant Agreement', mainWord: 'Acceptance of'),
+
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+              child: RichText(
+                text: TextSpan(
+                    text: "Note: ",
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(fontWeight: FontWeight.bold),
+                    children: [
+                      TextSpan(
+                        text: Constants.aggrementMessage,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(fontWeight: FontWeight.normal),
+                      )
+                    ]),
+              ),
+            ),
+            const SizedBox(height: 10),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              color: AppColors.kTileColor,
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: RichText(
+                      text: TextSpan(
+                        text: "Terms and conditionss",
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.bold, fontSize: 12),
+                        recognizer: TapGestureRecognizer()..onTap = () {},
+                      ),
+                    ),
+                  ),
+                  Checkbox(
+                    value: acceptTnc,
+                    checkColor: Colors.white,
+                    activeColor: AppColors.kLightGreen,
+                    visualDensity: VisualDensity.adaptivePlatformDensity,
+                    onChanged: (bool? newValue) async {
+                      setState(() {
+                        acceptTnc = newValue!;
+                      });
+                      merchantAgreeMentReq.termsCondition = newValue!;
+                    },
+                  ),
                 ],
               ),
             ),
-          ),
-          const SizedBox(
-            height: 20.0,
-          ),
-          const FormTitleWidget(
-              subWord: 'Merchant Agreement', mainWord: 'Acceptance of'),
 
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-            child: RichText(
-              text: TextSpan(
-                  text: "Note: ",
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(fontWeight: FontWeight.bold),
-                  children: [
-                    TextSpan(
-                      text: Constants.aggrementMessage,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.copyWith(fontWeight: FontWeight.normal),
-                    )
-                  ]),
+            SizedBox(
+              height: 15,
             ),
-          ),
-          const SizedBox(height: 10),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            color: AppColors.kTileColor,
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: RichText(
-                    text: TextSpan(
-                      text: "Terms and conditionss",
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.copyWith(fontWeight: FontWeight.bold, fontSize: 12),
-                      recognizer: TapGestureRecognizer()..onTap = () {},
+            Container(
+              color: AppColors.kTileColor,
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: RichText(
+                      text: TextSpan(
+                        text: "Merchant Service agreement",
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.bold, fontSize: 12),
+                        recognizer: TapGestureRecognizer()..onTap = () {},
+                      ),
                     ),
                   ),
-                ),
-                Checkbox(
-                  value: acceptTnc,
-                  checkColor: Colors.white,
-                  activeColor: AppColors.kLightGreen,
-                  visualDensity: VisualDensity.adaptivePlatformDensity,
-                  onChanged: (bool? newValue) async {
-                    setState(() {
-                      acceptTnc = newValue!;
-                    });
-                    merchantAgreeMentReq.termsCondition = newValue!;
-                  },
-                ),
-              ],
-            ),
-          ),
+                  Checkbox(
+                    value: acceptAggrement,
+                    checkColor: Colors.white,
+                    activeColor: AppColors.kLightGreen,
+                    visualDensity: VisualDensity.adaptivePlatformDensity,
+                    onChanged: (bool? newValue) async {
+                      setState(() {
+                        acceptAggrement = newValue!;
+                      });
+                      merchantAgreeMentReq.serviceAgreement = newValue!;
 
-          SizedBox(
-            height: 15,
-          ),
-          Container(
-            color: AppColors.kTileColor,
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: RichText(
-                    text: TextSpan(
-                      text: "Merchant Service agreement",
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.copyWith(fontWeight: FontWeight.bold, fontSize: 12),
-                      recognizer: TapGestureRecognizer()..onTap = () {},
-                    ),
+                      // if (!accept) {
+                      //   var results =
+                      //       await Navigator.of(context).push(MaterialPageRoute(
+                      //           builder: (BuildContext context) {
+                      //             return const TermsAndConditionPage();
+                      //           },
+                      //           fullscreenDialog: true));
+                      //   setState(() {
+                      //     if (results != null) {
+                      //       accept = results;
+                      //       requestModel.acceptLicense = accept;
+                      //     }
+                      //   });
+                      // } else {
+                      //   setState(() {
+                      //     accept = false;
+                      //     requestModel.acceptLicense = accept;
+                      //   });
+                      // }
+                    },
                   ),
-                ),
-                Checkbox(
-                  value: acceptAggrement,
-                  checkColor: Colors.white,
-                  activeColor: AppColors.kLightGreen,
-                  visualDensity: VisualDensity.adaptivePlatformDensity,
-                  onChanged: (bool? newValue) async {
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 30,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: CustomAppButton(
+                title: "Submit",
+                onPressed: () {
+                  print("sbumit pressed");
+                  if (loginFormKey.currentState!.validate()) {
+                    loginFormKey.currentState!.save();
                     setState(() {
-                      acceptAggrement = newValue!;
+                      submitUserRegistration();
                     });
-                    merchantAgreeMentReq.serviceAgreement = newValue!;
+                  } else {
+                    alertWidget.failure(context, '',
+                        'Please accept our T&C or Select MDR Type');
+                  }
 
-                    // if (!accept) {
-                    //   var results =
-                    //       await Navigator.of(context).push(MaterialPageRoute(
-                    //           builder: (BuildContext context) {
-                    //             return const TermsAndConditionPage();
-                    //           },
-                    //           fullscreenDialog: true));
-                    //   setState(() {
-                    //     if (results != null) {
-                    //       accept = results;
-                    //       requestModel.acceptLicense = accept;
-                    //     }
-                    //   });
-                    // } else {
-                    //   setState(() {
-                    //     accept = false;
-                    //     requestModel.acceptLicense = accept;
-                    //   });
-                    // }
-                  },
-                ),
-              ],
+                  // if (requestModel.acceptLicense == true) {
+                  //   submitUserRegistration();
+                  // } else {
+                  //   alertWidget.failure(
+                  //       context, '', 'Please accept our Terms and Conditions');
+                  // }
+                },
+              ),
             ),
-          ),
-          SizedBox(
-            height: 30,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: CustomAppButton(
-              title: "Submit",
-              onPressed: () {
-                if (loginFormKey.currentState!.validate()) {
-                  loginFormKey.currentState!.save();
-                  setState(() {
-                    submitUserRegistration();
-                  });
-                } else {
-                  alertWidget.failure(
-                      context, '', 'Please accept our Terms and Conditions');
-                }
 
-                // if (requestModel.acceptLicense == true) {
-                //   submitUserRegistration();
-                // } else {
-                //   alertWidget.failure(
-                //       context, '', 'Please accept our Terms and Conditions');
-                // }
-              },
-            ),
-          ),
-
-          const SizedBox(height: 20),
-          // Center(
-          //   child: GestureDetector(
-          //     onTap: () {
-          //       _launchInBrowser(_url);
-          //     },
-          //     child: Container(
-          //       width: MediaQuery.of(context).size.width * 0.85,
-          //       decoration: BoxDecoration(
-          //         boxShadow: [
-          //           BoxShadow(
-          //               color: Theme.of(context).primaryColor.withOpacity(0.5),
-          //               blurRadius: 15),
-          //         ],
-          //       ),
-          //       child: Image.network(
-          //         '${EndPoints.baseApi8988}${EndPoints.slideUrl}/IMG_6.PNG',
-          //         height: 85,
-          //         width: MediaQuery.of(context).size.width,
-          //         fit: BoxFit.fill,
-          //       ),
-          //     ),
-          //   ),
-          // ),
-          const SizedBox(height: 10),
-        ],
+            const SizedBox(height: 20),
+            // Center(
+            //   child: GestureDetector(
+            //     onTap: () {
+            //       _launchInBrowser(_url);
+            //     },
+            //     child: Container(
+            //       width: MediaQuery.of(context).size.width * 0.85,
+            //       decoration: BoxDecoration(
+            //         boxShadow: [
+            //           BoxShadow(
+            //               color: Theme.of(context).primaryColor.withOpacity(0.5),
+            //               blurRadius: 15),
+            //         ],
+            //       ),
+            //       child: Image.network(
+            //         '${EndPoints.baseApi8988}${EndPoints.slideUrl}/IMG_6.PNG',
+            //         height: 85,
+            //         width: MediaQuery.of(context).size.width,
+            //         fit: BoxFit.fill,
+            //       ),
+            //     ),
+            //   ),
+            // ),
+            const SizedBox(height: 10),
+          ],
+        ),
       ),
     );
   }
@@ -2715,7 +2683,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
   submitUserRegistration() async {
     setState(() {
-      //_isLoading = true;
+      _isLoading = true;
       // requestModel.role = "MERCHANT";
       // requestModel.currencyId = '784';
       // requestModel.latitude = _lat;
@@ -2780,7 +2748,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
       var decodeData = jsonDecode(response.body);
       print(response.body);
       if (response.statusCode == 200 || response.statusCode == 201) {
-        if (decodeData['statusCode'].toString() == "00") {
+        if (decodeData['statusCode'].toString() == "200") {
           setState(() {
             _isLoading = false;
           });
@@ -2831,10 +2799,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               !userVerify ||
               userCheck.toString() == "true" ||
               !RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$').hasMatch(value)) {
-            enabledPassword = false;
-          } else {
-            enabledPassword = true;
-          }
+          } else {}
         });
       },
       suffixIconOnPressed: () {
