@@ -1352,7 +1352,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 personalFormKey.currentState!.save();
                 if (personalFormKey.currentState!.validate()) {
                   print(companyDetailsInforeq.toJson());
-                  print(.toJson());
                   setState(() {
                     position++;
                     currTabPosition = 2;
