@@ -1791,6 +1791,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 }
                 return null;
               },
+              onSaved: (newValue) {
+                businessIdProofReq.businessProofDocumntType = newValue;
+              },
             ),
             CustomTextFormField(
               onTap: _openFilePicker,
@@ -1810,9 +1813,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
                 return null;
               },
-              onSaved: (value) {
-                merchantPersonalReq.poaNumber = value;
-              },
+              onSaved: (value) {},
               onFieldSubmitted: (value) {
                 _contactPersonNameController.text = value.trim();
               },
@@ -2084,7 +2085,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   });
                 },
                 onSaved: (value) {
-                  // merchantBankInfoReq.bankNameId=
+                  merchantBankInfoReq.bankNameId = value;
                 },
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -2221,7 +2222,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 });
               },
               onSaved: (value) {
-                // merchantAgreeMentReq.mdrType
+                merchantAgreeMentReq.mdrType = 1;
+                merchantAgreeMentReq.serviceAgreement = true;
+                merchantAgreeMentReq.termsCondition = true;
               },
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -2848,11 +2851,12 @@ class _MerchantSignupState extends State<MerchantSignup> {
           setState(() {
             _isLoading = false;
           });
-          alertWidget.successPopup(
-              context, 'Success', decodeData['responseMessage'], () {
-            Navigator.pushNamedAndRemoveUntil(
-                context, 'MerchantNumVerify', (route) => false);
-          });
+          Navigator.pushNamedAndRemoveUntil(
+              context, 'SignUpSucessScreen', (route) => false);
+          // alertWidget.successPopup(
+          //     context, 'Success', decodeData['responseMessage'], () {
+
+          // });
         } else {
           setState(() {
             _isLoading = false;
