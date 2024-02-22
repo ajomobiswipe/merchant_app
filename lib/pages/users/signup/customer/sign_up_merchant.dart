@@ -928,11 +928,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
               onChanged: (newValue) {
                 setState(() {
                   selectedBusinessCategory = newValue;
-                  // selectedBusinessSubCategory=null;
+                  selectedBusinessSubCategory=null;
+                  print(selectedBusinessSubCategory);
                 });
               },
             ),
-
             // SimpleDropDown(
             //
             //   dropDownList: merchantBusinessCategory
@@ -993,6 +993,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               required: true,
             ),
 
+
             DropdownButtonFormField(
               isDense: true,
               isExpanded: true,
@@ -1007,8 +1008,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                               fontSize: 13,
                               color: Colors.black.withOpacity(0.25))),
               value: selectedBusinessSubCategory,
-              items: selectedBusinessCategory != null
-                  ? merchantBusinessSubCategory
+              items:selectedBusinessCategory!=null?merchantBusinessSubCategory
                       .where((item) =>
                           item['mccGroupId']['mccGroupId'] ==
                           selectedBusinessCategory['mccGroupId'])
@@ -1020,18 +1020,20 @@ class _MerchantSignupState extends State<MerchantSignup> {
                           style: const TextStyle(fontSize: 13),
                         ),
                       );
-                    }).toList()
-                  : [],
+                    }).toList():[],
               onChanged: (dynamic newValue) {
-                var a = newValue["mccTypeId"];
-                print(a);
-                companyDetailsInforeq.mccTypeCode = newValue["mccTypeId"];
+                setState(() {
+                  selectedBusinessSubCategory=newValue;
+                  var a = newValue["mccTypeId"];
+                  companyDetailsInforeq.mccTypeCode = newValue["mccTypeId"];
+                });
               },
               onSaved: (dynamic value) {
                 // companyDetailsInforeq.mccTypeCode = value["mccTypeCode"];
                 companyDetailsInforeq.mccTypeCode = value["mccTypeId"];
               },
             ),
+
 
             // CustomDropdown(
             //   title: "Merchant Business Sub category",
@@ -1208,7 +1210,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               onChanged: (value) {
                 setState(() {
                   // selectedBusinessState = value;
-
+                  selectedCity='';
                   selectedBusinessState = value;
                   selectedBusinessStateId = (statesList
                       .where((element) => element['stateName'] == value)

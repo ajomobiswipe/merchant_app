@@ -306,6 +306,7 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                   ],
                 ),
               ),
+
               Row(
                 children: [
                   CustomTextWidget(
