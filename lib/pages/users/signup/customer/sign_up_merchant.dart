@@ -783,7 +783,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   print(newValue['businessType'].runtimeType);
                   businessType = newValue;
                   companyDetailsInforeq.businessTypeId =
-                      newValue['businessType'].runtimeType==String?int.parse(newValue['businessType']):newValue['businessType'];
+                      newValue['businessType'].runtimeType == String
+                          ? int.parse(newValue['businessType'])
+                          : newValue['businessType'];
                   // companyDetailsInforeq.businessTypeId = 1;
                 });
               },
@@ -1021,13 +1023,13 @@ class _MerchantSignupState extends State<MerchantSignup> {
                     }).toList()
                   : [],
               onChanged: (dynamic newValue) {
-                var a = newValue["mccTypeCode"];
+                var a = newValue["mccTypeId"];
                 print(a);
-                companyDetailsInforeq.mccTypeCode = newValue["mccTypeCode"];
+                companyDetailsInforeq.mccTypeCode = newValue["mccTypeId"];
               },
               onSaved: (dynamic value) {
                 // companyDetailsInforeq.mccTypeCode = value["mccTypeCode"];
-                companyDetailsInforeq.mccTypeCode = 1;
+                companyDetailsInforeq.mccTypeCode = value["mccTypeId"];
               },
             ),
 
@@ -1214,7 +1216,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
                   print(selectedBusinessStateId);
 
-                  merchantPersonalReq.currentState = selectedBusinessStateId;
+                  companyDetailsInforeq.stateId = selectedBusinessStateId;
 
                   print(merchantPersonalReq.currentState);
 
@@ -1222,7 +1224,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 });
               },
               onSaved: (value) {
-                merchantPersonalReq.currentState = selectedBusinessStateId;
+                companyDetailsInforeq.stateId = selectedBusinessStateId;
               },
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -1246,15 +1248,15 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
               // itemList: citiesList.map((item) => item['cityName']).toList(),
 
-                itemList: citiesList
-                    .where( (item) => item['stateId'] == selectedBusinessStateId)
-                    .map((item) => item['cityName'])
-                    .toList(),
+              itemList: citiesList
+                  .where((item) => item['stateId'] == selectedBusinessStateId)
+                  .map((item) => item['cityName'])
+                  .toList(),
 
-                // itemList= citiesList
-                //     .map(
-                //         (item) => item['stateId'] == selectedBusinessStateId)
-                //     .map((item) => item['cityName']),
+              // itemList= citiesList
+              //     .map(
+              //         (item) => item['stateId'] == selectedBusinessStateId)
+              //     .map((item) => item['cityName']),
 
               // itemList:  citiesList
               //         .where(
@@ -1269,13 +1271,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
               //         );
               //       }).toList()
 
-
               //cityList.map((e) => e['citName']).toList(),
 
               onChanged: (value) {
                 print(value);
                 setState(() {
-
                   selectedCity = value;
 
                   selectedBusinessCityId = (citiesList
@@ -1284,16 +1284,14 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
                   print(selectedBusinessCityId);
 
-                  merchantCompanyDetailsReq.cityCode = selectedBusinessCityId;
+                  companyDetailsInforeq.cityCode = selectedBusinessCityId;
 
                   print(selectedBusinessCityId);
-
-
                 });
               },
 
               onSaved: (value) {
-                // merchantPersonalReq.cityCode = selectedBusinessCityId;
+                companyDetailsInforeq.cityCode = selectedBusinessCityId;
               },
 
               validator: (value) {
