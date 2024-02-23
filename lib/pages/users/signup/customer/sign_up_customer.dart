@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:email_validator/email_validator.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+// import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -137,38 +137,38 @@ class _SignUpCustomerState extends State<SignUpCustomer> {
     getSecurityQuestions();
     getCountry();
     super.initState();
-    getToken();
+    // getToken();
   }
 
-  getToken() async {
-    var token = await FirebaseMessaging.instance.getToken();
-    if (token != null) {
-    } else {
-      token = '';
-    }
-    setState(() {
-      registerRequestModel.notificationToken = token;
-    });
-  }
+  // getToken() async {
+  //   var token = await FirebaseMessaging.instance.getToken();
+  //   if (token != null) {
+  //   } else {
+  //     token = '';
+  //   }
+  //   setState(() {
+  //     registerRequestModel.notificationToken = token;
+  //   });
+  // }
 
-  loadFCM() async {
-    if (!kIsWeb) {
-      channel = const AndroidNotificationChannel(
-          'high_importance_channel', 'High Importance Notifications',
-          importance: Importance.high, enableVibration: true);
-      flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-      await flutterLocalNotificationsPlugin
-          .resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>()
-          ?.createNotificationChannel(channel);
-      await FirebaseMessaging.instance
-          .setForegroundNotificationPresentationOptions(
-        alert: true,
-        badge: true,
-        sound: true,
-      );
-    }
-  }
+  // loadFCM() async {
+  //   if (!kIsWeb) {
+  //     channel = const AndroidNotificationChannel(
+  //         'high_importance_channel', 'High Importance Notifications',
+  //         importance: Importance.high, enableVibration: true);
+  //     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  //     await flutterLocalNotificationsPlugin
+  //         .resolvePlatformSpecificImplementation<
+  //             AndroidFlutterLocalNotificationsPlugin>()
+  //         ?.createNotificationChannel(channel);
+  //     await FirebaseMessaging.instance
+  //         .setForegroundNotificationPresentationOptions(
+  //       alert: true,
+  //       badge: true,
+  //       sound: true,
+  //     );
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {

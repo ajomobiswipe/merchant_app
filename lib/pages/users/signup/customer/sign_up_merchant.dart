@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:badges/badges.dart' as badge;
 import 'package:email_validator/email_validator.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+// import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -56,8 +56,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
   int position = 0;
   bool acceptTnc = true;
   bool acceptAggrement = true;
-  final double _lat = 13.05186999479027;
-  final double _lng = 80.22561586938588;
   FocusNode myFocusNode = FocusNode();
 
   AlertService alertWidget = AlertService();
@@ -354,16 +352,16 @@ class _MerchantSignupState extends State<MerchantSignup> {
     super.initState();
   }
 
-  getToken() async {
-    var token = await FirebaseMessaging.instance.getToken();
-    if (token != null) {
-    } else {
-      token = '';
-    }
-    setState(() {
-      requestModel.notificationToken = token;
-    });
-  }
+  // getToken() async {
+  //   var token = await FirebaseMessaging.instance.getToken();
+  //   if (token != null) {
+  //   } else {
+  //     token = '';
+  //   }
+  //   setState(() {
+  //     requestModel.notificationToken = token;
+  //   });
+  // }
 
   int? getValueByLabel(List list, String? label) {
     for (var map in list) {
@@ -375,15 +373,16 @@ class _MerchantSignupState extends State<MerchantSignup> {
   }
 
   Future getMdrSummaryList(String mdrType) async {
+    int mdrId = (mdrTypeList
+        .where((element) => element['mdrType'] == mdrType)
+        .toList())[0]['mdrId'];
 
-   int mdrId=(mdrTypeList.where((element) => element['mdrType']==mdrType).toList())[0]['mdrId'];
-
-    mdrSummaryList=mdrApiSummaryList.where((element) => element['mdrId']==mdrId).toList();
-    await userServices.getMdrSummary(mdrType,selectedBussinesTurnOver).then((response) async {
-      
-
-          
-    });
+    mdrSummaryList = mdrApiSummaryList
+        .where((element) => element['mdrId'] == mdrId)
+        .toList();
+    await userServices
+        .getMdrSummary(mdrType, selectedBussinesTurnOver)
+        .then((response) async {});
   }
 
   void getIntByKey(
@@ -2571,8 +2570,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
     });
   }
 
-  List mdrApiSummaryList=[];
-  
+  List mdrApiSummaryList = [];
+
   getDefaultMerchantValues() async {
     print("----default value called----");
     await userServices.GetMerchantOnboardingValues().then((response) async {

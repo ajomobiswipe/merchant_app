@@ -3,11 +3,9 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-  cloud_firestore
   connectivity_plus
   dynamic_color
   file_selector_windows
-  firebase_core
   flutter_localization
   geolocator_windows
   local_auth_windows

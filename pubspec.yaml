@@ -70,9 +70,6 @@ dependencies:
   timelines:
   url_launcher:
   email_validator:
-  firebase_core:
-  firebase_messaging:
-  cloud_firestore:
   flutter_local_notifications:
   overlay_support:
   aes256gcm:
@@ -107,9 +104,6 @@ flutter_icons:
   ios: true
   image_path: "assets/screen/anet.png"
 
-dependency_overrides:
-  firebase_core: ^2.14.0
-  firebase_core_platform_interface: ^4.8.0
 
 
 #  modal_bottom_sheet:

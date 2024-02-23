@@ -32,6 +32,7 @@ class MerchantOrderDetails extends StatefulWidget {
 
 class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
   int? selectedProductId;
+  int? selectedProductQuantity;
   int? selectedPackageId;
   List<Map<String, dynamic>> selectedProductPackages = [];
 
@@ -39,7 +40,7 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
   // String? selectedPackage;
   String selectedPackage = '';
   String selectedProduct = '';
-  String selectedQuantity = '';
+  //String selectedQuantity = '';
 
   List<String> products = [
     'SoftPOS',
@@ -136,7 +137,7 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CustomTextWidget(
+                    const CustomTextWidget(
                       text: "Product",
                       fontWeight: FontWeight.bold,
                     ),
@@ -144,7 +145,7 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                       padding: const EdgeInsets.only(top: 8),
                       child: DropdownButtonFormField<int>(
                         value: selectedProductId,
-                        icon: Icon(Icons.keyboard_arrow_down,
+                        icon: const Icon(Icons.keyboard_arrow_down,
                             color: AppColors.kPrimaryColor),
                         hint: const Text(
                           'Select product type',
@@ -200,13 +201,14 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                     ),
                   ],
                 ),
-                SizedBox(
+
+                const SizedBox(
                   height: 20,
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CustomTextWidget(
+                    const CustomTextWidget(
                       text: "Package",
                       fontWeight: FontWeight.bold,
                     ),
@@ -250,7 +252,7 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                           }
                           return null;
                         },
-                        icon: Icon(Icons.keyboard_arrow_down,
+                        icon: const Icon(Icons.keyboard_arrow_down,
                             color: AppColors.kPrimaryColor),
 
                         decoration: InputDecoration(
@@ -298,31 +300,70 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 8),
-                      child: CustomDropdown(
-                        hintText: "Select product quantity",
-                        titleEnabled: false,
-                        title: "Quantity",
-                        required: true,
-                        selectedItem:
-                            selectedQuantity != '' ? selectedQuantity : null,
-                        prefixIcon: Icons.production_quantity_limits,
-                        itemList: const ['1', '2', '3', '4', '5'],
-                        onChanged: (value) {
+                      child: DropdownButtonFormField<int>(
+                        value: selectedProductQuantity,
+                        icon: const Icon(Icons.keyboard_arrow_down,
+                            color: AppColors.kPrimaryColor),
+                        hint: const Text(
+                          'Select product quantity',
+                          style: TextStyle(
+                              fontSize: 13, fontWeight: FontWeight.bold),
+                        ),
+                        items: [
+                          1,
+                          2,
+                          3,
+                          4,
+                          5,
+                        ].map<DropdownMenuItem<int>>((entry) {
+                          // int productId = entry;
+
+                          return DropdownMenuItem<int>(
+                            value: entry,
+                            child: Text(entry.toString()),
+                          );
+                        }).toList(),
+                        onChanged: (int? value) {
                           setState(() {
-                            selectedQuantity = value;
+                            selectedProductQuantity = value;
                           });
                         },
-                        onSaved: (value) {},
                         validator: (value) {
-                          print('value12345563545$value');
-
-                          if (value == null) {
-                            return 'Please Select Quantity!';
+                          if (value == null || value < 0) {
+                            return 'Please Select product quantity!';
                           }
                           return null;
                         },
+                        decoration: dropdownDecoration(context),
                       ),
                     ),
+                    // Padding(
+                    //   padding: const EdgeInsets.only(top: 8),
+                    //   child: CustomDropdown(
+                    //     hintText: "Select product quantity",
+                    //     titleEnabled: false,
+                    //     title: "Quantity",
+                    //     required: true,
+                    //     selectedItem:
+                    //         selectedQuantity != '' ? selectedQuantity : null,
+                    //     prefixIcon: Icons.production_quantity_limits,
+                    //     itemList: const ['1', '2', '3', '4', '5'],
+                    //     onChanged: (value) {
+                    //       setState(() {
+                    //         selectedQuantity = value;
+                    //       });
+                    //     },
+                    //     onSaved: (value) {},
+                    //     validator: (value) {
+                    //       print('value12345563545$value');
+
+                    //       if (value == null) {
+                    //         return 'Please Select Quantity!';
+                    //       }
+                    //       return null;
+                    //     },
+                    //   ),
+                    // ),
                   ],
                 ),
 
@@ -341,7 +382,8 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                       SelectedProduct newItem = SelectedProduct(
                         productName: Product,
                         package: package,
-                        quantity: int.parse(selectedQuantity),
+                        //quantity: int.parse(selectedQuantity),
+                        quantity: selectedProductQuantity!,
                         productId: selectedProductId!,
                         packagetId: selectedPackageId!,
                       );
@@ -375,7 +417,8 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                       setState(() {
                         selectedProductId = null;
                         selectedPackageId = null;
-                        selectedQuantity = '';
+                        selectedProductQuantity = null;
+                        // selectedQuantity = '';
                         selectedProductPackages = [];
                         widget.selectedItems.add(newItem);
                       });
@@ -389,7 +432,7 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                         color: AppColors.kPrimaryColor,
                       ),
                       defaultWidth(10),
-                      CustomTextWidget(
+                      const CustomTextWidget(
                         text: 'Add Product',
                         color: AppColors.kLightGreen,
                         fontWeight: FontWeight.w500,
@@ -400,7 +443,7 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                 ),
                 // Display Selected Items
                 defaultHeight(20),
-                CustomTextWidget(
+                const CustomTextWidget(
                   text: 'Product Summary:',
                   fontWeight: FontWeight.bold,
                 ),
@@ -450,10 +493,10 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                           dataRowMinHeight: 20,
                           dataRowMaxHeight: 30,
                           columns: [
-                            DataColumn(label: Text('Product')),
-                            DataColumn(label: Text('Package')),
-                            DataColumn(label: Text('Quantity')),
-                            DataColumn(label: Text('Actions')),
+                            const DataColumn(label: Text('Product')),
+                            const DataColumn(label: Text('Package')),
+                            const DataColumn(label: Text('Quantity')),
+                            const DataColumn(label: Text('Actions')),
                           ],
                           rows: widget.selectedItems.map((item) {
                             return DataRow(cells: [
@@ -474,7 +517,7 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                               )),
                               DataCell(
                                 IconButton(
-                                  icon: Icon(
+                                  icon: const Icon(
                                     Icons.cancel_outlined,
                                     color: Colors.red,
                                   ),
@@ -498,8 +541,8 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                               size: 10,
                             ),
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.all(16.0),
+                              const Padding(
+                                padding: EdgeInsets.all(16.0),
                                 child: Text("content"),
                               ),
                             ],

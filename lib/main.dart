@@ -8,8 +8,8 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+// import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 // import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -46,8 +46,8 @@ void main() {
 
     // --- Root
     WidgetsFlutterBinding.ensureInitialized();
-    await Firebase.initializeApp();
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+    // await Firebase.initializeApp();
+    // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     runApp(MainPage(
@@ -56,10 +56,10 @@ void main() {
   }, (e, _) => throw e);
 }
 
-// FCM - Background Services
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
-}
+// // FCM - Background Services
+// Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+//   await Firebase.initializeApp();
+// }
 
 // Stateless Widget for main page
 class MainPage extends StatelessWidget {
