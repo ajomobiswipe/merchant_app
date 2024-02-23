@@ -6,6 +6,7 @@ import 'package:sifr_latest/common_widgets/form_title_widget.dart';
 import 'package:sifr_latest/common_widgets/icon_text_widget.dart';
 import 'package:sifr_latest/config/config.dart';
 import 'package:sifr_latest/helpers/default_height.dart';
+import 'package:sifr_latest/main.dart';
 import 'package:sifr_latest/pages/mechant_order/models/mechant_additionalingo_model.dart';
 import 'package:sifr_latest/widgets/app_scafold.dart';
 import 'package:sifr_latest/widgets/custom_text_widget.dart';
@@ -14,17 +15,16 @@ import 'package:sifr_latest/widgets/widget.dart';
 import '../../decurations/dropdownDecurations.dart';
 
 class MerchantOrderDetails extends StatefulWidget {
-  MerchantAdditionalInfoRequestmodel merchantAdditionalInfoReq;
   CustomAlert customAlert = CustomAlert();
   List tmsProductMaster;
   Function orderNext;
   List<SelectedProduct> selectedItems;
-  MerchantOrderDetails(
-      {super.key,
-      required this.orderNext,
-      required this.tmsProductMaster,
-      required this.selectedItems,
-      required this.merchantAdditionalInfoReq});
+  MerchantOrderDetails({
+    super.key,
+    required this.orderNext,
+    required this.tmsProductMaster,
+    required this.selectedItems,
+  });
 
   @override
   State<MerchantOrderDetails> createState() => _MerchantOrderDetailsState();
@@ -36,42 +36,13 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
   int? selectedPackageId;
   List<Map<String, dynamic>> selectedProductPackages = [];
 
-  // String? selectedProduct;
-  // String? selectedPackage;
   String selectedPackage = '';
   String selectedProduct = '';
-  //String selectedQuantity = '';
-
-  List<String> products = [
-    'SoftPOS',
-    'Soundbox',
-    'OMA Android Terminal A880',
-  ];
-  List<String> packages = [
-    '1999+499 standard',
-    ' 999+799 tactical',
-    'Special 999',
-  ];
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    // addproduct();
-  }
-
-  addproduct() {
-    widget.merchantAdditionalInfoReq.merchantProductDetails == null
-        ? []
-        : widget.merchantAdditionalInfoReq.merchantProductDetails!.add(
-            MerchantProductDetail(
-                productName: "aadf",
-                productId: 1,
-                package: "package",
-                packagetId: 2,
-                qty: 5));
-    print(widget.merchantAdditionalInfoReq.merchantProductDetails);
   }
 
   onTapConfirm() {
@@ -128,12 +99,6 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // ElevatedButton(
-                //     onPressed: () {
-                //       print(jsonEncode(
-                //           widget.merchantAdditionalInfoReq.toJson()));
-                //     },
-                //     child: Text("demo")),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -316,8 +281,6 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                           4,
                           5,
                         ].map<DropdownMenuItem<int>>((entry) {
-                          // int productId = entry;
-
                           return DropdownMenuItem<int>(
                             value: entry,
                             child: Text(entry.toString()),
@@ -420,7 +383,21 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                         selectedProductQuantity = null;
                         // selectedQuantity = '';
                         selectedProductPackages = [];
-                        widget.selectedItems.add(newItem);
+                        print(widget.selectedItems.length);
+                        if (widget.selectedItems.isEmpty) {
+                          widget.selectedItems.add(newItem);
+                        } else {
+                          for (var item in widget.selectedItems) {
+                            if (item.packagetId == newItem.packagetId &&
+                                item.productId == newItem.productId) {
+                              print("duplicate found");
+                              alertService.error("Item already exist");
+                              return;
+                            }
+                          }
+                          print("executed");
+                          widget.selectedItems.add(newItem);
+                        }
                       });
                     }
                   },

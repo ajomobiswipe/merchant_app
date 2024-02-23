@@ -66,8 +66,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
       MerchantRegPersonalReqModel();
   MerchantCompanyDetailsReqModel merchantCompanyDetailsReq =
       MerchantCompanyDetailsReqModel();
-  MerchantAdditionalInfoRequestmodel merchantAdditionalInfoReq =
-      MerchantAdditionalInfoRequestmodel();
 
   CompanyDetailsInfoRequestmodel companyDetailsInforeq =
       CompanyDetailsInfoRequestmodel();
@@ -277,15 +275,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
   bool enabledAnswer3 = false;
   final Uri _url = Uri.parse('https://sifr.ae/contact.php');
 
-  /// MERCHANT INFO
-  late List mccList = [];
-  final TextEditingController _merchantNameCtrl = TextEditingController();
-  final TextEditingController _companyRegCtrl = TextEditingController();
-  final TextEditingController _nationalIdCtrl = TextEditingController();
-  final TextEditingController _nationalIdExpiryCtrl = TextEditingController();
-  final TextEditingController _tradeLicenseCtrl = TextEditingController();
-  final TextEditingController _tradeLicenseExpiryCtrl = TextEditingController();
-
   /// DOCUMENTS INFO
   final TextEditingController tradeLicense = TextEditingController();
   final TextEditingController nationalIdFront = TextEditingController();
@@ -443,7 +432,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
       return MerchantOrderDetails(
         orderNext: orderNext,
         tmsProductMaster: tmsProductMasterlist,
-        merchantAdditionalInfoReq: merchantAdditionalInfoReq,
         selectedItems: selectedItems,
       );
     } else if (position == 1) {
@@ -1035,12 +1023,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
               onChanged: (dynamic newValue) {
                 setState(() {
                   selectedBusinessSubCategory = newValue;
-                  var a = newValue["mccTypeId"];
+
                   companyDetailsInforeq.mccTypeCode = newValue["mccTypeId"];
                 });
               },
               onSaved: (dynamic value) {
-                // companyDetailsInforeq.mccTypeCode = value["mccTypeCode"];
                 companyDetailsInforeq.mccTypeCode = value["mccTypeId"];
               },
             ),
@@ -1100,26 +1087,17 @@ class _MerchantSignupState extends State<MerchantSignup> {
             CustomDropdown(
               hintText: "Select Merchant Annual Business Turnover",
               title: "Merchant Annual Business Turnover",
-              // enabled: selectedState != '' && enabledState
-              //     ? enabledcity = true
-              //     : enabledcity = false,
               required: true,
-
               selectedItem: selectedBussinesTurnOver != ''
                   ? selectedBussinesTurnOver
                   : null,
               prefixIcon: Icons.location_city_outlined,
-
               itemList: businessTurnoverList
                   .map((map) => map['turnoverAmount'].toString())
                   .toList(),
-              // cityList.map((e) => e['citName']).toList(),
               onChanged: (value) {
                 setState(() {
                   selectedBussinesTurnOver = value;
-                  // businessTurnoverList = value;
-                  // merchantPersonalReq.poiType =
-                  //     getValueByLabel(businessTurnoverList, value);
                 });
               },
               onSaved: (value) {
@@ -2061,8 +2039,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   if (merchantIfscCodeCtrl.text.length >= 10) {
                     print("clicked");
                     if (accountVerify) {
-                      merchantAdditionalInfoReq.merchantBankVerifyStatus =
-                          false;
                       print("validate");
                       validateAccountNumber();
                     } else {
@@ -2251,10 +2227,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
               screenHeight: screenHeight,
               currTabPosition: currTabPosition,
             ),
-
-
-
-
 
             CustomDropdown(
               hintText: "Select applicable MDR type",
@@ -2653,60 +2625,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
     });
   }
 
-  getSecurityQuestions() {
-    userServices.fetchSecurity().then((response) {
-      var decodeData = jsonDecode(response.body);
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        if (decodeData['responseType'].toString() == "S") {
-          int? length = decodeData['responseValue']['list'].length;
-          for (var i = 0; i < length!; i++) {
-            securityQuestionList
-                .add(decodeData['responseValue']['list'][i]['question']);
-          }
-        } else {
-          alertWidget.failure(
-              context, 'Failure', decodeData['responseValue']['message']);
-        }
-      } else {
-        alertWidget.failure(
-            context, 'Failure', decodeData['responseValue']['message']);
-      }
-    });
-  }
-
-  loadMcc() {
-    userServices.getMCC().then((response) {
-      var decodeData = jsonDecode(response.body);
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        if (decodeData['responseCode'] == "00") {
-          setState(() {
-            mccList = decodeData['tmsMasterMccInfo'];
-          });
-        } else {
-          setState(() {
-            mccList = [];
-          });
-        }
-      } else {
-        setState(() {
-          mccList = [];
-        });
-      }
-    });
-  }
-
-  kycNext() {
-    setState(() {
-      position = 7;
-    });
-  }
-
-  kycPrevious() {
-    setState(() {
-      position = 8;
-    });
-  }
-
   storePrevious() {
     setState(() {
       position--;
@@ -2717,18 +2635,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
     setState(() {
       position++;
       currTabPosition = 4;
-    });
-  }
-
-  documentNext() {
-    setState(() {
-      position = 7;
-    });
-  }
-
-  documentPrevious() {
-    setState(() {
-      position = 5;
     });
   }
 
@@ -3188,16 +3094,13 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
         if (response.toString() == "true") {
           setState(() {
-            merchantAdditionalInfoReq.merchantBankVerifyStatus = true;
+            merchantBankInfoReq.merchantBankVerifyStatus = true;
             accountCheck = 'VALID';
 
-            merchantAdditionalInfoReq.bankIfscCode = merchantIfscCodeCtrl.text;
-            merchantAdditionalInfoReq.bankAccountNo =
-                merchantAccountNumberCtrl.text;
-            merchantAdditionalInfoReq.beneficiaryName =
+            merchantBankInfoReq.bankIfscCode = merchantIfscCodeCtrl.text;
+            merchantBankInfoReq.bankAccountNo = merchantAccountNumberCtrl.text;
+            merchantBankInfoReq.beneficiaryName =
                 merchantBeneficiaryNamrCodeCtrl.text;
-            merchantAdditionalInfoReq.bankAccountNo =
-                merchantAccountNumberCtrl.text;
             accountVerify = false;
             // if (idStatus == 'VALID') {
             //   accountCheck = 'VALID';

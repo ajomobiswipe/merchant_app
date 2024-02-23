@@ -97,7 +97,7 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
       setState(() => _currentPosition = position);
       widget.merchantStoreInfoReq.latitude = position.latitude;
       widget.merchantStoreInfoReq.longitude = position.longitude;
-      widget.merchantStoreInfoReq.currentCountry = "IND";
+      widget.merchantStoreInfoReq.currentCountry = "356";
       //_getAddressFromLatLng(_currentPosition!);
     }).catchError((e) {
       // debugPrint(e);
