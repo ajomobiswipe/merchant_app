@@ -449,20 +449,19 @@ class UserServices {
     return response;
   }
 
-  Future<dynamic> getMdrSummary(String mdrType,String turnOver,int mccGroupId) async {
-
+  Future<dynamic> getMdrSummary(
+      String mdrType, String turnOver, int mccGroupId) async {
     Connection connection = Connection();
 
     final requestBody = {
-      "mdrType":mdrType,
-      "mccGroupId":1,
-      "turnOverType":"large"
+      "mdrType": mdrType,
+      "mccGroupId": 1,
+      "turnOverType": "large"
     };
 
     print(requestBody);
 
-    var url =
-        'http://10.0.38.61:9508/NanoPay/Middleware/UiApi/mdrDetails';
+    var url = 'http://10.0.38.61:9508/NanoPay/Middleware/UiApi/mdrDetails';
     var response = await connection.post(url, requestBody);
     return response;
     // old merchant onboarding implimentation
@@ -831,6 +830,42 @@ class UserServices {
     request.fields['bankInfo'] = jsonEncode(merchantBankInfoReq.toJson());
     request.fields['merchantAgreeMentInfo'] =
         jsonEncode(merchantAgreeMentReq.toJson());
+    final streamedResponse = await request.send();
+    final response = await http.Response.fromStream(streamedResponse);
+    return response;
+  }
+
+  deviceDeployment(
+    productDeploymentReq,
+    deviceAtStoreCtrl,
+    transactionSlipImageCtrl,
+  ) async {
+    //var url = EndPoints.baseApi9502 + EndPoints.registerAPI;
+    BoxStorage boxStorage = BoxStorage();
+    String barrertoken = boxStorage.getToken();
+
+    var url =
+        'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/MerchantOnboardingStatus';
+    // Set up the headers
+    Map<String, String> headers = {
+      'Content-Type': 'multipart/form-data',
+      'Authorization': 'Bearer $barrertoken', // Add any other headers you need
+    };
+
+    final request = http.MultipartRequest('POST', Uri.parse(url))
+      ..headers.addAll(headers);
+    final deviceAtStore = await http.MultipartFile.fromPath(
+        'productDeploymentImg1', deviceAtStoreCtrl);
+    final transactionImage = await http.MultipartFile.fromPath(
+        'productDeploymentImg2', transactionSlipImageCtrl);
+
+    print(jsonEncode(productDeploymentReq.toJson()));
+
+    request.files.add(deviceAtStore);
+    request.files.add(transactionImage);
+
+    request.fields['productDeploymentInfo'] = jsonEncode(productDeploymentReq);
+
     final streamedResponse = await request.send();
     final response = await http.Response.fromStream(streamedResponse);
     return response;

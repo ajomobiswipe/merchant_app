@@ -24,31 +24,31 @@ class ApplicationStatus {
   dynamic map;
   dynamic merchantProductDetailsResponse;
 
-  ApplicationStatus({
-    this.errorMessage,
-    this.statusCode,
-    this.amountToPay,
-    this.kycApproved=false,
-    this.payment=false,
-    this.eNach=false,
-    this.midtidGenerated=false,
-    this.allDevicesOnboarded=false,
-    this.live=true,
-    this.devices,
-    this.map,this.merchantProductDetailsResponse
-  });
+  ApplicationStatus(
+      {this.errorMessage,
+      this.statusCode,
+      this.amountToPay,
+      this.kycApproved = false,
+      this.payment = false,
+      this.eNach = false,
+      this.midtidGenerated = false,
+      this.allDevicesOnboarded = false,
+      this.live = true,
+      this.devices,
+      this.map,
+      this.merchantProductDetailsResponse});
 
   factory ApplicationStatus.fromJson(Map<String, dynamic> json) =>
       ApplicationStatus(
         errorMessage: json["errorMessage"],
         statusCode: json["statusCode"],
         amountToPay: json["amountToPay"],
-        kycApproved: json["kycApproved"]??false,
-        payment: json["payment"]??false,
-        eNach: json["eNACH"]??false,
-        midtidGenerated: json["MIDTIDGenerated"]??false,
-        allDevicesOnboarded: json["allDevicesOnboarded"]??false,
-        live: json["live"]??true,
+        kycApproved: json["kycApproved"] ?? false,
+        payment: json["payment"] ?? false,
+        eNach: json["eNACH"] ?? false,
+        midtidGenerated: json["MIDTIDGenerated"] ?? false,
+        allDevicesOnboarded: json["allDevicesOnboarded"] ?? false,
+        live: json["live"] ?? true,
         devices: json["devices"] == null
             ? []
             : List<Device>.from(
@@ -76,8 +76,10 @@ class ApplicationStatus {
 class Device {
   String? productId;
   String? productName;
+  String? merchantId;
   int? packageId;
   String? package;
+  int? guid;
   int? quantity;
   int? price;
   bool? deploymentStatus;
@@ -89,6 +91,8 @@ class Device {
     this.package,
     this.quantity,
     this.price,
+    this.merchantId,
+    this.guid,
     this.deploymentStatus,
   });
 

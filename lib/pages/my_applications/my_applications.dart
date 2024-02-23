@@ -599,7 +599,10 @@ class _MyApplicationsState extends State<MyApplications> {
         const SizedBox(
           width: 10,
         ),
-        CustomTextWidget(text: label,size: 11,)
+        CustomTextWidget(
+          text: label,
+          size: 11,
+        )
       ],
     );
   }
@@ -764,7 +767,7 @@ class _MyApplicationsState extends State<MyApplications> {
           ),
           content: SizedBox(
             height: 600,
-            width: MediaQuery.of(context).size.width*.8,
+            width: MediaQuery.of(context).size.width * .8,
             child: ListView(
               shrinkWrap: true,
               //crossAxisAlignment: CrossAxisAlignment.start,
@@ -799,8 +802,7 @@ class _MyApplicationsState extends State<MyApplications> {
                       const Expanded(child: SizedBox()),
                       Expanded(
                         child: statusTextWidget(
-                            title: "Kyc",
-                            status: data.kycApproved ?? false),
+                            title: "Kyc", status: data.kycApproved ?? false),
                       ),
                     ],
                   ),
@@ -926,8 +928,6 @@ class _MyApplicationsState extends State<MyApplications> {
                         ),
                       ),
 
-
-
                       // if (data.midtidGenerated!)
                       Expanded(
                         child: Column(
@@ -939,8 +939,8 @@ class _MyApplicationsState extends State<MyApplications> {
                               child: data.devices![index].deploymentStatus!
                                   ? statusTextWidget(
                                       title: data.devices![index].productName!,
-                                      status:
-                                          data.devices![index].deploymentStatus!)
+                                      status: data
+                                          .devices![index].deploymentStatus!)
                                   : ElevatedButton(
                                       onPressed: () {
                                         Navigator.pushNamed(
@@ -956,7 +956,8 @@ class _MyApplicationsState extends State<MyApplications> {
                                       ),
                                       child: Text(
                                         data.devices![index].productName!,
-                                        style: TextStyle(color: Colors.white,fontSize: 13),
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 13),
                                       )),
                             ),
                           ),

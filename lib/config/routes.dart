@@ -62,7 +62,9 @@ class CustomRoute {
         case "LocationPage":
           return const LocationPage();
         case "DeviceDeploymentScreen":
-          return const DeviceDeploymentScreen();
+          return DeviceDeploymentScreen(
+            deviceInfo: args as Map<String, dynamic>?,
+          );
         case "forgotPassword":
           return const ForgotPassword();
 
