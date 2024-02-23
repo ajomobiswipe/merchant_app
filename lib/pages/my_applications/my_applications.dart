@@ -599,7 +599,7 @@ class _MyApplicationsState extends State<MyApplications> {
         const SizedBox(
           width: 10,
         ),
-        CustomTextWidget(text: label)
+        CustomTextWidget(text: label,size: 11,)
       ],
     );
   }
@@ -731,7 +731,7 @@ class _MyApplicationsState extends State<MyApplications> {
     //if(data.devices!.isNotEmpty)
     return showDialog<void>(
       context: context,
-      barrierDismissible: false,
+      // barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Colors.white,
@@ -764,7 +764,7 @@ class _MyApplicationsState extends State<MyApplications> {
           ),
           content: SizedBox(
             height: 600,
-            width: 400,
+            width: MediaQuery.of(context).size.width*.8,
             child: ListView(
               shrinkWrap: true,
               //crossAxisAlignment: CrossAxisAlignment.start,
@@ -797,9 +797,11 @@ class _MyApplicationsState extends State<MyApplications> {
                         ),
                       ),
                       const Expanded(child: SizedBox()),
-                      statusTextWidget(
-                          title: "Kyc Approved",
-                          status: data.kycApproved ?? false),
+                      Expanded(
+                        child: statusTextWidget(
+                            title: "Kyc",
+                            status: data.kycApproved ?? false),
+                      ),
                     ],
                   ),
                 ),
@@ -924,40 +926,39 @@ class _MyApplicationsState extends State<MyApplications> {
                         ),
                       ),
 
-                      Expanded(
-                        child: SizedBox(),
-                        //flex: 1,
-                      ),
+
 
                       // if (data.midtidGenerated!)
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: List.generate(
-                          data.devices!.length,
-                          (index) => SizedBox(
-                            child: data.devices![index].deploymentStatus!
-                                ? statusTextWidget(
-                                    title: data.devices![index].productName!,
-                                    status:
-                                        data.devices![index].deploymentStatus!)
-                                : ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.pushNamed(
-                                          context, "DeviceDeploymentScreen");
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.red,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: List.generate(
+                            data.devices!.length,
+                            (index) => SizedBox(
+                              child: data.devices![index].deploymentStatus!
+                                  ? statusTextWidget(
+                                      title: data.devices![index].productName!,
+                                      status:
+                                          data.devices![index].deploymentStatus!)
+                                  : ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.pushNamed(
+                                            context, "DeviceDeploymentScreen");
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.red,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                        ),
+                                        minimumSize: const Size(60.0, 30.0),
                                       ),
-                                      minimumSize: Size(60.0, 30.0),
-                                    ),
-                                    child: Text(
-                                      data.devices![index].productName!,
-                                      style: TextStyle(color: Colors.white),
-                                    )),
+                                      child: Text(
+                                        data.devices![index].productName!,
+                                        style: TextStyle(color: Colors.white,fontSize: 13),
+                                      )),
+                            ),
                           ),
                         ),
                       ),
@@ -1044,21 +1045,21 @@ class _MyApplicationsState extends State<MyApplications> {
         children: [
           Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w700,
               color: Color(0xFF97098D),
             ),
           ),
-          SizedBox(
-            width: 10,
+          const SizedBox(
+            width: 5,
           ),
           status
               ? Icon(
                   Icons.check_circle_outline,
                   color: Colors.green.shade800,
                 )
-              : Icon(
+              : const Icon(
                   Icons.cancel_outlined,
                   color: Colors.red,
                 ),

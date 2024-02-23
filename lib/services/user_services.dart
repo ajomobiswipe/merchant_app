@@ -449,14 +449,22 @@ class UserServices {
     return response;
   }
 
-  Future<dynamic> getMdrSummary(String mdrType,String turnOver) async {
-    // Connection connection = Connection();
-    // var url =
-    //     'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/GetMerchantOnboardingValues';
-    // var response = await connection.get(url);
-    // print("Defaultvalues Api response code" + response.statusCode.toString());
-    // return response;
+  Future<dynamic> getMdrSummary(String mdrType,String turnOver,int mccGroupId) async {
 
+    Connection connection = Connection();
+
+    final requestBody = {
+      "mdrType":mdrType,
+      "mccGroupId":1,
+      "turnOverType":"large"
+    };
+
+    print(requestBody);
+
+    var url =
+        'http://10.0.38.61:9508/NanoPay/Middleware/UiApi/mdrDetails';
+    var response = await connection.post(url, requestBody);
+    return response;
     // old merchant onboarding implimentation
     // SharedPreferences prefs = await SharedPreferences.getInstance();
     // String? barrertoken = prefs.getString('bearerToken');

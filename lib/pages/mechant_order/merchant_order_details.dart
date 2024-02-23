@@ -461,12 +461,12 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                 Container(
                   color: AppColors.kTileColor,
                   child: Padding(
-                    padding: const EdgeInsets.all(5.0),
+                    padding: const EdgeInsets.all(2.0),
                     child: Column(
                       children: [
                         DataTable(
                           headingRowHeight: 0,
-                          columnSpacing: 15,
+                          columnSpacing: 2,
                           dataRowMinHeight: 20,
                           dataRowMaxHeight: 30,
                           columns: [

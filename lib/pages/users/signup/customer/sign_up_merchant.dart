@@ -294,7 +294,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
       TextEditingController();
 
 // merchant Aggrement
-  String mdrType = '';
+  dynamic mdrType;
 
   List mdrTypeList = [];
   List mdrSummaryList = [];
@@ -362,16 +362,22 @@ class _MerchantSignupState extends State<MerchantSignup> {
   }
 
   Future getMdrSummaryList(String mdrType) async {
-    int mdrId = (mdrTypeList
-        .where((element) => element['mdrType'] == mdrType)
-        .toList())[0]['mdrId'];
+    // int mdrId = (mdrTypeList
+    //     .where((element) => element['mdrType'] == mdrType)
+    //     .toList())[0]['mdrId'];
 
-    mdrSummaryList = mdrApiSummaryList
-        .where((element) => element['mdrId'] == mdrId)
-        .toList();
-    await userServices
-        .getMdrSummary(mdrType, selectedBussinesTurnOver)
-        .then((response) async {});
+    // mdrSummaryList = mdrApiSummaryList
+    //     .where((element) => element['mdrId'] == mdrId)
+    //     .toList();
+
+    var response=await userServices
+        .getMdrSummary(mdrType, selectedBussinesTurnOver,selectedBusinessCategory['mccGroupId']);
+
+    final Map<String, dynamic> data = json.decode(response.body);
+
+    mdrSummaryList=data['mmsMdrDetailsInfo'];
+    print(mdrSummaryList);
+
   }
 
   void getIntByKey(
@@ -856,7 +862,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
             CustomTextFormField(
               title: 'Merchant DBA Name',
-              hintText: "Enter merchant DBA (Do Business As) name",
+              hintText: "merchant DBA (Do Business As) name",
               controller: _merchantDBANameController,
               required: true,
               keyboardType: TextInputType.text,
@@ -926,6 +932,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               onChanged: (newValue) {
                 setState(() {
                   selectedBusinessCategory = newValue;
+                  print(selectedBusinessCategory['mccGroupId']);
                   selectedBusinessSubCategory = null;
                   print(selectedBusinessSubCategory);
                 });
@@ -2228,32 +2235,51 @@ class _MerchantSignupState extends State<MerchantSignup> {
               currTabPosition: currTabPosition,
             ),
 
-            CustomDropdown(
+            const CustomDropdown(
               hintText: "Select applicable MDR type",
               title: "MDR Type",
+              itemList: [],
+              dropDownIsEnabled: false,
               required: true,
-              selectedItem: mdrType != '' ? mdrType : null,
-              prefixIcon: FontAwesome.building,
-              itemList: mdrTypeList
-                  .map((item) => item['mdrType'].toString())
-                  .toList(),
-              //countryList.map((e) => e['ctyName']).toList(),
-              onChanged: (value) {
+            ),
+
+            DropdownButtonFormField(
+              isDense: true,
+              isExpanded: true,
+              decoration: commonInputDecoration(FontAwesome.building,
+                  hintText: "Select applicable MDR type")
+                  .copyWith(
+                  hintStyle: Theme.of(context)
+                      .textTheme
+                      .displaySmall
+                      ?.copyWith(
+                      fontWeight: FontWeight.normal,
+                      fontSize: 13,
+                      color: Colors.black.withOpacity(0.25))),
+              value: mdrType,
+              items: mdrTypeList
+                  .map<DropdownMenuItem>((dynamic value) {
+                return DropdownMenuItem(
+                  value: value,
+                  child: Text(
+                    value['mdrType'],
+                    style: const TextStyle(fontSize: 13),
+                  ),
+                );
+              }).toList(),
+              onChanged: (newValue) {
                 setState(() {
-                  mdrType = value;
-                  getMdrSummaryList(mdrType);
+
+                  mdrType = newValue;
+                  getMdrSummaryList(mdrType['mdrType']);
+
+                  merchantAgreeMentReq.serviceAgreement = true;
+                  merchantAgreeMentReq.termsCondition = true;
+
+                  merchantAgreeMentReq.mdrType = mdrType['mdrId'];
 
                   // requestModel.city = value;
                 });
-              },
-              onSaved: (value) {
-                // merchantAgreeMentReq.mdrType = 1;
-                merchantAgreeMentReq.mdrType = (mdrTypeList
-                    .where((element) => element['mdrType'] == mdrType)
-                    .toList())[0]['mdrId'];
-
-                merchantAgreeMentReq.serviceAgreement = true;
-                merchantAgreeMentReq.termsCondition = true;
               },
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -2262,6 +2288,41 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 return null;
               },
             ),
+
+            // CustomDropdown(
+            //   hintText: "Select applicable MDR type",
+            //   title: "MDR Type",
+            //   required: true,
+            //   selectedItem: mdrType != '' ? mdrType : null,
+            //   prefixIcon: FontAwesome.building,
+            //   itemList: mdrTypeList
+            //       .map((item) => item['mdrType'].toString())
+            //       .toList(),
+            //   //countryList.map((e) => e['ctyName']).toList(),
+            //   onChanged: (value) {
+            //     setState(() {
+            //       mdrType = value;
+            //       getMdrSummaryList(mdrType);
+            //
+            //       // requestModel.city = value;
+            //     });
+            //   },
+            //   onSaved: (value) {
+            //     // merchantAgreeMentReq.mdrType = 1;
+            //     merchantAgreeMentReq.mdrType = (mdrTypeList
+            //         .where((element) => element['mdrType'] == mdrType)
+            //         .toList())[0]['mdrId'];
+            //
+            //     merchantAgreeMentReq.serviceAgreement = true;
+            //     merchantAgreeMentReq.termsCondition = true;
+            //   },
+            //   validator: (value) {
+            //     if (value == null || value.isEmpty) {
+            //       return 'MDR Type is Mandatory!';
+            //     }
+            //     return null;
+            //   },
+            // ),
 
             const SizedBox(
               height: 20,
@@ -2279,9 +2340,13 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   children: [
                     Wrap(children: [
                       for (var item in mdrSummaryList)
-                        CustomTextWidget(
-                            text: '${item['schemeName']}-${item['schemeType']}',
-                            isBold: false)
+                        Container(
+                          margin:EdgeInsets.only(top: screenHeight*.01),
+                          width:MediaQuery.of(context).size.width*.2,
+                          child: CustomTextWidget(
+                              text: '${item['schemeTypeName']}-${item['schemeInterchangeValue']} |',
+                              isBold: false),
+                        )
                     ]
                         // CustomTextWidget(
                         //     text:
