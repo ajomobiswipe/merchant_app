@@ -9,13 +9,18 @@ class CustomAppButton extends StatelessWidget {
   final double width;
   final double height;
 
-  const CustomAppButton(
+  bool fromOtpScreen;
+  bool isOtpVisible;
+
+  CustomAppButton(
       {Key? key,
       required this.title,
       this.onPressed,
       this.backgroundColor,
       this.width = 1,
-      this.height = 50})
+      this.height = 50,
+      this.fromOtpScreen = false,
+      this.isOtpVisible = false})
       : super(key: key);
 
   @override
@@ -32,7 +37,11 @@ class CustomAppButton extends StatelessWidget {
                 borderRadius: BorderRadius.circular(15))),
         child: Text(title,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: Colors.white,
+                color: fromOtpScreen
+                    ? !isOtpVisible
+                        ? Colors.white.withOpacity(.5)
+                        : Colors.white
+                    : Colors.white,
                 fontSize: 20,
                 fontWeight: FontWeight.bold)),
       ),

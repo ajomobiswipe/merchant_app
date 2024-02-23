@@ -8,11 +8,13 @@ import 'package:sifr_latest/pages/users/signup/customer/customer.dart';
 import '../config/app_color.dart';
 import '../widgets/custom_text_widget.dart';
 import '../widgets/form_field/custom_text.dart';
+import 'copyright_widget.dart';
 
 class CustomOtpWidget extends StatefulWidget {
   final Function(String)? onCompleted;
   String? Function(String?)? validator;
   final TextEditingController phonemumbercontroller;
+
   CustomOtpWidget({
     Key? key,
     this.onCompleted,
@@ -35,6 +37,8 @@ class _CustomOtpWidgetState extends State<CustomOtpWidget> {
     focusNode.dispose();
     super.dispose();
   }
+
+  bool isOtpVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -80,30 +84,56 @@ class _CustomOtpWidgetState extends State<CustomOtpWidget> {
               // merchantPersonalReq.currentMobileNo =
               //     phone.countryCode + phone.number;
             },
-            suffixIcon: Column(
-              children: [
-                Icon(
-                  Icons.send,
-                  color: AppColors.kLightGreen,
-                ),
-                CustomTextWidget(
-                  text: "Send",
-                  size: 10,
-                  color: AppColors.kLightGreen,
-                )
-              ],
+            suffixIcon: GestureDetector(
+              onTap: () {
+                if (widget.phonemumbercontroller.text.isEmpty) {
+                  return;
+                }
+                if (widget.phonemumbercontroller.text.length < 10) {
+                  return;
+                }
+                setState(() {
+
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('OTP has been sent successfully'),
+                      duration: Duration(seconds: 3), // Optional duration
+                    ),
+                  );
+
+                  isOtpVisible = true;
+
+
+                });
+              },
+              child: const Column(
+                children: [
+                  Icon(
+                    Icons.send,
+                    color: AppColors.kLightGreen,
+                  ),
+                  CustomTextWidget(
+                    text: "Send",
+                    size: 10,
+                    color: AppColors.kLightGreen,
+                  )
+                ],
+              ),
             ),
             suffixIconTrue: true,
+
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Phone Number is Mandatory!';
               }
               if (value.length < 10) {
-                return 'Length shuld be equal to 10 numbers';
+                return 'Length should be equal to 10 numbers';
               }
 
               return null;
             },
+
             // validator: (value) {
             //   print(value);
             //   return '';
@@ -120,107 +150,130 @@ class _CustomOtpWidgetState extends State<CustomOtpWidget> {
           const SizedBox(
             height: 40,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Column(
-                children: [
-                  CustomTextWidget(
-                    text: "Verify the Number with OTP",
-                    color: Colors.black.withOpacity(.6),
-                    size: 13,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  CustomTextWidget(
-                    text: "sent on the Merchant Mobile Number",
-                    color: Colors.black.withOpacity(.6),
-                    size: 13,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ],
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          Directionality(
-            // Specify direction if desired
-            textDirection: TextDirection.ltr,
-            child: Pinput(
-              obscureText: true,
-              controller: pinController,
-              focusNode: focusNode,
-              androidSmsAutofillMethod:
-                  AndroidSmsAutofillMethod.smsUserConsentApi,
-              listenForMultipleSmsOnAndroid: true,
-              defaultPinTheme: defaultPinTheme,
-              separatorBuilder: (index) => const SizedBox(width: 8),
-              validator: widget.validator,
-              // onClipboardFound: (value) {
-              //   debugPrint('onClipboardFound: $value');
-              //   pinController.setText(value);
-              // },
-              hapticFeedbackType: HapticFeedbackType.lightImpact,
-              onCompleted: widget.onCompleted,
 
-              // (pin) {
-              //   debugPrint('onCompleted: $pin');
-              // },
-              onChanged: (value) {
-                debugPrint('onChanged: $value');
-              },
-              cursor: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
+          Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 9),
-                    width: 22,
-                    height: 1,
-                    color: focusedBorderColor,
+                  Column(
+                    children: [
+                      CustomTextWidget(
+                        text: "Verify the Number with OTP",
+                        color: Colors.black.withOpacity(.6),
+                        size: 13,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      CustomTextWidget(
+                        text: "sent on the Merchant Mobile Number",
+                        color: Colors.black.withOpacity(.6),
+                        size: 13,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ],
                   ),
                 ],
               ),
-              focusedPinTheme: defaultPinTheme.copyWith(
-                decoration: defaultPinTheme.decoration!.copyWith(
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: focusedBorderColor),
-                ),
+              const SizedBox(
+                height: 20,
               ),
-              submittedPinTheme: defaultPinTheme.copyWith(
-                decoration: defaultPinTheme.decoration!.copyWith(
-                  color: fillColor,
-                  borderRadius: BorderRadius.circular(19),
-                  border: Border.all(color: focusedBorderColor),
-                ),
-              ),
-              errorPinTheme: defaultPinTheme.copyBorderWith(
-                border: Border.all(color: Colors.redAccent),
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          CustomAppButton(
-            title: 'Verify',
-            onPressed: () {
-              focusNode.unfocus();
-              formKey.currentState!.save();
-              if (formKey.currentState!.validate()) {
-                Navigator.push<void>(
-                  context,
-                  CupertinoPageRoute<void>(
-                    builder: (BuildContext context) => MerchantSignup(
-                        verifiednumber: widget.phonemumbercontroller),
+              Directionality(
+                // Specify direction if desired
+                textDirection: TextDirection.ltr,
+                child: Pinput(
+                  obscureText: true,
+                  controller: pinController,
+                  focusNode: focusNode,
+                  androidSmsAutofillMethod:
+                      AndroidSmsAutofillMethod.smsUserConsentApi,
+                  listenForMultipleSmsOnAndroid: true,
+                  defaultPinTheme: defaultPinTheme,
+                  separatorBuilder: (index) => const SizedBox(width: 8),
+                  validator: widget.validator,
+                  // onClipboardFound: (value) {
+                  //   debugPrint('onClipboardFound: $value');
+                  //   pinController.setText(value);
+                  // },
+                  hapticFeedbackType: HapticFeedbackType.lightImpact,
+                  onCompleted: widget.onCompleted,
+
+                  // (pin) {
+                  //   debugPrint('onCompleted: $pin');
+                  // },
+                  onChanged: (value) {
+                    debugPrint('onChanged: $value');
+                  },
+                  cursor: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(bottom: 9),
+                        width: 22,
+                        height: 1,
+                        color: focusedBorderColor,
+                      ),
+                    ],
                   ),
-                );
-              }
-              ;
-              print(pinController.text);
-              // Navigator.pushNamed(context, 'merchantOnboarding');
-              // Navigator.push(context, route);
-            },
+                  focusedPinTheme: defaultPinTheme.copyWith(
+                    decoration: defaultPinTheme.decoration!.copyWith(
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: focusedBorderColor),
+                    ),
+                  ),
+                  submittedPinTheme: defaultPinTheme.copyWith(
+                    decoration: defaultPinTheme.decoration!.copyWith(
+                      color: fillColor,
+                      borderRadius: BorderRadius.circular(19),
+                      border: Border.all(color: focusedBorderColor),
+                    ),
+                  ),
+                  errorPinTheme: defaultPinTheme.copyBorderWith(
+                    border: Border.all(color: Colors.redAccent),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+
+
+              CustomAppButton(
+                backgroundColor: (isOtpVisible)
+                    ? AppColors.getMaterialColorFromColor(
+                        AppColors.kPrimaryColor)
+                    : Colors.white.withOpacity(.5),
+                title: 'Verify',
+                onPressed: () {
+                  if (!isOtpVisible) return;
+
+                  focusNode.unfocus();
+                  formKey.currentState!.save();
+                  if (formKey.currentState!.validate()) {
+                    Navigator.push<void>(
+                      context,
+                      CupertinoPageRoute<void>(
+                        builder: (BuildContext context) => MerchantSignup(
+                            verifiednumber: widget.phonemumbercontroller),
+                      ),
+                    );
+                  }
+
+                  print(pinController.text);
+                  // Navigator.pushNamed(context, 'merchantOnboarding');
+                  // Navigator.push(context, route);
+                },
+              ),
+
+              if (isOtpVisible)
+                TextButton(
+                    onPressed: () {},
+                    child: CustomTextWidget(
+                      text: 'Resend OTP',
+                      color: Colors.green,
+                      size: 15,
+                      fontWeight: FontWeight.bold,
+                    )),
+            ],
           ),
         ],
       ),

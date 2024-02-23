@@ -2512,7 +2512,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
       });
       return position;
     }).catchError((e) {
-      debugPrint(e);
+      // debugPrint(e);
     });
   }
 

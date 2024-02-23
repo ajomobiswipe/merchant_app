@@ -62,7 +62,7 @@ class SignUpSucessScreen extends StatelessWidget {
         Expanded(
           child: SizedBox(),
         ),
-        CopyRightWidget(),
+        copyRightWidget(),
         SizedBox(
           height: 30,
         )

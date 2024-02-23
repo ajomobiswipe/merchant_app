@@ -25,18 +25,32 @@ class UserTypeSelection extends StatelessWidget {
               child: SizedBox(),
               flex: 1,
             ),
-            Image.asset('assets/screen/anet.png', height: 100),
+
             const Expanded(
               child: SizedBox(),
               flex: 2,
             ),
-            CustomTextWidget(
+
+            const CustomTextWidget(
               text: 'Welcome to',
               size: 22,
               fontWeight: FontWeight.w500,
               color: AppColors.kLightGreen,
             ),
-            CustomTextWidget(
+
+            const Expanded(
+              child: SizedBox(),
+              flex: 2,
+            ),
+
+            Image.asset('assets/screen/anet.png', height: 100),
+
+            const Expanded(
+              child: SizedBox(),
+              flex: 2,
+            ),
+
+            const CustomTextWidget(
               text: 'Merchant Onboarding',
               size: 22,
               fontWeight: FontWeight.w500,
@@ -46,12 +60,12 @@ class UserTypeSelection extends StatelessWidget {
               child: SizedBox(),
               flex: 2,
             ),
-            Row(
+            const Row(
               children: [
                 SizedBox(
                   width: 10,
                 ),
-                const Icon(
+                Icon(
                   Icons.location_on,
                   color: AppColors.kLightGreen,
                 ),
@@ -61,9 +75,9 @@ class UserTypeSelection extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CustomTextWidget(text: 'Please select yourself'),
+                    CustomTextWidget(text: 'Please select yourself',isBold: false,size: 12,),
                     CustomTextWidget(
-                        text: 'You are onboarding the Merchant as'),
+                        text: 'You are onboarding the Merchant as',isBold: false,size: 14,),
                   ],
                 )
               ],
@@ -113,7 +127,7 @@ class UserTypeSelection extends StatelessWidget {
               child: SizedBox(),
               flex: 2,
             ),
-            CopyRightWidget(),
+            copyRightWidget(),
             const Expanded(
               child: SizedBox(),
               flex: 1,

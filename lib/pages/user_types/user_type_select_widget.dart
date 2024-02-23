@@ -22,17 +22,17 @@ class UserSelectContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     var screenWidth = MediaQuery.of(context).size.width;
     var screenHeight = MediaQuery.of(context).size.height;
-    return Container(
-      padding:
-          EdgeInsets.symmetric(horizontal: 10, vertical: screenHeight * 0.02),
-      decoration: BoxDecoration(
-        color: AppColors.kTileColor,
-        border: Border.all(
-            width: 1.2, color: borderColor ?? AppColors.kBorderColor),
-        borderRadius: BorderRadius.circular(18.0),
-      ),
-      child: GestureDetector(
-        onTap: onTap,
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding:
+            EdgeInsets.symmetric(horizontal: 10, vertical: screenHeight * 0.02),
+        decoration: BoxDecoration(
+          color: AppColors.kTileColor,
+          border: Border.all(
+              width: 1.2, color: borderColor ?? AppColors.kBorderColor),
+          borderRadius: BorderRadius.circular(18.0),
+        ),
         child: Row(
           children: [
             SizedBox(width: screenWidth * 0.01),

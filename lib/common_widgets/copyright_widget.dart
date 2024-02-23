@@ -1,7 +1,11 @@
 import 'package:flutter/cupertino.dart';
 
-CopyRightWidget() {
-  return const Column(
+copyRightWidget() {
+  TextStyle textStyle() {
+    return const TextStyle(fontFamily: 'Mont-Regular', fontSize: 13);
+  }
+
+  return Column(
     children: [
       Center(
         child: Column(
@@ -9,9 +13,11 @@ CopyRightWidget() {
           children: [
             Text(
               'Copyright © 2024 AllianceNetwork Company.',
+              style: textStyle(),
             ),
             Text(
-              'All Rights Recived.',
+              'All rights reserved .',
+              style: textStyle(),
             ),
           ],
         ),
