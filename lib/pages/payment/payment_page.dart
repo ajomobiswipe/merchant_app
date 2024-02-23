@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:sifr_latest/common_widgets/custom_app_button.dart';
+import 'package:sifr_latest/widgets/app/customAlert.dart';
 import 'package:sifr_latest/widgets/app_scafold.dart';
 import 'package:sifr_latest/widgets/custom_text_widget.dart';
 import '../../services/user_services.dart';
@@ -19,6 +20,7 @@ class PaymentPage extends StatefulWidget {
 class _PaymentPageState extends State<PaymentPage> {
   UserServices userServices = UserServices();
   late final Map<String, dynamic>? invoiceDetails;
+  CustomAlert customAlert = CustomAlert();
 
   @override
   void initState() {
@@ -28,7 +30,6 @@ class _PaymentPageState extends State<PaymentPage> {
     print(widget.merchantDetails!['merchantId']);
 
     getMerchantInvoiceDetails(widget.merchantDetails!['merchantId'], 0);
-
   }
 
   getMerchantInvoiceDetails(merchantId, int count) async {
@@ -64,6 +65,16 @@ class _PaymentPageState extends State<PaymentPage> {
     }
 
     return AppScafofld(
+        closePressed: () {
+          customAlert.displayDialogConfirm(
+              context, "", "Do you want to quit Deployment ?", () {
+            Navigator.of(context).pop();
+            Navigator.of(context).pop();
+          });
+        },
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
         child: invoiceDetails!['merchantProductDetails'] != null
             ? ListView(
                 children: [
@@ -103,7 +114,6 @@ class _PaymentPageState extends State<PaymentPage> {
                     columnSpacing: 10,
                     dataRowMinHeight: 20,
                     dataRowMaxHeight: 30,
-
                     columns: [
                       DataColumn(
                           label: Text(
@@ -115,21 +125,17 @@ class _PaymentPageState extends State<PaymentPage> {
                         'Quantity',
                         style: textStyle(),
                       )),
-
                       DataColumn(
                           label: Text(
                         'Unit Price',
                         style: textStyle(),
                       )),
-
                       DataColumn(
                           label: Text(
                         'Amount',
                         style: textStyle(),
                       )),
                     ],
-
-
                     rows: [
                       for (var item
                           in invoiceDetails!['merchantProductDetails'])

@@ -9,8 +9,8 @@ class PaymentSuccessPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppScafofld(
-        child: Column(
+    return Scaffold(
+        body: Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Expanded(
@@ -20,27 +20,36 @@ class PaymentSuccessPage extends StatelessWidget {
           "assets/app_icons/success_sumbol.png",
           height: 60,
         ),
-        SizedBox(height: 10,),
+        SizedBox(
+          height: 10,
+        ),
         CustomTextWidget(
           text: "Payment is successfull!",
           fontWeight: FontWeight.bold,
           size: 24,
           color: AppColors.kLightGreen,
         ),
-        SizedBox(height: 30,),
+        SizedBox(
+          height: 30,
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CustomTextWidget(text: "Payment Of ",  ),
+            CustomTextWidget(
+              text: "Payment Of ",
+            ),
             CustomTextWidget(
               text: "152454",
               fontWeight: FontWeight.bold,
             ),
-            CustomTextWidget(text: " has been Recived",  ),
+            CustomTextWidget(
+              text: " has been Recived",
+            ),
           ],
         ),
-        CustomTextWidget(text: "Successfully.",   ),
-
+        CustomTextWidget(
+          text: "Successfully.",
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -67,7 +76,9 @@ class PaymentSuccessPage extends StatelessWidget {
           size: 14,
           color: AppColors.kPrimaryColor,
         ),
-        SizedBox(height: 30,),
+        SizedBox(
+          height: 30,
+        ),
         CustomTextWidget(
           text: "Check for the Status in",
           fontWeight: FontWeight.w800,
@@ -75,20 +86,19 @@ class PaymentSuccessPage extends StatelessWidget {
           color: Colors.grey.shade700,
         ),
         GestureDetector(
-          onTap: (){
-            Navigator.pushNamedAndRemoveUntil(
-              context,
-              'myApplications',
-                  (route) => false,
-            );
-          },
-          child:  CustomTextWidget(
-                text: "My Applications",
-                size: 16,
-                fontWeight: FontWeight.w700,
-                color: AppColors.kPrimaryColor,
-              )),
-
+            onTap: () {
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                'myApplications',
+                (route) => false,
+              );
+            },
+            child: CustomTextWidget(
+              text: "My Applications",
+              size: 16,
+              fontWeight: FontWeight.w700,
+              color: AppColors.kPrimaryColor,
+            )),
         Expanded(
           child: SizedBox(),
         ),

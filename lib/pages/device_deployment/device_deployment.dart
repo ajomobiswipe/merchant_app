@@ -32,6 +32,7 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
   final TextEditingController deviceSerialNumberCntrl = TextEditingController();
   Position? _currentPosition;
   final AlertService alertWidget = AlertService();
+  CustomAlert customAlert = CustomAlert();
 
   @override
   void initState() {
@@ -87,7 +88,18 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
 
     //Global Background Pattern Widget
     return Scaffold(
-      appBar: const AppAppbar(),
+      appBar: AppAppbar(
+        closePressed: () {
+          customAlert.displayDialogConfirm(
+              context, "", "Do you want to quit Deployment ?", () {
+            Navigator.of(context).pop();
+            Navigator.of(context).pop();
+          });
+        },
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 15),
         child: Column(

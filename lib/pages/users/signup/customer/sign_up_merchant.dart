@@ -1105,16 +1105,19 @@ class _MerchantSignupState extends State<MerchantSignup> {
               //     ? enabledcity = true
               //     : enabledcity = false,
               required: true,
+
               selectedItem: selectedBussinesTurnOver != ''
                   ? selectedBussinesTurnOver
                   : null,
               prefixIcon: Icons.location_city_outlined,
+
               itemList: businessTurnoverList
                   .map((map) => map['turnoverAmount'].toString())
                   .toList(),
               // cityList.map((e) => e['citName']).toList(),
               onChanged: (value) {
                 setState(() {
+                  selectedBussinesTurnOver = value;
                   // businessTurnoverList = value;
                   // merchantPersonalReq.poiType =
                   //     getValueByLabel(businessTurnoverList, value);

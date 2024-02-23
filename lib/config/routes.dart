@@ -38,8 +38,7 @@ import '../widgets/widget.dart';
 // Custom route Class
 class CustomRoute {
   static Route<dynamic> allRoutes(RouteSettings settings) {
-
-    var args=settings.arguments;
+    var args = settings.arguments;
 
     return CupertinoPageRoute(builder: (context) {
       final isOnline = Provider.of<ConnectivityProvider>(context).isOnline;
@@ -68,15 +67,17 @@ class CustomRoute {
           return const ForgotPassword();
 
         case "PaymentPage":
-          return  PaymentPage(merchantDetails: args as Map<String,dynamic>?,);
+          return PaymentPage(
+            merchantDetails: args as Map<String, dynamic>?,
+          );
 
         case "PaymentSuccessPage":
           return const PaymentSuccessPage();
         case "SignUpSucessScreen":
           return const SignUpSucessScreen();
 
-        case "settings":
-          return const SettingsPage();
+        // case "settings":
+        //   return const SettingsPage();
 
         case "forgotPage":
           String code = settings.arguments as String;
@@ -178,7 +179,6 @@ class CustomRoute {
         case "profileNewScreen":
           return const ProfileNewScreen();
 
-
         case "updatePersonalInfo":
           Map args = settings.arguments as Map;
           return UpdatePersonalInfo(
@@ -252,8 +252,8 @@ class CustomRoute {
           return MerchantQRCode(params: args['params']);
 
         // --- MY ACCOUNT MENU
-        case "settings":
-          return const SettingsPage();
+        // case "settings":
+        //   return const SettingsPage();
         case "myAccount":
           return const MyAccountPage();
         case "securitySettings":
@@ -275,7 +275,7 @@ class CustomRoute {
         case "addNewCard":
           return const AddNewCard();
       }
-      return const SettingsPage();
+      return const ProfileNewScreen();
     });
   }
 }

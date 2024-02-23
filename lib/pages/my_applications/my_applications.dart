@@ -241,6 +241,10 @@ class _MyApplicationsState extends State<MyApplications> {
   @override
   Widget build(BuildContext context) {
     return AppScafofld(
+        closePressed: () {
+          Navigator.pushNamedAndRemoveUntil(
+              context, 'MerchantNumVerify', (route) => false);
+        },
         onPressed: () {
           Navigator.pushNamedAndRemoveUntil(
               context, 'MerchantNumVerify', (route) => false);
@@ -337,12 +341,15 @@ class _MyApplicationsState extends State<MyApplications> {
                 });
               },
               decoration: InputDecoration(
-                label: Text(
-                  "Select Stage",
-                  style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
+                label: Padding(
+                  padding: const EdgeInsets.only(bottom: 30),
+                  child: Text(
+                    "Select Stage",
+                    style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                  ),
                 ),
                 // hintText:"Select Stage",
                 // counterText: counterText ?? '',
@@ -910,9 +917,6 @@ class _MyApplicationsState extends State<MyApplications> {
                   endChild: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-
-
-
                       Text(
                         " Deployment",
                         style: TextStyle(
@@ -920,44 +924,43 @@ class _MyApplicationsState extends State<MyApplications> {
                         ),
                       ),
 
-
                       Expanded(
                         child: SizedBox(),
                         //flex: 1,
                       ),
 
                       // if (data.midtidGenerated!)
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: List.generate(
-                            data.devices!.length,
-                            (index) => SizedBox(
-                              child: data.devices![index].deploymentStatus!
-                                  ? statusTextWidget(
-                                      title: data.devices![index].productName!,
-                                      status: data
-                                          .devices![index].deploymentStatus!)
-                                  : ElevatedButton(
-                                      onPressed: () {
-                                        Navigator.pushNamed(
-                                            context, "DeviceDeploymentScreen");
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.red,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                        ),
-                                        minimumSize: Size(60.0, 30.0),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: List.generate(
+                          data.devices!.length,
+                          (index) => SizedBox(
+                            child: data.devices![index].deploymentStatus!
+                                ? statusTextWidget(
+                                    title: data.devices![index].productName!,
+                                    status:
+                                        data.devices![index].deploymentStatus!)
+                                : ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.pushNamed(
+                                          context, "DeviceDeploymentScreen");
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.red,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
                                       ),
-                                      child: Text(
-                                        data.devices![index].productName!,
-                                        style: TextStyle(color: Colors.white),
-                                      )),
-                            ),
+                                      minimumSize: Size(60.0, 30.0),
+                                    ),
+                                    child: Text(
+                                      data.devices![index].productName!,
+                                      style: TextStyle(color: Colors.white),
+                                    )),
                           ),
                         ),
+                      ),
                       // Container(
                       //   height: 100,
                       //   width: 250,
