@@ -65,8 +65,6 @@ class UserServices {
   accountValidation(
     String accno,
     String ifsc,
-    String name,
-    String phonenumber,
   ) async {
     String token = boxStorage.getToken();
 
@@ -77,7 +75,7 @@ class UserServices {
     };
     // final headers = {'Authorization': 'Bearer $token'};
     var urlnew = Uri.parse(
-        'http://172.29.100.221:9508/NanoPay/Middleware/UiApi/addOrUpdateLogin');
+        'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/addOrUpdateLogin');
     var body = jsonEncode(
         {"username": "omaEmirates_preprod_v2", "password": "doXpr3KeKT"});
 
@@ -97,15 +95,15 @@ class UserServices {
       };
 
       var verifyAccountUel = Uri.parse(
-          "http://172.29.100.221:9508/NanoPay/Middleware/UiApi/validateBankAccountVerifications");
+          "http://213.42.225.250:9508/NanoPay/Middleware/UiApi/validateBankAccountVerifications");
 
       final newreqbody = {
         "task": "bankTransferLite",
         "userId": userId,
         "essentials": {
-          "beneficiaryMobile": phonenumber,
+          "beneficiaryMobile": "7892461503",
           "beneficiaryAccount": accno,
-          "beneficiaryName": name,
+          "beneficiaryName": "name",
           "beneficiaryIFSC": ifsc
         }
       };
@@ -134,7 +132,7 @@ class UserServices {
     };
     // final headers = {'Authorization': 'Bearer $token'};
     var urlnew = Uri.parse(
-        'http://172.29.100.221:9508/NanoPay/Middleware/UiApi/addOrUpdateLogin');
+        'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/addOrUpdateLogin');
     var body = jsonEncode(
         {"username": "omaEmirates_preprod_v2", "password": "doXpr3KeKT"});
 
@@ -152,9 +150,8 @@ class UserServices {
         'accessToken': id,
         'Content-Type': 'application/json',
       };
-
       var gstVerify = Uri.parse(
-          "http://172.29.100.221:9508/NanoPay/Middleware/UiApi/addOrUpdateGstns");
+          "http://213.42.225.250:9508/NanoPay/Middleware/UiApi/searchGSTNS");
 
       final newreqbody = {
         "task": "gstinSearch",
@@ -167,7 +164,7 @@ class UserServices {
       // print(newheader);
       // print(userId);
       // print("second api reponseStatus code ${responseapi.statusCode}");
-      // print(responseapi.body);
+      print(responseapi.body);
       return responseapi.body;
     }
 
@@ -248,10 +245,9 @@ class UserServices {
     };
 
     var addhaarverify = Uri.parse(
-        "http://172.29.100.221:9508/NanoPay/Middleware/UiApi/validatePanAadhar");
+        "http://213.42.225.250:9508/NanoPay/Middleware/UiApi/getEkycOtp");
 
     final newreqbody = {"requestType": "AADHAR", "aadharNumber": addhaarNumber};
-
     var responseapi = await http.post(addhaarverify,
         headers: newheader, body: jsonEncode(newreqbody));
     // print(newheader);
@@ -271,7 +267,7 @@ class UserServices {
     };
 
     var addhaarverify = Uri.parse(
-        "http://172.29.100.221:9508/NanoPay/Middleware/UiApi/validatePanAadhar");
+        "http://213.42.225.250:9508/NanoPay/Middleware/UiApi/validatePanAadhar");
 
     final newreqbody = {
       "requestType": "VERIFYAADHAROTP",
