@@ -449,6 +449,39 @@ class UserServices {
     return response;
   }
 
+  Future<dynamic> getMdrSummary(String mdrType,String turnOver) async {
+    // Connection connection = Connection();
+    // var url =
+    //     'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/GetMerchantOnboardingValues';
+    // var response = await connection.get(url);
+    // print("Defaultvalues Api response code" + response.statusCode.toString());
+    // return response;
+
+    // old merchant onboarding implimentation
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    // String? barrertoken = prefs.getString('bearerToken');
+    // print(barrertoken);
+    // http.Response resonr = await http.get(
+    //   Uri.parse(
+    //       'http://omasoftposqc.omaemirates.com:9508/NanoPay/Middleware/UiApi/GetMerchantDefaultValues'),
+    //   headers: {
+    //     'Content-Type': 'application/json; charset=UTF-8',
+    //     'Authorization': 'Bearer $barrertoken',
+    //   },
+    // );
+
+    // con
+    // print(resonr.body);
+    // // print(prefs.getString('bearerToken') ?? 'error in reciving token');
+
+    // // print('length  : ${acquirerDetails.length}');
+    // // for (var acquirer in acquirerDetails) {
+    // //   String acquirerName = acquirer['acquirerName'];
+    // //   print('Acquirer Name: $acquirerName');
+    // // }
+    // return resonr;
+  }
+
   Future<dynamic> GetMerchantOnboardingValues() async {
     Connection connection = Connection();
     var url =

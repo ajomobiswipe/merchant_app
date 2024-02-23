@@ -374,6 +374,18 @@ class _MerchantSignupState extends State<MerchantSignup> {
     return null;
   }
 
+  Future getMdrSummaryList(String mdrType) async {
+
+   int mdrId=(mdrTypeList.where((element) => element['mdrType']==mdrType).toList())[0]['mdrId'];
+
+    mdrSummaryList=mdrApiSummaryList.where((element) => element['mdrId']==mdrId).toList();
+    await userServices.getMdrSummary(mdrType,selectedBussinesTurnOver).then((response) async {
+      
+
+          
+    });
+  }
+
   void getIntByKey(
       {required String countryKey, required Map<String, int> dataMap}) {
     int? countryValue = dataMap[countryKey];
@@ -2251,6 +2263,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
               onChanged: (value) {
                 setState(() {
                   mdrType = value;
+                  getMdrSummaryList(mdrType);
+
                   // requestModel.city = value;
                 });
               },
@@ -2278,6 +2292,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
             const SizedBox(
               height: 5,
             ),
+
             Container(
               color: AppColors.kTileColor,
               child: Padding(
@@ -2319,6 +2334,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 ),
               ),
             ),
+
             const SizedBox(
               height: 20.0,
             ),
@@ -2548,6 +2564,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
     });
   }
 
+  List mdrApiSummaryList=[];
+  
   getDefaultMerchantValues() async {
     print("----default value called----");
     await userServices.GetMerchantOnboardingValues().then((response) async {
@@ -2561,7 +2579,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
       merchantProofDocumentList = data['data'][0]['mmsDocumentType'];
 
       mdrTypeList = data['data'][0]['mmsMdrType'];
-      mdrSummaryList = data['data'][0]['mmsMdrDetails'];
+      mdrApiSummaryList = data['data'][0]['mmsMdrDetails'];
+      // mdrSummaryList = data['data'][0]['mmsMdrDetails'];
 
       List<dynamic> mccGroups = data['data'][0]['tmsMasterMccGroup'];
       List<dynamic> mccTypes = data['data'][0]['tmsMasterMccTypes'];
