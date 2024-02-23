@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:badges/badges.dart' as badge;
 import 'package:email_validator/email_validator.dart';
+
 // import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -361,6 +362,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
     return null;
   }
 
+  Map<String, dynamic> mdrSummary = {};
+
   Future getMdrSummaryList(String mdrType) async {
     // int mdrId = (mdrTypeList
     //     .where((element) => element['mdrType'] == mdrType)
@@ -370,13 +373,17 @@ class _MerchantSignupState extends State<MerchantSignup> {
     //     .where((element) => element['mdrId'] == mdrId)
     //     .toList();
 
-    var response=await userServices
-        .getMdrSummary(mdrType, selectedBussinesTurnOver,selectedBusinessCategory['mccGroupId']);
+    var response = await userServices.getMdrSummary(mdrType,
+        selectedBussinesTurnOver, selectedBusinessCategory['mccGroupId']);
 
     final Map<String, dynamic> data = json.decode(response.body);
 
-    mdrSummaryList=data['mmsMdrDetailsInfo'];
-    print(mdrSummaryList);
+    mdrSummaryList = data['mmsMdrDetailsInfo'];
+
+    mdrSummary = {
+      "mdrSummary": mdrSummaryList,
+    };
+
 
   }
 
@@ -2247,18 +2254,17 @@ class _MerchantSignupState extends State<MerchantSignup> {
               isDense: true,
               isExpanded: true,
               decoration: commonInputDecoration(FontAwesome.building,
-                  hintText: "Select applicable MDR type")
+                      hintText: "Select applicable MDR type")
                   .copyWith(
-                  hintStyle: Theme.of(context)
-                      .textTheme
-                      .displaySmall
-                      ?.copyWith(
-                      fontWeight: FontWeight.normal,
-                      fontSize: 13,
-                      color: Colors.black.withOpacity(0.25))),
+                      hintStyle: Theme.of(context)
+                          .textTheme
+                          .displaySmall
+                          ?.copyWith(
+                              fontWeight: FontWeight.normal,
+                              fontSize: 13,
+                              color: Colors.black.withOpacity(0.25))),
               value: mdrType,
-              items: mdrTypeList
-                  .map<DropdownMenuItem>((dynamic value) {
+              items: mdrTypeList.map<DropdownMenuItem>((dynamic value) {
                 return DropdownMenuItem(
                   value: value,
                   child: Text(
@@ -2269,7 +2275,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
               }).toList(),
               onChanged: (newValue) {
                 setState(() {
-
                   mdrType = newValue;
                   getMdrSummaryList(mdrType['mdrType']);
 
@@ -2341,10 +2346,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
                     Wrap(children: [
                       for (var item in mdrSummaryList)
                         Container(
-                          margin:EdgeInsets.only(top: screenHeight*.01),
-                          width:MediaQuery.of(context).size.width*.2,
+                          margin: EdgeInsets.only(top: screenHeight * .01),
+                          width: MediaQuery.of(context).size.width * .2,
                           child: CustomTextWidget(
-                              text: '${item['schemeTypeName']}-${item['schemeInterchangeValue']} |',
+                              text:
+                                  '${item['paymentName']}-${item['internaltionalAmt']} |',
                               isBold: false),
                         )
                     ]
@@ -2404,9 +2410,10 @@ class _MerchantSignupState extends State<MerchantSignup> {
                     ]),
               ),
             ),
+
             const SizedBox(height: 10),
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               color: AppColors.kTileColor,
               child: Row(
                 children: <Widget>[
@@ -2841,6 +2848,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
         "qty": product.quantity.toString(),
       };
     }).toList();
+
+    merchantAgreeMentReq.mdrSummary=jsonEncode(mdrSummary);
 
     final Map<String, dynamic> merchantProductInfoReq = {
       "merchantProductDetails": productList,
