@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -9,11 +10,13 @@ import 'package:sifr_latest/common_widgets/app_appbar.dart';
 import 'package:sifr_latest/common_widgets/custom_app_button.dart';
 import '../../config/config.dart';
 import '../../config/constants.dart';
+import '../../services/user_services.dart';
 import '../../widgets/app/camera_image_picker.dart';
 
 import 'package:badges/badges.dart' as badge;
 
 import '../../widgets/widget.dart';
+import 'model/product_deployment_requestmodel.dart';
 
 // STATEFUL WIDGET
 class DeviceDeploymentScreen extends StatefulWidget {
@@ -32,56 +35,44 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
       TextEditingController();
   final TextEditingController deviceAtStoreImage = TextEditingController();
   final TextEditingController deviceSerialNumberCntrl = TextEditingController();
-  Position? _currentPosition;
+  ProductDeploymentRequestmodel productDeploymentReq =
+      ProductDeploymentRequestmodel();
+
+  UserServices userServices = UserServices();
   final AlertService alertWidget = AlertService();
   CustomAlert customAlert = CustomAlert();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
   void initState() {
-    _getCurrentPosition();
     super.initState();
   }
 
-  Future<void> _getCurrentPosition() async {
-    final hasPermission = await _handleLocationPermission();
+  deviceDeployment() {
+    productDeploymentReq.guid = 206;
+    // productDeploymentReq.guid = widget.deviceInfo!["guid"];
+    productDeploymentReq.merchantId = widget.deviceInfo!["guid"];
+    productDeploymentReq.productId = widget.deviceInfo!["guid"];
+    productDeploymentReq.packageId = widget.deviceInfo!["guid"];
 
-    if (!hasPermission) return;
-    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
-        .then((Position position) {
-      setState(() => _currentPosition = position);
-      //_getAddressFromLatLng(_currentPosition!);
-    }).catchError((e) {
-      debugPrint(e);
-    });
-  }
-
-  Future<bool> _handleLocationPermission() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text(
-              'Location services are disabled. Please enable the services')));
-      return false;
-    }
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Location permissions are denied')));
-        return false;
+    userServices
+        .deviceDeployment(productDeploymentReq, deviceAtStoreImage.text,
+            testTransactionChargeSlipImage.text)
+        .then((response) async {
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        var decodeData = jsonDecode(response.body);
+        if (decodeData['responseType'] == "S") {
+          setState(() {
+            // countryList = decodeData['responseValue']['list'];
+            // if (countryList.isNotEmpty) {
+            //   selectedCountries = countryList[0]['ctyName'].toString();
+            //   requestModel.country = selectedCountries;
+            //   requestModel.currencyId =
+            //       countryList[0]['currencyCode'].toString();
+            // }
+          });
+        }
       }
-    }
-    if (permission == LocationPermission.deniedForever) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text(
-              'Location permissions are permanently denied, we cannot request permissions.')));
-      return false;
-    }
-    return true;
+    });
   }
 
   @override
@@ -165,10 +156,10 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
                   return null;
                 },
                 onChanged: (String value) {
-                  value = value.trim();
+                  productDeploymentReq.productSerialNo = value;
                 },
                 onSaved: (value) {
-                  // merchantPersonalReq.poaNumber = value;
+                  productDeploymentReq.productSerialNo = value;
                 },
                 onFieldSubmitted: (value) {
                   // _lastNameController.text = value.trim();
@@ -368,18 +359,11 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
                 child: CustomAppButton(
                   title: "Deploy",
                   onPressed: () {
-                    if (testTransactionChargeSlipImage.text != '' &&
+                    print(widget.deviceInfo);
+                    if (_formKey.currentState!.validate() &&
+                        testTransactionChargeSlipImage.text != '' &&
                         deviceAtStoreImage.text != '') {
-                      if (_formKey.currentState!.validate()) {}
-                      ;
-
-                      Navigator.pushNamedAndRemoveUntil(
-                        context,
-                        'myApplications',
-                        (route) => false,
-                      );
-                      alertWidget.success(context, '', 'Deployment Completed!');
-                      // next();
+                      deviceDeployment();
                     } else {
                       alertWidget.failure(
                           context, '', 'Please upload All images!');

@@ -519,14 +519,17 @@ class _MyApplicationsState extends State<MyApplications> {
                                               ['merchantProductDetailsResponse']
                                           ['merchantProductDetails']) {
                                         _devices.add(Device(
-                                            productId: item['productId'],
-                                            productName: item['productName'],
-                                            deploymentStatus:
-                                                item['deploymentStatus'],
-                                            package: item['packageId'],
-                                            packageId: item['packageId'],
-                                            quantity: item['qty'],
-                                            price: item['unitPrice']));
+                                          productId: item['productId'],
+                                          productName: item['productName'],
+                                          deploymentStatus:
+                                              item['deploymentStatus'],
+                                          package: item['packageId'],
+                                          packageId: item['packageId'],
+                                          quantity: item['qty'],
+                                          price: item['unitPrice'],
+                                          merchantId: item['merchantId'],
+                                          guid: item['guid'],
+                                        ));
                                       }
                                     }
 
@@ -944,7 +947,21 @@ class _MyApplicationsState extends State<MyApplications> {
                                   : ElevatedButton(
                                       onPressed: () {
                                         Navigator.pushNamed(
-                                            context, "DeviceDeploymentScreen");
+                                            context, "DeviceDeploymentScreen",
+                                            arguments: {
+                                              "productId": data
+                                                  .devices![index].productId,
+                                              "packageId": data
+                                                  .devices![index].packageId,
+                                              "merchantId": data
+                                                  .devices![index].merchantId,
+                                              "guid": data.devices![index].guid,
+                                              "productName": data
+                                                  .devices![index].productName,
+                                              "deploymentStatus": data
+                                                  .devices![index]
+                                                  .deploymentStatus
+                                            });
                                       },
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: Colors.red,
