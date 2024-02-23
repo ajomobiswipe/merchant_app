@@ -16,11 +16,13 @@ class MerchantAgreeMentRequestmodel {
   int? mdrType;
   bool termsCondition;
   bool serviceAgreement;
+  dynamic? mdrSummary;
 
   MerchantAgreeMentRequestmodel({
     this.mdrType,
     this.termsCondition = false,
     this.serviceAgreement = false,
+    this.mdrSummary
   });
 
   factory MerchantAgreeMentRequestmodel.fromJson(Map<String, dynamic> json) =>
