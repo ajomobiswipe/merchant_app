@@ -10,6 +10,7 @@ import 'dart:io' show Platform, exit;
 // Dependencies
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:sifr_latest/common_widgets/copyright_widget.dart';
 import 'package:sifr_latest/config/app_color.dart';
 
 // Custom Alert Class
@@ -23,14 +24,15 @@ class CustomAlert {
         context: context,
         builder: (context) {
           return AlertDialog(
-            backgroundColor: AppColors.kPrimaryColor,
+            backgroundColor: AppColors.white,
             title: const Text(
               'Alert',
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: Colors.black87),
             ),
             content: Text(
               message,
-              style: const TextStyle(color: Colors.white70),
+              style: const TextStyle(
+                  color: Colors.black87, fontWeight: FontWeight.w400),
             ),
             actionsAlignment: MainAxisAlignment.center,
             actions: <Widget>[
@@ -42,7 +44,7 @@ class CustomAlert {
                     child: OutlinedButton(
                         style: OutlinedButton.styleFrom(
                           side: const BorderSide(
-                              color: Colors.white70, width: 2), //<-- SEE HERE
+                              color: Colors.black87, width: 1), //<-- SEE HERE
                         ),
                         onPressed: () {
                           Navigator.pop(context);
@@ -50,7 +52,7 @@ class CustomAlert {
                         },
                         child: const Text(
                           'No',
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(color: Colors.black87),
                         )),
                   ),
                   Padding(
@@ -58,7 +60,7 @@ class CustomAlert {
                     child: OutlinedButton(
                         style: OutlinedButton.styleFrom(
                           side: const BorderSide(
-                              color: Colors.white70, width: 2), //<-- SEE HERE
+                              color: Colors.black87, width: 1), //<-- SEE HERE
                         ),
                         onPressed: () {
                           response = true;
@@ -66,7 +68,7 @@ class CustomAlert {
                         },
                         child: const Text(
                           'Yes',
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(color: AppColors.black),
                         )),
                   ),
                 ],

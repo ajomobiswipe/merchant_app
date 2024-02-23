@@ -15,6 +15,7 @@ import '../../decurations/dropdownDecurations.dart';
 
 class MerchantOrderDetails extends StatefulWidget {
   MerchantAdditionalInfoRequestmodel merchantAdditionalInfoReq;
+  CustomAlert customAlert = CustomAlert();
   List tmsProductMaster;
   Function orderNext;
   List<SelectedProduct> selectedItems;
@@ -72,6 +73,11 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
     print(widget.merchantAdditionalInfoReq.merchantProductDetails);
   }
 
+  onTapConfirm() {
+    Navigator.pushNamedAndRemoveUntil(
+        context, 'MerchantNumVerify', (route) => false);
+  }
+
   resetvalues() {
     selectedProductId = null;
     selectedPackageId = null;
@@ -82,6 +88,10 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
     return AppScafofld(
+      closePressed: () {
+        widget.customAlert.displayDialogConfirm(context, 'Please confirm',
+            'Do you want to quit your registration?', onTapConfirm);
+      },
       child: ListView(
         children: [
           const Row(

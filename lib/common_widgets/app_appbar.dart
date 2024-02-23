@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 class AppAppbar extends StatelessWidget implements PreferredSizeWidget {
   final Function()? onPressed;
-  const AppAppbar({super.key, this.onPressed});
+  final Function()? closePressed;
+  const AppAppbar({super.key, this.onPressed, this.closePressed});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +21,7 @@ class AppAppbar extends StatelessWidget implements PreferredSizeWidget {
         ),
         IconButton(
           icon: Icon(Icons.close),
-          onPressed: () {},
+          onPressed: closePressed,
         ),
       ],
     );

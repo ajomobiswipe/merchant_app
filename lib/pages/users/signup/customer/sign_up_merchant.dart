@@ -184,7 +184,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
   bool enabledNick = false;
   bool enabledMobile = false;
   bool enabledEmail = false;
-  bool enabledDob = false;
+
   bool mobile = false;
   bool enabledCountry = false;
   bool enabledState = false;
@@ -387,8 +387,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () => _onWillPop(context),
+    return PopScope(
+      onPopInvoked: (didPop) => _onWillPop(context),
       child: Form(
         key: _formKey,
         child: items(position),
@@ -513,6 +513,10 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   Navigator.pop(context);
                 }
               },
+              closePressed: () {
+                customAlert.displayDialogConfirm(context, 'Please confirm',
+                    'Do you want to quit your Onboarding?', onTapConfirm);
+              },
             ),
             // AppBarWidget(
             //   action: false,
@@ -614,16 +618,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 }
                 return null;
               },
-              onChanged: (String value) {
-                value = value.trim();
-                setState(() {
-                  value.isEmpty ||
-                          value.length < 3 ||
-                          !Validators.isValidName(value)
-                      ? enabledDob = false
-                      : enabledDob = enabledLast;
-                });
-              },
               onSaved: (value) {
                 companyDetailsInforeq.contactPerson = value;
               },
@@ -641,7 +635,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               validator: (value) {
                 value = value.trim();
                 if (value == null || value.isEmpty) {
-                  return 'Enter Your Email Address is Mandatory!';
+                  return 'Email Address is Mandatory!';
                 }
 
                 if (!Validators.isValidEmail(value)) {
@@ -653,10 +647,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 value = value.trim();
                 setState(() {
                   value.isEmpty ||
-                          value.length < 3 ||
-                          !Validators.isValidName(value)
-                      ? enabledDob = false
-                      : enabledDob = enabledLast;
+                      value.length < 3 ||
+                      !Validators.isValidName(value);
                 });
               },
               onSaved: (value) {
@@ -697,7 +689,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   return 'Phone Number is Mandatory!';
                 }
                 if (value.length < 10) {
-                  return 'Length shuld be equal to 10 numbers';
+                  return 'The length should be exactly 10 digits.';
                 }
 
                 return null;
@@ -737,7 +729,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   return 'WhatsApp Number is Mandatory!';
                 }
                 if (value.length < 10) {
-                  return 'Length shuld be equal to 10 numbers';
+                  return 'The length should be exactly 10 digits.';
                 }
 
                 return null;
@@ -788,6 +780,13 @@ class _MerchantSignupState extends State<MerchantSignup> {
                           : newValue['businessType'];
                   // companyDetailsInforeq.businessTypeId = 1;
                 });
+              },
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Select Business Type!';
+                }
+
+                return null;
               },
             ),
 
@@ -1527,7 +1526,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               maxLength: 12,
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Aadhaar Numberis Mandatory!';
+                  return 'Aadhaar Number is Mandatory!';
                 }
                 if (value.length < 12) {
                   return 'Minimum character length is 12';
@@ -1820,7 +1819,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
                         .toList())[0]['businessDocId'];
 
                 // print(businessIdProofReq.businessProofDocumntType);
-
               },
             ),
             CustomTextFormField(
@@ -2108,7 +2106,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 //countryList.map((e) => e['ctyName']).toList(),
                 onChanged: (value) {
                   setState(() {
-
                     // print(merchantBankList);
                     ifscCode = value;
 
@@ -2116,13 +2113,12 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   });
                 },
                 onSaved: (value) {
-
-
                   // merchantBankInfoReq.bankNameId = value;
-                  merchantBankInfoReq.bankNameId = (merchantBankList.where((element) => element['bankName']==value).toList())[0]['bankId'].toString();
+                  merchantBankInfoReq.bankNameId = (merchantBankList
+                          .where((element) => element['bankName'] == value)
+                          .toList())[0]['bankId']
+                      .toString();
                   print(merchantBankInfoReq.bankNameId);
-
-
                 },
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -2259,13 +2255,13 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 });
               },
               onSaved: (value) {
-
                 // merchantAgreeMentReq.mdrType = 1;
-                merchantAgreeMentReq.mdrType = (mdrTypeList.where((element) => element['mdrType']==mdrType).toList())[0]['mdrId'];
+                merchantAgreeMentReq.mdrType = (mdrTypeList
+                    .where((element) => element['mdrType'] == mdrType)
+                    .toList())[0]['mdrId'];
 
                 merchantAgreeMentReq.serviceAgreement = true;
                 merchantAgreeMentReq.termsCondition = true;
-
               },
               validator: (value) {
                 if (value == null || value.isEmpty) {

@@ -12,7 +12,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+// import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:sifr_latest/theme/hive_storage_services.dart';
@@ -91,8 +91,8 @@ class MainPage extends StatelessWidget {
           onGenerateRoute: CustomRoute.allRoutes,
           navigatorKey: navigatorKey,
           locale: Locale(themeProvider.currentLanguage),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
+          // localizationsDelegates: AppLocalizations.localizationsDelegates,
+          // supportedLocales: AppLocalizations.supportedLocales,
           theme: ThemeData(
             fontFamily: "Mont",
           ),

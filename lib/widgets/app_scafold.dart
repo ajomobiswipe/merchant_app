@@ -6,12 +6,14 @@ class AppScafofld extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry? padding;
   dynamic Function()? onPressed;
+  final Function()? closePressed;
   AppScafofld(
       {super.key,
       required this.child,
       this.padding,
       this.eneableAppbar = true,
-      this.onPressed});
+      this.onPressed,
+      this.closePressed});
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +25,7 @@ class AppScafofld extends StatelessWidget {
                   () {
                     Navigator.pop(context);
                   },
+              closePressed: closePressed,
             )
           : null,
       body: Padding(

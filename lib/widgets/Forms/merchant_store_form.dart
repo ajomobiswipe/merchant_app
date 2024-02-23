@@ -63,6 +63,7 @@ class MerchantStoreImagesForm extends StatefulWidget {
 class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
   Position? _currentPosition;
   AlertService alertWidget = AlertService();
+  CustomAlert customAlert = CustomAlert();
   bool isChecked = true;
 
   int currTabPosition = 3;
@@ -132,13 +133,24 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
     return true;
   }
 
+  onTapConfirm() {
+    Navigator.pushNamedAndRemoveUntil(
+        context, 'MerchantNumVerify', (route) => false);
+  }
+
   @override
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
 
     //Global Background Pattern Widget
     return Scaffold(
-      appBar: AppAppbar(onPressed: widget.previous),
+      appBar: AppAppbar(
+        onPressed: widget.previous,
+        closePressed: () {
+          customAlert.displayDialogConfirm(context, 'Please confirm',
+              'Do you want to quit your registration?', onTapConfirm);
+        },
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 15),
         child: Form(
@@ -393,7 +405,6 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                 // cityList.map((e) => e['citName']).toList(),
                 onChanged: (value) {
                   setState(() {
-
                     print(widget.storeStatesList);
 
                     widget.selectedStoreCity.text = '';
@@ -401,7 +412,9 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
 
                     widget.merchantStoreInfoReq.currentState = (widget
                             .storeStatesList
-                            .where((item) => item['stateName']==value).toList())[0]['stateId'].toString();
+                            .where((item) => item['stateName'] == value)
+                            .toList())[0]['stateId']
+                        .toString();
 
                     // merchantPersonalReq.currentState = value;
                   });
@@ -456,7 +469,6 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                 onChanged: (value) {
                   // print(citysList[value]);
                   setState(() {
-
                     print(widget.storeCitysList);
                     print(widget.merchantStoreInfoReq.currentState);
 
@@ -469,8 +481,9 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                   // widget.merchantStoreInfoReq.currentCity = value;
 
                   if (widget.storeCitysList
-                          .where((element) => element['cityName'] == value)
-                          .toList().isEmpty) return;
+                      .where((element) => element['cityName'] == value)
+                      .toList()
+                      .isEmpty) return;
 
                   widget.merchantStoreInfoReq.currentCity = (widget
                           .storeCitysList
