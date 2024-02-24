@@ -249,7 +249,7 @@ class _MyApplicationsState extends State<MyApplications> {
           Navigator.pushNamedAndRemoveUntil(
               context, 'MerchantNumVerify', (route) => false);
         },
-        child: Column(
+        child: ListView(
           children: [
             CustomTextWidget(
                 text: 'MY APPLICATIONS', fontWeight: FontWeight.bold, size: 16),
@@ -435,6 +435,8 @@ class _MyApplicationsState extends State<MyApplications> {
             allOnboardingApplications.isNotEmpty
                 ? Expanded(
                     child: ListView(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
                       children: List.generate(allOnboardingApplications.length,
                           (index) {
                         return ListTile(
@@ -518,8 +520,6 @@ class _MyApplicationsState extends State<MyApplications> {
                                       for (var item in response['data'][0]
                                               ['merchantProductDetailsResponse']
                                           ['merchantProductDetails']) {
-
-
                                         print(item);
 
                                         _devices.add(Device(
@@ -534,8 +534,6 @@ class _MyApplicationsState extends State<MyApplications> {
                                           merchantId: item['merchantId'],
                                           guid: item['guid'],
                                         ));
-
-
                                       }
                                     }
 
@@ -967,7 +965,9 @@ class _MyApplicationsState extends State<MyApplications> {
                                                   .devices![index].productName,
                                               "deploymentStatus": data
                                                   .devices![index]
-                                                  .deploymentStatus
+                                                  .deploymentStatus,
+                                              "MerchantName": name,
+                                              "phoneNumber": phoneNumber,
                                             });
                                       },
                                       style: ElevatedButton.styleFrom(

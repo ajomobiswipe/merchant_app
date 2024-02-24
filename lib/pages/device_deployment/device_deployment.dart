@@ -8,6 +8,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sifr_latest/common_widgets/app_appbar.dart';
 import 'package:sifr_latest/common_widgets/custom_app_button.dart';
+import 'package:sifr_latest/widgets/custom_text_widget.dart';
 import '../../config/config.dart';
 import '../../config/constants.dart';
 import '../../services/user_services.dart';
@@ -59,18 +60,20 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
             testTransactionChargeSlipImage.text)
         .then((response) async {
       print(response.body);
+      var decodeData = jsonDecode(response.body);
       if (response.statusCode == 200 || response.statusCode == 201) {
-        var decodeData = jsonDecode(response.body);
-        if (decodeData['responseType'] == "S") {
+        if (decodeData['statusCode'].toString() == "200") {
+          setState(() {});
+          // Navigator.pushNamedAndRemoveUntil(
+          //     context, 'SignUpSucessScreen', (route) => false);
+          alertWidget.successPopup(
+              context, 'Success', decodeData['responseMessage'], () {});
+          Navigator.of(context).pop();
+        } else {
           setState(() {
-            // countryList = decodeData['responseValue']['list'];
-            // if (countryList.isNotEmpty) {
-            //   selectedCountries = countryList[0]['ctyName'].toString();
-            //   requestModel.country = selectedCountries;
-            //   requestModel.currencyId =
-            //       countryList[0]['currencyCode'].toString();
-            // }
+            // _isLoading = false;
           });
+          alertWidget.failure(context, 'Failure', decodeData['errorMessage']);
         }
       }
     });
@@ -105,16 +108,17 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
               const SizedBox(
                 height: 20.0,
               ),
+              CustomTextWidget(text: "Deployment Details", size: 20),
               const SizedBox(
-                height: 20.0,
+                height: 40.0,
               ),
-              Text("Curley Tales",
+              Text(widget.deviceInfo!["MerchantName"],
                   textAlign: TextAlign.center,
                   style: Theme.of(context)
                       .textTheme
                       .bodyLarge
                       ?.copyWith(color: Colors.black)),
-              Text("13574588898978",
+              Text(widget.deviceInfo!["phoneNumber"],
                   textAlign: TextAlign.center,
                   style: Theme.of(context)
                       .textTheme
@@ -136,7 +140,8 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
               //           ?.copyWith(color: Colors.grey)),
               // ),
               CustomTextFormField(
-                title: 'MAP Device Serial Number',
+                title: widget.deviceInfo!["productName"],
+                hintText: "MAP Device Serial Number",
                 controller: deviceSerialNumberCntrl,
                 required: true,
                 textCapitalization: TextCapitalization.words,
@@ -169,7 +174,6 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
               const SizedBox(
                 height: 20.0,
               ),
-              const SizedBox(height: 20.0),
               Padding(
                 padding: const EdgeInsets.all(6.0),
                 child: Column(
@@ -179,22 +183,24 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: RichText(
                         text: TextSpan(
-                            text: 'Test Transaction Chargeslip Image',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall
-                                ?.copyWith(
-                                    color: Theme.of(context).primaryColor,
+                          text: 'Test Transaction Charge slip Image',
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: Colors.black,
                                     fontWeight: FontWeight.bold,
-                                    decoration: TextDecoration.underline),
-                            children: const [
-                              TextSpan(
-                                  text: ' *',
-                                  style: TextStyle(
-                                      color: Colors.red,
-                                      decoration: TextDecoration.none))
-                            ]),
+                                  ),
+                          // children: const [
+                          //   TextSpan(
+                          //       text: ' *',
+                          //       style: TextStyle(
+                          //           color: Colors.red,
+                          //           decoration: TextDecoration.none))
+                          // ],
+                        ),
                       ),
+                    ),
+                    SizedBox(
+                      height: 15,
                     ),
                     testTransactionChargeSlipImage.text != ''
                         ? GestureDetector(
@@ -213,52 +219,48 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
                                 cameraPhotoDialog(
                                     context, 'testTransactionChargeSlipImage');
                               },
-                              child: Card(
-                                elevation: 10,
-                                // margin: const EdgeInsets.all(10.0),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15.0)),
-                                child: SizedBox(
-                                  width: double.maxFinite,
-                                  height: 150,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        Icon(
-                                          LineAwesome.camera_retro_solid,
-                                          size: 40,
-                                          color: Theme.of(context).primaryColor,
-                                        ),
-
-                                        Text(
-                                          'Click the image of test transaction Chargeslip',
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              color: Theme.of(context)
-                                                  .primaryColor,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        Text(
-                                          'Valid File formats: JPG, PNG. Maximum size < 1 MB',
-                                          style: TextStyle(
-                                              color: Colors.grey.shade500,
-                                              fontSize: 12),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                        // Image.asset('assets/logo.jpg'),
-                                      ],
-                                    ),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  color: AppColors.kTileColor,
+                                ),
+                                width: double.maxFinite,
+                                height: 100,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      const Icon(
+                                        Icons.camera_sharp,
+                                        size: 40,
+                                        color: AppColors.kPrimaryColor,
+                                      ),
+                                      // Text(
+                                      //   'Click the image of test transaction Chargeslip',
+                                      //   textAlign: TextAlign.center,
+                                      //   style: TextStyle(
+                                      //       color: Theme.of(context)
+                                      //           .primaryColor,
+                                      //       fontWeight: FontWeight.bold),
+                                      // ),
+                                      // const SizedBox(
+                                      //   height: 10,
+                                      // ),
+                                      // Text(
+                                      //   'Valid File formats: JPG, PNG. Maximum size < 1 MB',
+                                      //   style: TextStyle(
+                                      //       color: Colors.grey.shade500,
+                                      //       fontSize: 12),
+                                      //   textAlign: TextAlign.center,
+                                      // ),
+                                      // Image.asset('assets/logo.jpg'),
+                                    ],
                                   ),
                                 ),
                               ),
@@ -271,12 +273,11 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
                             text: 'Image Of Device At Store',
                             style: Theme.of(context)
                                 .textTheme
-                                .bodySmall
+                                .bodyMedium
                                 ?.copyWith(
-                                    color: Theme.of(context).primaryColor,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                    decoration: TextDecoration.underline),
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
                             children: const [
                               TextSpan(
                                   text: ' *',
@@ -285,6 +286,9 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
                                       decoration: TextDecoration.none))
                             ]),
                       ),
+                    ),
+                    Container(
+                      height: 15,
                     ),
                     deviceAtStoreImage.text != ''
                         ? GestureDetector(
@@ -302,51 +306,47 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
                                 cameraPhotoDialog(
                                     context, 'deviceAtStoreImage');
                               },
-                              child: Card(
-                                elevation: 10,
-                                // margin: const EdgeInsets.all(10.0),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15.0)),
-                                child: SizedBox(
-                                  width: double.maxFinite,
-                                  height: 150,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        Icon(
-                                          LineAwesome.camera_retro_solid,
-                                          size: 40,
-                                          color: Theme.of(context).primaryColor,
-                                        ),
-
-                                        Text(
-                                          'Click the image of Device At Store',
-                                          style: TextStyle(
-                                              color: Theme.of(context)
-                                                  .primaryColor,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        Text(
-                                          'Valid File formats: JPG, PNG. Maximum size < 1 MB',
-                                          style: TextStyle(
-                                              color: Colors.grey.shade500,
-                                              fontSize: 12),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                        // Image.asset('assets/logo.jpg'),
-                                      ],
-                                    ),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  color: AppColors.kTileColor,
+                                ),
+                                width: double.maxFinite,
+                                height: 100,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      const Icon(
+                                        Icons.camera_sharp,
+                                        size: 40,
+                                        color: AppColors.kPrimaryColor,
+                                      ),
+                                      // Text(
+                                      //   'Click the image of Device At Store',
+                                      //   style: TextStyle(
+                                      //       color: Theme.of(context)
+                                      //           .primaryColor,
+                                      //       fontWeight: FontWeight.bold),
+                                      // ),
+                                      // const SizedBox(
+                                      //   height: 10,
+                                      // ),
+                                      // Text(
+                                      //   'Valid File formats: JPG, PNG. Maximum size < 1 MB',
+                                      //   style: TextStyle(
+                                      //       color: Colors.grey.shade500,
+                                      //       fontSize: 12),
+                                      //   textAlign: TextAlign.center,
+                                      // ),
+                                      // Image.asset('assets/logo.jpg'),
+                                    ],
                                   ),
                                 ),
                               ),
@@ -473,12 +473,12 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
           child: SizedBox(
             width: double.maxFinite,
-            height: 150,
+            height: 120,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Image.file(
                 File(path),
-                fit: BoxFit.contain,
+                fit: BoxFit.fitWidth,
               ),
             ),
           ),

@@ -866,7 +866,7 @@ class UserServices {
     request.files.add(deviceAtStore);
     request.files.add(transactionImage);
 
-    //request.fields['productDeploymentInfo'] = jsonEncode(productDeploymentReq);
+    // request.fields['productDeploymentInfo'] = jsonEncode(productDeploymentReq);
     request.fields['productDeploymentInfo'] = jsonEncode({
       "guid": 206,
       "merchantId": "ADIBM0000000456",
