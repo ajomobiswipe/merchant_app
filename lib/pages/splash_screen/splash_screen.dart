@@ -129,7 +129,7 @@ class _SplashScreenState extends State<SplashScreen> {
           if (diff.inHours >= 4) {
             if (!mounted) return;
             Navigator.pushNamedAndRemoveUntil(
-                context, 'loginWithPin', (route) => false);
+                context, 'login', (route) => false);
           } else if (isLoggedIn) {
             if (!mounted) return;
             Navigator.pushReplacementNamed(context, 'MerchantNumVerify');

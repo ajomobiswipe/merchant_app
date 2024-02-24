@@ -535,31 +535,30 @@ class _MyApplicationsState extends State<MyApplications> {
 
                                     ApplicationStatus dataResponse =
                                         ApplicationStatus(
-                                            errorMessage:
-                                                response['errorMessage'],
-                                            statusCode: response['statusCode'],
-                                            amountToPay: 200,
-                                            kycApproved: response['data'][0]
-                                                    ['appStatus'] ??
-                                                false,
-                                            // payment: response['data'][0]
-                                            //     ['paymentStatus'],
-                                            payment: false,
-                                            eNach: response['data'][0]
-                                                    ['paymentStatus'] ??
-                                                false,
-                                            midtidGenerated: response['data'][0]
-                                                    ['onboardingStatus'] ??
-                                                false,
-                                            allDevicesOnboarded: true,
-                                            live: response['data'][0]
-                                                    ['liveStatus'] ??
-                                                true,
-                                            devices: _devices,
-                                            map: response['map'],
-                                            merchantProductDetailsResponse:
-                                                response['data'][0][
-                                                    'merchantProductDetailsResponse']);
+                                      errorMessage: response['errorMessage'],
+                                      statusCode: response['statusCode'],
+                                      amountToPay: 200,
+                                      kycApproved: response['data'][0]
+                                              ['appStatus'] ??
+                                          false,
+                                      // payment: response['data'][0]
+                                      //     ['paymentStatus'],
+                                      payment: false,
+                                      eNach: response['data'][0]
+                                              ['paymentStatus'] ??
+                                          false,
+                                      midtidGenerated: response['data'][0]
+                                              ['onboardingStatus'] ??
+                                          false,
+                                      allDevicesOnboarded: true,
+                                      live: response['data'][0]['liveStatus'] ??
+                                          true,
+                                      devices: _devices,
+                                      map: response['map'],
+                                      merchantProductDetailsResponse: response[
+                                              'data'][0]
+                                          ['merchantProductDetailsResponse'],
+                                    );
 
                                     _showMyDialog(
                                         data: dataResponse,

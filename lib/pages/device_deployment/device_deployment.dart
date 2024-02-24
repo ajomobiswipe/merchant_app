@@ -48,16 +48,17 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
   }
 
   deviceDeployment() {
-    productDeploymentReq.guid = 206;
+    //productDeploymentReq.guid = 206;
     // productDeploymentReq.guid = widget.deviceInfo!["guid"];
-    productDeploymentReq.merchantId = widget.deviceInfo!["guid"];
-    productDeploymentReq.productId = widget.deviceInfo!["guid"];
-    productDeploymentReq.packageId = widget.deviceInfo!["guid"];
+    // productDeploymentReq.merchantId = widget.deviceInfo!["merchantId"];
+    // productDeploymentReq.productId = widget.deviceInfo!["guid"];
+    // productDeploymentReq.packageId = widget.deviceInfo!["guid"];
 
     userServices
         .deviceDeployment(productDeploymentReq, deviceAtStoreImage.text,
             testTransactionChargeSlipImage.text)
         .then((response) async {
+      print(response.body);
       if (response.statusCode == 200 || response.statusCode == 201) {
         var decodeData = jsonDecode(response.body);
         if (decodeData['responseType'] == "S") {

@@ -57,7 +57,7 @@ class UserServices {
   sendForgotPasswordLink(String userName) async {
     Connection connection = Connection();
     // var url = EndPoints.baseApi9502 + EndPoints.userCheckAPI + userName;
-    var url = "http://172.29.100.221:9508/NanoPay/v1/forgotPassword/$userName";
+    var url = "http://213.42.225.250:9508/NanoPay/v1/forgotPassword/$userName";
     var response = await connection.getWithOutToken(url);
     return response;
   }
@@ -841,15 +841,16 @@ class UserServices {
     deviceAtStoreCtrl,
     transactionSlipImageCtrl,
   ) async {
+    print(deviceAtStoreCtrl);
+    print(transactionSlipImageCtrl);
     //var url = EndPoints.baseApi9502 + EndPoints.registerAPI;
     BoxStorage boxStorage = BoxStorage();
     String barrertoken = boxStorage.getToken();
 
     var url =
-        'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/MerchantOnboardingStatus';
+        'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/productDeployment';
     // Set up the headers
     Map<String, String> headers = {
-      'Content-Type': 'multipart/form-data',
       'Authorization': 'Bearer $barrertoken', // Add any other headers you need
     };
 
@@ -865,10 +866,19 @@ class UserServices {
     request.files.add(deviceAtStore);
     request.files.add(transactionImage);
 
-    request.fields['productDeploymentInfo'] = jsonEncode(productDeploymentReq);
+    //request.fields['productDeploymentInfo'] = jsonEncode(productDeploymentReq);
+    request.fields['productDeploymentInfo'] = jsonEncode({
+      "guid": 206,
+      "merchantId": "ADIBM0000000456",
+      "productId": "1",
+      "packageId": "1",
+      "productSerialNo": "23456"
+    });
 
     final streamedResponse = await request.send();
     final response = await http.Response.fromStream(streamedResponse);
+    print(response.body);
+    print(response.statusCode);
     return response;
   }
 
