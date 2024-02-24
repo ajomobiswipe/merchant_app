@@ -16,6 +16,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sifr_latest/common_widgets/app_appbar.dart';
+import 'package:sifr_latest/decurations/dropdownDecurations.dart';
 import 'package:sifr_latest/helpers/default_height.dart';
 import 'package:sifr_latest/models/merchant_requestmodel.dart';
 import 'package:sifr_latest/pages/mechant_order/merchant_order_details.dart';
@@ -35,6 +36,7 @@ import '../../../../widgets/tabbar/tabbar.dart';
 import '../../../../widgets/widget.dart';
 import '../../../mechant_order/models/mechant_additionalingo_model.dart';
 import 'models/business_id_proof_requestmodel.dart';
+import 'models/businessproof_mode.dart';
 import 'models/company_detailsInfo_requestmodel.dart';
 import 'models/merchant_agreement_requestmodel.dart';
 import 'models/merchant_bank_Info_requestmodel.dart';
@@ -94,6 +96,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
   // Merchant order Detials
   TextEditingController canceledChequeControler = TextEditingController();
   List<SelectedProduct> selectedItems = [];
+  List<SelectedBusinessProof> selectedBusinessProofItems = [];
 
   bool isEditable = false;
 
@@ -107,6 +110,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
   final TextEditingController _whatsAppNumberController =
       TextEditingController();
   dynamic businessType;
+  dynamic businessProofType;
 
   // List<Map<String, dynamic>> BusinessTypeList = [
   //   {"value": 1, "label": "Individual"},
@@ -121,6 +125,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
   int selectedBusinessStateId = 0;
   int selectedBusinessCityId = 0;
+
+  int? selectedDocumentId;
 
   // List<Map<String, dynamic>> bussinesCatogeryList = [
   //   {"value": 1, "label": "Individual"},
@@ -1078,7 +1084,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 });
               },
               onSaved: (dynamic value) {
-                if(value==null)return;
+                if (value == null) return;
                 companyDetailsInforeq.mccTypeCode = value["mccTypeId"];
               },
             ),
@@ -1920,6 +1926,51 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 // print(businessIdProofReq.businessProofDocumntType);
               },
             ),
+            DropdownButtonFormField(
+              isDense: true,
+              isExpanded: true,
+              decoration: commonInputDecoration(Icons.maps_home_work_outlined,
+                      hintText: "Select merchant business type")
+                  .copyWith(
+                      hintStyle: Theme.of(context)
+                          .textTheme
+                          .displaySmall
+                          ?.copyWith(
+                              fontWeight: FontWeight.normal,
+                              fontSize: 13,
+                              color: Colors.black.withOpacity(0.25))),
+              value: businessProofType,
+              items: merchantProofDocumentList
+                  .map<DropdownMenuItem>((dynamic value) {
+                return DropdownMenuItem(
+                  value: value,
+                  child: Text(
+                    value['businessType'],
+                    style: TextStyle(fontSize: 13),
+                  ),
+                );
+              }).toList(),
+              onChanged: (newValue) {
+                setState(() {
+                  print(newValue);
+                  businessProofType = newValue;
+                  print(newValue['businessType'].runtimeType);
+                  // businessType = newValue;
+                  // companyDetailsInforeq.businessTypeId =
+                  //     newValue['businessType'].runtimeType == String
+                  //         ? int.parse(newValue['businessType'])
+                  //         : newValue['businessType'];
+                  // // companyDetailsInforeq.businessTypeId = 1;
+                });
+              },
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Select Business Type!';
+                }
+
+                return null;
+              },
+            ),
             CustomTextFormField(
               onTap: _openFilePicker,
               title: 'Upload Business Proof Document',
@@ -1930,18 +1981,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
               enabled: true,
               readOnly: true,
               prefixIcon: LineAwesome.file,
-              validator: (value) {
-                value = value.trim();
-                if (value == null || value.isEmpty) {
-                  return 'please upload business Proof Document';
-                }
-
-                return null;
-              },
               onSaved: (value) {},
-              onFieldSubmitted: (value) {
-                _contactPersonNameController.text = value.trim();
-              },
+              onFieldSubmitted: (value) {},
             ),
             CustomTextFormField(
               title: 'Document Expiry Date',
@@ -1988,7 +2029,15 @@ class _MerchantSignupState extends State<MerchantSignup> {
               height: 30.0,
             ),
             IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  selectedBusinessProofItems.add(SelectedBusinessProof(
+                      businessProofDocumtExpiry: businessProofDocumentCtrl.text,
+                      businessProofId: 334,
+                      businessProofName: "gtgt"));
+
+                  setState(() {});
+                  businessProofDocumentCtrl.clear();
+                },
                 icon: Row(
                   children: [
                     Image.asset(
@@ -2008,6 +2057,77 @@ class _MerchantSignupState extends State<MerchantSignup> {
             const SizedBox(
               height: 40.0,
             ),
+            if (selectedBusinessProofItems.isNotEmpty)
+              Container(
+                color: AppColors.kTileColor,
+                child: Padding(
+                  padding: const EdgeInsets.all(2.0),
+                  child: Column(
+                    children: [
+                      DataTable(
+                        // headingRowHeight: 0,
+                        // columnSpacing: 10,
+                        dataRowMinHeight: 20,
+                        dataRowMaxHeight: 30,
+                        columns: [
+                          const DataColumn(label: Text('Name')),
+                          const DataColumn(label: Text('Expy Date')),
+                          const DataColumn(label: Text('')),
+                        ],
+                        rows: selectedBusinessProofItems.map((item) {
+                          return DataRow(cells: [
+                            DataCell(CustomTextWidget(
+                              text: item.businessProofName,
+                              size: 11,
+                              fontWeight: FontWeight.w900,
+                            )),
+                            // DataCell(CustomTextWidget(
+                            //   text: "${item.productName}+ 1499+499",
+                            //   size: 11,
+                            //   fontWeight: FontWeight.w900,
+                            // )),
+                            DataCell(CustomTextWidget(
+                              text: item.businessProofDocumtExpiry.toString(),
+                              size: 12,
+                              fontWeight: FontWeight.w900,
+                            )),
+                            DataCell(
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.cancel_outlined,
+                                  color: Colors.red,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    selectedBusinessProofItems.remove(item);
+                                  });
+                                },
+                              ),
+                            ),
+                          ]);
+                        }).toList(),
+                      ),
+                      defaultHeight(15),
+                      Container(
+                        color: AppColors.kSelectedBackgroundColor,
+                        child: ExpansionTile(
+                          title: CustomTextWidget(
+                            text: "View Complete order Summary",
+                            color: Colors.grey.shade600,
+                            size: 10,
+                          ),
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.all(16.0),
+                              child: Text("content"),
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
             CustomAppButton(
               title: "Next",
               onPressed: () async {
@@ -2577,7 +2697,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                         });
                                                       }
 
-                                                      print(mdrSummaryList[0]['amount']);
+                                                      print(mdrSummaryList[0]
+                                                          ['amount']);
                                                     },
                                                     inputFormatters: [
                                                       FilteringTextInputFormatter
