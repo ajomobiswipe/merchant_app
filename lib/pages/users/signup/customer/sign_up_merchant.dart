@@ -683,7 +683,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               hintText: "Enter Your Email Address",
               controller: _emailController,
               required: true,
-              textCapitalization: TextCapitalization.words,
+              // textCapitalization: TextCapitalization.words,
               prefixIcon: Icons.email,
               validator: (value) {
                 value = value.trim();
@@ -973,7 +973,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   value: value,
                   child: Text(
                     value['description'],
-                    style: TextStyle(fontSize: 13),
+                    style: const TextStyle(fontSize: 13,overflow:TextOverflow.ellipsis),
                   ),
                 );
               }).toList(),
@@ -1071,7 +1071,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                         value: value,
                         child: Text(
                           value['mccTypeDesc'],
-                          style: const TextStyle(fontSize: 13),
+                          style: const TextStyle(fontSize: 13,overflow:TextOverflow.ellipsis),
                         ),
                       );
                     }).toList()

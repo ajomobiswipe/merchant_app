@@ -455,7 +455,7 @@ class UserServices {
 
     final requestBody = {
       "mdrType": mdrType,
-      "mccGroupId": 8,
+      "mccGroupId": mccGroupId,
       "turnOverType": "large"
     };
 
@@ -606,10 +606,44 @@ class UserServices {
   Future<dynamic> getMerchantApplicationStatus(merchantInd) async {
     Connection connection = Connection();
     final requestBody = {"merchantId": "$merchantInd"};
-    print(requestBody);
+
     var url =
         'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/MerchantOnboardingStatus';
     var response = await connection.post(url, requestBody);
+
+    return response;
+
+    // old merchant onboarding implimentation
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    // String? barrertoken = prefs.getString('bearerToken');
+    // print(barrertoken);
+    // http.Response resonr = await http.get(
+    //   Uri.parse(
+    //       'http://omasoftposqc.omaemirates.com:9508/NanoPay/Middleware/UiApi/GetMerchantDefaultValues'),
+    //   headers: {
+    //     'Content-Type': 'application/json; charset=UTF-8',
+    //     'Authorization': 'Bearer $barrertoken',
+    //   },
+    // );
+
+    // con
+    // print(resonr.body);
+    // // print(prefs.getString('bearerToken') ?? 'error in reciving token');
+
+    // // print('length  : ${acquirerDetails.length}');
+    // // for (var acquirer in acquirerDetails) {
+    // //   String acquirerName = acquirer['acquirerName'];
+    // //   print('Acquirer Name: $acquirerName');
+    // // }
+    // return resonr;
+  }
+
+  Future<dynamic> postMerchantOnBoarding(merchantInd) async {
+    Connection connection = Connection();
+
+    var url =
+        'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/onboardByHitachiOrAuBank/$merchantInd';
+    var response = await connection.get(url);
 
     return response;
 

@@ -240,17 +240,17 @@ class _MyApplicationsState extends State<MyApplications> {
 
   @override
   Widget build(BuildContext context) {
-
     double kycPendingCount = 30;
     double paymentPendingCount = 40;
     double deploymentPendingCount = 10;
     double liveCount = 20;
 
-    if(getChartCount!=null){
-       kycPendingCount = getChartCount!['kycPendingCount'].toDouble();
-       paymentPendingCount = getChartCount!['paymentPendingCount'].toDouble();
-       deploymentPendingCount = getChartCount!['deploymentPendingCount'].toDouble();
-       liveCount = getChartCount!['liveCount'].toDouble();
+    if (getChartCount != null) {
+      kycPendingCount = getChartCount!['kycPendingCount'].toDouble();
+      paymentPendingCount = getChartCount!['paymentPendingCount'].toDouble();
+      deploymentPendingCount =
+          getChartCount!['deploymentPendingCount'].toDouble();
+      liveCount = getChartCount!['liveCount'].toDouble();
     }
 
     return AppScafofld(
@@ -287,10 +287,15 @@ class _MyApplicationsState extends State<MyApplications> {
             // ),
             Row(
               children: [
-                 SizedBox(
+                SizedBox(
                   height: 150,
                   width: 150,
-                  child: DashboardChart(kycPending: kycPendingCount,paymentPending: paymentPendingCount,deploymentPending: deploymentPendingCount,liveCount: liveCount,),
+                  child: DashboardChart(
+                    kycPending: kycPendingCount,
+                    paymentPending: paymentPendingCount,
+                    deploymentPending: deploymentPendingCount,
+                    liveCount: liveCount,
+                  ),
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -695,7 +700,7 @@ class _MyApplicationsState extends State<MyApplications> {
     });
   }
 
-  Map<String,dynamic>? getChartCount;
+  Map<String, dynamic>? getChartCount;
 
   getAllMerchantApplications() async {
     print("----AllMerchantApplications called----");
@@ -705,7 +710,7 @@ class _MyApplicationsState extends State<MyApplications> {
         .then((response) async {
       final Map<String, dynamic> data = json.decode(response.body);
 
-      getChartCount=data['merchantDashboard'];
+      getChartCount = data['merchantDashboard'];
 
       List<dynamic> applicationsFromJson = data['data'];
 
@@ -746,6 +751,21 @@ class _MyApplicationsState extends State<MyApplications> {
     List<dynamic> applicationsFromJson = data['data'] ?? [];
     if (applicationsFromJson.isEmpty) return null;
     print('response before  return$applicationsFromJson');
+    return data;
+  }
+
+  postMerchantOnBoarding(merchantId) async {
+    var response = await userServices.postMerchantOnBoarding(merchantId);
+    final Map<String, dynamic> data = json.decode(response.body);
+
+    Navigator.pop(context);
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Onboarded Successfully'),
+        duration: Duration(seconds: 3),
+      ),
+    );
+
     return data;
   }
 
@@ -921,8 +941,31 @@ class _MyApplicationsState extends State<MyApplications> {
                         ),
                       ),
                       Expanded(child: SizedBox()),
-                      statusTextWidget(
-                          title: "MID/TID", status: data.midtidGenerated!),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          if (!data.midtidGenerated!)
+                            ElevatedButton(
+                                onPressed: () {
+                                  postMerchantOnBoarding(merchantId);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  minimumSize: const Size(60.0, 30.0),
+                                ),
+                                child: const Text(
+                                  'Onbaord',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 13),
+                                )),
+                          statusTextWidget(
+                              title: "MID/TID", status: data.midtidGenerated!),
+                        ],
+                      ),
                     ],
                   ),
                 ),
