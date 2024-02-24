@@ -1078,6 +1078,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 });
               },
               onSaved: (dynamic value) {
+                if(value==null)return;
                 companyDetailsInforeq.mccTypeCode = value["mccTypeId"];
               },
             ),
@@ -1211,6 +1212,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               controller: _merchantBusinessAddressController,
               prefixIcon: Icons.home,
               required: true,
+              maxLength: 100,
 
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9 ]')),

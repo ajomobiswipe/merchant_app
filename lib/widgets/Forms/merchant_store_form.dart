@@ -344,7 +344,7 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                 titleEneabled: false,
                 hintText: "Enter merchant Store address",
                 title: '',
-
+                maxLength: 100,
                 controller: widget.merchantStoreAddressController,
                 prefixIcon: Icons.home,
                 required: true,

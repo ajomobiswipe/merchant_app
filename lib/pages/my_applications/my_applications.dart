@@ -240,6 +240,19 @@ class _MyApplicationsState extends State<MyApplications> {
 
   @override
   Widget build(BuildContext context) {
+
+    double kycPendingCount = 30;
+    double paymentPendingCount = 40;
+    double deploymentPendingCount = 10;
+    double liveCount = 20;
+
+    if(getChartCount!=null){
+       kycPendingCount = getChartCount!['kycPendingCount'].toDouble();
+       paymentPendingCount = getChartCount!['paymentPendingCount'].toDouble();
+       deploymentPendingCount = getChartCount!['deploymentPendingCount'].toDouble();
+       liveCount = getChartCount!['liveCount'].toDouble();
+    }
+
     return AppScafofld(
         closePressed: () {
           Navigator.pushNamedAndRemoveUntil(
@@ -251,7 +264,7 @@ class _MyApplicationsState extends State<MyApplications> {
         },
         child: ListView(
           children: [
-            CustomTextWidget(
+            const CustomTextWidget(
                 text: 'MY APPLICATIONS', fontWeight: FontWeight.bold, size: 16),
 
             // ElevatedButton(
@@ -274,10 +287,10 @@ class _MyApplicationsState extends State<MyApplications> {
             // ),
             Row(
               children: [
-                const SizedBox(
+                 SizedBox(
                   height: 150,
                   width: 150,
-                  child: DashboardChart(),
+                  child: DashboardChart(kycPending: kycPendingCount,paymentPending: paymentPendingCount,deploymentPending: deploymentPendingCount,liveCount: liveCount,),
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -309,7 +322,7 @@ class _MyApplicationsState extends State<MyApplications> {
 //     );
 //   }).toList(),
 // ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
 
@@ -385,7 +398,7 @@ class _MyApplicationsState extends State<MyApplications> {
               ),
             ),
 
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             CustomTextFormField(
@@ -433,159 +446,160 @@ class _MyApplicationsState extends State<MyApplications> {
             //   Text(selectedValue["statusInfoId"].toString()),
 
             allOnboardingApplications.isNotEmpty
-                ? Expanded(
-                    child: ListView(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      children: List.generate(allOnboardingApplications.length,
-                          (index) {
-                        return ListTile(
-                          leading: Text((index + 1).toString()),
-                          title: Row(
-                            children: [
-                              const CustomTextWidget(
+                ? ListView(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    children: List.generate(allOnboardingApplications.length,
+                        (index) {
+                      return ListTile(
+                        leading: Text((index + 1).toString()),
+                        title: Row(
+                          children: [
+                            const CustomTextWidget(
+                                size: 14,
+                                fontWeight: FontWeight.w800,
+                                color: Colors.black87,
+                                text: "Name : "),
+                            Expanded(
+                              child: CustomTextWidget(
                                   size: 14,
                                   fontWeight: FontWeight.w800,
-                                  color: Colors.black87,
-                                  text: "Name : "),
-                              Expanded(
-                                child: CustomTextWidget(
-                                    size: 14,
-                                    fontWeight: FontWeight.w800,
-                                    color: AppColors.kLightGreen,
-                                    text: allOnboardingApplications[index]
-                                        ["merchantName"]),
-                              ),
-                            ],
-                          ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  const CustomTextWidget(
-                                      size: 12, text: "Number : "),
-                                  CustomTextWidget(
-                                      size: 12,
-                                      text: allOnboardingApplications[index]
-                                              ["mobileNo"] ??
-                                          ''),
-                                ],
-                              ),
-                              // CustomTextWidget(
-                              //     size: 12,
-                              //     text: allOnboardingApplications[index]
-                              //             ["insertDatetime"]
-                              //         .toString())
-                            ],
-                          ),
-                          trailing: SizedBox(
-                            width: 100,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
+                                  color: AppColors.kLightGreen,
+                                  text: allOnboardingApplications[index]
+                                      ["merchantName"]),
+                            ),
+                          ],
+                        ),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
                               children: [
-                                Text(
-                                  allOnboardingApplications[index]
-                                              ["statusInfoId"] ==
-                                          null
-                                      ? "Unknown"
-                                      : "${allOnboardingApplications[index]["statusInfoId"]["statusName"]}",
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                InkWell(
-                                  child: const CustomTextWidget(
-                                      text: "Check Status",
-                                      color: AppColors.kPrimaryColor,
-                                      size: 12),
-                                  onTap: () async {
-                                    var response;
-
-                                    response = await _getApplicationStatus(
-                                        allOnboardingApplications[index]
-                                            ['merchantId']);
-
-                                    if (response == null) return;
-                                    if (response['data'].length == 0) return;
-
-                                    // response ??= await _getApplicationStatus(
-                                    //     "ADIBM0000000375");
-
-                                    List<Device> _devices = [];
-
-                                    if (response['data'][0][
-                                                'merchantProductDetailsResponse']
-                                            ['merchantProductDetails'] !=
-                                        null) {
-                                      for (var item in response['data'][0]
-                                              ['merchantProductDetailsResponse']
-                                          ['merchantProductDetails']) {
-                                        print(item);
-
-                                        _devices.add(Device(
-                                          productId: item['productId'],
-                                          productName: item['productName'],
-                                          deploymentStatus:
-                                              item['deploymentStatus'],
-                                          package: item['packageId'],
-                                          packageId: item['packageId'],
-                                          quantity: item['qty'],
-                                          price: item['unitPrice'],
-                                          merchantId: item['merchantId'],
-                                          guid: item['guid'],
-                                        ));
-                                      }
-                                    }
-
-                                    ApplicationStatus dataResponse =
-                                        ApplicationStatus(
-                                      errorMessage: response['errorMessage'],
-                                      statusCode: response['statusCode'],
-                                      amountToPay: 200,
-                                      kycApproved: response['data'][0]
-                                              ['appStatus'] ??
-                                          false,
-                                      // payment: response['data'][0]
-                                      //     ['paymentStatus'],
-                                      payment: false,
-                                      eNach: response['data'][0]
-                                              ['paymentStatus'] ??
-                                          false,
-                                      midtidGenerated: response['data'][0]
-                                              ['onboardingStatus'] ??
-                                          false,
-                                      allDevicesOnboarded: true,
-                                      live: response['data'][0]['liveStatus'] ??
-                                          true,
-                                      devices: _devices,
-                                      map: response['map'],
-                                      merchantProductDetailsResponse: response[
-                                              'data'][0]
-                                          ['merchantProductDetailsResponse'],
-                                    );
-
-                                    _showMyDialog(
-                                        data: dataResponse,
-                                        phoneNumber:
-                                            allOnboardingApplications[index]
-                                                ["mobileNo"],
-                                        name: allOnboardingApplications[index]
-                                            ["merchantName"],
-                                        merchantId:
-                                            allOnboardingApplications[index]
-                                                ['merchantId']);
-                                  },
-                                ),
+                                const CustomTextWidget(
+                                    size: 12, text: "Number : "),
+                                CustomTextWidget(
+                                    size: 12,
+                                    text: allOnboardingApplications[index]
+                                            ["mobileNo"] ??
+                                        ''),
                               ],
                             ),
+                            // CustomTextWidget(
+                            //     size: 12,
+                            //     text: allOnboardingApplications[index]
+                            //             ["insertDatetime"]
+                            //         .toString())
+                          ],
+                        ),
+                        trailing: SizedBox(
+                          width: 100,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                allOnboardingApplications[index]
+                                            ["statusInfoId"] ==
+                                        null
+                                    ? "Unknown"
+                                    : "${allOnboardingApplications[index]["statusInfoId"]["statusName"]}",
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              InkWell(
+                                child: const CustomTextWidget(
+                                    text: "Check Status",
+                                    color: AppColors.kPrimaryColor,
+                                    size: 12),
+                                onTap: () async {
+                                  var response;
+
+                                  response = await _getApplicationStatus(
+                                      allOnboardingApplications[index]
+                                          ['merchantId']);
+
+                                  if (response == null) return;
+                                  if (response['data'].length == 0) return;
+
+                                  // response ??= await _getApplicationStatus(
+                                  //     "ADIBM0000000375");
+
+                                  List<Device> _devices = [];
+
+                                  if (response['data'][0]
+                                              ['merchantProductDetailsResponse']
+                                          ['merchantProductDetails'] !=
+                                      null) {
+                                    for (var item in response['data'][0]
+                                            ['merchantProductDetailsResponse']
+                                        ['merchantProductDetails']) {
+                                      print(item);
+
+                                      _devices.add(Device(
+                                        productId: item['productId'],
+                                        productName: item['productName'],
+                                        deploymentStatus:
+                                            item['deploymentStatus'],
+                                        package: item['packageId'],
+                                        packageId: item['packageId'],
+                                        quantity: item['qty'],
+                                        price: item['unitPrice'],
+                                        merchantId: item['merchantId'],
+                                        guid: item['guid'],
+                                      ));
+                                    }
+                                  }
+
+                                  ApplicationStatus dataResponse =
+                                      ApplicationStatus(
+                                    errorMessage: response['errorMessage'],
+                                    statusCode: response['statusCode'],
+                                    amountToPay: 200,
+                                    kycApproved: response['data'][0]
+                                            ['appStatus'] ??
+                                        false,
+                                    // payment: response['data'][0]
+                                    //     ['paymentStatus'],
+                                    payment: false,
+                                    eNach: response['data'][0]
+                                            ['paymentStatus'] ??
+                                        false,
+                                    midtidGenerated: response['data'][0]
+                                            ['onboardingStatus'] ??
+                                        false,
+                                    allDevicesOnboarded: true,
+                                    live: response['data'][0]['liveStatus'] ??
+                                        true,
+                                    devices: _devices,
+                                    map: response['map'],
+                                    merchantProductDetailsResponse:
+                                        response['data'][0]
+                                            ['merchantProductDetailsResponse'],
+                                  );
+
+                                  _showMyDialog(
+                                      data: dataResponse,
+                                      phoneNumber:
+                                          allOnboardingApplications[index]
+                                              ["mobileNo"],
+                                      name: allOnboardingApplications[index]
+                                          ["merchantName"],
+                                      merchantId:
+                                          allOnboardingApplications[index]
+                                              ['merchantId']);
+                                },
+                              ),
+                            ],
                           ),
-                        );
-                      }),
-                    ),
+                        ),
+                      );
+                    }),
                   )
-                : const Expanded(
-                    child: Center(
-                        child: SizedBox(child: Text("No Application Found")))),
+                : Center(
+                    child: Container(
+                        margin: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.height * .1),
+                        child: const SizedBox(
+                            child: Text("No Application Found")))),
           ],
         ));
   }
@@ -681,6 +695,8 @@ class _MyApplicationsState extends State<MyApplications> {
     });
   }
 
+  Map<String,dynamic>? getChartCount;
+
   getAllMerchantApplications() async {
     print("----AllMerchantApplications called----");
     await userServices
@@ -688,6 +704,8 @@ class _MyApplicationsState extends State<MyApplications> {
             stage: selectesStage, merchantname: _merchantNameController.text)
         .then((response) async {
       final Map<String, dynamic> data = json.decode(response.body);
+
+      getChartCount=data['merchantDashboard'];
 
       List<dynamic> applicationsFromJson = data['data'];
 
@@ -1097,11 +1115,25 @@ class ChartData {
   final double sales;
   final Color color;
 
-  ChartData(this.category, this.sales, this.color);
+  ChartData(
+    this.category,
+    this.sales,
+    this.color,
+  );
 }
 
 class DashboardChart extends StatelessWidget {
-  const DashboardChart({super.key});
+  final double? kycPending;
+  final double? paymentPending;
+  final double? deploymentPending;
+  final double? liveCount;
+
+  const DashboardChart(
+      {super.key,
+      this.kycPending,
+      this.paymentPending,
+      this.deploymentPending,
+      this.liveCount});
 
   @override
   Widget build(BuildContext context) {
@@ -1109,10 +1141,11 @@ class DashboardChart extends StatelessWidget {
       series: <CircularSeries>[
         DoughnutSeries<ChartData, String>(
           dataSource: <ChartData>[
-            ChartData('Pending For  Kyc Approval', 30, Colors.yellow),
-            ChartData('Pending For payment', 40, Colors.cyan),
-            ChartData('Pending For Deployment', 10, Colors.purple),
-            ChartData('Live', 20, Colors.green),
+            ChartData('Pending For  Kyc Approval', kycPending!, Colors.yellow),
+            ChartData('Pending For payment', paymentPending!, Colors.cyan),
+            ChartData(
+                'Pending For Deployment', deploymentPending!, Colors.purple),
+            ChartData('Live', liveCount!, Colors.green),
           ],
           xValueMapper: (ChartData data, _) => data.category,
           yValueMapper: (ChartData data, _) => data.sales,
