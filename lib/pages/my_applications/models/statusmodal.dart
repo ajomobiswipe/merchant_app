@@ -77,7 +77,7 @@ class Device {
   String? productId;
   String? productName;
   String? merchantId;
-  int? packageId;
+  String? packageId;
   String? package;
   int? guid;
   int? quantity;

@@ -518,6 +518,10 @@ class _MyApplicationsState extends State<MyApplications> {
                                       for (var item in response['data'][0]
                                               ['merchantProductDetailsResponse']
                                           ['merchantProductDetails']) {
+
+
+                                        print(item);
+
                                         _devices.add(Device(
                                           productId: item['productId'],
                                           productName: item['productName'],
@@ -530,6 +534,8 @@ class _MyApplicationsState extends State<MyApplications> {
                                           merchantId: item['merchantId'],
                                           guid: item['guid'],
                                         ));
+
+
                                       }
                                     }
 

@@ -1,4 +1,6 @@
 import 'dart:convert';
+
+
 import 'dart:io';
 import 'package:badges/badges.dart' as badge;
 import 'package:email_validator/email_validator.dart';
@@ -412,7 +414,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
             ? Container(
                 color: AppColors.white,
                 child: const Center(
-                  child: CircularProgressIndicator(strokeWidth: 2,),
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                  ),
                 ),
               )
             : items(position),
@@ -421,11 +425,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
   }
 
   Future<bool?> _onWillPop(BuildContext context) async {
-    customAlert.displayDialogConfirm(
-        context,
-        'Please confirm',
-        'Do you want to quit your registration?',
-        onTapConfirm);
+    customAlert.displayDialogConfirm(context, 'Please confirm',
+        'Do you want to quit your registration?', onTapConfirm);
     return null;
     // return exitResult ?? false;
   }
@@ -620,7 +621,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               },
             ),
             CustomTextFormField(
-              title: 'Contact Persons name',
+              title: 'Contact Person name',
               hintText: "Enter Your Contact Person name",
               controller: _contactPersonNameController,
               required: true,
@@ -632,7 +633,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               validator: (value) {
                 value = value.trim();
                 if (value == null || value.isEmpty) {
-                  return 'Contact Persons Name is Mandatory!';
+                  return 'Contact Person Name is Mandatory!';
                 }
                 if (value.length < 3) {
                   return 'The minimum length 3 characters';
@@ -2408,18 +2409,59 @@ class _MerchantSignupState extends State<MerchantSignup> {
             Container(
               color: AppColors.kTileColor,
               child: Padding(
-                padding: const EdgeInsets.all(15.0),
+                padding:
+                    EdgeInsets.all(MediaQuery.of(context).size.width * .025),
                 child: Column(
                   children: [
                     Wrap(children: [
                       for (var item in mdrSummaryList)
                         Container(
-                          margin: EdgeInsets.only(top: screenHeight * .01),
-                          width: MediaQuery.of(context).size.width * .2,
-                          child: CustomTextWidget(
-                              text:
-                                  '${item['paymentName']}-${item['internaltionalAmt']} |',
-                              isBold: false),
+                          margin: EdgeInsets.only(
+                              top: screenHeight * .01,
+                              left: mdrSummaryList.indexOf(item) % 2 == 0
+                                  ? 0
+                                  : MediaQuery.of(context).size.width * .025),
+                          width: ((MediaQuery.of(context).size.width) -
+                                  ((MediaQuery.of(context).size.width * .025) *
+                                      3) -
+                                  30) /
+                              2,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                child: CustomTextWidget(
+                                  text:
+                                      '${item['paymentName']} -',
+                                  isBold: false,
+                                  size: 12,
+                                ),
+                              ),
+
+                              
+                              Container(
+                                width: MediaQuery.of(context).size.width * .2,
+                                height: MediaQuery.of(context).size.height*.04,
+                                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*.025),
+                                decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.black.withOpacity(.1)),borderRadius: BorderRadius.circular(5)),
+                                child: TextFormField(
+                                  enabled: false,
+                                  style: const TextStyle(fontSize: 14,color: Colors.black),
+                                  decoration:  const InputDecoration(
+                                    border: InputBorder.none,
+                                  ),
+                                  controller: TextEditingController(
+                                      text: '${item['amount']}'),
+                                ),
+                              ),
+
+                              // CustomTextWidget(
+                              //     text: mdrSummaryList.indexOf(item) % 2 == 0
+                              //         ? '|'
+                              //         : ''),
+                            ],
+                          ),
                         )
                     ]
                         // CustomTextWidget(

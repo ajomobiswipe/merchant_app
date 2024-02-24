@@ -49,7 +49,7 @@ class MerchantRegnTypeSelector extends StatelessWidget {
                   style: TextStyle(
                       fontSize: 18.0,
                       fontWeight: FontWeight.bold,
-                      color: titleColor),
+                      color: titleColor,fontFamily: 'Mont'),
                 ),
               ],
             ),
