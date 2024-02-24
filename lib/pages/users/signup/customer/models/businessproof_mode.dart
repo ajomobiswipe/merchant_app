@@ -1,6 +1,6 @@
 class SelectedBusinessProof {
   String businessProofName;
-  int businessProofId;
+  String businessProofId;
   String businessProofDocumtExpiry;
 
   SelectedBusinessProof({

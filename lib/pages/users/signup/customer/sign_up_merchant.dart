@@ -92,6 +92,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<FormState> personalFormKey = GlobalKey<FormState>();
   final GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> documentFormkey = GlobalKey<FormState>();
 
   // Merchant order Detials
   TextEditingController canceledChequeControler = TextEditingController();
@@ -111,6 +112,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
       TextEditingController();
   dynamic businessType;
   dynamic businessProofType;
+  String? businessDocumentTypename;
+  String? businessDocumentTypeId;
 
   // List<Map<String, dynamic>> BusinessTypeList = [
   //   {"value": 1, "label": "Individual"},
@@ -1732,422 +1735,460 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
     print('currTabPosition$currTabPosition');
 
-    return Form(
-        key: personalFormKey,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            const SizedBox(height: 10),
-            const Row(
-              children: [
-                CustomTextWidget(
-                  text: "Merchant KYC",
-                  size: 18,
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            appTabbar(
-              screenHeight: screenHeight,
-              currTabPosition: currTabPosition,
-            ),
-            const SizedBox(height: 30.0),
-            const FormTitleWidget(subWord: 'Merchant Business Proofs'),
-            CustomTextFormField(
-              keyboardType: TextInputType.text,
-              controller: _gstController,
-              title: 'Merchant GST Number',
-              hintText: "Enter merchant GST number",
-              required: true,
-              maxLength: 15,
-              prefixIcon: Icons.format_list_numbered,
-
-              onFieldSubmitted: (name) {
-                // getUser();
-              },
-              onChanged: (String value) {
-                setState(() {
-                  // if (value.isEmpty ||
-                  //     !userVerify ||
-                  //     userCheck.toString() == "true" ||
-                  //     !RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
-                  //         .hasMatch(value)) {
-                  //   enabledPassword = false;
-                  // } else {
-                  //   enabledPassword = true;
-                  // }
-                });
-              },
-              suffixIconOnPressed: () {
-                if (_gstController.text.length >= 15) {
-                  print("clicked");
-                  if (isgstVerify) {
-                    validategst();
-                    print("validate");
-                    //validateAccountNumber();
-                  } else {
-                    print("change");
-
-                    setState(() {
-                      isgstVerify = true;
-                    });
-                  }
-                }
-
-                print("clicked");
-                // isgstVerify
-                // userServices.
-                // if (_gstController.text.length >= 15) {
-                //   // sendAddhaarOtp();
-                // }
-              },
-              suffixIconTrue: true,
-
-              helperStyle: Theme.of(context)
-                  .textTheme
-                  .bodySmall
-                  ?.copyWith(color: Theme.of(context).primaryColor),
-              //inputFormatters: <TextInputFormatter>[AadhaarNumberFormatter()],
-              suffixText: isgstVerify ? 'Verify' : 'Change',
-              // readOnly: !isgstVerify,
-              helperText: isgstVerify ? "plese verfy" : "Verified",
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Gst Number is Mandatory!';
-                }
-
-                // if (userVerify && userCheck == "true") {
-                //   return Constants.userNameFailureMessage;
-                // }
-                if (!RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
-                    .hasMatch(value)) {
-                  return 'Invalid Gst Number!';
-                }
-                return null;
-              },
-              onSaved: (value) {
-                businessIdProofReq.gstnNo = value;
-              },
-            ),
-            CustomTextFormField(
-              controller: _firmPanController,
-              title: 'Merchant Firm PAN Number',
-              hintText: "Enter merchant PAN number",
-              required: true,
-              prefixIcon: Icons.format_list_numbered,
-              onFieldSubmitted: (name) {
-                //getUser();
-              },
-              suffixIconOnPressed: () {
-                if (_firmPanController.text.length >= 10) {
-                  if (showFirmPanVerify) {
-                    validateFirmPan();
-                    print("validate");
-                    //validateAccountNumber();
-                  } else {
-                    print("change");
-
-                    setState(() {
-                      showFirmPanVerify = true;
-                    });
-                  }
-                }
-              },
-              suffixIconTrue: true,
-              helperStyle: Theme.of(context)
-                  .textTheme
-                  .bodySmall
-                  ?.copyWith(color: Theme.of(context).primaryColor),
-              suffixText: showFirmPanVerify ? 'verify' : 'Change',
-              readOnly: !showFirmPanVerify,
-              helperText: showFirmPanVerify ? "click verify" : "verified",
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'FirmPan number Mandatory!';
-                }
-                if (value.length < 10) {
-                  return 'Minimum character length is 10';
-                }
-                // if (userVerify && userCheck == "true") {
-                //   return Constants.userNameFailureMessage;
-                // }
-                if (!RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
-                    .hasMatch(value)) {
-                  return 'Invalid pan Number!';
-                }
-                return null;
-              },
-              onSaved: (value) {
-                businessIdProofReq.firmPanNo = value;
-              },
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            CustomDropdown(
-              title: "Merchant Business Proof Document",
-              titleEnabled: true,
-              required: true,
-              hintText: "Select merchant business proof document",
-              selectedItem:
-                  businessDocumentType != '' ? businessDocumentType : null,
-              prefixIcon: Icons.maps_home_work_outlined,
-              itemList: merchantProofDocumentList
-                  .map((map) => map['businessType'].toString())
-                  .toList(),
-              //countryList.map((e) => e['ctyName']).toList(),
-              onChanged: (value) {
-                setState(() {
-                  print(merchantProofDocumentList);
-
-                  businessDocumentType = value;
-                  merchantPersonalReq.poaType =
-                      getValueByLabel(merchantProofDocumentList, value);
-                });
-              },
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'POA Type is Mandatory!';
-                }
-                return null;
-              },
-              onSaved: (newValue) {
-                // businessIdProofReq.businessProofDocumntType = newValue;
-
-                if (merchantProofDocumentList
-                        .where((element) => element['businessType'] == newValue)
-                        .toList()
-                        .length ==
-                    0) return;
-
-                businessIdProofReq.businessProofDocumntType =
-                    (merchantProofDocumentList
-                        .where((element) => element['businessType'] == newValue)
-                        .toList())[0]['businessDocId'];
-
-                // print(businessIdProofReq.businessProofDocumntType);
-              },
-            ),
-            DropdownButtonFormField(
-              isDense: true,
-              isExpanded: true,
-              decoration: commonInputDecoration(Icons.maps_home_work_outlined,
-                      hintText: "Select merchant business type")
-                  .copyWith(
-                      hintStyle: Theme.of(context)
-                          .textTheme
-                          .displaySmall
-                          ?.copyWith(
-                              fontWeight: FontWeight.normal,
-                              fontSize: 13,
-                              color: Colors.black.withOpacity(0.25))),
-              value: businessProofType,
-              items: merchantProofDocumentList
-                  .map<DropdownMenuItem>((dynamic value) {
-                return DropdownMenuItem(
-                  value: value,
-                  child: Text(
-                    value['businessType'],
-                    style: TextStyle(fontSize: 13),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Form(
+          key: personalFormKey,
+          child: Column(
+            children: [
+              const SizedBox(height: 10),
+              const Row(
+                children: [
+                  CustomTextWidget(
+                    text: "Merchant KYC",
+                    size: 18,
                   ),
-                );
-              }).toList(),
-              onChanged: (newValue) {
-                setState(() {
-                  print(newValue);
-                  businessProofType = newValue;
-                  print(newValue['businessType'].runtimeType);
-                  // businessType = newValue;
-                  // companyDetailsInforeq.businessTypeId =
-                  //     newValue['businessType'].runtimeType == String
-                  //         ? int.parse(newValue['businessType'])
-                  //         : newValue['businessType'];
-                  // // companyDetailsInforeq.businessTypeId = 1;
-                });
-              },
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Select Business Type!';
-                }
-
-                return null;
-              },
-            ),
-            CustomTextFormField(
-              onTap: _openFilePicker,
-              title: 'Upload Business Proof Document',
-              hintText:
-                  "Upload selected business proof document\n(format : pdf)",
-              controller: businessProofDocumentCtrl,
-              required: true,
-              enabled: true,
-              readOnly: true,
-              prefixIcon: LineAwesome.file,
-              onSaved: (value) {},
-              onFieldSubmitted: (value) {},
-            ),
-            CustomTextFormField(
-              title: 'Document Expiry Date',
-              hintText:
-                  "Please enter the uploaded document\nexpiry date (DD/MM/YY)",
-              required: true,
-              enabled: true,
-              controller: documentExpiryController,
-              prefixIcon: LineAwesome.calendar,
-              readOnly: true,
-              onTap: () async {
-                DateTime? pickedDate = await showDatePicker(
-                  initialDatePickerMode: DatePickerMode.day,
-                  initialEntryMode: DatePickerEntryMode.calendarOnly,
-                  context: context,
-                  initialDate: tradeSelectedDate,
-                  firstDate: DateTime.now().add(const Duration(days: 0)),
-                  lastDate: DateTime(DateTime.now().year + 10),
-                );
-                if (pickedDate != null) {
-                  String formattedDateUI =
-                      DateFormat('dd/MM/yyyy').format(pickedDate);
-                  setState(() {
-                    tradeSelectedDate = pickedDate;
-
-                    documentExpiryController.text = formattedDateUI;
-                  });
-                } else {}
-                if (pickedDate != null) {
-                  String formattedDate =
-                      DateFormat("yyyy-MM-ddTHH:mm:ss.SSS").format(pickedDate);
-                  businessIdProofReq.businessProofDocumtExpiry = formattedDate;
-                  print('Formatted Date: ${formattedDate}Z');
-                }
-              },
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Expiry Date is Mandatory!';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(
-              height: 30.0,
-            ),
-            IconButton(
-                onPressed: () {
-                  selectedBusinessProofItems.add(SelectedBusinessProof(
-                      businessProofDocumtExpiry: businessProofDocumentCtrl.text,
-                      businessProofId: 334,
-                      businessProofName: "gtgt"));
-
-                  setState(() {});
-                  businessProofDocumentCtrl.clear();
-                },
-                icon: Row(
-                  children: [
-                    Image.asset(
-                      "assets/app_icons/add_icon.png",
-                      height: 50,
-                      color: AppColors.kPrimaryColor,
-                    ),
-                    defaultWidth(10),
-                    const CustomTextWidget(
-                      text: 'Add Document',
-                      color: AppColors.kLightGreen,
-                      fontWeight: FontWeight.w500,
-                      size: 16,
-                    )
-                  ],
-                )),
-            const SizedBox(
-              height: 40.0,
-            ),
-            if (selectedBusinessProofItems.isNotEmpty)
-              Container(
-                color: AppColors.kTileColor,
-                child: Padding(
-                  padding: const EdgeInsets.all(2.0),
-                  child: Column(
-                    children: [
-                      DataTable(
-                        // headingRowHeight: 0,
-                        // columnSpacing: 10,
-                        dataRowMinHeight: 20,
-                        dataRowMaxHeight: 30,
-                        columns: [
-                          const DataColumn(label: Text('Name')),
-                          const DataColumn(label: Text('Expy Date')),
-                          const DataColumn(label: Text('')),
-                        ],
-                        rows: selectedBusinessProofItems.map((item) {
-                          return DataRow(cells: [
-                            DataCell(CustomTextWidget(
-                              text: item.businessProofName,
-                              size: 11,
-                              fontWeight: FontWeight.w900,
-                            )),
-                            // DataCell(CustomTextWidget(
-                            //   text: "${item.productName}+ 1499+499",
-                            //   size: 11,
-                            //   fontWeight: FontWeight.w900,
-                            // )),
-                            DataCell(CustomTextWidget(
-                              text: item.businessProofDocumtExpiry.toString(),
-                              size: 12,
-                              fontWeight: FontWeight.w900,
-                            )),
-                            DataCell(
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.cancel_outlined,
-                                  color: Colors.red,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    selectedBusinessProofItems.remove(item);
-                                  });
-                                },
-                              ),
-                            ),
-                          ]);
-                        }).toList(),
-                      ),
-                      defaultHeight(15),
-                      Container(
-                        color: AppColors.kSelectedBackgroundColor,
-                        child: ExpansionTile(
-                          title: CustomTextWidget(
-                            text: "View Complete order Summary",
-                            color: Colors.grey.shade600,
-                            size: 10,
-                          ),
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.all(16.0),
-                              child: Text("content"),
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ),
+                ],
               ),
-            CustomAppButton(
-              title: "Next",
-              onPressed: () async {
-                personalFormKey.currentState!.save();
-                if (personalFormKey.currentState!.validate()) {
-                  print(jsonEncode(businessIdProofReq.toJson()));
+              const SizedBox(height: 10),
+              appTabbar(
+                screenHeight: screenHeight,
+                currTabPosition: currTabPosition,
+              ),
+              const SizedBox(height: 30.0),
+              const FormTitleWidget(subWord: 'Merchant Business Proofs'),
+              CustomTextFormField(
+                keyboardType: TextInputType.text,
+                controller: _gstController,
+                title: 'Merchant GST Number',
+                hintText: "Enter merchant GST number",
+                required: true,
+                maxLength: 15,
+                prefixIcon: Icons.format_list_numbered,
+
+                onFieldSubmitted: (name) {
+                  // getUser();
+                },
+                onChanged: (String value) {
                   setState(() {
-                    currTabPosition = 2;
-                    position++;
+                    // if (value.isEmpty ||
+                    //     !userVerify ||
+                    //     userCheck.toString() == "true" ||
+                    //     !RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
+                    //         .hasMatch(value)) {
+                    //   enabledPassword = false;
+                    // } else {
+                    //   enabledPassword = true;
+                    // }
                   });
-                }
-              },
+                },
+                suffixIconOnPressed: () {
+                  if (_gstController.text.length >= 15) {
+                    print("clicked");
+                    if (isgstVerify) {
+                      validategst();
+                      print("validate");
+                      //validateAccountNumber();
+                    } else {
+                      print("change");
+
+                      setState(() {
+                        isgstVerify = true;
+                      });
+                    }
+                  }
+
+                  print("clicked");
+                  // isgstVerify
+                  // userServices.
+                  // if (_gstController.text.length >= 15) {
+                  //   // sendAddhaarOtp();
+                  // }
+                },
+                suffixIconTrue: true,
+
+                helperStyle: Theme.of(context)
+                    .textTheme
+                    .bodySmall
+                    ?.copyWith(color: Theme.of(context).primaryColor),
+                //inputFormatters: <TextInputFormatter>[AadhaarNumberFormatter()],
+                suffixText: isgstVerify ? 'Verify' : 'Change',
+                // readOnly: !isgstVerify,
+                helperText: isgstVerify ? "plese verfy" : "Verified",
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Gst Number is Mandatory!';
+                  }
+
+                  // if (userVerify && userCheck == "true") {
+                  //   return Constants.userNameFailureMessage;
+                  // }
+                  if (!RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
+                      .hasMatch(value)) {
+                    return 'Invalid Gst Number!';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  businessIdProofReq.gstnNo = value;
+                },
+              ),
+              CustomTextFormField(
+                controller: _firmPanController,
+                title: 'Merchant Firm PAN Number',
+                hintText: "Enter merchant PAN number",
+                required: true,
+                prefixIcon: Icons.format_list_numbered,
+                onFieldSubmitted: (name) {
+                  //getUser();
+                },
+                suffixIconOnPressed: () {
+                  if (_firmPanController.text.length >= 10) {
+                    if (showFirmPanVerify) {
+                      validateFirmPan();
+                      print("validate");
+                      //validateAccountNumber();
+                    } else {
+                      print("change");
+
+                      setState(() {
+                        showFirmPanVerify = true;
+                      });
+                    }
+                  }
+                },
+                suffixIconTrue: true,
+                helperStyle: Theme.of(context)
+                    .textTheme
+                    .bodySmall
+                    ?.copyWith(color: Theme.of(context).primaryColor),
+                suffixText: showFirmPanVerify ? 'verify' : 'Change',
+                readOnly: !showFirmPanVerify,
+                helperText: showFirmPanVerify ? "click verify" : "verified",
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'FirmPan number Mandatory!';
+                  }
+                  if (value.length < 10) {
+                    return 'Minimum character length is 10';
+                  }
+                  // if (userVerify && userCheck == "true") {
+                  //   return Constants.userNameFailureMessage;
+                  // }
+                  if (!RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
+                      .hasMatch(value)) {
+                    return 'Invalid pan Number!';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  businessIdProofReq.firmPanNo = value;
+                },
+              ),
+            ],
+          ),
+        ),
+        Form(
+          key: documentFormkey,
+          child: Column(
+            children: [
+              SizedBox(
+                height: 20,
+              ),
+              // CustomDropdown(
+              //   title: "Merchant Business Proof Document",
+              //   titleEnabled: true,
+              //   required: true,
+              //   enabled: false,
+              //   dropDownIsEnabled: false,
+              //   hintText: "Select merchant business proof document",
+              //   selectedItem:
+              //       businessDocumentType != '' ? businessDocumentType : null,
+              //   prefixIcon: Icons.maps_home_work_outlined,
+              //   itemList: merchantProofDocumentList
+              //       .map((map) => map['businessType'].toString())
+              //       .toList(),
+              //   //countryList.map((e) => e['ctyName']).toList(),
+              //   onChanged: (value) {
+              //     setState(() {
+              //       print(merchantProofDocumentList);
+
+              //       businessDocumentType = value;
+              //       merchantPersonalReq.poaType =
+              //           getValueByLabel(merchantProofDocumentList, value);
+              //     });
+              //   },
+              //   validator: (value) {
+              //     if (value == null || value.isEmpty) {
+              //       return 'POA Type is Mandatory!';
+              //     }
+              //     return null;
+              //   },
+              //   onSaved: (newValue) {
+              //     // businessIdProofReq.businessProofDocumntType = newValue;
+
+              //     if (merchantProofDocumentList
+              //             .where(
+              //                 (element) => element['businessType'] == newValue)
+              //             .toList()
+              //             .length ==
+              //         0) return;
+
+              //     businessIdProofReq.businessProofDocumntType =
+              //         (merchantProofDocumentList
+              //             .where(
+              //                 (element) => element['businessType'] == newValue)
+              //             .toList())[0]['businessDocId'];
+
+              //     // print(businessIdProofReq.businessProofDocumntType);
+              //   },
+              // ),
+              Row(
+                children: [
+                  const CustomTextWidget(
+                    text: "Merchant Business Proof Document",
+                    fontWeight: FontWeight.bold,
+                  ),
+                ],
+              ),
+              DropdownButtonFormField(
+                isDense: true,
+                isExpanded: true,
+                decoration: commonInputDecoration(Icons.maps_home_work_outlined,
+                        hintText: "Select merchant business proof document")
+                    .copyWith(
+                        hintStyle: Theme.of(context)
+                            .textTheme
+                            .displaySmall
+                            ?.copyWith(
+                                fontWeight: FontWeight.normal,
+                                fontSize: 13,
+                                color: Colors.black.withOpacity(0.25))),
+                value: businessProofType,
+                items: merchantProofDocumentList
+                    .map<DropdownMenuItem>((dynamic value) {
+                  return DropdownMenuItem(
+                    value: value,
+                    child: Text(
+                      value['businessType'],
+                      style: TextStyle(fontSize: 13),
+                    ),
+                  );
+                }).toList(),
+                onChanged: (newValue) {
+                  setState(() {
+                    print(newValue);
+                    businessProofType = newValue;
+                    businessDocumentTypename = newValue["businessType"];
+                    businessDocumentTypeId = newValue["businessDocId"];
+                    print(newValue["businessType"]);
+                    print(newValue["businessDocId"]);
+                    // businessType = newValue;
+                    // companyDetailsInforeq.businessTypeId =
+                    //     newValue['businessType'].runtimeType == String
+                    //         ? int.parse(newValue['businessType'])
+                    //         : newValue['businessType'];
+                    // // companyDetailsInforeq.businessTypeId = 1;
+                  });
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Select Business Type!';
+                  }
+
+                  return null;
+                },
+              ),
+              CustomTextFormField(
+                onTap: _openFilePicker,
+                title: 'Upload Business Proof Document',
+                hintText:
+                    "Upload selected business proof document\n(format : pdf)",
+                controller: businessProofDocumentCtrl,
+                required: true,
+                enabled: true,
+                readOnly: true,
+                prefixIcon: LineAwesome.file,
+                onSaved: (value) {},
+                onFieldSubmitted: (value) {},
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Business Proof Document is Mandatory!';
+                  }
+                  return null;
+                },
+              ),
+              CustomTextFormField(
+                title: 'Document Expiry Date',
+                hintText:
+                    "Please enter the uploaded document\nexpiry date (DD/MM/YY)",
+                required: true,
+                enabled: true,
+                controller: documentExpiryController,
+                prefixIcon: LineAwesome.calendar,
+                readOnly: true,
+                onTap: () async {
+                  DateTime? pickedDate = await showDatePicker(
+                    initialDatePickerMode: DatePickerMode.day,
+                    initialEntryMode: DatePickerEntryMode.calendarOnly,
+                    context: context,
+                    initialDate: tradeSelectedDate,
+                    firstDate: DateTime.now().add(const Duration(days: 0)),
+                    lastDate: DateTime(DateTime.now().year + 10),
+                  );
+                  if (pickedDate != null) {
+                    String formattedDateUI =
+                        DateFormat('dd/MM/yyyy').format(pickedDate);
+                    setState(() {
+                      tradeSelectedDate = pickedDate;
+
+                      documentExpiryController.text = formattedDateUI;
+                    });
+                  } else {}
+                  if (pickedDate != null) {
+                    String formattedDate = DateFormat("yyyy-MM-ddTHH:mm:ss.SSS")
+                        .format(pickedDate);
+                    businessIdProofReq.businessProofDocumtExpiry =
+                        formattedDate;
+                    print('Formatted Date: ${formattedDate}Z');
+                  }
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Expiry Date is Mandatory!';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(
+                height: 30.0,
+              ),
+            ],
+          ),
+        ),
+        IconButton(
+            onPressed: () async {
+              documentFormkey.currentState!.save();
+              if (documentFormkey.currentState!.validate()) {
+                selectedBusinessProofItems.add(SelectedBusinessProof(
+                    businessProofDocumtExpiry: businessProofDocumentCtrl.text,
+                    businessProofId: businessDocumentTypeId!,
+                    businessProofName: businessDocumentTypename!));
+              }
+
+              businessProofDocumentCtrl.text = "";
+              documentExpiryController.clear();
+              businessDocumentTypeId = "";
+            },
+            icon: Row(
+              children: [
+                Image.asset(
+                  "assets/app_icons/add_icon.png",
+                  height: 50,
+                  color: AppColors.kPrimaryColor,
+                ),
+                defaultWidth(10),
+                const CustomTextWidget(
+                  text: 'Add Document',
+                  color: AppColors.kLightGreen,
+                  fontWeight: FontWeight.w500,
+                  size: 16,
+                )
+              ],
+            )),
+        const SizedBox(
+          height: 40.0,
+        ),
+        if (selectedBusinessProofItems.isNotEmpty)
+          Container(
+            color: AppColors.kTileColor,
+            child: Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: Column(
+                children: [
+                  DataTable(
+                    // headingRowHeight: 0,
+                    // columnSpacing: 10,
+                    dataRowMinHeight: 20,
+                    dataRowMaxHeight: 30,
+                    columns: [
+                      const DataColumn(label: Text('Name')),
+                      const DataColumn(label: Text('Expy Date')),
+                      const DataColumn(label: Text('')),
+                    ],
+                    rows: selectedBusinessProofItems.map((item) {
+                      return DataRow(cells: [
+                        DataCell(CustomTextWidget(
+                          text: item.businessProofName,
+                          size: 11,
+                          fontWeight: FontWeight.w900,
+                        )),
+                        // DataCell(CustomTextWidget(
+                        //   text: "${item.productName}+ 1499+499",
+                        //   size: 11,
+                        //   fontWeight: FontWeight.w900,
+                        // )),
+                        DataCell(CustomTextWidget(
+                          text: item.businessProofDocumtExpiry.toString(),
+                          size: 12,
+                          fontWeight: FontWeight.w900,
+                        )),
+                        DataCell(
+                          IconButton(
+                            icon: const Icon(
+                              Icons.cancel_outlined,
+                              color: Colors.red,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                selectedBusinessProofItems.remove(item);
+                              });
+                            },
+                          ),
+                        ),
+                      ]);
+                    }).toList(),
+                  ),
+                  defaultHeight(15),
+                  Container(
+                    color: AppColors.kSelectedBackgroundColor,
+                    child: ExpansionTile(
+                      title: CustomTextWidget(
+                        text: "View Complete order Summary",
+                        color: Colors.grey.shade600,
+                        size: 10,
+                      ),
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Text("content"),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
-            const SizedBox(
-              height: 20.0,
-            ),
-          ],
-        ));
+          ),
+        CustomAppButton(
+          title: "Next",
+          onPressed: () async {
+            personalFormKey.currentState!.save();
+            if (personalFormKey.currentState!.validate()) {
+              print(jsonEncode(businessIdProofReq.toJson()));
+              setState(() {
+                currTabPosition = 2;
+                position++;
+              });
+            }
+          },
+        ),
+        const SizedBox(
+          height: 20.0,
+        ),
+      ],
+    );
   }
 
   Widget merchantBankDetails() {
