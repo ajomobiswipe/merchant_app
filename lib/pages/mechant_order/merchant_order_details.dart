@@ -472,11 +472,11 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                           columnSpacing: 2,
                           dataRowMinHeight: 20,
                           dataRowMaxHeight: 30,
-                          columns: [
-                            const DataColumn(label: Text('Product')),
-                            const DataColumn(label: Text('Package')),
-                            const DataColumn(label: Text('Quantity')),
-                            const DataColumn(label: Text('Actions')),
+                          columns: const [
+                            DataColumn(label: Text('Product')),
+                            DataColumn(label: Text('Package')),
+                            DataColumn(label: Text('Quantity')),
+                            DataColumn(label: Text('Actions')),
                           ],
                           rows: widget.selectedItems.map((item) {
                             return DataRow(cells: [
@@ -491,7 +491,7 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                                 fontWeight: FontWeight.w900,
                               )),
                               DataCell(CustomTextWidget(
-                                text: item.quantity.toString(),
+                                text: ' - ${item.quantity}',
                                 size: 12,
                                 fontWeight: FontWeight.w900,
                               )),
