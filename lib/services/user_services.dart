@@ -455,7 +455,7 @@ class UserServices {
 
     final requestBody = {
       "mdrType": mdrType,
-      "mccGroupId": 1,
+      "mccGroupId": 8,
       "turnOverType": "large"
     };
 

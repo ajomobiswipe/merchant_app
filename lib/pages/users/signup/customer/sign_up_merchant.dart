@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-
 import 'dart:io';
 import 'package:badges/badges.dart' as badge;
 import 'package:email_validator/email_validator.dart';
@@ -95,6 +94,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
   // Merchant order Detials
   TextEditingController canceledChequeControler = TextEditingController();
   List<SelectedProduct> selectedItems = [];
+
+  bool isEditable = false;
 
 // Merchant Detials stage 2
   final TextEditingController _merchantLegalNameController =
@@ -383,7 +384,28 @@ class _MerchantSignupState extends State<MerchantSignup> {
     final Map<String, dynamic> data = json.decode(response.body);
 
     setState(() {
-      mdrSummaryList = data['mmsMdrDetailsInfo'];
+      isEditable = false;
+
+      mdrSummaryList = [];
+
+      if (data['mmsMdrDetailsInfo'].length > 0) {
+        for (var item in data['mmsMdrDetailsInfo']) {
+          if (item['dcTxnAmount'] == null) {
+            mdrSummaryList.add(item);
+          }
+        }
+        for (var item in data['mmsMdrDetailsInfo']) {
+          if (item['dcTxnAmount'] != null) {
+            mdrSummaryList.add(item);
+          }
+        }
+      }
+
+      if (mdrType == "special") {
+        isEditable = true;
+      }
+
+      // mdrSummaryList = data['mmsMdrDetailsInfo'];
     });
 
     mdrSummary = {
@@ -2431,30 +2453,176 @@ class _MerchantSignupState extends State<MerchantSignup> {
                             children: [
                               Expanded(
                                 child: CustomTextWidget(
-                                  text:
-                                      '${item['paymentName']} -',
+                                  text: '${item['paymentName']} -',
                                   isBold: false,
                                   size: 12,
                                 ),
                               ),
 
-                              
                               Container(
-                                width: MediaQuery.of(context).size.width * .2,
-                                height: MediaQuery.of(context).size.height*.04,
-                                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*.025),
+                                width: MediaQuery.of(context).size.width * .18,
+                                height:
+                                    MediaQuery.of(context).size.height * .04,
+                                padding: EdgeInsets.only(
+                                    left: MediaQuery.of(context).size.width *
+                                        .025),
                                 decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.black.withOpacity(.1)),borderRadius: BorderRadius.circular(5)),
+                                    border: Border.all(
+                                        color: Colors.black.withOpacity(.1)),
+                                    borderRadius: BorderRadius.circular(5)),
                                 child: TextFormField(
+                                  onChanged: (value) {
+                                    final double parsedValue =
+                                        double.tryParse(value) ?? 0.0;
+
+                                    TextEditingController(text: value);
+
+                                    // setState(() {
+                                    //   item['amount'] = value;
+                                    // });
+                                    //
+                                    // if (parsedValue > 100) {
+                                    //   setState(() {
+                                    //     item['amount'] = '100.00';
+                                    //   });
+                                    // }
+                                  },
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.allow(
+                                      RegExp(
+                                          r'^\d{0,3}(\.\d{0,2})?$'), // Allows up to 3 digits (0-100) and optional decimal with up to 2 digits
+                                    ),
+                                  ],
+                                  keyboardType:
+                                      const TextInputType.numberWithOptions(
+                                          decimal: true),
+                                  maxLength: 6,
                                   enabled: false,
-                                  style: const TextStyle(fontSize: 14,color: Colors.black),
-                                  decoration:  const InputDecoration(
+                                  style: const TextStyle(
+                                      fontSize: 14, color: Colors.black),
+                                  decoration: const InputDecoration(
                                     border: InputBorder.none,
+                                    counterText: '',
                                   ),
                                   controller: TextEditingController(
-                                      text: '${item['amount']}'),
+                                      text:
+                                          '${item['amount'] ?? item['dcTxnAmount']}'),
                                 ),
                               ),
+
+                              if (isEditable && item['dcTxnAmount'] == null)
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 8.0),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title:
+                                                Text('${item['paymentName']}'),
+                                            titleTextStyle: const TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 18,
+                                                fontFamily: 'Mont'),
+                                            content: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                const Text(
+                                                    'Please enter your value'),
+                                                SizedBox(
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height *
+                                                            .01),
+                                                Container(
+                                                  width: double.infinity,
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      .06,
+                                                  padding: EdgeInsets.only(
+                                                      left:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              .025),
+                                                  decoration: BoxDecoration(
+                                                      border: Border.all(
+                                                          color: Colors.black
+                                                              .withOpacity(.1)),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5)),
+                                                  child: TextFormField(
+                                                    onChanged: (value) {
+                                                      final double parsedValue =
+                                                          double.tryParse(
+                                                                  value) ??
+                                                              0.0;
+
+                                                      setState(() {
+                                                        item['amount'] = value;
+                                                      });
+
+                                                      if (parsedValue > 100) {
+                                                        setState(() {
+                                                          item['amount'] =
+                                                              '100.00';
+                                                        });
+                                                      }
+
+                                                      print(mdrSummaryList[0]['amount']);
+                                                    },
+                                                    inputFormatters: [
+                                                      FilteringTextInputFormatter
+                                                          .allow(
+                                                        RegExp(
+                                                            r'^\d{0,3}(\.\d{0,2})?$'), // Allows up to 3 digits (0-100) and optional decimal with up to 2 digits
+                                                      ),
+                                                    ],
+                                                    keyboardType:
+                                                        const TextInputType
+                                                            .numberWithOptions(
+                                                            decimal: true),
+                                                    maxLength: 6,
+                                                    enabled: true,
+                                                    style: const TextStyle(
+                                                        fontSize: 14,
+                                                        color: Colors.black),
+                                                    decoration:
+                                                        const InputDecoration(
+                                                      border: InputBorder.none,
+                                                      counterText: '',
+                                                    ),
+                                                    initialValue:
+                                                        '${item['amount'] ?? item['dcTxnAmount']}',
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.of(context)
+                                                      .pop(); // Close the dialog
+                                                },
+                                                child: Text('OK'),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    },
+                                    child: const Icon(
+                                      Icons.edit,
+                                      size: 18,
+                                    ),
+                                  ),
+                                ),
 
                               // CustomTextWidget(
                               //     text: mdrSummaryList.indexOf(item) % 2 == 0
