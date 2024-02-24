@@ -321,7 +321,7 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
 
               Row(
                 children: [
-                  CustomTextWidget(
+                  const CustomTextWidget(
                     text: "Merchant Store Address",
                     // color: AppColors.kPrimaryColor,
                   ),
@@ -333,7 +333,7 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                       });
                     },
                   ),
-                  CustomTextWidget(
+                  const CustomTextWidget(
                     text: "Same as Bussiness",
                     size: 10,
                   ),
@@ -348,7 +348,9 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                 controller: widget.merchantStoreAddressController,
                 prefixIcon: Icons.home,
                 required: true,
-
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9 ]')), // Allow only letters and numbers
+                ],
                 keyboardType: TextInputType.multiline,
                 textCapitalization: TextCapitalization.words,
                 enabled: true,

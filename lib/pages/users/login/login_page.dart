@@ -297,7 +297,14 @@ class _LoginPageState extends State<LoginPage> {
             // Navigator.pushReplacementNamed(context, 'home');
           } else {
             setLoading(false);
-            alertWidget.failure(context, 'Failure', result['responseMessage']);
+
+           try{
+             alertWidget.failure(context, 'Failure', result['responseMessage']);
+           }catch(e){
+             alertWidget.failure(context, 'Failure', 'Wrong Credentials');
+           }
+
+
           }
         } else {
           setLoading(false);
@@ -409,7 +416,7 @@ class _LoginPageState extends State<LoginPage> {
           TextFormField(
               keyboardType: TextInputType.text,
               style:
-                  Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
+                  Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 13,fontFamily: 'Mont'),
               autovalidateMode: AutovalidateMode.onUserInteraction,
               inputFormatters: <TextInputFormatter>[
                 FilteringTextInputFormatter.allow(RegExp(r'\w'))
@@ -475,7 +482,7 @@ class _LoginPageState extends State<LoginPage> {
           TextFormField(
             controller: _passwordController,
             style:
-                Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
+                Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 13,fontFamily: 'Mont'),
             obscureText: hidePassword,
             obscuringCharacter: '*',
             maxLength: password != 'Password' ? 4 : null,

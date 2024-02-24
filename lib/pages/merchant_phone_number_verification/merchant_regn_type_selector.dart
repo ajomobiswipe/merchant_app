@@ -8,7 +8,7 @@ class MerchantRegnTypeSelector extends StatelessWidget {
   final Color? titleColor;
   final Color? borderColor;
   final Function()? onTap;
-  final int flex;
+
 
   const MerchantRegnTypeSelector(
       {super.key,
@@ -18,16 +18,12 @@ class MerchantRegnTypeSelector extends StatelessWidget {
       this.iconColor,
       this.titleColor,
       this.borderColor,
-      required this.flex});
+      });
 
   @override
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
-    return Expanded(
-      flex: flex,
-      child: AspectRatio(
-        aspectRatio: 1,
-        child: GestureDetector(
+    return GestureDetector(
           onTap: onTap,
           child: Container(
             padding: EdgeInsets.symmetric(
@@ -58,8 +54,6 @@ class MerchantRegnTypeSelector extends StatelessWidget {
               ],
             ),
           ),
-        ),
-      ),
-    );
+        );
   }
 }

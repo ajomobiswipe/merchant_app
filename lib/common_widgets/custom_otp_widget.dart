@@ -94,13 +94,16 @@ class _CustomOtpWidgetState extends State<CustomOtpWidget> {
                 }
                 setState(() {
 
+                  FocusManager.instance.primaryFocus?.unfocus();
 
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('OTP has been sent successfully'),
-                      duration: Duration(seconds: 3), // Optional duration
-                    ),
-                  );
+                  Future.delayed(const Duration(milliseconds: 500),(){
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('OTP has been sent successfully'),
+                        duration: Duration(seconds: 3), // Optional duration
+                      ),
+                    );
+                  });
 
                   isOtpVisible = true;
 
@@ -148,7 +151,7 @@ class _CustomOtpWidgetState extends State<CustomOtpWidget> {
           //   suffixIconTrue: true,
           // ),
           const SizedBox(
-            height: 40,
+            height: 30,
           ),
 
           Column(
@@ -267,7 +270,7 @@ class _CustomOtpWidgetState extends State<CustomOtpWidget> {
               if (isOtpVisible)
                 TextButton(
                     onPressed: () {},
-                    child: CustomTextWidget(
+                    child: const CustomTextWidget(
                       text: 'Resend OTP',
                       color: Colors.green,
                       size: 15,

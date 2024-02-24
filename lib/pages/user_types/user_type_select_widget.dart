@@ -46,6 +46,7 @@ class UserSelectContainer extends StatelessWidget {
             Text(
               title,
               style: TextStyle(
+                fontFamily: 'Mont',
                   fontSize: 18.0,
                   fontWeight: FontWeight.bold,
                   color: titleColor),

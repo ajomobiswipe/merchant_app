@@ -745,20 +745,22 @@ class _MyApplicationsState extends State<MyApplications> {
           surfaceTintColor: Colors.white,
           title: Row(
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    phoneNumber,
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  Text(
-                    name,
-                    style: const TextStyle(fontSize: 20),
-                  ),
-                ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      phoneNumber,
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                    Text(
+                      name,
+                      style: const TextStyle(fontSize: 20),
+                    ),
+                  ],
+                ),
               ),
-              const Expanded(child: SizedBox()),
+              // const Expanded(child: SizedBox()),
               IconButton(
                 icon:
                     const Icon(Icons.cancel_outlined, color: Color(0xFF97098D)),

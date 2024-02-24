@@ -52,7 +52,7 @@ class _MerchantOTPVerifyScreenState extends State<MerchantOTPVerifyScreen> {
                   ),
                   Text(
                     "My Profile",
-                    style: TextStyle(color: Colors.black87),
+                    style: TextStyle(color: Colors.black87,fontFamily: 'Mont'),
                   )
                 ],
               ),
@@ -72,27 +72,27 @@ class _MerchantOTPVerifyScreenState extends State<MerchantOTPVerifyScreen> {
                   ),
                   Text(
                     "My Applications",
-                    style: TextStyle(color: Colors.black87),
+                    style: TextStyle(color: Colors.black87,fontFamily: 'Mont'),
                   ),
                 ],
               ),
             ),
-            const PopupMenuItem(
-              value: 3,
-              // row with two children
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.contact_page_outlined,
-                    color: Colors.black87,
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Text("Settings", style: TextStyle(color: Colors.black87))
-                ],
-              ),
-            ),
+            // const PopupMenuItem(
+            //   value: 3,
+            //   // row with two children
+            //   child: Row(
+            //     children: [
+            //       Icon(
+            //         Icons.contact_page_outlined,
+            //         color: Colors.black87,
+            //       ),
+            //       SizedBox(
+            //         width: 10,
+            //       ),
+            //       Text("Settings", style: TextStyle(color: Colors.black87))
+            //     ],
+            //   ),
+            // ),
             const PopupMenuItem(
               value: 4,
               // row with two children
@@ -107,7 +107,7 @@ class _MerchantOTPVerifyScreenState extends State<MerchantOTPVerifyScreen> {
                   ),
                   Text(
                     "Log Out",
-                    style: TextStyle(color: Colors.black87),
+                    style: TextStyle(color: Colors.black87,fontFamily: 'Mont'),
                   ),
                 ],
               ),
@@ -148,9 +148,9 @@ class _MerchantOTPVerifyScreenState extends State<MerchantOTPVerifyScreen> {
               SizedBox(
                 width: 10,
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Text('Vinay'),
+              const Padding(
+                padding: EdgeInsets.only(top: 8.0),
+                child: Text('Vinay',style: TextStyle(fontFamily: 'Mont'),),
               )
             ],
           ),
@@ -215,34 +215,30 @@ class _MerchantOTPVerifyScreenState extends State<MerchantOTPVerifyScreen> {
             const SizedBox(
               height: 20,
             ),
-            const Row(
+             Row(
               children: [
-                Expanded(
-                  flex: 1,
-                  child: SizedBox(),
+
+                const Expanded(
+                  child: MerchantRegnTypeSelector(
+                    iconPath: "assets/app_icons/new_merchant.png",
+                    title: 'New \nMerchant',
+                    iconColor: AppColors.kLightGreen,
+                    borderColor: AppColors.kPrimaryColor,
+                    titleColor: Colors.black54,
+                  ),
                 ),
-                MerchantRegnTypeSelector(
-                  iconPath: "assets/app_icons/new_merchant.png",
-                  title: 'New \nMerchant',
-                  iconColor: AppColors.kLightGreen,
-                  borderColor: AppColors.kPrimaryColor,
-                  flex: 8,
-                  titleColor: Colors.black54,
+
+                SizedBox(width:MediaQuery.of(context).size.width*.025),
+
+                const Expanded(
+                  child: MerchantRegnTypeSelector(
+                    iconPath: "assets/app_icons/existing_merchant.png",
+                    title: 'Existing\nMerchant',
+
+                    titleColor: Colors.black54,
+                  ),
                 ),
-                Expanded(
-                  flex: 1,
-                  child: SizedBox(),
-                ),
-                MerchantRegnTypeSelector(
-                  iconPath: "assets/app_icons/existing_merchant.png",
-                  title: 'Existing\nMerchant',
-                  flex: 8,
-                  titleColor: Colors.black54,
-                ),
-                Expanded(
-                  flex: 1,
-                  child: SizedBox(),
-                ),
+
               ],
             ),
             const SizedBox(
@@ -257,7 +253,7 @@ class _MerchantOTPVerifyScreenState extends State<MerchantOTPVerifyScreen> {
               ],
             ),
             const SizedBox(
-              height: 10,
+              height: 5,
             ),
             CustomOtpWidget(
               onCompleted: (pin) {

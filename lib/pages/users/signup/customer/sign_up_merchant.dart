@@ -131,7 +131,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
   //   {"value": 2, "label": "CAT002"},
   //   {"value": 3, "label": "CAT003"},
   // ];
-  String selectedBussinesTurnOver = '';
+  dynamic selectedBussinesTurnOver;
 
   List businessTurnoverList = [];
 
@@ -330,6 +330,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
   @override
   initState() {
+    super.initState();
+
     _mobileNoController.text = widget.verifiednumber.text;
     DevicePermission().checkPermission();
     getCurrentPosition();
@@ -338,8 +340,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
     //getCountry();
     getDefaultMerchantValues();
     //userServices.getAcqApplicationid('1');
-
-    super.initState();
   }
 
   // getToken() async {
@@ -373,18 +373,20 @@ class _MerchantSignupState extends State<MerchantSignup> {
     //     .where((element) => element['mdrId'] == mdrId)
     //     .toList();
 
-    var response = await userServices.getMdrSummary(mdrType,
-        selectedBussinesTurnOver, selectedBusinessCategory['mccGroupId']);
+    var response = await userServices.getMdrSummary(
+        mdrType,
+        selectedBussinesTurnOver['turnoverAmount'],
+        selectedBusinessCategory['mccGroupId']);
 
     final Map<String, dynamic> data = json.decode(response.body);
 
-    mdrSummaryList = data['mmsMdrDetailsInfo'];
+    setState(() {
+      mdrSummaryList = data['mmsMdrDetailsInfo'];
+    });
 
     mdrSummary = {
       "mdrSummary": mdrSummaryList,
     };
-
-
   }
 
   void getIntByKey(
@@ -400,22 +402,32 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
   @override
   Widget build(BuildContext context) {
+    print(tmsProductMasterlist);
+
     return PopScope(
       onPopInvoked: (didPop) => _onWillPop(context),
       child: Form(
         key: _formKey,
-        child: items(position),
+        child: tmsProductMasterlist.isEmpty
+            ? Container(
+                color: AppColors.white,
+                child: const Center(
+                  child: CircularProgressIndicator(strokeWidth: 2,),
+                ),
+              )
+            : items(position),
       ),
     );
   }
 
-  Future<bool> _onWillPop(BuildContext context) async {
-    bool? exitResult = customAlert.displayDialogConfirm(
+  Future<bool?> _onWillPop(BuildContext context) async {
+    customAlert.displayDialogConfirm(
         context,
         'Please confirm',
         'Do you want to quit your registration?',
         onTapConfirm);
-    return exitResult ?? false;
+    return null;
+    // return exitResult ?? false;
   }
 
   onTapConfirm() {
@@ -688,11 +700,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
               helperText: mobileNoCheckMessage,
               helperStyle: style,
               prefixIcon: FontAwesome.mobile_solid,
-              suffixIcon: const Icon(
-                Icons.edit_outlined,
-                color: AppColors.kPrimaryColor,
-              ),
-              suffixIconTrue: true,
+              // suffixIcon: const Icon(
+              //   Icons.edit_outlined,
+              //   color: AppColors.kPrimaryColor,
+              // ),
+              // suffixIconTrue: true,
               onChanged: (phone) {
                 merchantPersonalReq.currentMobileNo = phone;
               },
@@ -945,6 +957,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 });
               },
             ),
+
             // SimpleDropDown(
             //
             //   dropDownList: merchantBusinessCategory
@@ -1098,32 +1111,75 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
             defaultHeight(10),
 
-            CustomDropdown(
-              hintText: "Select Merchant Annual Business Turnover",
+            const CustomDropdown(
               title: "Merchant Annual Business Turnover",
+              itemList: [],
+              dropDownIsEnabled: false,
               required: true,
-              selectedItem: selectedBussinesTurnOver != ''
-                  ? selectedBussinesTurnOver
-                  : null,
-              prefixIcon: Icons.location_city_outlined,
-              itemList: businessTurnoverList
-                  .map((map) => map['turnoverAmount'].toString())
-                  .toList(),
-              onChanged: (value) {
+            ),
+
+            DropdownButtonFormField(
+              isDense: true,
+              isExpanded: true,
+              decoration: commonInputDecoration(Icons.location_city_outlined,
+                      hintText: "Select Merchant Annual Business Turnover")
+                  .copyWith(
+                      hintStyle: Theme.of(context)
+                          .textTheme
+                          .displaySmall
+                          ?.copyWith(
+                              fontWeight: FontWeight.normal,
+                              fontSize: 13,
+                              color: Colors.black.withOpacity(0.25))),
+              value: selectedBussinesTurnOver,
+              items:
+                  businessTurnoverList.map<DropdownMenuItem>((dynamic value) {
+                return DropdownMenuItem(
+                  value: value,
+                  child: Text(
+                    value['turnoverAmount'],
+                    style: TextStyle(fontSize: 13),
+                  ),
+                );
+              }).toList(),
+              onChanged: (newValue) {
                 setState(() {
-                  selectedBussinesTurnOver = value;
+                  setState(() {
+                    selectedBussinesTurnOver = newValue;
+                    companyDetailsInforeq.annualTurnOver =
+                        newValue['turnoverAmount'];
+                    print(companyDetailsInforeq.annualTurnOver);
+                  });
                 });
               },
-              onSaved: (value) {
-                companyDetailsInforeq.annualTurnOver = value;
-              },
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Business Turnover Mandatory!';
-                }
-                return null;
-              },
             ),
+
+            // CustomDropdown(
+            //   hintText: "Select Merchant Annual Business Turnover",
+            //   title: "Merchant Annual Business Turnover",
+            //   required: true,
+            //   selectedItem: selectedBussinesTurnOver != ''
+            //       ? selectedBussinesTurnOver
+            //       : null,
+            //   prefixIcon: Icons.location_city_outlined,
+            //   itemList: businessTurnoverList
+            //       .map((map) => map['turnoverAmount'].toString())
+            //       .toList(),
+            //   onChanged: (value) {
+            //     setState(() {
+            //       selectedBussinesTurnOver = value;
+            //     });
+            //   },
+            //   onSaved: (value) {
+            //     companyDetailsInforeq.annualTurnOver = value;
+            //   },
+            //   validator: (value) {
+            //     if (value == null || value.isEmpty) {
+            //       return 'Business Turnover Mandatory!';
+            //     }
+            //     return null;
+            //   },
+            // ),
 
             CustomTextFormField(
               hintText: "Enter merchant business address",
@@ -1132,6 +1188,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
               controller: _merchantBusinessAddressController,
               prefixIcon: Icons.home,
               required: true,
+
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9 ]')),
+                // Allow only letters and numbers
+              ],
 
               keyboardType: TextInputType.multiline,
               textCapitalization: TextCapitalization.words,
@@ -1719,7 +1780,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               helperText: isgstVerify ? "plese verfy" : "Verified",
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Gst Numberis Mandatory!';
+                  return 'Gst Number is Mandatory!';
                 }
 
                 // if (userVerify && userCheck == "true") {
@@ -1738,7 +1799,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
             CustomTextFormField(
               controller: _firmPanController,
               title: 'Merchant Firm PAN Number',
-              hintText: "Enter merchant PAN number of firm",
+              hintText: "Enter merchant PAN number",
               required: true,
               prefixIcon: Icons.format_list_numbered,
               onFieldSubmitted: (name) {
@@ -1769,7 +1830,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               helperText: showFirmPanVerify ? "click verify" : "verified",
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'FirnPan number Mandatory!';
+                  return 'FirmPan number Mandatory!';
                 }
                 if (value.length < 10) {
                   return 'Minimum character length is 10';
@@ -1819,6 +1880,13 @@ class _MerchantSignupState extends State<MerchantSignup> {
               },
               onSaved: (newValue) {
                 // businessIdProofReq.businessProofDocumntType = newValue;
+
+                if (merchantProofDocumentList
+                        .where((element) => element['businessType'] == newValue)
+                        .toList()
+                        .length ==
+                    0) return;
+
                 businessIdProofReq.businessProofDocumntType =
                     (merchantProofDocumentList
                         .where((element) => element['businessType'] == newValue)
@@ -1840,7 +1908,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               validator: (value) {
                 value = value.trim();
                 if (value == null || value.isEmpty) {
-                  return ' please select Business Proof Document!';
+                  return 'please upload business Proof Document';
                 }
 
                 return null;
@@ -2849,7 +2917,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
       };
     }).toList();
 
-    merchantAgreeMentReq.mdrSummary=jsonEncode(mdrSummary);
+    merchantAgreeMentReq.mdrSummary = jsonEncode(mdrSummary);
 
     final Map<String, dynamic> merchantProductInfoReq = {
       "merchantProductDetails": productList,

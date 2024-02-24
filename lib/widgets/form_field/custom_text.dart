@@ -106,6 +106,7 @@ class CustomTextFormField extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(top: 10),
             child: TextFormField(
+              style: const TextStyle(color: Colors.black,fontSize: 13),
               minLines: minLines,
               toolbarOptions: toolbarOptions,
               initialValue: initialValue,

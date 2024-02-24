@@ -43,7 +43,7 @@ class CustomAppButton extends StatelessWidget {
                         : Colors.white
                     : Colors.white,
                 fontSize: 20,
-                fontWeight: FontWeight.bold)),
+                fontWeight: FontWeight.bold,fontFamily: 'Mont')),
       ),
     );
   }

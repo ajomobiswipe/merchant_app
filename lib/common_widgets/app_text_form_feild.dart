@@ -117,6 +117,7 @@ class AppTextFormField extends StatelessWidget {
                   ),
           //Global Text Form Field
           TextFormField(
+            style: const TextStyle(color: Colors.black,fontSize: 13,fontWeight: FontWeight.bold),
             toolbarOptions: toolbarOptions,
             initialValue: initialValue,
             controller: controller,

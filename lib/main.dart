@@ -12,6 +12,7 @@ import 'dart:io';
 // import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 // import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
@@ -65,6 +66,7 @@ void main() {
 class MainPage extends StatelessWidget {
   // local variable declaration
   final StorageService storageService;
+
   MainPage({Key? key, required this.storageService}) : super(key: key);
 
   /*
@@ -75,16 +77,20 @@ class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (_) => ThemeProvider(storageService),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => ConnectivityProvider(),
-        ),
-      ],
-      child: Consumer<ThemeProvider>(
-        builder: (c, themeProvider, home) => MaterialApp(
+        providers: [
+          ChangeNotifierProvider(
+            create: (_) =>
+                ThemeProvider(storageService)
+            ,
+          ),
+          ChangeNotifierProvider(
+            create: (context) => ConnectivityProvider(),
+          ),
+        ],
+        child: Consumer<ThemeProvider>(
+        builder: (c, themeProvider, home)
+    =>
+        MaterialApp(
           debugShowCheckedModeBanner: false,
           scaffoldMessengerKey: StateKey.snackBarKey,
           initialRoute: 'splash',
@@ -94,20 +100,10 @@ class MainPage extends StatelessWidget {
           // localizationsDelegates: AppLocalizations.localizationsDelegates,
           // supportedLocales: AppLocalizations.supportedLocales,
           theme: ThemeData(
-            fontFamily: "Mont",
-          ),
-          // theme: AppThemes.main(
-          //   primaryColor: themeProvider.selectedPrimaryColor,
-          // ),
-          // // Dark mode design
-          // darkTheme: AppThemes.main(f
-          //   isDark: true,
-          //   primaryColor: themeProvider.selectedPrimaryColor,
-          // ),
-          // this is Theme Mode Selection
-          themeMode: themeProvider.selectedThemeMode,
-        ),
-      ),
-    );
+            fontFamily: "Mont-regular",
+
+          )
+
+        )));
   }
 }

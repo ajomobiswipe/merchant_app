@@ -109,6 +109,7 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                     Padding(
                       padding: const EdgeInsets.only(top: 8),
                       child: DropdownButtonFormField<int>(
+                        style: const TextStyle(fontSize: 13,color: Colors.black,fontFamily: 'Mont-regular'),
                         value: selectedProductId,
                         icon: const Icon(Icons.keyboard_arrow_down,
                             color: AppColors.kPrimaryColor),
@@ -183,6 +184,7 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                         key: ValueKey<int>(selectedProductId ??
                             0), // Use ValueKey to track selectedProductId
                         value: selectedPackageId,
+                        style: const TextStyle(fontSize: 13,color: Colors.black,fontFamily: 'Mont-regular'),
                         hint: const Text(
                           'Select package type',
                           style: TextStyle(
@@ -269,6 +271,7 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                         value: selectedProductQuantity,
                         icon: const Icon(Icons.keyboard_arrow_down,
                             color: AppColors.kPrimaryColor),
+                        style: const TextStyle(fontSize: 13,color: Colors.black,fontFamily: 'Mont-regular'),
                         hint: const Text(
                           'Select product quantity',
                           style: TextStyle(
