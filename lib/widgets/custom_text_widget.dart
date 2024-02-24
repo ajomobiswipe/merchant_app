@@ -7,6 +7,7 @@ class CustomTextWidget extends StatelessWidget {
   final TextAlign? textAlign;
   final bool isBold;
   final FontWeight fontWeight;
+  final int? maxLines;
 
   const CustomTextWidget(
       {super.key,
@@ -15,19 +16,21 @@ class CustomTextWidget extends StatelessWidget {
       this.size = 14.0,
       this.fontWeight = FontWeight.normal,
       this.textAlign,
-      this.isBold = true});
+      this.isBold = true,
+      this.maxLines});
 
   @override
   Widget build(BuildContext context) {
     return Text(
       text,
       textAlign: textAlign,
+      maxLines: maxLines,
       overflow: TextOverflow.ellipsis,
       style: TextStyle(
-        color: color,
-        fontSize: size,
-        fontWeight: fontWeight,fontFamily: isBold?'Mont':'Mont-regular'
-      ),
+          color: color,
+          fontSize: size,
+          fontWeight: fontWeight,
+          fontFamily: isBold ? 'Mont' : 'Mont-regular'),
     );
   }
 }

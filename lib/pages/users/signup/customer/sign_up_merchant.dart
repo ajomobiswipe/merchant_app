@@ -2072,14 +2072,21 @@ class _MerchantSignupState extends State<MerchantSignup> {
               documentFormkey.currentState!.save();
               if (documentFormkey.currentState!.validate()) {
                 selectedBusinessProofItems.add(SelectedBusinessProof(
-                    businessProofDocumtExpiry: businessProofDocumentCtrl.text,
+                    businessProofDocumentExpiry: documentExpiryController.text,
                     businessProofId: businessDocumentTypeId!,
-                    businessProofName: businessDocumentTypename!));
+                    businessProofName: businessDocumentTypename!,
+                    businessProofFileName: businessProofDocumentCtrl.text));
+                print("form validated");
+                setState(() {
+                  businessProofDocumentCtrl.clear();
+                  documentExpiryController.clear();
+                  businessDocumentTypeId = "";
+                  businessProofType = null;
+                });
+              } else {
+                print("form not validated");
+                // Reset validation state if form is not validated
               }
-
-              businessProofDocumentCtrl.text = "";
-              documentExpiryController.clear();
-              businessDocumentTypeId = "";
             },
             icon: Row(
               children: [
@@ -2119,10 +2126,13 @@ class _MerchantSignupState extends State<MerchantSignup> {
                     ],
                     rows: selectedBusinessProofItems.map((item) {
                       return DataRow(cells: [
-                        DataCell(CustomTextWidget(
-                          text: item.businessProofName,
-                          size: 11,
-                          fontWeight: FontWeight.w900,
+                        DataCell(SizedBox(
+                          width: 100,
+                          child: CustomTextWidget(
+                            text: item.businessProofName.toString(),
+                            size: 11,
+                            fontWeight: FontWeight.w900,
+                          ),
                         )),
                         // DataCell(CustomTextWidget(
                         //   text: "${item.productName}+ 1499+499",
@@ -2130,7 +2140,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                         //   fontWeight: FontWeight.w900,
                         // )),
                         DataCell(CustomTextWidget(
-                          text: item.businessProofDocumtExpiry.toString(),
+                          text: item.businessProofDocumentExpiry.toString(),
                           size: 12,
                           fontWeight: FontWeight.w900,
                         )),
@@ -2975,7 +2985,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                                         '100.00';
                                                                   });
                                                                 }
-
                                                               },
                                                               inputFormatters: [
                                                                 FilteringTextInputFormatter
@@ -3184,8 +3193,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                                         '100.00';
                                                                   });
                                                                 }
-
-
                                                               },
                                                               inputFormatters: [
                                                                 FilteringTextInputFormatter
