@@ -51,6 +51,7 @@ class CustomTextFormField extends StatelessWidget {
   final ToolbarOptions? toolbarOptions;
   final int? minLines;
   final int? maxLines;
+  final bool fromDocument;
 
   const CustomTextFormField(
       {Key? key,
@@ -89,7 +90,7 @@ class CustomTextFormField extends StatelessWidget {
       this.minLines,
       this.maxLines,
       this.iconColor = Colors.black,
-      this.prefixWidget, this.titleEneabled=true})
+      this.prefixWidget, this.titleEneabled=true,this.fromDocument=false})
       : super(key: key);
 
   @override
@@ -118,7 +119,7 @@ class CustomTextFormField extends StatelessWidget {
               obscureText: obscureText ?? false,
               obscuringCharacter: obscuringCharacter ?? '*',
               autofocus: autofocus ?? false,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
+              autovalidateMode: !fromDocument?AutovalidateMode.onUserInteraction:null,
               validator: validator,
               textCapitalization: textCapitalization ?? TextCapitalization.none,
               readOnly: readOnly ?? false,

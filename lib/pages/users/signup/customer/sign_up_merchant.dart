@@ -2004,7 +2004,10 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 enabled: true,
                 readOnly: true,
                 prefixIcon: LineAwesome.file,
-                onSaved: (value) {},
+                fromDocument:true,
+                onSaved: (value) {
+
+                },
                 onFieldSubmitted: (value) {},
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -2014,6 +2017,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 },
               ),
               CustomTextFormField(
+                fromDocument:true,
                 title: 'Document Expiry Date',
                 hintText:
                     "Please enter the uploaded document\nexpiry date (DD/MM/YY)",
@@ -2023,6 +2027,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 prefixIcon: LineAwesome.calendar,
                 readOnly: true,
                 onTap: () async {
+                  print('ontap');
                   DateTime? pickedDate = await showDatePicker(
                     initialDatePickerMode: DatePickerMode.day,
                     initialEntryMode: DatePickerEntryMode.calendarOnly,
@@ -2049,6 +2054,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   }
                 },
                 validator: (value) {
+
+                  print('helloooo');
+
                   if (value == null || value.isEmpty) {
                     return 'Expiry Date is Mandatory!';
                   }
@@ -2063,20 +2071,30 @@ class _MerchantSignupState extends State<MerchantSignup> {
         ),
         IconButton(
             onPressed: () async {
+
+              print('validateAction');
               documentFormkey.currentState!.save();
               if (documentFormkey.currentState!.validate()) {
-                selectedBusinessProofItems.add(SelectedBusinessProof(
-                    businessProofDocumentExpiry: documentExpiryController.text,
-                    businessProofId: businessDocumentTypeId!,
-                    businessProofName: businessDocumentTypename!,
-                    businessProofFileName: businessProofDocumentCtrl.text));
-                print("form validated");
+
                 setState(() {
+                  selectedBusinessProofItems.add(SelectedBusinessProof(
+                      businessProofDocumentExpiry: documentExpiryController.text,
+                      businessProofId: businessDocumentTypeId!,
+                      businessProofName: businessDocumentTypename!,
+                      businessProofFileName: businessProofDocumentCtrl.text));
+                });
+
+
+
                   businessProofDocumentCtrl.clear();
                   documentExpiryController.clear();
                   businessDocumentTypeId = "";
                   businessProofType = null;
-                });
+
+
+
+
+
               } else {
                 print("form not validated");
                 // Reset validation state if form is not validated
@@ -2108,9 +2126,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
               padding: const EdgeInsets.all(2.0),
               child: Column(
                 children: [
+
+
                   DataTable(
                     // headingRowHeight: 0,
-                    // columnSpacing: 10,
+                    columnSpacing: 8,
                     dataRowMinHeight: 20,
                     dataRowMaxHeight: 30,
                     columns: [
@@ -2154,6 +2174,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                       ]);
                     }).toList(),
                   ),
+
+
                   defaultHeight(15),
                   Container(
                     color: AppColors.kSelectedBackgroundColor,
