@@ -2009,10 +2009,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 enabled: true,
                 readOnly: true,
                 prefixIcon: LineAwesome.file,
-                fromDocument:true,
-                onSaved: (value) {
-
-                },
+                fromDocument: true,
+                onSaved: (value) {},
                 onFieldSubmitted: (value) {},
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -2022,7 +2020,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 },
               ),
               CustomTextFormField(
-                fromDocument:true,
+                fromDocument: true,
                 title: 'Document Expiry Date',
                 hintText:
                     "Please enter the uploaded document\nexpiry date (DD/MM/YY)",
@@ -2059,7 +2057,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   }
                 },
                 validator: (value) {
-
                   print('helloooo');
 
                   if (value == null || value.isEmpty) {
@@ -2076,30 +2073,22 @@ class _MerchantSignupState extends State<MerchantSignup> {
         ),
         IconButton(
             onPressed: () async {
-
               print('validateAction');
               documentFormkey.currentState!.save();
               if (documentFormkey.currentState!.validate()) {
-
                 setState(() {
                   selectedBusinessProofItems.add(SelectedBusinessProof(
-                      businessProofDocumentExpiry: documentExpiryController.text,
+                      businessProofDocumentExpiry:
+                          documentExpiryController.text,
                       businessProofId: businessDocumentTypeId!,
                       businessProofName: businessDocumentTypename!,
                       businessProofFileName: businessProofDocumentCtrl.text));
                 });
 
-
-
-                  businessProofDocumentCtrl.clear();
-                  documentExpiryController.clear();
-                  businessDocumentTypeId = "";
-                  businessProofType = null;
-
-
-
-
-
+                businessProofDocumentCtrl.clear();
+                documentExpiryController.clear();
+                businessDocumentTypeId = "";
+                businessProofType = null;
               } else {
                 print("form not validated");
                 // Reset validation state if form is not validated
@@ -2131,8 +2120,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
               padding: const EdgeInsets.all(2.0),
               child: Column(
                 children: [
-
-
                   DataTable(
                     // headingRowHeight: 0,
                     columnSpacing: 8,
@@ -2179,8 +2166,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
                       ]);
                     }).toList(),
                   ),
-
-
                   defaultHeight(15),
                   Container(
                     color: AppColors.kSelectedBackgroundColor,
@@ -2657,65 +2642,93 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                 children: [
                                   Expanded(
                                     child: CustomTextWidget(
-                                      text: '${item['paymentName']} -',
+                                      text:
+                                          '${item['paymentName']} ${item['dcTxnAmount'] == null ? '-' : ''}',
                                       isBold: true,
                                       size: 11,
                                     ),
                                   ),
 
-                                  Container(
-                                    width:
-                                        MediaQuery.of(context).size.width * .18,
-                                    height: MediaQuery.of(context).size.height *
-                                        .04,
-                                    padding: EdgeInsets.only(
-                                        left:
-                                            MediaQuery.of(context).size.width *
-                                                .025),
-                                    decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color:
-                                                Colors.black.withOpacity(.1)),
-                                        borderRadius: BorderRadius.circular(5)),
-                                    child: TextFormField(
-                                      onChanged: (value) {
-                                        final double parsedValue =
-                                            double.tryParse(value) ?? 0.0;
+                                  if (item['dcTxnAmount'] == null && isEditable)
+                                    Container(
+                                      width: MediaQuery.of(context).size.width *
+                                          .18,
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              .04,
+                                      padding: EdgeInsets.only(
+                                          left: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              .025),
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color:
+                                                  Colors.black.withOpacity(.1)),
+                                          borderRadius:
+                                              BorderRadius.circular(5)),
+                                      child: TextFormField(
+                                        onChanged: (value) {
+                                          final double parsedValue =
+                                              double.tryParse(value) ?? 0.0;
 
-                                        TextEditingController(text: value);
+                                          TextEditingController(text: value);
 
-                                        // setState(() {
-                                        //   item['amount'] = value;
-                                        // });
-                                        //
-                                        // if (parsedValue > 100) {
-                                        //   setState(() {
-                                        //     item['amount'] = '100.00';
-                                        //   });
-                                        // }
-                                      },
-                                      inputFormatters: [
-                                        FilteringTextInputFormatter.allow(
-                                          RegExp(
-                                              r'^\d{0,3}(\.\d{0,2})?$'), // Allows up to 3 digits (0-100) and optional decimal with up to 2 digits
+                                          // setState(() {
+                                          //   item['amount'] = value;
+                                          // });
+                                          //
+                                          // if (parsedValue > 100) {
+                                          //   setState(() {
+                                          //     item['amount'] = '100.00';
+                                          //   });
+                                          // }
+                                        },
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.allow(
+                                            RegExp(
+                                                r'^\d{0,3}(\.\d{0,2})?$'), // Allows up to 3 digits (0-100) and optional decimal with up to 2 digits
+                                          ),
+                                        ],
+                                        keyboardType: const TextInputType
+                                            .numberWithOptions(decimal: true),
+                                        maxLength: 6,
+                                        enabled: false,
+                                        style: const TextStyle(
+                                            fontSize: 14, color: Colors.black),
+                                        decoration: const InputDecoration(
+                                          border: InputBorder.none,
+                                          counterText: '',
                                         ),
-                                      ],
-                                      keyboardType:
-                                          const TextInputType.numberWithOptions(
-                                              decimal: true),
-                                      maxLength: 6,
-                                      enabled: false,
-                                      style: const TextStyle(
-                                          fontSize: 14, color: Colors.black),
-                                      decoration: const InputDecoration(
-                                        border: InputBorder.none,
-                                        counterText: '',
+                                        controller: TextEditingController(
+                                            text:
+                                                '${item['amount'] ?? item['dcTxnAmount']}'),
                                       ),
-                                      controller: TextEditingController(
-                                          text:
-                                              '${item['amount'] ?? item['dcTxnAmount']}'),
                                     ),
-                                  ),
+
+                                  if (item['dcTxnAmount'] == null &&
+                                      !isEditable)
+                                    Expanded(
+                                      child: CustomTextWidget(
+                                        text:
+                                        '${item['amount'] ?? item['dcTxnAmount']}',
+                                        isBold: true,
+                                        size: 11,
+                                      ),
+                                    ),
+
+                                  if (item['dcTxnAmount'] == null &&
+                                      !isEditable)
+                                    if (mdrSummaryList.indexOf(item) % 2 == 0)
+                                      const Expanded(
+                                        child: CustomTextWidget(
+                                          text: '|',
+                                          isBold: true,
+                                          size: 11,
+                                        ),
+                                      ),
+
+
 
                                   if (isEditable && item['dcTxnAmount'] == null)
                                     Padding(
@@ -2857,9 +2870,10 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                     ),
                                     Row(
                                       children: [
-                                        const Expanded(
+                                        Expanded(
                                           child: CustomTextWidget(
-                                            text: 'less %',
+                                            text:
+                                                'amt LT ${item['dcTxnAmount']} (%)',
                                             isBold: true,
                                             size: 11,
                                           ),
@@ -2937,7 +2951,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                       (BuildContext context) {
                                                     return AlertDialog(
                                                       title: Text(
-                                                          '${item['paymentName']} - Less %'),
+                                                          'amt LT ${item['dcTxnAmount']} (%)'),
                                                       titleTextStyle:
                                                           const TextStyle(
                                                               color:
@@ -3065,9 +3079,10 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                     ),
                                     Row(
                                       children: [
-                                        const Expanded(
+                                        Expanded(
                                           child: CustomTextWidget(
-                                            text: 'greater %',
+                                            text:
+                                                'amt GT ${item['dcTxnAmount']} (%)',
                                             isBold: true,
                                             size: 11,
                                           ),
@@ -3145,7 +3160,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                       (BuildContext context) {
                                                     return AlertDialog(
                                                       title: Text(
-                                                          '${item['paymentName']} - greater%'),
+                                                          'amt GT ${item['dcTxnAmount']} (%)'),
                                                       titleTextStyle:
                                                           const TextStyle(
                                                               color:

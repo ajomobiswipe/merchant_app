@@ -792,11 +792,11 @@ class _MyApplicationsState extends State<MyApplications> {
                   children: [
                     Text(
                       phoneNumber,
-                      style: const TextStyle(fontSize: 16),
+                      style: const TextStyle(fontSize: 16,fontFamily: 'Mont'),
                     ),
                     Text(
                       name,
-                      style: const TextStyle(fontSize: 20),
+                      style: const TextStyle(fontSize: 20,fontFamily: 'Mont'),
                     ),
                   ],
                 ),
@@ -843,6 +843,7 @@ class _MyApplicationsState extends State<MyApplications> {
                         " Application",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
+                            fontFamily: 'Mont'
                         ),
                       ),
                       const Expanded(child: SizedBox()),
@@ -875,7 +876,7 @@ class _MyApplicationsState extends State<MyApplications> {
                       const Text(
                         " payment",
                         style: TextStyle(
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.bold, fontFamily: 'Mont'
                         ),
                       ),
                       const Expanded(child: SizedBox()),
@@ -938,6 +939,7 @@ class _MyApplicationsState extends State<MyApplications> {
                         " Onboarding",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
+                            fontFamily: 'Mont'
                         ),
                       ),
                       Expanded(child: SizedBox()),
@@ -994,6 +996,7 @@ class _MyApplicationsState extends State<MyApplications> {
                         " Deployment",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
+                            fontFamily: 'Mont'
                         ),
                       ),
 
@@ -1096,14 +1099,14 @@ class _MyApplicationsState extends State<MyApplications> {
                       style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w700,
-                          color: Color(0xFF000000)),
+                          color: Color(0xFF000000), fontFamily: 'Mont'),
                     ),
                     Text(
                       "Live",
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
-                          color: Color(0xFF97098D)),
+                          color: Color(0xFF97098D), fontFamily: 'Mont'),
                     )
                   ],
                 )
