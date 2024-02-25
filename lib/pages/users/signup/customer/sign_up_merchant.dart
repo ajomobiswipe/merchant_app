@@ -4069,37 +4069,24 @@ class _MerchantSignupState extends State<MerchantSignup> {
       userServices
           .accountValidation(accNumber, ifscNumber)
           .then((response) async {
-        print("response in");
-        print(response);
-        merchantBankInfoReq.merchantBankVerifyStatus = true;
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          merchantBankInfoReq.merchantBankVerifyStatus = true;
+          print(response.body);
 
-        if (response.toString() == "true") {
-          setState(() {
-            merchantBankInfoReq.merchantBankVerifyStatus = true;
-            accountCheck = 'VALID';
-
-            merchantBankInfoReq.bankIfscCode = merchantIfscCodeCtrl.text;
-            merchantBankInfoReq.bankAccountNo = merchantAccountNumberCtrl.text;
-            merchantBankInfoReq.beneficiaryName =
-                merchantBeneficiaryNamrCodeCtrl.text;
-            accountVerify = false;
-            // if (idStatus == 'VALID') {
-            //   accountCheck = 'VALID';
-            //   panOwnerName = name;
-            //   showVerify = false;
-            //   print(name);
-            //   userCheckMessage = Constants.userNameSuccessMessage;
-            // } else {
-            //   setState(() => showVerify = true);
-            // }
-          });
-          print("body is true");
+          merchantBankInfoReq.bankIfscCode = merchantIfscCodeCtrl.text;
+          merchantBankInfoReq.bankAccountNo = merchantAccountNumberCtrl.text;
+          merchantBankInfoReq.beneficiaryName =
+              merchantBeneficiaryNamrCodeCtrl.text;
+          accountVerify = false;
+          merchantBankInfoReq.merchantBankVerifyStatus = true;
+        } else {
+          alertWidget.error(response.body ?? "Null response");
+          print("invalid ");
         }
 
-        setState(() {
-          accountVerify = false;
-        });
-        merchantBankInfoReq.merchantBankVerifyStatus = true;
+        // print("response in");
+        // print(response);
+        // merchantBankInfoReq.merchantBankVerifyStatus = true;
       });
     }
   }
