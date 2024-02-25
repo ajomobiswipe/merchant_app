@@ -344,7 +344,7 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                     },
                   ),
                   const CustomTextWidget(
-                    text: "Same as Bussiness",
+                    text: "Same as Business",
                     size: 10,
                   ),
                 ],
