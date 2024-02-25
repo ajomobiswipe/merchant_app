@@ -113,8 +113,8 @@ class UserServices {
       // print(newheader);
       // print(userId);
       // print("second api reponseStatus code ${responseapi.statusCode}");
-      print(responseapi.body);
-      print(responseapi.statusCode);
+      // print(responseapi.body);
+      // print(responseapi.statusCode);
       return responseapi;
     }
 
@@ -268,7 +268,7 @@ class UserServices {
     };
 
     var addhaarverify = Uri.parse(
-        "http://213.42.225.250:9508/NanoPay/Middleware/UiApi/validatePanAadhar");
+        "http://213.42.225.250:9508/NanoPay/Middleware/UiApi/getEkycOtp");
 
     final newreqbody = {
       "requestType": "VERIFYAADHAROTP",
@@ -826,7 +826,6 @@ class UserServices {
     // final kf = await http.MultipartFile.fromPath('shopLicenseFile', kycFront);
     // final kb = await http.MultipartFile.fromPath('gstFile', kycBack);
     // final tl = await http.MultipartFile.fromPath('poiFile', tradeLicense);
-
     final storeInsideImg = await http.MultipartFile.fromPath(
         'storeInsideImg', merchantStoreFrontImage);
     final storeOutsideImg = await http.MultipartFile.fromPath(
@@ -853,13 +852,9 @@ class UserServices {
     print(jsonEncode(companyDetailsInforeq.toJson()));
     print(jsonEncode(merchantBankInfoReq.toJson()));
     print(jsonEncode(merchantAgreeMentReq.toJson()));
-
     request.files.add(storeInsideImg);
     request.files.add(storeOutsideImg);
     request.files.add(cancelledCheqImg);
-
-
-
     request.fields["userId"] = "softposadmin";
     request.fields['merchantProductInfo'] = jsonEncode(merchantProductInfoReq);
     request.fields['companyDetailsInfo'] =

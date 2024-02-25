@@ -186,6 +186,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
   final TextEditingController _storePinCodeCtrl = TextEditingController();
 
+  bool isBusinessAddSameAsStore = false;
+
   /// merchsant  Merchant Bank Details
 
   String cancelledChequeImg = '';
@@ -506,6 +508,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
         storeStatesList: statesList,
         selectedStoreState: selectedStoreState,
         selectedStoreCity: selectedStoreCity,
+        merchantBusinessAddressController: _merchantBusinessAddressController,
+        isBusinessAddSameAsStore: isBusinessAddSameAsStore,
+        businessAddressPinCodeCtrl: _PinCodeCtrl,
       );
     } else if (position == 6) {
       return mainControl(merchantBankDetails());
@@ -3776,9 +3781,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
     print(merchantAgreeMentReq.toJson());
     print('pkm');
 
-
     // print(jsonEncode(merchantAgreeMentReq.mdrSummary.toJson()));
-
 
     final Map<String, dynamic> merchantProductInfoReq = {
       "merchantProductDetails": productList,

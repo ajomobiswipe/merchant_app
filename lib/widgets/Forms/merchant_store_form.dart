@@ -30,30 +30,37 @@ class MerchantStoreImagesForm extends StatefulWidget {
   final MerchantStoreInfoRequestmodel merchantStoreInfoReq;
   final TextEditingController storeFrontImage;
   final TextEditingController insideStoreImage;
-
   final TextEditingController merchantStoreAddressController;
+  final TextEditingController merchantBusinessAddressController;
   final TextEditingController selectedStoreState;
   final TextEditingController selectedStoreCity;
+  final TextEditingController storePinCodeCtrl;
+  final TextEditingController businessAddressPinCodeCtrl;
+  bool isBusinessAddSameAsStore;
+
   final List storeCitysList;
   final List storeStatesList;
-  final TextEditingController storePinCodeCtrl;
+
   Function()? previous;
   Function next;
 
-  MerchantStoreImagesForm({
-    Key? key,
-    required this.previous,
-    required this.next,
-    required this.storeFrontImage,
-    required this.insideStoreImage,
-    required this.merchantStoreInfoReq,
-    required this.merchantStoreAddressController,
-    required this.storePinCodeCtrl,
-    required this.storeCitysList,
-    required this.storeStatesList,
-    required this.selectedStoreState,
-    required this.selectedStoreCity,
-  }) : super(key: key);
+  MerchantStoreImagesForm(
+      {Key? key,
+      required this.previous,
+      required this.next,
+      required this.storeFrontImage,
+      required this.insideStoreImage,
+      required this.merchantStoreInfoReq,
+      required this.merchantStoreAddressController,
+      required this.storePinCodeCtrl,
+      required this.storeCitysList,
+      required this.storeStatesList,
+      required this.selectedStoreState,
+      required this.selectedStoreCity,
+      required this.merchantBusinessAddressController,
+      required this.isBusinessAddSameAsStore,
+      required this.businessAddressPinCodeCtrl})
+      : super(key: key);
 
   @override
   State<MerchantStoreImagesForm> createState() =>
@@ -64,7 +71,6 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
   Position? _currentPosition;
   AlertService alertWidget = AlertService();
   CustomAlert customAlert = CustomAlert();
-  bool isChecked = true;
 
   int currTabPosition = 3;
   final GlobalKey<FormState> storeFormKey = GlobalKey<FormState>();
@@ -326,10 +332,10 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                     // color: AppColors.kPrimaryColor,
                   ),
                   Checkbox(
-                    value: isChecked,
+                    value: widget.isBusinessAddSameAsStore,
                     onChanged: (value) {
                       setState(() {
-                        isChecked = value!;
+                        widget.isBusinessAddSameAsStore = value!;
                       });
                     },
                   ),
@@ -345,11 +351,14 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                 hintText: "Enter merchant Store address",
                 title: '',
                 maxLength: 100,
-                controller: widget.merchantStoreAddressController,
+                controller: widget.isBusinessAddSameAsStore
+                    ? widget.merchantBusinessAddressController
+                    : widget.merchantStoreAddressController,
                 prefixIcon: Icons.home,
                 required: true,
                 inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9 ]')), // Allow only letters and numbers
+                  FilteringTextInputFormatter.allow(RegExp(
+                      r'[a-zA-Z0-9 ]')), // Allow only letters and numbers
                 ],
                 keyboardType: TextInputType.multiline,
                 textCapitalization: TextCapitalization.words,
@@ -523,7 +532,9 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                   }
                   return null;
                 },
-                controller: widget.storePinCodeCtrl,
+                controller: widget.isBusinessAddSameAsStore
+                    ? widget.businessAddressPinCodeCtrl
+                    : widget.storePinCodeCtrl,
                 keyboardType: TextInputType.number,
                 inputFormatters: <TextInputFormatter>[
                   FilteringTextInputFormatter.allow(RegExp(r'\d'))
