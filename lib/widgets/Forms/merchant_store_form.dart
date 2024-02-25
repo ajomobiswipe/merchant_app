@@ -33,10 +33,11 @@ class MerchantStoreImagesForm extends StatefulWidget {
   final TextEditingController merchantStoreAddressController;
   final TextEditingController merchantBusinessAddressController;
   final TextEditingController selectedStoreState;
+  final String selectedBusinessState;
+  final String selectedBusinessCity;
   final TextEditingController selectedStoreCity;
   final TextEditingController storePinCodeCtrl;
   final TextEditingController businessAddressPinCodeCtrl;
-  bool isBusinessAddSameAsStore;
 
   final List storeCitysList;
   final List storeStatesList;
@@ -58,8 +59,9 @@ class MerchantStoreImagesForm extends StatefulWidget {
       required this.selectedStoreState,
       required this.selectedStoreCity,
       required this.merchantBusinessAddressController,
-      required this.isBusinessAddSameAsStore,
-      required this.businessAddressPinCodeCtrl})
+      required this.businessAddressPinCodeCtrl,
+      required this.selectedBusinessState,
+      required this.selectedBusinessCity})
       : super(key: key);
 
   @override
@@ -332,10 +334,11 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                     // color: AppColors.kPrimaryColor,
                   ),
                   Checkbox(
-                    value: widget.isBusinessAddSameAsStore,
+                    value: widget.merchantStoreInfoReq.isBusinessAddSameAsStore,
                     onChanged: (value) {
                       setState(() {
-                        widget.isBusinessAddSameAsStore = value!;
+                        widget.merchantStoreInfoReq.isBusinessAddSameAsStore =
+                            value!;
                       });
                     },
                   ),
@@ -351,7 +354,8 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                 hintText: "Enter merchant Store address",
                 title: '',
                 maxLength: 100,
-                controller: widget.isBusinessAddSameAsStore
+                enabled: !widget.merchantStoreInfoReq.isBusinessAddSameAsStore,
+                controller: widget.merchantStoreInfoReq.isBusinessAddSameAsStore
                     ? widget.merchantBusinessAddressController
                     : widget.merchantStoreAddressController,
                 prefixIcon: Icons.home,
@@ -362,7 +366,7 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                 ],
                 keyboardType: TextInputType.multiline,
                 textCapitalization: TextCapitalization.words,
-                enabled: true,
+
                 // prefixIcon: LineAwesome.address_book,
                 validator: (value) {
                   value = value.trim();
@@ -398,9 +402,13 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                 //     ? enabledcity = true
                 //     : enabledcity = false,
                 required: true,
-                selectedItem: widget.selectedStoreState.text != ''
-                    ? widget.selectedStoreState.text
-                    : null,
+                enabled: !widget.merchantStoreInfoReq.isBusinessAddSameAsStore,
+                selectedItem:
+                    widget.merchantStoreInfoReq.isBusinessAddSameAsStore
+                        ? widget.selectedBusinessState
+                        : widget.selectedStoreState.text != ''
+                            ? widget.selectedStoreState.text
+                            : null,
                 prefixIcon: Icons.flag_circle_outlined,
                 // itemList: widget.storeStatesList
                 //     .map((item) => item['stateName'])
@@ -456,13 +464,17 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
               ),
 
               CustomDropdown(
+                enabled: !widget.merchantStoreInfoReq.isBusinessAddSameAsStore,
                 titleEnabled: false,
                 title: "Current City",
                 hintText: "Select City",
                 required: true,
-                selectedItem: widget.selectedStoreCity.text != ''
-                    ? widget.selectedStoreCity.text
-                    : null,
+                selectedItem:
+                    widget.merchantStoreInfoReq.isBusinessAddSameAsStore
+                        ? widget.selectedBusinessCity
+                        : widget.selectedStoreCity.text != ''
+                            ? widget.selectedStoreCity.text
+                            : null,
                 prefixIcon: Icons.location_city_outlined,
 
                 // itemList: widget.storeCitysList
@@ -516,6 +528,7 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
               ),
               //padding added in textfeild
               CustomTextFormField(
+                enabled: !widget.merchantStoreInfoReq.isBusinessAddSameAsStore,
                 titleEneabled: false,
                 title: 'Pin Code',
                 hintText: 'Pin Code',
@@ -532,7 +545,7 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                   }
                   return null;
                 },
-                controller: widget.isBusinessAddSameAsStore
+                controller: widget.merchantStoreInfoReq.isBusinessAddSameAsStore
                     ? widget.businessAddressPinCodeCtrl
                     : widget.storePinCodeCtrl,
                 keyboardType: TextInputType.number,

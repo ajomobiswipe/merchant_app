@@ -163,6 +163,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
   final TextEditingController _otpController = TextEditingController();
   final TextEditingController _merchantAddharController =
       TextEditingController();
+  String merchantPanHelpertext = "click Verify";
 
   //merchant Bussines proof
   final TextEditingController documentExpiryController =
@@ -185,8 +186,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
   final TextEditingController selectedStoreCity = TextEditingController();
 
   final TextEditingController _storePinCodeCtrl = TextEditingController();
-
-  bool isBusinessAddSameAsStore = false;
 
   /// merchsant  Merchant Bank Details
 
@@ -509,8 +508,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
         selectedStoreState: selectedStoreState,
         selectedStoreCity: selectedStoreCity,
         merchantBusinessAddressController: _merchantBusinessAddressController,
-        isBusinessAddSameAsStore: isBusinessAddSameAsStore,
         businessAddressPinCodeCtrl: _PinCodeCtrl,
+        selectedBusinessState: selectedBusinessState,
+        selectedBusinessCity: selectedCity,
       );
     } else if (position == 6) {
       return mainControl(merchantBankDetails());
@@ -1524,7 +1524,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
                           if (showVerify) {
                             validatePan();
                             print("validate");
-                            //validateAccountNumber();
                           } else {
                             print("change");
 
@@ -1646,9 +1645,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 merchantIdProofReq.aadharCardNo = value;
               },
             ),
-            SizedBox(
-              height: 20,
-            ),
+
             if (isaddhaarOTPsent)
               CustomTextFormField(
                 keyboardType: TextInputType.number,
@@ -1765,7 +1762,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 required: true,
                 maxLength: 15,
                 prefixIcon: Icons.format_list_numbered,
-
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]'))
+                ],
                 onFieldSubmitted: (name) {
                   // getUser();
                 },
@@ -1839,6 +1838,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 hintText: "Enter merchant PAN number",
                 required: true,
                 prefixIcon: Icons.format_list_numbered,
+                inputFormatters: <TextInputFormatter>[PanNumberFormatter()],
                 onFieldSubmitted: (name) {
                   //getUser();
                 },
@@ -1864,7 +1864,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                     ?.copyWith(color: Theme.of(context).primaryColor),
                 suffixText: showFirmPanVerify ? 'verify' : 'Change',
                 readOnly: !showFirmPanVerify,
-                helperText: showFirmPanVerify ? "click verify" : "verified",
+                helperText: merchantPanHelpertext,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'FirmPan number Mandatory!';
@@ -2192,11 +2192,15 @@ class _MerchantSignupState extends State<MerchantSignup> {
           onPressed: () async {
             personalFormKey.currentState!.save();
             if (personalFormKey.currentState!.validate()) {
-              print(jsonEncode(businessIdProofReq.toJson()));
-              setState(() {
-                currTabPosition = 2;
-                position++;
-              });
+              if (selectedBusinessProofItems.isEmpty) {
+                alertWidget.error("plese Add Document");
+              } else {
+                print(jsonEncode(businessIdProofReq.toJson()));
+                setState(() {
+                  currTabPosition = 2;
+                  position++;
+                });
+              }
             }
           },
         ),
@@ -4019,6 +4023,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
   }
 
   validateFirmPan() async {
+    merchantPanHelpertext = "Loading...";
     if (_firmPanController.text.isNotEmpty) {
       debugPrint("Calling Firm pan validation API");
       setState(() {
@@ -4030,8 +4035,13 @@ class _MerchantSignupState extends State<MerchantSignup> {
         if (response.toString() == "true") {
           setState(() {
             showFirmPanVerify = false;
+            merchantPanHelpertext = "Verified";
           });
           print("body is true");
+        } else {
+          setState(() {
+            merchantPanHelpertext = "Invalid Merchant Pan try Again";
+          });
         }
       });
     }

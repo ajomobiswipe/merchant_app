@@ -20,16 +20,17 @@ class MerchantStoreInfoRequestmodel {
   String? currentAddress;
   double? latitude;
   double? longitude;
+  bool isBusinessAddSameAsStore;
 
-  MerchantStoreInfoRequestmodel({
-    this.currentCountry,
-    this.currentCity,
-    this.currentState,
-    this.currentZipCode,
-    this.currentAddress,
-    this.latitude,
-    this.longitude,
-  });
+  MerchantStoreInfoRequestmodel(
+      {this.currentCountry,
+      this.currentCity,
+      this.currentState,
+      this.currentZipCode,
+      this.currentAddress,
+      this.latitude,
+      this.longitude,
+      this.isBusinessAddSameAsStore = false});
 
   factory MerchantStoreInfoRequestmodel.fromJson(Map<String, dynamic> json) =>
       MerchantStoreInfoRequestmodel(

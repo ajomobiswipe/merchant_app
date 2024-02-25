@@ -234,7 +234,7 @@ class UserServices {
 
   sendAddhaarOtp(String addhaarNumber) async {
     String token = boxStorage.getToken();
-
+    print("addhaarz$addhaarNumber");
 // Ensure token is not null or empty
 
     // final headers = {'Authorization': 'Bearer $token'};
@@ -248,7 +248,10 @@ class UserServices {
     var addhaarverify = Uri.parse(
         "http://213.42.225.250:9508/NanoPay/Middleware/UiApi/getEkycOtp");
 
-    final newreqbody = {"requestType": "AADHAR", "aadharNumber": addhaarNumber};
+    final newreqbody = {
+      "requestType": "AADHAAR",
+      "aadhaarNumber": addhaarNumber
+    };
     var responseapi = await http.post(addhaarverify,
         headers: newheader, body: jsonEncode(newreqbody));
     // print(newheader);
@@ -268,7 +271,7 @@ class UserServices {
     };
 
     var addhaarverify = Uri.parse(
-        "http://213.42.225.250:9508/NanoPay/Middleware/UiApi/getEkycOtp");
+        "http://213.42.225.250:9508/NanoPay/Middleware/UiApi/verifyEkycData");
 
     final newreqbody = {
       "requestType": "VERIFYAADHAROTP",
