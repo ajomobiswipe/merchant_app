@@ -163,6 +163,7 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
         padding: const EdgeInsets.symmetric(horizontal: 15),
         child: Form(
           key: storeFormKey,
+          autovalidateMode: null,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [

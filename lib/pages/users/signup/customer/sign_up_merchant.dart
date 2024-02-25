@@ -2646,93 +2646,65 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                 children: [
                                   Expanded(
                                     child: CustomTextWidget(
-                                      text:
-                                          '${item['paymentName']} ${item['dcTxnAmount'] == null ? '-' : ''}',
+                                      text: '${item['paymentName']} -',
                                       isBold: true,
                                       size: 11,
                                     ),
                                   ),
 
-                                  if (item['dcTxnAmount'] == null && isEditable)
-                                    Container(
-                                      width: MediaQuery.of(context).size.width *
-                                          .18,
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              .04,
-                                      padding: EdgeInsets.only(
-                                          left: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              .025),
-                                      decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color:
-                                                  Colors.black.withOpacity(.1)),
-                                          borderRadius:
-                                              BorderRadius.circular(5)),
-                                      child: TextFormField(
-                                        onChanged: (value) {
-                                          final double parsedValue =
-                                              double.tryParse(value) ?? 0.0;
+                                  Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * .18,
+                                    height: MediaQuery.of(context).size.height *
+                                        .04,
+                                    padding: EdgeInsets.only(
+                                        left:
+                                            MediaQuery.of(context).size.width *
+                                                .025),
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color:
+                                                Colors.black.withOpacity(.1)),
+                                        borderRadius: BorderRadius.circular(5)),
+                                    child: TextFormField(
+                                      onChanged: (value) {
+                                        final double parsedValue =
+                                            double.tryParse(value) ?? 0.0;
 
-                                          TextEditingController(text: value);
+                                        TextEditingController(text: value);
 
-                                          // setState(() {
-                                          //   item['amount'] = value;
-                                          // });
-                                          //
-                                          // if (parsedValue > 100) {
-                                          //   setState(() {
-                                          //     item['amount'] = '100.00';
-                                          //   });
-                                          // }
-                                        },
-                                        inputFormatters: [
-                                          FilteringTextInputFormatter.allow(
-                                            RegExp(
-                                                r'^\d{0,3}(\.\d{0,2})?$'), // Allows up to 3 digits (0-100) and optional decimal with up to 2 digits
-                                          ),
-                                        ],
-                                        keyboardType: const TextInputType
-                                            .numberWithOptions(decimal: true),
-                                        maxLength: 6,
-                                        enabled: false,
-                                        style: const TextStyle(
-                                            fontSize: 14, color: Colors.black),
-                                        decoration: const InputDecoration(
-                                          border: InputBorder.none,
-                                          counterText: '',
+                                        // setState(() {
+                                        //   item['amount'] = value;
+                                        // });
+                                        //
+                                        // if (parsedValue > 100) {
+                                        //   setState(() {
+                                        //     item['amount'] = '100.00';
+                                        //   });
+                                        // }
+                                      },
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.allow(
+                                          RegExp(
+                                              r'^\d{0,3}(\.\d{0,2})?$'), // Allows up to 3 digits (0-100) and optional decimal with up to 2 digits
                                         ),
-                                        controller: TextEditingController(
-                                            text:
-                                                '${item['amount'] ?? item['dcTxnAmount']}'),
+                                      ],
+                                      keyboardType:
+                                          const TextInputType.numberWithOptions(
+                                              decimal: true),
+                                      maxLength: 6,
+                                      enabled: false,
+                                      style: const TextStyle(
+                                          fontSize: 14, color: Colors.black),
+                                      decoration: const InputDecoration(
+                                        border: InputBorder.none,
+                                        counterText: '',
                                       ),
+                                      controller: TextEditingController(
+                                          text:
+                                              '${item['amount'] ?? item['dcTxnAmount']}'),
                                     ),
-
-                                  if (item['dcTxnAmount'] == null &&
-                                      !isEditable)
-                                    Expanded(
-                                      child: CustomTextWidget(
-                                        text:
-                                        '${item['amount'] ?? item['dcTxnAmount']}',
-                                        isBold: true,
-                                        size: 11,
-                                      ),
-                                    ),
-
-                                  if (item['dcTxnAmount'] == null &&
-                                      !isEditable)
-                                    if (mdrSummaryList.indexOf(item) % 2 == 0)
-                                      const Expanded(
-                                        child: CustomTextWidget(
-                                          text: '|',
-                                          isBold: true,
-                                          size: 11,
-                                        ),
-                                      ),
-
-
+                                  ),
 
                                   if (isEditable && item['dcTxnAmount'] == null)
                                     Padding(
@@ -2874,10 +2846,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                     ),
                                     Row(
                                       children: [
-                                        Expanded(
+                                        const Expanded(
                                           child: CustomTextWidget(
-                                            text:
-                                                'amt LT ${item['dcTxnAmount']} (%)',
+                                            text: 'less %',
                                             isBold: true,
                                             size: 11,
                                           ),
@@ -2955,7 +2926,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                       (BuildContext context) {
                                                     return AlertDialog(
                                                       title: Text(
-                                                          'amt LT ${item['dcTxnAmount']} (%)'),
+                                                          '${item['paymentName']} - Less %'),
                                                       titleTextStyle:
                                                           const TextStyle(
                                                               color:
@@ -3083,10 +3054,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                     ),
                                     Row(
                                       children: [
-                                        Expanded(
+                                        const Expanded(
                                           child: CustomTextWidget(
-                                            text:
-                                                'amt GT ${item['dcTxnAmount']} (%)',
+                                            text: 'greater %',
                                             isBold: true,
                                             size: 11,
                                           ),
@@ -3164,7 +3134,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                       (BuildContext context) {
                                                     return AlertDialog(
                                                       title: Text(
-                                                          'amt GT ${item['dcTxnAmount']} (%)'),
+                                                          '${item['paymentName']} - greater%'),
                                                       titleTextStyle:
                                                           const TextStyle(
                                                               color:
@@ -4036,9 +4006,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
           setState(() {
             showFirmPanVerify = false;
             merchantPanHelpertext = "Verified";
+            businessIdProofReq.firmPanNumberVerifyStatus = true;
           });
           print("body is true");
         } else {
+          businessIdProofReq.firmPanNumberVerifyStatus = false;
           setState(() {
             merchantPanHelpertext = "Invalid Merchant Pan try Again";
           });
