@@ -164,6 +164,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
   final TextEditingController _merchantAddharController =
       TextEditingController();
   String merchantPanHelpertext = "click Verify";
+  String gstHelperText = "click Verify";
 
   //merchant Bussines proof
   final TextEditingController documentExpiryController =
@@ -694,7 +695,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 }
 
                 if (!Validators.isValidEmail(value)) {
-                  return 'Invalid  Email';
+                  return 'Invalid  Email Format';
                 }
                 return null;
               },
@@ -1813,7 +1814,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 //inputFormatters: <TextInputFormatter>[AadhaarNumberFormatter()],
                 suffixText: isgstVerify ? 'Verify' : 'Change',
                 // readOnly: !isgstVerify,
-                helperText: isgstVerify ? "plese verfy" : "Verified",
+                helperText: gstHelperText,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Gst Number is Mandatory!';
@@ -4068,7 +4069,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
     if (_gstController.text.isNotEmpty && _gstController.text.length > 10) {
       debugPrint("Calling Gst API");
       setState(() {
-        accountCheck = "Loading...";
+        gstHelperText = "Loading....";
       });
       var gstnumber = _gstController.text.toString();
 
@@ -4081,6 +4082,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
         if (response.toString() == "true") {
           setState(() {
             isgstVerify = false;
+            gstHelperText = "Verifyed";
             // merchantAdditionalInfoReq.merchantBankVerifyStatus = true;
             // accountCheck = 'VALID';
 
@@ -4103,8 +4105,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
             // // }
           });
           print("body is true");
+        } else {
+          setState(() {
+            gstHelperText = "Failed try Again";
+          });
         }
-        {}
       });
     }
   }
