@@ -2625,14 +2625,16 @@ class _MerchantSignupState extends State<MerchantSignup> {
                         Container(
                           margin: EdgeInsets.only(
                               top: screenHeight * .015,
-                              left: mdrSummaryList.indexOf(item) % 2 == 0
+                              left: mdrSummaryList.indexOf(item) % 2 == 0 || item['dcTxnAmount'] != null
                                   ? 0
                                   : MediaQuery.of(context).size.width * .025),
-                          width: ((MediaQuery.of(context).size.width) -
-                                  ((MediaQuery.of(context).size.width * .025) *
-                                      3) -
-                                  30) /
-                              2,
+                          width: item['dcTxnAmount'] == null?((MediaQuery.of(context).size.width) -
+                              ((MediaQuery.of(context).size.width * .025) *
+                                  3) -
+                              30) /
+                              2:double.infinity,
+                          padding: item['dcTxnAmount'] != null?EdgeInsets.all(MediaQuery.of(context).size.width * .025):EdgeInsets.all(0),
+                          // width:double.infinity,
                           color: item['dcTxnAmount'] != null
                               ? Colors.white
                               : Colors.transparent,
@@ -2646,65 +2648,93 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                 children: [
                                   Expanded(
                                     child: CustomTextWidget(
-                                      text: '${item['paymentName']} -',
+                                      text:
+                                      '${item['paymentName']} ${item['dcTxnAmount'] == null ? '-' : ''}',
                                       isBold: true,
                                       size: 11,
                                     ),
                                   ),
 
-                                  Container(
-                                    width:
-                                        MediaQuery.of(context).size.width * .18,
-                                    height: MediaQuery.of(context).size.height *
-                                        .04,
-                                    padding: EdgeInsets.only(
-                                        left:
-                                            MediaQuery.of(context).size.width *
-                                                .025),
-                                    decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color:
-                                                Colors.black.withOpacity(.1)),
-                                        borderRadius: BorderRadius.circular(5)),
-                                    child: TextFormField(
-                                      onChanged: (value) {
-                                        final double parsedValue =
-                                            double.tryParse(value) ?? 0.0;
+                                  if (item['dcTxnAmount'] == null && isEditable)
+                                    Container(
+                                      width: MediaQuery.of(context).size.width *
+                                          .18,
+                                      height:
+                                      MediaQuery.of(context).size.height *
+                                          .04,
+                                      padding: EdgeInsets.only(
+                                          left: MediaQuery.of(context)
+                                              .size
+                                              .width *
+                                              .025),
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color:
+                                              Colors.black.withOpacity(.1)),
+                                          borderRadius:
+                                          BorderRadius.circular(5)),
+                                      child: TextFormField(
+                                        onChanged: (value) {
+                                          final double parsedValue =
+                                              double.tryParse(value) ?? 0.0;
 
-                                        TextEditingController(text: value);
+                                          TextEditingController(text: value);
 
-                                        // setState(() {
-                                        //   item['amount'] = value;
-                                        // });
-                                        //
-                                        // if (parsedValue > 100) {
-                                        //   setState(() {
-                                        //     item['amount'] = '100.00';
-                                        //   });
-                                        // }
-                                      },
-                                      inputFormatters: [
-                                        FilteringTextInputFormatter.allow(
-                                          RegExp(
-                                              r'^\d{0,3}(\.\d{0,2})?$'), // Allows up to 3 digits (0-100) and optional decimal with up to 2 digits
+                                          // setState(() {
+                                          //   item['amount'] = value;
+                                          // });
+                                          //
+                                          // if (parsedValue > 100) {
+                                          //   setState(() {
+                                          //     item['amount'] = '100.00';
+                                          //   });
+                                          // }
+                                        },
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.allow(
+                                            RegExp(
+                                                r'^\d{0,3}(\.\d{0,2})?$'), // Allows up to 3 digits (0-100) and optional decimal with up to 2 digits
+                                          ),
+                                        ],
+                                        keyboardType: const TextInputType
+                                            .numberWithOptions(decimal: true),
+                                        maxLength: 6,
+                                        enabled: false,
+                                        style: const TextStyle(
+                                            fontSize: 14, color: Colors.black),
+                                        decoration: const InputDecoration(
+                                          border: InputBorder.none,
+                                          counterText: '',
                                         ),
-                                      ],
-                                      keyboardType:
-                                          const TextInputType.numberWithOptions(
-                                              decimal: true),
-                                      maxLength: 6,
-                                      enabled: false,
-                                      style: const TextStyle(
-                                          fontSize: 14, color: Colors.black),
-                                      decoration: const InputDecoration(
-                                        border: InputBorder.none,
-                                        counterText: '',
+                                        controller: TextEditingController(
+                                            text:
+                                            '${item['amount'] ?? item['dcTxnAmount']}'),
                                       ),
-                                      controller: TextEditingController(
-                                          text:
-                                              '${item['amount'] ?? item['dcTxnAmount']}'),
                                     ),
-                                  ),
+
+                                  if (item['dcTxnAmount'] == null &&
+                                      !isEditable)
+                                    Expanded(
+                                      child: CustomTextWidget(
+                                        text:
+                                        '${item['amount'] ?? item['dcTxnAmount']}',
+                                        isBold: true,
+                                        size: 11,
+                                      ),
+                                    ),
+
+                                  if (item['dcTxnAmount'] == null &&
+                                      !isEditable)
+                                    if (mdrSummaryList.indexOf(item) % 2 == 0)
+                                      const Expanded(
+                                        child: CustomTextWidget(
+                                          text: '|',
+                                          isBold: true,
+                                          size: 11,
+                                        ),
+                                      ),
+
+
 
                                   if (isEditable && item['dcTxnAmount'] == null)
                                     Padding(
@@ -2723,46 +2753,46 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                     fontFamily: 'Mont'),
                                                 content: Column(
                                                   mainAxisSize:
-                                                      MainAxisSize.min,
+                                                  MainAxisSize.min,
                                                   crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
+                                                  CrossAxisAlignment.start,
                                                   children: [
                                                     const Text(
                                                         'Please enter your value'),
                                                     SizedBox(
                                                         height: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .height *
+                                                            context)
+                                                            .size
+                                                            .height *
                                                             .01),
                                                     Container(
                                                       width: double.infinity,
                                                       height:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .height *
-                                                              .06,
+                                                      MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                          .06,
                                                       padding: EdgeInsets.only(
                                                           left: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width *
+                                                              context)
+                                                              .size
+                                                              .width *
                                                               .025),
                                                       decoration: BoxDecoration(
                                                           border: Border.all(
                                                               color: Colors
                                                                   .black
                                                                   .withOpacity(
-                                                                      .1)),
+                                                                  .1)),
                                                           borderRadius:
-                                                              BorderRadius
-                                                                  .circular(5)),
+                                                          BorderRadius
+                                                              .circular(5)),
                                                       child: TextFormField(
                                                         onChanged: (value) {
                                                           final double
-                                                              parsedValue =
+                                                          parsedValue =
                                                               double.tryParse(
-                                                                      value) ??
+                                                                  value) ??
                                                                   0.0;
 
                                                           setState(() {
@@ -2774,13 +2804,13 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                               100) {
                                                             setState(() {
                                                               item['amount'] =
-                                                                  '100.00';
+                                                              '100.00';
                                                             });
                                                           }
 
                                                           print(
                                                               mdrSummaryList[0]
-                                                                  ['amount']);
+                                                              ['amount']);
                                                         },
                                                         inputFormatters: [
                                                           FilteringTextInputFormatter
@@ -2790,23 +2820,23 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                           ),
                                                         ],
                                                         keyboardType:
-                                                            const TextInputType
-                                                                .numberWithOptions(
-                                                                decimal: true),
+                                                        const TextInputType
+                                                            .numberWithOptions(
+                                                            decimal: true),
                                                         maxLength: 6,
                                                         enabled: true,
                                                         style: const TextStyle(
                                                             fontSize: 14,
                                                             color:
-                                                                Colors.black),
+                                                            Colors.black),
                                                         decoration:
-                                                            const InputDecoration(
+                                                        const InputDecoration(
                                                           border:
-                                                              InputBorder.none,
+                                                          InputBorder.none,
                                                           counterText: '',
                                                         ),
                                                         initialValue:
-                                                            '${item['amount'] ?? item['dcTxnAmount']}',
+                                                        '${item['amount'] ?? item['dcTxnAmount']}',
                                                       ),
                                                     ),
                                                   ],
@@ -2841,38 +2871,47 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
+
+
                                     SizedBox(
                                       height: screenHeight * .01,
                                     ),
                                     Row(
+
                                       children: [
-                                        const Expanded(
+                                        Expanded(
                                           child: CustomTextWidget(
-                                            text: 'less %',
-                                            isBold: true,
+                                            text:
+                                            'Amount less than ${item['dcTxnAmount']} (%)  ${!isEditable?'  -   ${item['amountLePercent']}':''} ',
+                                           
                                             size: 11,
                                           ),
                                         ),
+
+
+                                        if (isEditable)
                                         Container(
+
                                           width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
+                                              .size
+                                              .width *
                                               .18,
                                           height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
+                                              .size
+                                              .height *
                                               .04,
+
                                           padding: EdgeInsets.only(
                                               left: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
+                                                  .size
+                                                  .width *
                                                   .025),
                                           decoration: BoxDecoration(
                                               border: Border.all(
-                                                  color: Colors.black
-                                                      .withOpacity(.1)),
+                                                  color: isEditable?Colors.black
+                                                      .withOpacity(.1):Colors.transparent),
                                               borderRadius:
-                                                  BorderRadius.circular(5)),
+                                              BorderRadius.circular(5)),
                                           child: TextFormField(
                                             onChanged: (value) {
                                               final double parsedValue =
@@ -2911,9 +2950,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                             ),
                                             controller: TextEditingController(
                                                 text:
-                                                    '${item['amountLePercent']}'),
+                                                '${item['amountLePercent']}'),
                                           ),
                                         ),
+
+
                                         if (isEditable)
                                           Padding(
                                             padding: const EdgeInsets.only(
@@ -2926,61 +2967,61 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                       (BuildContext context) {
                                                     return AlertDialog(
                                                       title: Text(
-                                                          '${item['paymentName']} - Less %'),
+                                                          'amt LT ${item['dcTxnAmount']} (%)'),
                                                       titleTextStyle:
-                                                          const TextStyle(
-                                                              color:
-                                                                  Colors.black,
-                                                              fontSize: 18,
-                                                              fontFamily:
-                                                                  'Mont'),
+                                                      const TextStyle(
+                                                          color:
+                                                          Colors.black,
+                                                          fontSize: 18,
+                                                          fontFamily:
+                                                          'Mont'),
                                                       content: Column(
                                                         mainAxisSize:
-                                                            MainAxisSize.min,
+                                                        MainAxisSize.min,
                                                         crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
+                                                        CrossAxisAlignment
+                                                            .start,
                                                         children: [
                                                           const Text(
                                                               'Please enter your value'),
                                                           SizedBox(
                                                               height: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .height *
+                                                                  context)
+                                                                  .size
+                                                                  .height *
                                                                   .01),
                                                           Container(
                                                             width:
-                                                                double.infinity,
+                                                            double.infinity,
                                                             height: MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .height *
+                                                                context)
+                                                                .size
+                                                                .height *
                                                                 .06,
                                                             padding: EdgeInsets.only(
                                                                 left: MediaQuery.of(
-                                                                            context)
-                                                                        .size
-                                                                        .width *
+                                                                    context)
+                                                                    .size
+                                                                    .width *
                                                                     .025),
                                                             decoration: BoxDecoration(
                                                                 border: Border.all(
                                                                     color: Colors
                                                                         .black
                                                                         .withOpacity(
-                                                                            .1)),
+                                                                        .1)),
                                                                 borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            5)),
+                                                                BorderRadius
+                                                                    .circular(
+                                                                    5)),
                                                             child:
-                                                                TextFormField(
+                                                            TextFormField(
                                                               onChanged:
                                                                   (value) {
                                                                 final double
-                                                                    parsedValue =
+                                                                parsedValue =
                                                                     double.tryParse(
-                                                                            value) ??
+                                                                        value) ??
                                                                         0.0;
 
                                                                 setState(() {
@@ -2992,7 +3033,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                                     100) {
                                                                   setState(() {
                                                                     item['amountLePercent'] =
-                                                                        '100.00';
+                                                                    '100.00';
                                                                   });
                                                                 }
                                                               },
@@ -3004,10 +3045,10 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                                 ),
                                                               ],
                                                               keyboardType:
-                                                                  const TextInputType
-                                                                      .numberWithOptions(
-                                                                      decimal:
-                                                                          true),
+                                                              const TextInputType
+                                                                  .numberWithOptions(
+                                                                  decimal:
+                                                                  true),
                                                               maxLength: 6,
                                                               enabled: true,
                                                               style: const TextStyle(
@@ -3015,14 +3056,14 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                                   color: Colors
                                                                       .black),
                                                               decoration:
-                                                                  const InputDecoration(
+                                                              const InputDecoration(
                                                                 border:
-                                                                    InputBorder
-                                                                        .none,
+                                                                InputBorder
+                                                                    .none,
                                                                 counterText: '',
                                                               ),
                                                               initialValue:
-                                                                  '${item['amountLePercent']}',
+                                                              '${item['amountLePercent']}',
                                                             ),
                                                           ),
                                                         ],
@@ -3031,7 +3072,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                         TextButton(
                                                           onPressed: () {
                                                             Navigator.of(
-                                                                    context)
+                                                                context)
                                                                 .pop(); // Close the dialog
                                                           },
                                                           child: Text('OK'),
@@ -3047,40 +3088,44 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                               ),
                                             ),
                                           ),
+
                                       ],
                                     ),
                                     SizedBox(
                                       height: screenHeight * .01,
                                     ),
                                     Row(
+
                                       children: [
-                                        const Expanded(
+                                        Expanded(
                                           child: CustomTextWidget(
-                                            text: 'greater %',
-                                            isBold: true,
+                                            text:
+                                            'Amount greater than ${item['dcTxnAmount']} (%)  ${!isEditable?'  -   ${item['amountGtPercent']}':''} ',
                                             size: 11,
                                           ),
                                         ),
+
+                                        if (isEditable)
                                         Container(
                                           width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
+                                              .size
+                                              .width *
                                               .18,
                                           height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
+                                              .size
+                                              .height *
                                               .04,
                                           padding: EdgeInsets.only(
                                               left: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
+                                                  .size
+                                                  .width *
                                                   .025),
                                           decoration: BoxDecoration(
                                               border: Border.all(
-                                                  color: Colors.black
-                                                      .withOpacity(.1)),
+                                                  color: isEditable?Colors.black
+                                                      .withOpacity(.1):Colors.transparent),
                                               borderRadius:
-                                                  BorderRadius.circular(5)),
+                                              BorderRadius.circular(5)),
                                           child: TextFormField(
                                             onChanged: (value) {
                                               final double parsedValue =
@@ -3119,7 +3164,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                             ),
                                             controller: TextEditingController(
                                                 text:
-                                                    '${item['amountGtPercent']}'),
+                                                '${item['amountGtPercent']}'),
                                           ),
                                         ),
                                         if (isEditable)
@@ -3134,61 +3179,61 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                       (BuildContext context) {
                                                     return AlertDialog(
                                                       title: Text(
-                                                          '${item['paymentName']} - greater%'),
+                                                          'amt GT ${item['dcTxnAmount']} (%)'),
                                                       titleTextStyle:
-                                                          const TextStyle(
-                                                              color:
-                                                                  Colors.black,
-                                                              fontSize: 18,
-                                                              fontFamily:
-                                                                  'Mont'),
+                                                      const TextStyle(
+                                                          color:
+                                                          Colors.black,
+                                                          fontSize: 18,
+                                                          fontFamily:
+                                                          'Mont'),
                                                       content: Column(
                                                         mainAxisSize:
-                                                            MainAxisSize.min,
+                                                        MainAxisSize.min,
                                                         crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
+                                                        CrossAxisAlignment
+                                                            .start,
                                                         children: [
                                                           const Text(
                                                               'Please enter your value'),
                                                           SizedBox(
                                                               height: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .height *
+                                                                  context)
+                                                                  .size
+                                                                  .height *
                                                                   .01),
                                                           Container(
                                                             width:
-                                                                double.infinity,
+                                                            double.infinity,
                                                             height: MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .height *
+                                                                context)
+                                                                .size
+                                                                .height *
                                                                 .06,
                                                             padding: EdgeInsets.only(
                                                                 left: MediaQuery.of(
-                                                                            context)
-                                                                        .size
-                                                                        .width *
+                                                                    context)
+                                                                    .size
+                                                                    .width *
                                                                     .025),
                                                             decoration: BoxDecoration(
                                                                 border: Border.all(
                                                                     color: Colors
                                                                         .black
                                                                         .withOpacity(
-                                                                            .1)),
+                                                                        .1)),
                                                                 borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            5)),
+                                                                BorderRadius
+                                                                    .circular(
+                                                                    5)),
                                                             child:
-                                                                TextFormField(
+                                                            TextFormField(
                                                               onChanged:
                                                                   (value) {
                                                                 final double
-                                                                    parsedValue =
+                                                                parsedValue =
                                                                     double.tryParse(
-                                                                            value) ??
+                                                                        value) ??
                                                                         0.0;
 
                                                                 setState(() {
@@ -3200,7 +3245,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                                     100) {
                                                                   setState(() {
                                                                     item['amountGtPercent'] =
-                                                                        '100.00';
+                                                                    '100.00';
                                                                   });
                                                                 }
                                                               },
@@ -3212,10 +3257,10 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                                 ),
                                                               ],
                                                               keyboardType:
-                                                                  const TextInputType
-                                                                      .numberWithOptions(
-                                                                      decimal:
-                                                                          true),
+                                                              const TextInputType
+                                                                  .numberWithOptions(
+                                                                  decimal:
+                                                                  true),
                                                               maxLength: 6,
                                                               enabled: true,
                                                               style: const TextStyle(
@@ -3223,14 +3268,14 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                                   color: Colors
                                                                       .black),
                                                               decoration:
-                                                                  const InputDecoration(
+                                                              const InputDecoration(
                                                                 border:
-                                                                    InputBorder
-                                                                        .none,
+                                                                InputBorder
+                                                                    .none,
                                                                 counterText: '',
                                                               ),
                                                               initialValue:
-                                                                  '${item['amountGtPercent']}',
+                                                              '${item['amountGtPercent']}',
                                                             ),
                                                           ),
                                                         ],
@@ -3239,7 +3284,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                         TextButton(
                                                           onPressed: () {
                                                             Navigator.of(
-                                                                    context)
+                                                                context)
                                                                 .pop(); // Close the dialog
                                                           },
                                                           child: Text('OK'),
