@@ -49,32 +49,44 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
   }
 
   deviceDeployment() {
-    //productDeploymentReq.guid = 206;
-    // productDeploymentReq.guid = widget.deviceInfo!["guid"];
-    // productDeploymentReq.merchantId = widget.deviceInfo!["merchantId"];
-    // productDeploymentReq.productId = widget.deviceInfo!["guid"];
-    // productDeploymentReq.packageId = widget.deviceInfo!["guid"];
-
+    productDeploymentReq.guid = widget.deviceInfo!["guid"];
+    productDeploymentReq.merchantId = widget.deviceInfo!["merchantId"];
+    productDeploymentReq.productId = widget.deviceInfo!["productId"];
+    productDeploymentReq.packageId = widget.deviceInfo!["packageId"];
+    productDeploymentReq.productSerialNo = deviceSerialNumberCntrl.text;
+    // print(productDeploymentReq.toJson());
     userServices
         .deviceDeployment(productDeploymentReq, deviceAtStoreImage.text,
             testTransactionChargeSlipImage.text)
         .then((response) async {
       print(response.body);
-      var decodeData = jsonDecode(response.body);
+
       if (response.statusCode == 200 || response.statusCode == 201) {
+        var decodeData = jsonDecode(response.body);
+
         if (decodeData['statusCode'].toString() == "200") {
+          alertWidget.success(
+            context,
+            'Success',
+            decodeData['errorMessage'],
+          );
           setState(() {});
-          // Navigator.pushNamedAndRemoveUntil(
-          //     context, 'SignUpSucessScreen', (route) => false);
-          alertWidget.successPopup(
-              context, 'Success', decodeData['responseMessage'], () {});
-          Navigator.of(context).pop();
+          Navigator.pushNamedAndRemoveUntil(
+              context, 'myApplications', (route) => false);
         } else {
+          alertWidget.failure(
+            context,
+            'failed',
+            decodeData['errorMessage'],
+          );
+
           setState(() {
             // _isLoading = false;
           });
           alertWidget.failure(context, 'Failure', decodeData['errorMessage']);
         }
+      } else {
+        alertWidget.failure(context, 'Failure', response.statusCode.toString());
       }
     });
   }
@@ -361,13 +373,14 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
                   title: "Deploy",
                   onPressed: () {
                     print(widget.deviceInfo);
-                    if (_formKey.currentState!.validate() &&
-                        testTransactionChargeSlipImage.text != '' &&
-                        deviceAtStoreImage.text != '') {
-                      deviceDeployment();
-                    } else {
-                      alertWidget.failure(
-                          context, '', 'Please upload All images!');
+                    if (_formKey.currentState!.validate()) {
+                      if (testTransactionChargeSlipImage.text != '' &&
+                          deviceAtStoreImage.text != '') {
+                        deviceDeployment();
+                      } else {
+                        alertWidget.failure(
+                            context, '', 'Please upload All images!');
+                      }
                     }
                   },
                 ),

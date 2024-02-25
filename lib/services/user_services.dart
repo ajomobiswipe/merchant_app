@@ -879,8 +879,8 @@ class UserServices {
     deviceAtStoreCtrl,
     transactionSlipImageCtrl,
   ) async {
-    print(deviceAtStoreCtrl);
-    print(transactionSlipImageCtrl);
+    // print(deviceAtStoreCtrl);
+    // print(transactionSlipImageCtrl);
     //var url = EndPoints.baseApi9502 + EndPoints.registerAPI;
     BoxStorage boxStorage = BoxStorage();
     String barrertoken = boxStorage.getToken();
@@ -899,24 +899,23 @@ class UserServices {
     final transactionImage = await http.MultipartFile.fromPath(
         'productDeploymentImg2', transactionSlipImageCtrl);
 
-    print(jsonEncode(productDeploymentReq.toJson()));
-
     request.files.add(deviceAtStore);
     request.files.add(transactionImage);
 
-    // request.fields['productDeploymentInfo'] = jsonEncode(productDeploymentReq);
-    request.fields['productDeploymentInfo'] = jsonEncode({
-      "guid": 206,
-      "merchantId": "ADIBM0000000456",
-      "productId": "1",
-      "packageId": "1",
-      "productSerialNo": "23456"
-    });
+    request.fields['productDeploymentInfo'] =
+        jsonEncode(productDeploymentReq..toJson());
+    // request.fields['productDeploymentInfo'] = jsonEncode({
+    //   "guid": 206,
+    //   "merchantId": "ADIBM0000000456",
+    //   "productId": "1",
+    //   "packageId": "1",
+    //   "productSerialNo": "23456"
+    // });
 
     final streamedResponse = await request.send();
     final response = await http.Response.fromStream(streamedResponse);
-    print(response.body);
-    print(response.statusCode);
+    // print(response.body);
+    // print(response.statusCode);
     return response;
   }
 
