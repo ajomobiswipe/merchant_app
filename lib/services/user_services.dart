@@ -825,6 +825,7 @@ class UserServices {
     // final kf = await http.MultipartFile.fromPath('shopLicenseFile', kycFront);
     // final kb = await http.MultipartFile.fromPath('gstFile', kycBack);
     // final tl = await http.MultipartFile.fromPath('poiFile', tradeLicense);
+
     final storeInsideImg = await http.MultipartFile.fromPath(
         'storeInsideImg', merchantStoreFrontImage);
     final storeOutsideImg = await http.MultipartFile.fromPath(
@@ -851,9 +852,13 @@ class UserServices {
     print(jsonEncode(companyDetailsInforeq.toJson()));
     print(jsonEncode(merchantBankInfoReq.toJson()));
     print(jsonEncode(merchantAgreeMentReq.toJson()));
+
     request.files.add(storeInsideImg);
     request.files.add(storeOutsideImg);
     request.files.add(cancelledCheqImg);
+
+
+
     request.fields["userId"] = "softposadmin";
     request.fields['merchantProductInfo'] = jsonEncode(merchantProductInfoReq);
     request.fields['companyDetailsInfo'] =

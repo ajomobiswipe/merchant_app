@@ -374,8 +374,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
     return null;
   }
 
-  Map<String, dynamic> mdrSummary = {};
-
   Future getMdrSummaryList(String mdrType) async {
     // int mdrId = (mdrTypeList
     //     .where((element) => element['mdrType'] == mdrType)
@@ -416,10 +414,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
       // mdrSummaryList = data['mmsMdrDetailsInfo'];
     });
-
-    mdrSummary = {
-      "mdrSummary": mdrSummaryList,
-    };
   }
 
   void getIntByKey(
@@ -446,7 +440,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 color: AppColors.white,
                 child: const Center(
                   child: CircularProgressIndicator(
-                    strokeWidth: 2,
+                    strokeWidth: 3,
                   ),
                 ),
               )
@@ -3748,7 +3742,21 @@ class _MerchantSignupState extends State<MerchantSignup> {
       };
     }).toList();
 
-    merchantAgreeMentReq.mdrSummary = jsonEncode(mdrSummary);
+    // final Map<String, dynamic> mdrSummary = {
+    //   "mdrSummary": json.encode(mdrSummaryList),
+    // };
+
+    print(mdrSummaryList);
+
+    merchantAgreeMentReq.mdrSummary = json.encode(mdrSummaryList);
+
+    print(merchantAgreeMentReq.mdrSummary);
+    print(merchantAgreeMentReq.toJson());
+    print('pkm');
+
+
+    // print(jsonEncode(merchantAgreeMentReq.mdrSummary.toJson()));
+
 
     final Map<String, dynamic> merchantProductInfoReq = {
       "merchantProductDetails": productList,

@@ -4,13 +4,13 @@
 
 import 'dart:convert';
 
-MerchantAgreeMentRequestmodel merchantAgreeMentRequestmodelFromJson(
-        String str) =>
-    MerchantAgreeMentRequestmodel.fromJson(json.decode(str));
-
-String merchantAgreeMentRequestmodelToJson(
-        MerchantAgreeMentRequestmodel data) =>
-    json.encode(data.toJson());
+// MerchantAgreeMentRequestmodel merchantAgreeMentRequestmodelFromJson(
+//         String str) =>
+//     MerchantAgreeMentRequestmodel.fromJson(json.decode(str));
+//
+// String merchantAgreeMentRequestmodelToJson(
+//         MerchantAgreeMentRequestmodel data) =>
+//     json.encode(data.toJson());
 
 class MerchantAgreeMentRequestmodel {
   int? mdrType;
@@ -36,5 +36,6 @@ class MerchantAgreeMentRequestmodel {
         "mdrType": mdrType,
         "termsCondition": termsCondition,
         "serviceAgreement": serviceAgreement,
+    "mdrSummary":mdrSummary
       };
 }
