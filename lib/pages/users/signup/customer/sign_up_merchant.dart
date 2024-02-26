@@ -17,7 +17,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sifr_latest/common_widgets/app_appbar.dart';
-import 'package:sifr_latest/decurations/dropdownDecurations.dart';
 import 'package:sifr_latest/helpers/default_height.dart';
 import 'package:sifr_latest/models/merchant_requestmodel.dart';
 import 'package:sifr_latest/pages/mechant_order/merchant_order_details.dart';
@@ -33,11 +32,10 @@ import '../../../../models/models.dart';
 import '../../../../providers/providers.dart';
 import '../../../../services/services.dart';
 import '../../../../widgets/image_button/verifivation_success_button.dart';
+import '../../../../widgets/otpwidget.dart';
 import '../../../../widgets/tabbar/tabbar.dart';
 import '../../../../widgets/widget.dart';
-import '../../../mechant_order/models/mechant_additionalingo_model.dart';
 import 'models/business_id_proof_requestmodel.dart';
-import 'models/businessproof_mode.dart';
 import 'models/company_detailsInfo_requestmodel.dart';
 import 'models/merchant_agreement_requestmodel.dart';
 import 'models/merchant_bank_Info_requestmodel.dart';
@@ -791,6 +789,16 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 }
                 return null;
               },
+              suffixIcon: TextButton(
+                  onPressed: () {
+                    otpWidget(
+                      context: context,
+                      title: "hgh",
+                      validator: (dd) {},
+                    );
+                  },
+                  child: Icon(Icons.send)),
+              suffixIconTrue: true,
               onChanged: (String value) {
                 value = value.trim();
                 setState(() {
@@ -3902,7 +3910,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
               color: AppColors.kTileColor,
               child: Row(
                 children: <Widget>[
-
                   Expanded(
                     child: RichText(
                       text: TextSpan(
@@ -3915,36 +3922,38 @@ class _MerchantSignupState extends State<MerchantSignup> {
                       ),
                     ),
                   ),
-
-                  if(!acceptTnc)GestureDetector(
-                    onTap: () {
-                      _sendTermsAndConditionsToMail();
-                    },
-                    child: !isTermsWaiting?Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal:
-                                MediaQuery.of(context).size.width * .035),
-                        height: MediaQuery.of(context).size.height * .03,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: Colors.white),
-                        child: const Center(
-                            child: CustomTextWidget(
-                                text: 'View', size: 13, isBold: false))):const Text('Waiting...'),
-                  ),
-
-                  if(acceptTnc)Checkbox(
-                    value: acceptTnc,
-                    checkColor: Colors.white,
-                    activeColor: AppColors.kLightGreen,
-                    visualDensity: VisualDensity.adaptivePlatformDensity,
-                    onChanged: (bool? newValue) async {
-                      setState(() {
-                        acceptTnc = newValue!;
-                      });
-                      merchantAgreeMentReq.termsCondition = newValue!;
-                    },
-                  ),
+                  if (!acceptTnc)
+                    GestureDetector(
+                      onTap: () {
+                        _sendTermsAndConditionsToMail();
+                      },
+                      child: !isTermsWaiting
+                          ? Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal:
+                                      MediaQuery.of(context).size.width * .035),
+                              height: MediaQuery.of(context).size.height * .03,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: Colors.white),
+                              child: const Center(
+                                  child: CustomTextWidget(
+                                      text: 'View', size: 13, isBold: false)))
+                          : const Text('Waiting...'),
+                    ),
+                  if (acceptTnc)
+                    Checkbox(
+                      value: acceptTnc,
+                      checkColor: Colors.white,
+                      activeColor: AppColors.kLightGreen,
+                      visualDensity: VisualDensity.adaptivePlatformDensity,
+                      onChanged: (bool? newValue) async {
+                        setState(() {
+                          acceptTnc = newValue!;
+                        });
+                        merchantAgreeMentReq.termsCondition = newValue!;
+                      },
+                    ),
                 ],
               ),
             ),
@@ -3970,57 +3979,58 @@ class _MerchantSignupState extends State<MerchantSignup> {
                       ),
                     ),
                   ),
+                  if (!acceptAggrement)
+                    GestureDetector(
+                      onTap: () {
+                        _sendServiceAgreementsToMail();
+                      },
+                      child: !isServiceWaiting
+                          ? Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal:
+                                      MediaQuery.of(context).size.width * .035),
+                              height: MediaQuery.of(context).size.height * .03,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: Colors.white),
+                              child: const Center(
+                                  child: CustomTextWidget(
+                                      text: 'View', size: 13, isBold: false)))
+                          : const Text('waiting...'),
+                    ),
+                  if (acceptAggrement)
+                    Checkbox(
+                      value: acceptAggrement,
+                      checkColor: Colors.white,
+                      activeColor: AppColors.kLightGreen,
+                      visualDensity: VisualDensity.adaptivePlatformDensity,
+                      onChanged: (bool? newValue) async {
+                        setState(() {
+                          acceptAggrement = newValue!;
+                        });
+                        merchantAgreeMentReq.serviceAgreement = newValue!;
 
-                  if(!acceptAggrement)GestureDetector(
-                    onTap: () {
-                      _sendServiceAgreementsToMail();
-                    },
-                    child: !isServiceWaiting?Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal:
-                                MediaQuery.of(context).size.width * .035),
-                        height: MediaQuery.of(context).size.height * .03,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: Colors.white),
-                        child: const Center(
-                            child: CustomTextWidget(
-                                text: 'View', size: 13, isBold: false))):const Text('waiting...'),
-                  ),
-
-                  if(acceptAggrement)Checkbox(
-                    value: acceptAggrement,
-                    checkColor: Colors.white,
-                    activeColor: AppColors.kLightGreen,
-                    visualDensity: VisualDensity.adaptivePlatformDensity,
-                    onChanged: (bool? newValue) async {
-                      setState(() {
-                        acceptAggrement = newValue!;
-                      });
-                      merchantAgreeMentReq.serviceAgreement = newValue!;
-
-                      // if (!accept) {
-                      //   var results =
-                      //       await Navigator.of(context).push(MaterialPageRoute(
-                      //           builder: (BuildContext context) {
-                      //             return const TermsAndConditionPage();
-                      //           },
-                      //           fullscreenDialog: true));
-                      //   setState(() {
-                      //     if (results != null) {
-                      //       accept = results;
-                      //       requestModel.acceptLicense = accept;
-                      //     }
-                      //   });
-                      // } else {
-                      //   setState(() {
-                      //     accept = false;
-                      //     requestModel.acceptLicense = accept;
-                      //   });
-                      // }
-                    },
-                  ),
-
+                        // if (!accept) {
+                        //   var results =
+                        //       await Navigator.of(context).push(MaterialPageRoute(
+                        //           builder: (BuildContext context) {
+                        //             return const TermsAndConditionPage();
+                        //           },
+                        //           fullscreenDialog: true));
+                        //   setState(() {
+                        //     if (results != null) {
+                        //       accept = results;
+                        //       requestModel.acceptLicense = accept;
+                        //     }
+                        //   });
+                        // } else {
+                        //   setState(() {
+                        //     accept = false;
+                        //     requestModel.acceptLicense = accept;
+                        //   });
+                        // }
+                      },
+                    ),
                 ],
               ),
             ),
