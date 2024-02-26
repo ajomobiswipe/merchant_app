@@ -360,9 +360,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
   Timer? _debounce;
 
+  bool isTermsWaiting = false;
+  bool isServiceWaiting = false;
+
   Future _sendTermsAndConditionsToMail() async {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
-
     _debounce = Timer(const Duration(milliseconds: 1000), () {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -370,6 +372,10 @@ class _MerchantSignupState extends State<MerchantSignup> {
           duration: Duration(seconds: 2),
         ),
       );
+
+      setState(() {
+        isTermsWaiting = true;
+      });
 
       checkForTermsAcceptance(0);
     });
@@ -387,42 +393,59 @@ class _MerchantSignupState extends State<MerchantSignup> {
         ),
       );
 
+      setState(() {
+        isServiceWaiting = true;
+      });
+
       checkForServiceAcceptance(0);
     });
   }
-
-  Timer? _timerForTerms;
 
   Future checkForTermsAcceptance(int count) async {
     print('termsCounter $count');
 
     if (count == 10) {
-      print('termsCounter stopped');
-      _timerForTerms?.cancel();
+      setState(() {
+        acceptTnc = true;
+        merchantAgreeMentReq.termsCondition = true!;
+      });
       return;
     }
 
-    _timerForTerms = Timer.periodic(const Duration(seconds: 10), (timer) {
-      // Perform your action here
+    Future.delayed(const Duration(seconds: 10), () {
+      print('hellooo');
       checkForTermsAcceptance(count + 1);
     });
-  }
 
-  Timer? _timerForService;
+    // _timerForTerms = Timer.periodic(const Duration(seconds: 10), (timer) {
+    //   // Perform your action here
+    //
+    //   print('hit');
+    // });
+  }
 
   Future checkForServiceAcceptance(int count) async {
     print('serviceCounter $count');
 
     if (count == 10) {
       print('serviceCounter stopped');
-      _timerForService?.cancel();
+      setState(() {
+        acceptAggrement = true;
+        merchantAgreeMentReq.serviceAgreement = true;
+      });
+      // _timerForService?.cancel();
       return;
     }
 
-    _timerForService = Timer.periodic(const Duration(seconds: 10), (timer) {
-      // Perform your action here
+    Future.delayed(const Duration(seconds: 10), () {
+      print('hellooo');
       checkForServiceAcceptance(count + 1);
     });
+
+    // _timerForService = Timer.periodic(const Duration(seconds: 10), (timer) {
+    //   // Perform your action here
+    //   checkForServiceAcceptance(count + 1);
+    // });
   }
 
   // getToken() async {
@@ -3879,6 +3902,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               color: AppColors.kTileColor,
               child: Row(
                 children: <Widget>[
+
                   Expanded(
                     child: RichText(
                       text: TextSpan(
@@ -3892,11 +3916,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
                     ),
                   ),
 
-                  GestureDetector(
+                  if(!acceptTnc)GestureDetector(
                     onTap: () {
                       _sendTermsAndConditionsToMail();
                     },
-                    child: Container(
+                    child: !isTermsWaiting?Container(
                         padding: EdgeInsets.symmetric(
                             horizontal:
                                 MediaQuery.of(context).size.width * .035),
@@ -3906,21 +3930,21 @@ class _MerchantSignupState extends State<MerchantSignup> {
                             color: Colors.white),
                         child: const Center(
                             child: CustomTextWidget(
-                                text: 'View', size: 13, isBold: false))),
+                                text: 'View', size: 13, isBold: false))):const Text('Waiting...'),
                   ),
 
-                  // Checkbox(
-                  //   value: acceptTnc,
-                  //   checkColor: Colors.white,
-                  //   activeColor: AppColors.kLightGreen,
-                  //   visualDensity: VisualDensity.adaptivePlatformDensity,
-                  //   onChanged: (bool? newValue) async {
-                  //     setState(() {
-                  //       acceptTnc = newValue!;
-                  //     });
-                  //     merchantAgreeMentReq.termsCondition = newValue!;
-                  //   },
-                  // ),
+                  if(acceptTnc)Checkbox(
+                    value: acceptTnc,
+                    checkColor: Colors.white,
+                    activeColor: AppColors.kLightGreen,
+                    visualDensity: VisualDensity.adaptivePlatformDensity,
+                    onChanged: (bool? newValue) async {
+                      setState(() {
+                        acceptTnc = newValue!;
+                      });
+                      merchantAgreeMentReq.termsCondition = newValue!;
+                    },
+                  ),
                 ],
               ),
             ),
@@ -3947,11 +3971,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
                     ),
                   ),
 
-                  GestureDetector(
+                  if(!acceptAggrement)GestureDetector(
                     onTap: () {
                       _sendServiceAgreementsToMail();
                     },
-                    child: Container(
+                    child: !isServiceWaiting?Container(
                         padding: EdgeInsets.symmetric(
                             horizontal:
                                 MediaQuery.of(context).size.width * .035),
@@ -3961,41 +3985,42 @@ class _MerchantSignupState extends State<MerchantSignup> {
                             color: Colors.white),
                         child: const Center(
                             child: CustomTextWidget(
-                                text: 'View', size: 13, isBold: false))),
+                                text: 'View', size: 13, isBold: false))):const Text('waiting...'),
                   ),
 
-                  // Checkbox(
-                  //   value: acceptAggrement,
-                  //   checkColor: Colors.white,
-                  //   activeColor: AppColors.kLightGreen,
-                  //   visualDensity: VisualDensity.adaptivePlatformDensity,
-                  //   onChanged: (bool? newValue) async {
-                  //     setState(() {
-                  //       acceptAggrement = newValue!;
-                  //     });
-                  //     merchantAgreeMentReq.serviceAgreement = newValue!;
-                  //
-                  //     // if (!accept) {
-                  //     //   var results =
-                  //     //       await Navigator.of(context).push(MaterialPageRoute(
-                  //     //           builder: (BuildContext context) {
-                  //     //             return const TermsAndConditionPage();
-                  //     //           },
-                  //     //           fullscreenDialog: true));
-                  //     //   setState(() {
-                  //     //     if (results != null) {
-                  //     //       accept = results;
-                  //     //       requestModel.acceptLicense = accept;
-                  //     //     }
-                  //     //   });
-                  //     // } else {
-                  //     //   setState(() {
-                  //     //     accept = false;
-                  //     //     requestModel.acceptLicense = accept;
-                  //     //   });
-                  //     // }
-                  //   },
-                  // ),
+                  if(acceptAggrement)Checkbox(
+                    value: acceptAggrement,
+                    checkColor: Colors.white,
+                    activeColor: AppColors.kLightGreen,
+                    visualDensity: VisualDensity.adaptivePlatformDensity,
+                    onChanged: (bool? newValue) async {
+                      setState(() {
+                        acceptAggrement = newValue!;
+                      });
+                      merchantAgreeMentReq.serviceAgreement = newValue!;
+
+                      // if (!accept) {
+                      //   var results =
+                      //       await Navigator.of(context).push(MaterialPageRoute(
+                      //           builder: (BuildContext context) {
+                      //             return const TermsAndConditionPage();
+                      //           },
+                      //           fullscreenDialog: true));
+                      //   setState(() {
+                      //     if (results != null) {
+                      //       accept = results;
+                      //       requestModel.acceptLicense = accept;
+                      //     }
+                      //   });
+                      // } else {
+                      //   setState(() {
+                      //     accept = false;
+                      //     requestModel.acceptLicense = accept;
+                      //   });
+                      // }
+                    },
+                  ),
+
                 ],
               ),
             ),
