@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
+import 'package:sifr_latest/config/app_color.dart';
+import 'package:sifr_latest/widgets/app_widget/app_button.dart';
 import 'package:sifr_latest/widgets/custom_text_widget.dart';
 
 Future<void> otpWidget(
@@ -40,7 +42,14 @@ Future<void> otpWidget(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CustomTextWidget(text: title),
+              CustomTextWidget(
+                text: title,
+                size: 20,
+                color: AppColors.kPrimaryColor,
+              ),
+              SizedBox(
+                height: 20,
+              ),
               Directionality(
                 // Specify direction if desired
                 textDirection: TextDirection.ltr,
@@ -95,12 +104,17 @@ Future<void> otpWidget(
                   ),
                 ),
               ),
-              TextButton(
+              SizedBox(
+                height: 40,
+              ),
+              AppButton(
                 onPressed: () {
                   focusNode.unfocus();
                   formKey.currentState!.validate();
+                  Navigator.of(context).pop();
                 },
-                child: const Text('Validate'),
+                title: "Submit",
+                // child: const Text('Validate'),
               ),
             ],
           ),

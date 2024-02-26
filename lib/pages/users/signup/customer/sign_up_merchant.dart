@@ -835,7 +835,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   onPressed: () {
                     otpWidget(
                       context: context,
-                      title: "hgh",
+                      title: "Verify E-mail id",
                       validator: (dd) {},
                     );
                   },
