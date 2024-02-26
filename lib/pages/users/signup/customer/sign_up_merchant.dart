@@ -97,7 +97,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
   // Merchant order Detials
   TextEditingController canceledChequeControler = TextEditingController();
   List<SelectedProduct> selectedItems = [];
-  List<SelectedBusinessProof> selectedBusinessProofItems = [];
+  List<MechantKycDocument> selectedBusinessProofItems = [];
 
   bool isEditable = false;
 
@@ -2060,8 +2060,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   if (pickedDate != null) {
                     String formattedDate = DateFormat("yyyy-MM-ddTHH:mm:ss.SSS")
                         .format(pickedDate);
-                    businessIdProofReq.businessProofDocumtExpiry =
-                        formattedDate;
+                    //  selected=
+                    //       formattedDate;
                     print('Formatted Date: ${formattedDate}Z');
                   }
                 },
@@ -2083,15 +2083,15 @@ class _MerchantSignupState extends State<MerchantSignup> {
         IconButton(
             onPressed: () async {
               print('validateAction');
+
               documentFormkey.currentState!.save();
               if (documentFormkey.currentState!.validate()) {
                 setState(() {
-                  selectedBusinessProofItems.add(SelectedBusinessProof(
-                      businessProofDocumentExpiry:
-                          documentExpiryController.text,
-                      businessProofId: businessDocumentTypeId!,
-                      businessProofName: businessDocumentTypename!,
-                      businessProofFileName: businessProofDocumentCtrl.text));
+                  selectedBusinessProofItems.add(MechantKycDocument(
+                      documentExpiry: documentExpiryController.text,
+                      documentTypeId: int.parse(businessDocumentTypeId!),
+                      documentTypeName: businessDocumentTypename!,
+                      fileName: businessProofDocumentCtrl.text));
                 });
 
                 businessProofDocumentCtrl.clear();
@@ -2144,7 +2144,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                         DataCell(SizedBox(
                           width: 100,
                           child: CustomTextWidget(
-                            text: item.businessProofName.toString(),
+                            text: item.documentTypeName.toString(),
                             size: 11,
                             fontWeight: FontWeight.w900,
                           ),
@@ -2155,7 +2155,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                         //   fontWeight: FontWeight.w900,
                         // )),
                         DataCell(CustomTextWidget(
-                          text: item.businessProofDocumentExpiry.toString(),
+                          text: item.documentExpiry.toString(),
                           size: 12,
                           fontWeight: FontWeight.w900,
                         )),
@@ -2199,6 +2199,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
         CustomAppButton(
           title: "Next",
           onPressed: () async {
+            businessIdProofReq.mechantKycDocuments = selectedBusinessProofItems;
             personalFormKey.currentState!.save();
             if (personalFormKey.currentState!.validate()) {
               if (selectedBusinessProofItems.isEmpty) {
@@ -4523,10 +4524,14 @@ class _MerchantSignupState extends State<MerchantSignup> {
   }
 
   void _openFilePicker() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowMultiple: true,
+      allowedExtensions: ['pdf'], // Specify only PDF files
+    );
 
     if (result != null) {
-      print(result.paths.first);
+      print(result.files.first.path);
       setState(() {
         businessProofDocumentCtrl.text = result.files.single.name;
       });

@@ -1,13 +1,14 @@
-class SelectedBusinessProof {
-  String businessProofName;
-  String businessProofId;
-  String businessProofDocumentExpiry;
-  String businessProofFileName;
+class BusinessProofModel {
+  String? businessProofName;
+  String? businessProofId;
+  String? businessProofDocumentExpiry;
+  String? businessProofFileName;
+  String? businessProofFilePath;
 
-  SelectedBusinessProof({
-    required this.businessProofName,
-    required this.businessProofId,
-    required this.businessProofDocumentExpiry,
-    required this.businessProofFileName,
+  BusinessProofModel({
+    this.businessProofName,
+    this.businessProofId,
+    this.businessProofDocumentExpiry,
+    this.businessProofFileName,
   });
 }

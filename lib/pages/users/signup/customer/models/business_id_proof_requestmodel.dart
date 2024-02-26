@@ -13,18 +13,16 @@ String businessIdProofRequestmodelToJson(BusinessIdProofRequestmodel data) =>
 class BusinessIdProofRequestmodel {
   String? gstnNo;
   String? firmPanNo;
-  bool gstnVerifyStatus;
-  bool firmPanNumberVerifyStatus;
-  String? businessProofDocumntType;
-  String? businessProofDocumtExpiry;
+  bool? gstnVerifyStatus;
+  bool? firmPanNumberVerifyStatus;
+  List<MechantKycDocument>? mechantKycDocuments;
 
   BusinessIdProofRequestmodel({
     this.gstnNo,
     this.firmPanNo,
-    this.gstnVerifyStatus = false,
-    this.firmPanNumberVerifyStatus = false,
-    this.businessProofDocumntType,
-    this.businessProofDocumtExpiry,
+    this.gstnVerifyStatus,
+    this.firmPanNumberVerifyStatus,
+    this.mechantKycDocuments,
   });
 
   factory BusinessIdProofRequestmodel.fromJson(Map<String, dynamic> json) =>
@@ -33,8 +31,10 @@ class BusinessIdProofRequestmodel {
         firmPanNo: json["firmPanNo"],
         gstnVerifyStatus: json["gstnVerifyStatus"],
         firmPanNumberVerifyStatus: json["firmPanNumberVerifyStatus"],
-        businessProofDocumntType: json["businessProofDocumntType"],
-        businessProofDocumtExpiry: json["businessProofDocumtExpiry"],
+        mechantKycDocuments: json["mechantKycDocuments"] == null
+            ? []
+            : List<MechantKycDocument>.from(json["mechantKycDocuments"]!
+                .map((x) => MechantKycDocument.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -42,7 +42,41 @@ class BusinessIdProofRequestmodel {
         "firmPanNo": firmPanNo,
         "gstnVerifyStatus": gstnVerifyStatus,
         "firmPanNumberVerifyStatus": firmPanNumberVerifyStatus,
-        "businessProofDocumntType": businessProofDocumntType,
-        "businessProofDocumtExpiry": businessProofDocumtExpiry,
+        "mechantKycDocuments": mechantKycDocuments == null
+            ? []
+            : List<dynamic>.from(mechantKycDocuments!
+                .map((x) => x.toJson(mechantKycDocuments!.indexOf(x)))),
+      };
+}
+
+class MechantKycDocument {
+  int? fileId;
+  int? documentTypeId;
+  String? fileName;
+  String? documentExpiry;
+  String? documentTypeName;
+  String? fileFullPath;
+
+  MechantKycDocument({
+    this.fileId,
+    this.documentTypeId,
+    this.fileName,
+    this.documentExpiry,
+    this.documentTypeName,
+    this.fileFullPath,
+  });
+
+  factory MechantKycDocument.fromJson(Map<String, dynamic> json) =>
+      MechantKycDocument(
+          fileId: json["fileId"],
+          documentTypeId: json["documentTypeId"],
+          fileName: json["fileName"],
+          documentExpiry: json["documentExpiry"]);
+
+  Map<String, dynamic> toJson(fileIndexId) => {
+        "fileId": fileIndexId,
+        "documentTypeId": documentTypeId,
+        "fileName": fileName,
+        "documentExpiry": documentExpiry,
       };
 }
