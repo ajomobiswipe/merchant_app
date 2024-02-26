@@ -114,6 +114,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
   dynamic businessType;
   dynamic businessProofType;
   String? businessDocumentTypename;
+  String? businessDocumentFileFullpath;
   String? businessDocumentTypeId;
 
   // List<Map<String, dynamic>> BusinessTypeList = [
@@ -371,10 +372,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
       );
 
       checkForTermsAcceptance(0);
-
     });
-
-
   }
 
   Future _sendServiceAgreementsToMail() async {
@@ -391,12 +389,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
       checkForServiceAcceptance(0);
     });
-
-
   }
 
   Timer? _timerForTerms;
-
 
   Future checkForTermsAcceptance(int count) async {
     print('termsCounter $count');
@@ -2183,6 +2178,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               if (documentFormkey.currentState!.validate()) {
                 setState(() {
                   selectedBusinessProofItems.add(MechantKycDocument(
+                      fileFullPath: businessDocumentFileFullpath,
                       documentExpiry: documentExpiryController.text,
                       documentTypeId: int.parse(businessDocumentTypeId!),
                       documentTypeName: businessDocumentTypename!,
@@ -2192,6 +2188,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 businessProofDocumentCtrl.clear();
                 documentExpiryController.clear();
                 businessDocumentTypeId = "";
+                businessDocumentFileFullpath = "";
                 businessProofType = null;
               } else {
                 print("form not validated");
@@ -2294,12 +2291,16 @@ class _MerchantSignupState extends State<MerchantSignup> {
         CustomAppButton(
           title: "Next",
           onPressed: () async {
-            businessIdProofReq.mechantKycDocuments = selectedBusinessProofItems;
             personalFormKey.currentState!.save();
             if (personalFormKey.currentState!.validate()) {
               if (selectedBusinessProofItems.isEmpty) {
                 alertWidget.error("plese Add Document");
               } else {
+                businessIdProofReq.mechantKycDocuments =
+                    selectedBusinessProofItems;
+                for (var item in selectedBusinessProofItems) {
+                  print(item.fileFullPath);
+                }
                 print(jsonEncode(businessIdProofReq.toJson()));
                 setState(() {
                   currTabPosition = 2;
@@ -4664,13 +4665,14 @@ class _MerchantSignupState extends State<MerchantSignup> {
   void _openFilePicker() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowMultiple: true,
+      allowMultiple: false,
       allowedExtensions: ['pdf'], // Specify only PDF files
     );
 
     if (result != null) {
       print(result.files.first.path);
       setState(() {
+        businessDocumentFileFullpath = result.files.first.path;
         businessProofDocumentCtrl.text = result.files.single.name;
       });
     }

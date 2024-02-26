@@ -13,15 +13,15 @@ String businessIdProofRequestmodelToJson(BusinessIdProofRequestmodel data) =>
 class BusinessIdProofRequestmodel {
   String? gstnNo;
   String? firmPanNo;
-  bool? gstnVerifyStatus;
-  bool? firmPanNumberVerifyStatus;
+  bool gstnVerifyStatus;
+  bool firmPanNumberVerifyStatus;
   List<MechantKycDocument>? mechantKycDocuments;
 
   BusinessIdProofRequestmodel({
     this.gstnNo,
     this.firmPanNo,
-    this.gstnVerifyStatus,
-    this.firmPanNumberVerifyStatus,
+    this.gstnVerifyStatus = false,
+    this.firmPanNumberVerifyStatus = false,
     this.mechantKycDocuments,
   });
 

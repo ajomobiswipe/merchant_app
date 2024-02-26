@@ -463,8 +463,6 @@ class UserServices {
       "turnOverType": turnOver
     };
 
-
-
     print(requestBody);
 
     // var url = 'http://10.0.38.61:9508/NanoPay/Middleware/UiApi/mdrDetails';
@@ -850,13 +848,25 @@ class UserServices {
     // request.files.add(kf);
     // request.files.add(kb);
     // request.files.add(tl);merchantProductInfo
+    //businessIdProofReq.mechantKycDocuments![0].fileFullPath,
 
+    for (var files in businessIdProofReq.mechantKycDocuments) {
+      print("File path in Submit" + files.fileFullPath);
+    }
     print(jsonEncode(businessIdProofReq.toJson()));
     print(jsonEncode(merchantStoreInfoReq.toJson()));
     print(jsonEncode(merchantIdProofReq.toJson()));
     print(jsonEncode(companyDetailsInforeq.toJson()));
     print(jsonEncode(merchantBankInfoReq.toJson()));
     print(jsonEncode(merchantAgreeMentReq.toJson()));
+
+    // adding list of document in
+    for (var files in businessIdProofReq.mechantKycDocuments) {
+      var multipartFile = await http.MultipartFile.fromPath(
+          'mechantKycDocuments', files.fileFullPath);
+      request.files.add(multipartFile);
+      print("File path in Submit" + files.fileFullPath);
+    }
     request.files.add(storeInsideImg);
     request.files.add(storeOutsideImg);
     request.files.add(cancelledCheqImg);
