@@ -495,6 +495,9 @@ class UserServices {
   }
 
   Future sendTermsAndConditions(String? mailId, String requestType) async {
+
+
+
     Connection connection = Connection();
 
     SharedPreferences prefs = await SharedPreferences.getInstance();

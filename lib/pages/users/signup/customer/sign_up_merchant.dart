@@ -362,14 +362,16 @@ class _MerchantSignupState extends State<MerchantSignup> {
   bool isServiceWaiting = false;
 
   Future _sendTermsAndConditionsToMail() async {
+    print(acceptAggrement);
+
     if (_debounce?.isActive ?? false) _debounce!.cancel();
 
-    var response=await userServices.sendTermsAndConditions(companyDetailsInforeq.emailId,"TERMS_AND_CONDITION");
+    var response = await userServices.sendTermsAndConditions(
+        companyDetailsInforeq.emailId, "TERMS_AND_CONDITION");
 
     final data = json.decode(response.body);
 
-    if(data['responseCode']!='00'){
-
+    if (data['responseCode'] != '00') {
       return;
     }
 
@@ -389,17 +391,19 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
       checkForTermsAcceptance(0);
     });
-
   }
 
   Future _sendServiceAgreementsToMail() async {
+    print(acceptTnc);
+
     if (_debounce?.isActive ?? false) _debounce!.cancel();
 
-    var response=await userServices.sendTermsAndConditions(companyDetailsInforeq.emailId,"SERVICE_AGREEMENT");
+    var response = await userServices.sendTermsAndConditions(
+        companyDetailsInforeq.emailId, "SERVICE_AGREEMENT");
 
     final data = json.decode(response.body);
 
-    if(data['responseCode']!='00'){
+    if (data['responseCode'] != '00') {
       return;
     }
 
@@ -421,25 +425,32 @@ class _MerchantSignupState extends State<MerchantSignup> {
   }
 
   Future checkForTermsAcceptance(int count) async {
-
-
-    var response=await userServices.getTcAndAgreementStatus(companyDetailsInforeq.emailId);
+    var response = await userServices
+        .getTcAndAgreementStatus(companyDetailsInforeq.emailId);
 
     final data = json.decode(response.body);
 
-    print(data);
-
-    if (count == 10) {
-      setState(() {
-        acceptTnc = true;
-        merchantAgreeMentReq.termsCondition = true!;
+    if (data['statusCode'] != 200) {
+      if (count == 10) {
+        return;
+      }
+      Future.delayed(const Duration(seconds: 10), () {
+        checkForTermsAcceptance(count + 1);
       });
-      return;
     }
 
-    Future.delayed(const Duration(seconds: 10), () {
-      print('hellooo');
-      checkForTermsAcceptance(count + 1);
+    if (!data['data']['termsAndConditionsRead']) {
+      if (count == 10) {
+        return;
+      }
+      Future.delayed(const Duration(seconds: 10), () {
+        checkForTermsAcceptance(count + 1);
+      });
+    }
+
+    setState(() {
+      acceptTnc = true;
+      merchantAgreeMentReq.termsCondition = true!;
     });
 
     // _timerForTerms = Timer.periodic(const Duration(seconds: 10), (timer) {
@@ -450,27 +461,25 @@ class _MerchantSignupState extends State<MerchantSignup> {
   }
 
   Future checkForServiceAcceptance(int count) async {
-
-
-    var response=await userServices.getTcAndAgreementStatus(companyDetailsInforeq.emailId);
+    var response = await userServices
+        .getTcAndAgreementStatus(companyDetailsInforeq.emailId);
 
     final data = json.decode(response.body);
 
-    print(data);
+    if (data['statusCode'] != 200) {
+      if (count == 10) {
+        return;
+      }
 
-    if (count == 10) {
-      print('serviceCounter stopped');
-      setState(() {
-        acceptAggrement = true;
-        merchantAgreeMentReq.serviceAgreement = true;
+      Future.delayed(const Duration(seconds: 10), () {
+        print('hellooo');
+        checkForServiceAcceptance(count + 1);
       });
-      // _timerForService?.cancel();
-      return;
     }
 
-    Future.delayed(const Duration(seconds: 10), () {
-      print('hellooo');
-      checkForServiceAcceptance(count + 1);
+    setState(() {
+      acceptAggrement = true;
+      merchantAgreeMentReq.serviceAgreement = true;
     });
 
     // _timerForService = Timer.periodic(const Duration(seconds: 10), (timer) {
