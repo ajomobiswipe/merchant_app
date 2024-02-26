@@ -363,6 +363,18 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
   Future _sendTermsAndConditionsToMail() async {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
+
+    var response=await userServices.sendTermsAndConditions(companyDetailsInforeq.emailId,"TERMS_AND_CONDITION");
+
+    final data = json.decode(response.body);
+
+    if(data['responseCode']!='00'){
+
+      return;
+    }
+
+    print(data);
+
     _debounce = Timer(const Duration(milliseconds: 1000), () {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -377,10 +389,19 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
       checkForTermsAcceptance(0);
     });
+
   }
 
   Future _sendServiceAgreementsToMail() async {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
+
+    var response=await userServices.sendTermsAndConditions(companyDetailsInforeq.emailId,"SERVICE_AGREEMENT");
+
+    final data = json.decode(response.body);
+
+    if(data['responseCode']!='00'){
+      return;
+    }
 
     _debounce = Timer(const Duration(milliseconds: 1000), () {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -400,7 +421,13 @@ class _MerchantSignupState extends State<MerchantSignup> {
   }
 
   Future checkForTermsAcceptance(int count) async {
-    print('termsCounter $count');
+
+
+    var response=await userServices.getTcAndAgreementStatus(companyDetailsInforeq.emailId);
+
+    final data = json.decode(response.body);
+
+    print(data);
 
     if (count == 10) {
       setState(() {
@@ -423,7 +450,13 @@ class _MerchantSignupState extends State<MerchantSignup> {
   }
 
   Future checkForServiceAcceptance(int count) async {
-    print('serviceCounter $count');
+
+
+    var response=await userServices.getTcAndAgreementStatus(companyDetailsInforeq.emailId);
+
+    final data = json.decode(response.body);
+
+    print(data);
 
     if (count == 10) {
       print('serviceCounter stopped');

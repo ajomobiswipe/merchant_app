@@ -134,7 +134,7 @@ class Connection {
   * METHOD: POST
   * Params: url and requestData
   */
-  post(url, requestData) async {
+  post(url, requestData,{int? timeOutSeconds}) async {
     String token = boxStorage.getToken();
     final header = {
       'Authorization': 'Bearer $token',
@@ -152,7 +152,7 @@ class Connection {
     IOClient ioClient = IOClient(client);
     var res = await ioClient
         .post(Uri.parse(url), body: jsonEncode(requestData), headers: header)
-        .timeout(const Duration(seconds: 10));
+        .timeout(Duration(seconds: timeOutSeconds??10));
     // print(res.body);
 
     if (res.statusCode == 401) {

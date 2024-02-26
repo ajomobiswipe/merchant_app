@@ -494,6 +494,44 @@ class UserServices {
     // return resonr;
   }
 
+  Future sendTermsAndConditions(String? mailId, String requestType) async {
+    Connection connection = Connection();
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String? userName = prefs.getString('userName');
+
+    final requestBody = {
+      "userName": userName,
+      "email": mailId,
+      "requestType": requestType
+    };
+
+    print(requestBody);
+
+    var url =
+        'http://10.0.38.83:9508/NanoPay/Middleware/UiApi/sendTermsAndConditions';
+    // var url = 'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/sendTermsAndConditions';
+    var response = await connection.post(url, requestBody,timeOutSeconds: 20);
+
+
+    return response;
+  }
+
+  Future getTcAndAgreementStatus(String? mailId) async {
+    Connection connection = Connection();
+
+
+
+    var url =
+        'http://10.0.38.83:9508/NanoPay/Middleware/UiApi/getTcAndAgreementStatus/$mailId';
+    // var url = 'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/sendTermsAndConditions';
+    var response = await connection.get(url,);
+
+
+    return response;
+  }
+
   Future<dynamic> GetMerchantOnboardingValues() async {
     Connection connection = Connection();
     var url =
