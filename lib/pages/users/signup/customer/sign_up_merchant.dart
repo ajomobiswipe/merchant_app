@@ -795,14 +795,17 @@ class _MerchantSignupState extends State<MerchantSignup> {
               height: 20,
             ),
 
+
+
             const CustomDropdown(
               title: "Business Type",
               itemList: [],
               dropDownIsEnabled: false,
-              required: true,
+              required: true
             ),
 
             DropdownButtonFormField(
+              autovalidateMode:AutovalidateMode.onUserInteraction,
               isDense: true,
               isExpanded: true,
               decoration: commonInputDecoration(Icons.maps_home_work_outlined,
@@ -965,6 +968,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
             ),
 
             DropdownButtonFormField(
+              autovalidateMode:AutovalidateMode.onUserInteraction,
               isDense: true,
               isExpanded: true,
               decoration: commonInputDecoration(Icons.location_city_outlined,
@@ -997,6 +1001,13 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   print(selectedBusinessSubCategory);
                 });
               },
+
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Merchant Business category is Mandatory!';
+                  }
+                  return null;
+                },
             ),
 
             // SimpleDropDown(
@@ -1060,6 +1071,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
             ),
 
             DropdownButtonFormField(
+              autovalidateMode:AutovalidateMode.onUserInteraction,
               isDense: true,
               isExpanded: true,
               decoration: commonInputDecoration(Icons.location_city_outlined,
@@ -1096,6 +1108,14 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   companyDetailsInforeq.mccTypeCode = newValue["mccTypeId"];
                 });
               },
+
+                validator: (value) {
+                  if (value == null) {
+                    return 'Merchant Business Sub is Mandatory!';
+                  }
+                  return null;
+                },
+
               onSaved: (dynamic value) {
                 if (value == null) return;
                 companyDetailsInforeq.mccTypeCode = value["mccTypeId"];
@@ -1162,6 +1182,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
             ),
 
             DropdownButtonFormField(
+              autovalidateMode:AutovalidateMode.onUserInteraction,
               isDense: true,
               isExpanded: true,
               decoration: commonInputDecoration(Icons.location_city_outlined,
@@ -1195,6 +1216,13 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   });
                 });
               },
+
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Business Turnover is Mandatory!';
+                  }
+                  return null;
+                },
             ),
 
             // CustomDropdown(
@@ -2536,6 +2564,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
             ),
 
             DropdownButtonFormField(
+              autovalidateMode:AutovalidateMode.onUserInteraction,
               isDense: true,
               isExpanded: true,
               decoration: commonInputDecoration(FontAwesome.building,
