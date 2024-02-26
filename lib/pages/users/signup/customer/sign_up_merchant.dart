@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'dart:io';
@@ -58,8 +59,8 @@ class MerchantSignup extends StatefulWidget {
 class _MerchantSignupState extends State<MerchantSignup> {
   bool _isLoading = false;
   int position = 0;
-  bool acceptTnc = true;
-  bool acceptAggrement = true;
+  bool acceptTnc = false;
+  bool acceptAggrement = false;
   FocusNode myFocusNode = FocusNode();
 
   AlertService alertWidget = AlertService();
@@ -356,6 +357,79 @@ class _MerchantSignupState extends State<MerchantSignup> {
     //userServices.getAcqApplicationid('1');
   }
 
+  Timer? _debounce;
+
+  Future _sendTermsAndConditionsToMail() async {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+
+    _debounce = Timer(const Duration(milliseconds: 1000), () {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Terms and conditions have sent to registered mail'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+
+      checkForTermsAcceptance(0);
+
+    });
+
+
+  }
+
+  Future _sendServiceAgreementsToMail() async {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+
+    _debounce = Timer(const Duration(milliseconds: 1000), () {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content:
+              Text('Merchant Service Agreement have sent to registered mail'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+
+      checkForServiceAcceptance(0);
+    });
+
+
+  }
+
+  Timer? _timerForTerms;
+
+
+  Future checkForTermsAcceptance(int count) async {
+    print('termsCounter $count');
+
+    if (count == 10) {
+      print('termsCounter stopped');
+      _timerForTerms?.cancel();
+      return;
+    }
+
+    _timerForTerms = Timer.periodic(const Duration(seconds: 10), (timer) {
+      // Perform your action here
+      checkForTermsAcceptance(count + 1);
+    });
+  }
+
+  Timer? _timerForService;
+
+  Future checkForServiceAcceptance(int count) async {
+    print('serviceCounter $count');
+
+    if (count == 10) {
+      print('serviceCounter stopped');
+      _timerForService?.cancel();
+      return;
+    }
+
+    _timerForService = Timer.periodic(const Duration(seconds: 10), (timer) {
+      // Perform your action here
+      checkForServiceAcceptance(count + 1);
+    });
+  }
+
   // getToken() async {
   //   var token = await FirebaseMessaging.instance.getToken();
   //   if (token != null) {
@@ -387,7 +461,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
     var response = await userServices.getMdrSummary(
         mdrType,
-        selectedBussinesTurnOver['turnoverAmount'],
+        selectedBussinesTurnOver['turnoverType'],
         selectedBusinessCategory['mccGroupId']);
 
     final Map<String, dynamic> data = json.decode(response.body);
@@ -796,13 +870,13 @@ class _MerchantSignupState extends State<MerchantSignup> {
             ),
 
             const CustomDropdown(
-              title: "Business Type",
-              itemList: [],
-              dropDownIsEnabled: false,
-              required: true,
-            ),
+                title: "Business Type",
+                itemList: [],
+                dropDownIsEnabled: false,
+                required: true),
 
             DropdownButtonFormField(
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               isDense: true,
               isExpanded: true,
               decoration: commonInputDecoration(Icons.maps_home_work_outlined,
@@ -965,6 +1039,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
             ),
 
             DropdownButtonFormField(
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               isDense: true,
               isExpanded: true,
               decoration: commonInputDecoration(Icons.location_city_outlined,
@@ -996,6 +1071,12 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   selectedBusinessSubCategory = null;
                   print(selectedBusinessSubCategory);
                 });
+              },
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Merchant Business category is Mandatory!';
+                }
+                return null;
               },
             ),
 
@@ -1060,6 +1141,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
             ),
 
             DropdownButtonFormField(
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               isDense: true,
               isExpanded: true,
               decoration: commonInputDecoration(Icons.location_city_outlined,
@@ -1095,6 +1177,12 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
                   companyDetailsInforeq.mccTypeCode = newValue["mccTypeId"];
                 });
+              },
+              validator: (value) {
+                if (value == null) {
+                  return 'Merchant Business Sub is Mandatory!';
+                }
+                return null;
               },
               onSaved: (dynamic value) {
                 if (value == null) return;
@@ -1162,6 +1250,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
             ),
 
             DropdownButtonFormField(
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               isDense: true,
               isExpanded: true,
               decoration: commonInputDecoration(Icons.location_city_outlined,
@@ -1194,6 +1283,12 @@ class _MerchantSignupState extends State<MerchantSignup> {
                     print(companyDetailsInforeq.annualTurnOver);
                   });
                 });
+              },
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Business Turnover is Mandatory!';
+                }
+                return null;
               },
             ),
 
@@ -1876,7 +1971,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 helperText: merchantPanHelpertext,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'FirmPan number Mandatory!';
+                    return 'Firm Pan number Mandatory!';
                   }
                   if (value.length < 10) {
                     return 'Minimum character length is 10';
@@ -1901,7 +1996,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
           key: documentFormkey,
           child: Column(
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               // CustomDropdown(
@@ -1952,9 +2047,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
               //     // print(businessIdProofReq.businessProofDocumntType);
               //   },
               // ),
-              Row(
+              const Row(
                 children: [
-                  const CustomTextWidget(
+                  CustomTextWidget(
                     text: "Merchant Business Proof Document",
                     fontWeight: FontWeight.bold,
                   ),
@@ -2537,6 +2632,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
             ),
 
             DropdownButtonFormField(
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               isDense: true,
               isExpanded: true,
               decoration: commonInputDecoration(FontAwesome.building,
@@ -3764,7 +3860,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                         ?.copyWith(fontWeight: FontWeight.bold),
                     children: [
                       TextSpan(
-                        text: Constants.aggrementMessage,
+                        text: Constants.agreementMessage,
                         style: Theme.of(context)
                             .textTheme
                             .bodyMedium
@@ -3775,43 +3871,66 @@ class _MerchantSignupState extends State<MerchantSignup> {
             ),
 
             const SizedBox(height: 10),
+
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              height: MediaQuery.of(context).size.height * .05,
+              padding: const EdgeInsets.symmetric(horizontal: 15),
               color: AppColors.kTileColor,
               child: Row(
                 children: <Widget>[
                   Expanded(
                     child: RichText(
                       text: TextSpan(
-                        text: "Terms and conditionss",
+                        text: "Terms and Conditions",
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.bold, fontSize: 12),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                            fontFamily: 'Mont'),
                         recognizer: TapGestureRecognizer()..onTap = () {},
                       ),
                     ),
                   ),
-                  Checkbox(
-                    value: acceptTnc,
-                    checkColor: Colors.white,
-                    activeColor: AppColors.kLightGreen,
-                    visualDensity: VisualDensity.adaptivePlatformDensity,
-                    onChanged: (bool? newValue) async {
-                      setState(() {
-                        acceptTnc = newValue!;
-                      });
-                      merchantAgreeMentReq.termsCondition = newValue!;
+
+                  GestureDetector(
+                    onTap: () {
+                      _sendTermsAndConditionsToMail();
                     },
+                    child: Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal:
+                                MediaQuery.of(context).size.width * .035),
+                        height: MediaQuery.of(context).size.height * .03,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: Colors.white),
+                        child: const Center(
+                            child: CustomTextWidget(
+                                text: 'View', size: 13, isBold: false))),
                   ),
+
+                  // Checkbox(
+                  //   value: acceptTnc,
+                  //   checkColor: Colors.white,
+                  //   activeColor: AppColors.kLightGreen,
+                  //   visualDensity: VisualDensity.adaptivePlatformDensity,
+                  //   onChanged: (bool? newValue) async {
+                  //     setState(() {
+                  //       acceptTnc = newValue!;
+                  //     });
+                  //     merchantAgreeMentReq.termsCondition = newValue!;
+                  //   },
+                  // ),
                 ],
               ),
             ),
 
-            SizedBox(
+            const SizedBox(
               height: 15,
             ),
             Container(
+              height: MediaQuery.of(context).size.height * .05,
               color: AppColors.kTileColor,
-              padding: EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Row(
                 children: <Widget>[
                   Expanded(
@@ -3819,47 +3938,67 @@ class _MerchantSignupState extends State<MerchantSignup> {
                       text: TextSpan(
                         text: "Merchant Service agreement",
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.bold, fontSize: 12),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                            fontFamily: 'Mont'),
                         recognizer: TapGestureRecognizer()..onTap = () {},
                       ),
                     ),
                   ),
-                  Checkbox(
-                    value: acceptAggrement,
-                    checkColor: Colors.white,
-                    activeColor: AppColors.kLightGreen,
-                    visualDensity: VisualDensity.adaptivePlatformDensity,
-                    onChanged: (bool? newValue) async {
-                      setState(() {
-                        acceptAggrement = newValue!;
-                      });
-                      merchantAgreeMentReq.serviceAgreement = newValue!;
 
-                      // if (!accept) {
-                      //   var results =
-                      //       await Navigator.of(context).push(MaterialPageRoute(
-                      //           builder: (BuildContext context) {
-                      //             return const TermsAndConditionPage();
-                      //           },
-                      //           fullscreenDialog: true));
-                      //   setState(() {
-                      //     if (results != null) {
-                      //       accept = results;
-                      //       requestModel.acceptLicense = accept;
-                      //     }
-                      //   });
-                      // } else {
-                      //   setState(() {
-                      //     accept = false;
-                      //     requestModel.acceptLicense = accept;
-                      //   });
-                      // }
+                  GestureDetector(
+                    onTap: () {
+                      _sendServiceAgreementsToMail();
                     },
+                    child: Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal:
+                                MediaQuery.of(context).size.width * .035),
+                        height: MediaQuery.of(context).size.height * .03,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: Colors.white),
+                        child: const Center(
+                            child: CustomTextWidget(
+                                text: 'View', size: 13, isBold: false))),
                   ),
+
+                  // Checkbox(
+                  //   value: acceptAggrement,
+                  //   checkColor: Colors.white,
+                  //   activeColor: AppColors.kLightGreen,
+                  //   visualDensity: VisualDensity.adaptivePlatformDensity,
+                  //   onChanged: (bool? newValue) async {
+                  //     setState(() {
+                  //       acceptAggrement = newValue!;
+                  //     });
+                  //     merchantAgreeMentReq.serviceAgreement = newValue!;
+                  //
+                  //     // if (!accept) {
+                  //     //   var results =
+                  //     //       await Navigator.of(context).push(MaterialPageRoute(
+                  //     //           builder: (BuildContext context) {
+                  //     //             return const TermsAndConditionPage();
+                  //     //           },
+                  //     //           fullscreenDialog: true));
+                  //     //   setState(() {
+                  //     //     if (results != null) {
+                  //     //       accept = results;
+                  //     //       requestModel.acceptLicense = accept;
+                  //     //     }
+                  //     //   });
+                  //     // } else {
+                  //     //   setState(() {
+                  //     //     accept = false;
+                  //     //     requestModel.acceptLicense = accept;
+                  //     //   });
+                  //     // }
+                  //   },
+                  // ),
                 ],
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 30,
             ),
             Padding(
@@ -3867,7 +4006,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
               child: CustomAppButton(
                 title: "Submit",
                 onPressed: () {
-                  print("sbumit pressed");
                   if (loginFormKey.currentState!.validate()) {
                     loginFormKey.currentState!.save();
                     setState(() {

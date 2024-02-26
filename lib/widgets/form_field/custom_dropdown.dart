@@ -63,9 +63,9 @@ class CustomDropdown extends StatelessWidget {
                     style: Theme.of(context)
                         .textTheme
                         .bodySmall
-                        ?.copyWith(fontWeight: FontWeight.w300,fontSize: 14,color: Colors.black),
+                        ?.copyWith(fontWeight: FontWeight.w300,fontSize: 14,color: Colors.black,fontFamily: 'Mont'),
                     children: const [
-                      TextSpan(text: ' *', style: TextStyle(color: Colors.black))
+                      TextSpan(text: ' *', style: TextStyle(color: Colors.black,fontFamily: 'Mont'))
                     ]),
               )
             : Text(

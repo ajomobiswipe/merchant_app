@@ -57,6 +57,6 @@ class Constants {
   static const verifyMPIN = 'assets/screen/verify_mpin.png';
   static const verifyKYC = 'assets/screen/kyc.png';
   static const omaLogo = 'assets/logo/oma_emirates_logo.png';
-  static const aggrementMessage =
+  static const agreementMessage =
       "Through the provided link via SMS or email, the merchant has read the acknowledgment, the terms and conditions, as well as the merchant service agreement.";
 }

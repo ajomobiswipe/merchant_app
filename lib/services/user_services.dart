@@ -460,8 +460,10 @@ class UserServices {
     final requestBody = {
       "mdrType": mdrType,
       "mccGroupId": mccGroupId,
-      "turnOverType": "large"
+      "turnOverType": turnOver
     };
+
+
 
     print(requestBody);
 
