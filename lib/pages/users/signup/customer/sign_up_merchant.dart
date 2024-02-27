@@ -358,7 +358,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
     //userServices.getAcqApplicationid('1');
   }
 
-  Timer? _debounce;
+  // Timer? _debounce;
 
   bool isTermsWaiting = false;
   bool isServiceWaiting = false;
@@ -366,7 +366,12 @@ class _MerchantSignupState extends State<MerchantSignup> {
   Future _sendTermsAndConditionsToMail() async {
     print(acceptAggrement);
 
-    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    // if (_debounce?.isActive ?? false) _debounce!.cancel();
+
+
+    setState(() {
+      isTermsWaiting = true;
+    });
 
     var response = await userServices.sendTermsAndConditions(
         companyDetailsInforeq.emailId, "TERMS_AND_CONDITION");
@@ -379,26 +384,26 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
     print(data);
 
-    _debounce = Timer(const Duration(milliseconds: 1000), () {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Terms and conditions have sent to registered mail'),
-          duration: Duration(seconds: 2),
-        ),
-      );
+    // _debounce = Timer(const Duration(milliseconds: 1000), () {
+    // ScaffoldMessenger.of(context).showSnackBar(
+    //   const SnackBar(
+    //     content: Text('Terms and conditions have sent to registered mail'),
+    //     duration: Duration(seconds: 2),
+    //   ),
+    // );
 
-      setState(() {
-        isTermsWaiting = true;
-      });
-
-      checkForTermsAcceptance(0);
-    });
+    checkForTermsAcceptance(0);
+    // });
   }
 
   Future _sendServiceAgreementsToMail() async {
     print(acceptTnc);
 
-    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    // if (_debounce?.isActive ?? false) _debounce!.cancel();
+
+    setState(() {
+      isServiceWaiting = true;
+    });
 
     var response = await userServices.sendTermsAndConditions(
         companyDetailsInforeq.emailId, "SERVICE_AGREEMENT");
@@ -409,21 +414,19 @@ class _MerchantSignupState extends State<MerchantSignup> {
       return;
     }
 
-    _debounce = Timer(const Duration(milliseconds: 1000), () {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content:
-              Text('Merchant Service Agreement have sent to registered mail'),
-          duration: Duration(seconds: 2),
-        ),
-      );
+    // _debounce = Timer(const Duration(milliseconds: 1000), () {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     const SnackBar(
+    //       content:
+    //           Text('Merchant Service Agreement have sent to registered mail'),
+    //       duration: Duration(seconds: 2),
+    //     ),
+    //   );
 
-      setState(() {
-        isServiceWaiting = true;
-      });
 
-      checkForServiceAcceptance(0);
-    });
+
+    checkForServiceAcceptance(0);
+    // });
   }
 
   Future checkForTermsAcceptance(int count) async {
@@ -434,6 +437,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
     if (data['statusCode'] != 200) {
       if (count == 10) {
+        setState(() {
+          isTermsWaiting = false;
+        });
         return;
       }
       Future.delayed(const Duration(seconds: 10), () {
@@ -441,7 +447,18 @@ class _MerchantSignupState extends State<MerchantSignup> {
       });
     }
 
-    if (!data['data']['termsAndConditionsRead']) {
+    if(data['data']==null)return;
+
+    if (data['data'][0]['termsAndConditionsRead'] != null) {
+      if (!data['data'][0]['termsAndConditionsRead']) {
+        if (count == 10) {
+          return;
+        }
+        Future.delayed(const Duration(seconds: 10), () {
+          checkForTermsAcceptance(count + 1);
+        });
+      }
+    } else {
       if (count == 10) {
         return;
       }
@@ -450,10 +467,12 @@ class _MerchantSignupState extends State<MerchantSignup> {
       });
     }
 
-    setState(() {
-      acceptTnc = true;
-      merchantAgreeMentReq.termsCondition = true!;
-    });
+    if (data['data'][0]['termsAndConditionsRead']) {
+      setState(() {
+        acceptTnc = true;
+        merchantAgreeMentReq.termsCondition = true!;
+      });
+    }
 
     // _timerForTerms = Timer.periodic(const Duration(seconds: 10), (timer) {
     //   // Perform your action here
@@ -470,6 +489,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
     if (data['statusCode'] != 200) {
       if (count == 10) {
+        setState(() {
+          isServiceWaiting = false;
+        });
         return;
       }
 
@@ -479,10 +501,32 @@ class _MerchantSignupState extends State<MerchantSignup> {
       });
     }
 
-    setState(() {
-      acceptAggrement = true;
-      merchantAgreeMentReq.serviceAgreement = true;
-    });
+    if(data['data']==null)return;
+
+    if (data['data'][0]['aggrementRead'] != null) {
+      if (!data['data'][0]['aggrementRead']) {
+        if (count == 10) {
+          return;
+        }
+        Future.delayed(const Duration(seconds: 10), () {
+          checkForServiceAcceptance(count + 1);
+        });
+      }
+    } else {
+      if (count == 10) {
+        return;
+      }
+      Future.delayed(const Duration(seconds: 10), () {
+        checkForServiceAcceptance(count + 1);
+      });
+    }
+
+    if (data['data'][0]['aggrementRead']) {
+      setState(() {
+        acceptAggrement = true;
+        merchantAgreeMentReq.serviceAgreement = true;
+      });
+    }
 
     // _timerForService = Timer.periodic(const Duration(seconds: 10), (timer) {
     //   // Perform your action here
@@ -2684,6 +2728,10 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
   Widget review() {
     var screenHeight = MediaQuery.of(context).size.height;
+
+    print(acceptAggrement);
+    print(acceptTnc);
+
     return SingleChildScrollView(
       child: Form(
         key: loginFormKey,
@@ -3968,7 +4016,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   if (!acceptTnc)
                     GestureDetector(
                       onTap: () {
-                        _sendTermsAndConditionsToMail();
+                        if (!isTermsWaiting) {
+                          _sendTermsAndConditionsToMail();
+                        }
                       },
                       child: !isTermsWaiting
                           ? Container(
@@ -3982,28 +4032,46 @@ class _MerchantSignupState extends State<MerchantSignup> {
                               child: const Center(
                                   child: CustomTextWidget(
                                       text: 'View', size: 13, isBold: false)))
-                          : const Text('Waiting...'),
+                          :  Text('Waiting...',style: TextStyle(color: AppColors.getMaterialColorFromColor(AppColors.kPrimaryColor),fontSize: 13),),
                     ),
                   if (acceptTnc)
                     Checkbox(
-                      value: acceptTnc,
+                      value: true,
                       checkColor: Colors.white,
                       activeColor: AppColors.kLightGreen,
                       visualDensity: VisualDensity.adaptivePlatformDensity,
                       onChanged: (bool? newValue) async {
-                        setState(() {
-                          acceptTnc = newValue!;
-                        });
-                        merchantAgreeMentReq.termsCondition = newValue!;
+                        // setState(() {
+                        //   acceptTnc = newValue!;
+                        // });
+                        // merchantAgreeMentReq.termsCondition = newValue!;
                       },
                     ),
                 ],
               ),
             ),
 
+
+            if(!acceptTnc)
+            if (isTermsWaiting)
+               Column(
+                children: [
+
+                  const SizedBox(height: 10),
+                  CustomTextWidget(
+                    text:
+                    'T&C sent to Mail, Please check Mail',size: 12,
+                    maxLines: 2,color: Colors.black.withOpacity(.7),
+                    isBold: false,
+                  ),
+
+                ],
+              ),
+
             const SizedBox(
               height: 15,
             ),
+
             Container(
               height: MediaQuery.of(context).size.height * .05,
               color: AppColors.kTileColor,
@@ -4025,7 +4093,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   if (!acceptAggrement)
                     GestureDetector(
                       onTap: () {
-                        _sendServiceAgreementsToMail();
+                        if (!isServiceWaiting) {
+                          _sendServiceAgreementsToMail();
+                        }
                       },
                       child: !isServiceWaiting
                           ? Container(
@@ -4039,19 +4109,19 @@ class _MerchantSignupState extends State<MerchantSignup> {
                               child: const Center(
                                   child: CustomTextWidget(
                                       text: 'View', size: 13, isBold: false)))
-                          : const Text('waiting...'),
+                          : Text('Waiting...',style: TextStyle(color: AppColors.getMaterialColorFromColor(AppColors.kPrimaryColor),fontSize: 13)),
                     ),
                   if (acceptAggrement)
                     Checkbox(
-                      value: acceptAggrement,
+                      value: true,
                       checkColor: Colors.white,
                       activeColor: AppColors.kLightGreen,
                       visualDensity: VisualDensity.adaptivePlatformDensity,
                       onChanged: (bool? newValue) async {
-                        setState(() {
-                          acceptAggrement = newValue!;
-                        });
-                        merchantAgreeMentReq.serviceAgreement = newValue!;
+                        // setState(() {
+                        //   acceptAggrement = newValue!;
+                        // });
+                        // merchantAgreeMentReq.serviceAgreement = newValue!;
 
                         // if (!accept) {
                         //   var results =
@@ -4077,22 +4147,41 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 ],
               ),
             ),
+
+            if(!acceptAggrement)
+            if (isServiceWaiting)
+               Column(
+                children: [
+                  const SizedBox(height: 10),
+                  CustomTextWidget(
+                    text:
+                        'Service Agreement sent to mail.Please check Mail',size: 12,
+                    maxLines: 2,color: Colors.black.withOpacity(.7),
+                    isBold: false,
+                  ),
+                ],
+              ),
+
             const SizedBox(
               height: 30,
             ),
+
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: CustomAppButton(
                 title: "Submit",
                 onPressed: () {
                   if (loginFormKey.currentState!.validate()) {
-                    loginFormKey.currentState!.save();
-                    setState(() {
-                      submitUserRegistration();
-                    });
+                    if (acceptAggrement && acceptTnc) {
+                      loginFormKey.currentState!.save();
+                      setState(() {
+                        submitUserRegistration();
+                      });
+                    } else {
+                      alertWidget.failure(context, '', 'Please accept our T&C');
+                    }
                   } else {
-                    alertWidget.failure(context, '',
-                        'Please accept our T&C or Select MDR Type');
+                    alertWidget.failure(context, '', 'Please Select MDR Type');
                   }
 
                   // if (requestModel.acceptLicense == true) {
