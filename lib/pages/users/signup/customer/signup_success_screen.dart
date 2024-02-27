@@ -10,6 +10,8 @@ class SignUpSucessScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppScafofld(
+      canPop: false,
+      eneableAppbar:false,
         child: Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [

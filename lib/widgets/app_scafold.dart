@@ -7,31 +7,46 @@ class AppScafofld extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
   dynamic Function()? onPressed;
   final Function()? closePressed;
+  final bool canPop;
+
   AppScafofld(
       {super.key,
       required this.child,
       this.padding,
       this.eneableAppbar = true,
       this.onPressed,
-      this.closePressed});
+      this.closePressed,
+      this.canPop = true});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: eneableAppbar
-          ? AppAppbar(
-              onPressed: onPressed ??
-                  () {
-                    Navigator.pop(context);
-                  },
-              closePressed: closePressed,
-            )
-          : null,
-      body: Padding(
-          padding: padding ??
-              EdgeInsets.only(left: 15, right: 15, top: eneableAppbar ? 0 : 40),
-          child: child),
+    return PopScope(
+      canPop: canPop,
+      onPopInvoked: (value) {
+        if (value) {
+          onPressed ??
+              () {
+                Navigator.pop(context);
+              };
+        }
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: eneableAppbar
+            ? AppAppbar(
+                onPressed: onPressed ??
+                    () {
+                      Navigator.pop(context);
+                    },
+                closePressed: closePressed,
+              )
+            : null,
+        body: Padding(
+            padding: padding ??
+                EdgeInsets.only(
+                    left: 15, right: 15, top: eneableAppbar ? 0 : 40),
+            child: child),
+      ),
     );
   }
 }

@@ -151,6 +151,7 @@ class _LoginPageState extends State<LoginPage> {
                 });
               },
             ),
+
             CustomTextWidget(
               text: "Remember me", fontWeight: FontWeight.bold,
               // color: AppColors.kPrimaryColor,

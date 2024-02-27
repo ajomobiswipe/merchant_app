@@ -379,6 +379,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
     final data = json.decode(response.body);
 
+    print(data);
+
     if (data['responseCode'] != '00') {
       return;
     }
