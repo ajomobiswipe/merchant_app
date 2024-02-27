@@ -9,7 +9,8 @@ import 'package:sifr_latest/widgets/custom_text_widget.dart';
 Future<void> aadhaarOtpWidget(
     {required BuildContext context,
     required String aadhaarNumber,
-    required Function(bool validated) onSubmit}) async {
+    required Function(bool validated, String addharHelpertext)
+        onSubmit}) async {
   UserServices userServices = UserServices();
   final _otpCtrl = TextEditingController();
   final focusNode = FocusNode();
@@ -132,11 +133,14 @@ Future<void> aadhaarOtpWidget(
                         .then((response) async {
                       if (response.statusCode == 200 ||
                           response.statusCode == 201) {
-                        print(response.body);
-                        onSubmit(true);
-                        Navigator.of(context).pop();
+                        if (response.body.toString() == "true") {
+                          onSubmit(true, "Verified");
+                          Navigator.of(context).pop();
+                        } else {
+                          alertService.error("Verification failed");
+                        }
                       } else {
-                        onSubmit(false);
+                        onSubmit(false, "Failed try Again");
                         alertService.error("Invalid otp");
                       }
                     });

@@ -370,7 +370,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
     // if (_debounce?.isActive ?? false) _debounce!.cancel();
 
-
     setState(() {
       isTermsWaiting = true;
     });
@@ -425,8 +424,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
     //     ),
     //   );
 
-
-
     checkForServiceAcceptance(0);
     // });
   }
@@ -449,7 +446,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
       });
     }
 
-    if(data['data']==null)return;
+    if (data['data'] == null) return;
 
     if (data['data'][0]['termsAndConditionsRead'] != null) {
       if (!data['data'][0]['termsAndConditionsRead']) {
@@ -503,7 +500,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
       });
     }
 
-    if(data['data']==null)return;
+    if (data['data'] == null) return;
 
     if (data['data'][0]['aggrementRead'] != null) {
       if (!data['data'][0]['aggrementRead']) {
@@ -1798,6 +1795,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               controller: _merchantAddharController,
               title: 'Merchant Aadhaar Number',
               required: true,
+              enabled: !isAadhaarVerifyed,
               prefixIcon: Icons.format_list_numbered,
               onFieldSubmitted: (name) {
                 //getUser();
@@ -1892,7 +1890,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 merchantIdProofReq.aadharCardNo = value;
               },
             ),
-
+            SizedBox(
+              height: 100,
+            ),
             CustomAppButton(
               title: 'Next',
               onPressed: () {
@@ -4001,7 +4001,13 @@ class _MerchantSignupState extends State<MerchantSignup> {
                               child: const Center(
                                   child: CustomTextWidget(
                                       text: 'View', size: 13, isBold: false)))
-                          :  Text('Waiting...',style: TextStyle(color: AppColors.getMaterialColorFromColor(AppColors.kPrimaryColor),fontSize: 13),),
+                          : Text(
+                              'Waiting...',
+                              style: TextStyle(
+                                  color: AppColors.getMaterialColorFromColor(
+                                      AppColors.kPrimaryColor),
+                                  fontSize: 13),
+                            ),
                     ),
                   if (acceptTnc)
                     Checkbox(
@@ -4020,22 +4026,20 @@ class _MerchantSignupState extends State<MerchantSignup> {
               ),
             ),
 
-
-            if(!acceptTnc)
-            if (isTermsWaiting)
-               Column(
-                children: [
-
-                  const SizedBox(height: 10),
-                  CustomTextWidget(
-                    text:
-                    'T&C sent to Mail, Please check Mail',size: 12,
-                    maxLines: 2,color: Colors.black.withOpacity(.7),
-                    isBold: false,
-                  ),
-
-                ],
-              ),
+            if (!acceptTnc)
+              if (isTermsWaiting)
+                Column(
+                  children: [
+                    const SizedBox(height: 10),
+                    CustomTextWidget(
+                      text: 'T&C sent to Mail, Please check Mail',
+                      size: 12,
+                      maxLines: 2,
+                      color: Colors.black.withOpacity(.7),
+                      isBold: false,
+                    ),
+                  ],
+                ),
 
             const SizedBox(
               height: 15,
@@ -4078,7 +4082,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
                               child: const Center(
                                   child: CustomTextWidget(
                                       text: 'View', size: 13, isBold: false)))
-                          : Text('Waiting...',style: TextStyle(color: AppColors.getMaterialColorFromColor(AppColors.kPrimaryColor),fontSize: 13)),
+                          : Text('Waiting...',
+                              style: TextStyle(
+                                  color: AppColors.getMaterialColorFromColor(
+                                      AppColors.kPrimaryColor),
+                                  fontSize: 13)),
                     ),
                   if (acceptAggrement)
                     Checkbox(
@@ -4117,19 +4125,20 @@ class _MerchantSignupState extends State<MerchantSignup> {
               ),
             ),
 
-            if(!acceptAggrement)
-            if (isServiceWaiting)
-               Column(
-                children: [
-                  const SizedBox(height: 10),
-                  CustomTextWidget(
-                    text:
-                        'Service Agreement sent to mail.Please check Mail',size: 12,
-                    maxLines: 2,color: Colors.black.withOpacity(.7),
-                    isBold: false,
-                  ),
-                ],
-              ),
+            if (!acceptAggrement)
+              if (isServiceWaiting)
+                Column(
+                  children: [
+                    const SizedBox(height: 10),
+                    CustomTextWidget(
+                      text: 'Service Agreement sent to mail.Please check Mail',
+                      size: 12,
+                      maxLines: 2,
+                      color: Colors.black.withOpacity(.7),
+                      isBold: false,
+                    ),
+                  ],
+                ),
 
             const SizedBox(
               height: 30,
@@ -4865,7 +4874,12 @@ class _MerchantSignupState extends State<MerchantSignup> {
           aadhaarOtpWidget(
               context: context,
               aadhaarNumber: addhaarNumber,
-              onSubmit: (isSvalidated) {});
+              onSubmit: (isSvalidated, message) {
+                setState(() {
+                  isAadhaarVerifyed = isSvalidated;
+                  aadhaarHelperText = message;
+                });
+              });
           setState(() {
             aadhaarHelperText = "Otp sent";
             isaddhaarOTPsent = true;
