@@ -10,7 +10,7 @@ Future<void> emailOtpWidget(
     required String title,
     required String emailId,
     required String? Function(String?)? validator,
-    required Function(bool validated) onSubmit}) async {
+    required Function(bool validated, String emailhelperText) onSubmit}) async {
   UserServices userServices = UserServices();
   final _otpCtrl = TextEditingController();
   final focusNode = FocusNode();
@@ -124,21 +124,23 @@ Future<void> emailOtpWidget(
               AppButton(
                 backgroundColor: AppColors.kPrimaryColor,
                 onPressed: () {
-                  userServices
-                      .verifyEmailOtp(emailId: emailId, otp: _otpCtrl.text)
-                      .then((response) async {
-                    if (response.statusCode == 200 ||
-                        response.statusCode == 201) {
-                      print(response.body);
-                      onSubmit(true);
-                    } else {
-                      onSubmit(false);
-                    }
-                  });
+                  if (formKey.currentState!.validate()) {
+                    focusNode.unfocus();
 
-                  focusNode.unfocus();
-                  formKey.currentState!.validate();
-                  Navigator.of(context).pop();
+                    userServices
+                        .verifyEmailOtp(emailId: emailId, otp: _otpCtrl.text)
+                        .then((response) async {
+                      if (response.statusCode == 200 ||
+                          response.statusCode == 201) {
+                        print(response.body);
+                        onSubmit(true, "Valdated");
+
+                        Navigator.of(context).pop();
+                      } else {
+                        onSubmit(true, "Valdated");
+                      }
+                    });
+                  }
                 },
                 title: "Submit",
                 // child: const Text('Validate'),
