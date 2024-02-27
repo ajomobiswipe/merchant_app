@@ -528,9 +528,9 @@ class UserServices {
 
     print(requestBody);
 
-    var url =
-        'http://10.0.38.83:9508/NanoPay/Middleware/UiApi/sendTermsAndConditions';
-    // var url = 'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/sendTermsAndConditions';
+    // var url =
+    //     'http://10.0.38.83:9508/NanoPay/Middleware/UiApi/sendTermsAndConditions';
+    var url = 'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/sendTermsAndConditions';
     var response = await connection.post(url, requestBody, timeOutSeconds: 20);
 
     return response;
@@ -539,9 +539,9 @@ class UserServices {
   Future getTcAndAgreementStatus(String? mailId) async {
     Connection connection = Connection();
 
-    var url =
-        'http://10.0.38.83:9508/NanoPay/Middleware/UiApi/getTcAndAgreementStatus/$mailId';
-    // var url = 'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/sendTermsAndConditions';
+    // var url =
+    //     'http://10.0.38.83:9508/NanoPay/Middleware/UiApi/getTcAndAgreementStatus/$mailId';
+    var url = 'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/getTcAndAgreementStatus/$mailId';
     var response = await connection.get(
       url,
     );
