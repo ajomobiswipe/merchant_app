@@ -289,6 +289,14 @@ class UserServices {
     return responseapi.body;
   }
 
+  sendEmailOtp({required String emailId}) async {
+    Connection connection = Connection();
+    var url =
+        "http://213.42.225.250:9508/NanoPay/Middleware/UiApi/sendOtpToEmail/$emailId";
+    var response = await connection.get(url);
+    return response;
+  }
+
   /*
   * SERVICE NAME: updateMerchantStatus
   * DESC:Update Merchant Status Active/InActive
@@ -495,9 +503,6 @@ class UserServices {
   }
 
   Future sendTermsAndConditions(String? mailId, String requestType) async {
-
-
-
     Connection connection = Connection();
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -515,8 +520,7 @@ class UserServices {
     var url =
         'http://10.0.38.83:9508/NanoPay/Middleware/UiApi/sendTermsAndConditions';
     // var url = 'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/sendTermsAndConditions';
-    var response = await connection.post(url, requestBody,timeOutSeconds: 20);
-
+    var response = await connection.post(url, requestBody, timeOutSeconds: 20);
 
     return response;
   }
@@ -524,13 +528,12 @@ class UserServices {
   Future getTcAndAgreementStatus(String? mailId) async {
     Connection connection = Connection();
 
-
-
     var url =
         'http://10.0.38.83:9508/NanoPay/Middleware/UiApi/getTcAndAgreementStatus/$mailId';
     // var url = 'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/sendTermsAndConditions';
-    var response = await connection.get(url,);
-
+    var response = await connection.get(
+      url,
+    );
 
     return response;
   }

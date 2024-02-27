@@ -106,6 +106,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
   final TextEditingController _contactPersonNameController =
       TextEditingController();
   final TextEditingController _emailController = TextEditingController();
+  bool isEmailVerified = false;
   final TextEditingController _mobileNoController = TextEditingController();
   final TextEditingController _whatsAppNumberController =
       TextEditingController();
@@ -114,6 +115,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
   String? businessDocumentTypename;
   String? businessDocumentFileFullpath;
   String? businessDocumentTypeId;
+  String emailHelperText = "verify the Email id";
 
   // List<Map<String, dynamic>> BusinessTypeList = [
   //   {"value": 1, "label": "Individual"},
@@ -831,16 +833,15 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 }
                 return null;
               },
-              suffixIcon: TextButton(
-                  onPressed: () {
-                    otpWidget(
-                      context: context,
-                      title: "Verify E-mail id",
-                      validator: (dd) {},
-                    );
-                  },
-                  child: Icon(Icons.send)),
+              suffixIcon: isEmailVerified
+                  ? const VerificationSuccessButton()
+                  : TextButton(
+                      onPressed: () {
+                        sendEmailOtp(emailId: _emailController.text);
+                      },
+                      child: Icon(Icons.send)),
               suffixIconTrue: true,
+              helperText: emailHelperText,
               onChanged: (String value) {
                 value = value.trim();
                 setState(() {
@@ -4995,6 +4996,31 @@ class _MerchantSignupState extends State<MerchantSignup> {
             }
           });
         }
+      }
+    });
+  }
+
+  sendEmailOtp({required String emailId}) async {
+    debugPrint("Calling Email otp Send API");
+    setState(() {
+      emailHelperText = "Loading...";
+    });
+    // request = await Validators.encrypt(request);
+    userServices.sendEmailOtp(emailId: emailId).then((response) async {
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        print(response.body);
+
+        otpWidget(
+          context: context,
+          title: "Verify E-mail id",
+          validator: (dd) {},
+          onSubmit: (emailVerified) {
+            print("submit callback called");
+            setState(() {
+              isEmailVerified = emailVerified;
+            });
+          },
+        );
       }
     });
   }

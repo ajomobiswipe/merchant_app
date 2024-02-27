@@ -7,7 +7,8 @@ import 'package:sifr_latest/widgets/custom_text_widget.dart';
 Future<void> otpWidget(
     {required BuildContext context,
     required String title,
-    required String? Function(String?)? validator}) async {
+    required String? Function(String?)? validator,
+    required Function(bool validated) onSubmit}) async {
   final pinController = TextEditingController();
   final focusNode = FocusNode();
   final formKey = GlobalKey<FormState>();
@@ -112,6 +113,7 @@ Future<void> otpWidget(
                   focusNode.unfocus();
                   formKey.currentState!.validate();
                   Navigator.of(context).pop();
+                  onSubmit(true);
                 },
                 title: "Submit",
                 // child: const Text('Validate'),
