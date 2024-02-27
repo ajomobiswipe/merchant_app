@@ -71,6 +71,8 @@ Future<void> aadhaarOtpWidget(
                       AndroidSmsAutofillMethod.smsUserConsentApi,
                   listenForMultipleSmsOnAndroid: true,
                   defaultPinTheme: defaultPinTheme,
+                  obscureText: true,
+                  obscuringCharacter: "*",
                   separatorBuilder: (index) => const SizedBox(width: 8),
                   validator: (value) {
                     if (value!.isNotEmpty && value.length < 4) {
