@@ -596,16 +596,20 @@ class _MerchantSignupState extends State<MerchantSignup> {
       mdrSummaryList = [];
 
       if (data['mmsMdrDetailsInfo'].length > 0) {
-        for (var item in data['mmsMdrDetailsInfo']) {
-          if (item['dcTxnAmount'] == null) {
-            mdrSummaryList.add(item);
-          }
-        }
+
         for (var item in data['mmsMdrDetailsInfo']) {
           if (item['dcTxnAmount'] != null) {
             mdrSummaryList.add(item);
           }
         }
+
+
+        for (var item in data['mmsMdrDetailsInfo']) {
+          if (item['dcTxnAmount'] == null) {
+            mdrSummaryList.add(item);
+          }
+        }
+
       }
 
       if (mdrType == "special") {
@@ -2879,7 +2883,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                       text:
                                           '${item['paymentName']}${item['dcTxnAmount'] == null ? ' - ' : ''}',
                                       isBold: true,
-                                      size: 10,
+                                      size: 12,
                                     ),
                                   ),
 
@@ -3018,7 +3022,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                             CustomTextWidget(
                                               text:
                                                   '${item['amount'] ?? item['dcTxnAmount']}',
-                                              isBold: true,
+                                              isBold: false,
                                               size: 10,
                                             ),
                                             const Spacer(),
@@ -3074,7 +3078,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                       !isEditable)
                                     CustomTextWidget(
                                       text: '${item['amount']} %',
-                                      isBold: true,
+                                      isBold: false,
                                       size: 11,
                                     ),
 
@@ -3231,7 +3235,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                           child: CustomTextWidget(
                                             text:
                                                 'Amount less than ${item['dcTxnAmount']}  ${!isEditable ? '  -   ${item['amountLePercent']} %' : ''} ',
-                                            size: 11,
+                                            size: 11,isBold: false,
                                           ),
                                         ),
 
@@ -3244,11 +3248,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                     (BuildContext context) {
                                                   return AlertDialog(
                                                     title: Text(
-                                                        'amt LT ${item['dcTxnAmount']} (%)'),
+                                                        'Amount less than ${item['dcTxnAmount']}'),
                                                     titleTextStyle:
                                                         const TextStyle(
                                                             color: Colors.black,
-                                                            fontSize: 18,
+                                                            fontSize: 14,
                                                             fontFamily: 'Mont'),
                                                     content: Column(
                                                       mainAxisSize:
@@ -3383,7 +3387,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                   CustomTextWidget(
                                                     text:
                                                         '${item['amountLePercent']}',
-                                                    isBold: true,
+                                                    isBold: false,
                                                     size: 11,
                                                   ),
                                                   const Spacer(),
@@ -3574,7 +3578,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                       ],
                                     ),
                                     SizedBox(
-                                      height: screenHeight * .01,
+                                      height: screenHeight * .005,
                                     ),
                                     Row(
                                       children: [
@@ -3582,7 +3586,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                           child: CustomTextWidget(
                                             text:
                                                 'Amount greater than ${item['dcTxnAmount']}  ${!isEditable ? '  -   ${item['amountGtPercent']} %' : ''} ',
-                                            size: 11,
+                                            size: 11,isBold: false,
                                           ),
                                         ),
 
@@ -3595,11 +3599,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                     (BuildContext context) {
                                                   return AlertDialog(
                                                     title: Text(
-                                                        'amt GT ${item['dcTxnAmount']} (%)'),
+                                                        'Amount greater than ${item['dcTxnAmount']}'),
                                                     titleTextStyle:
                                                         const TextStyle(
                                                             color: Colors.black,
-                                                            fontSize: 18,
+                                                            fontSize: 14,
                                                             fontFamily: 'Mont'),
                                                     content: Column(
                                                       mainAxisSize:
@@ -3734,7 +3738,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                   CustomTextWidget(
                                                     text:
                                                         '${item['amountGtPercent']}',
-                                                    isBold: true,
+                                                    isBold: false,
                                                     size: 11,
                                                   ),
                                                   const Spacer(),

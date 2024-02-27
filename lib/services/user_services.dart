@@ -485,7 +485,7 @@ class UserServices {
 
     print(requestBody);
 
-    // var url = 'http://10.0.38.61:9508/NanoPay/Middleware/UiApi/mdrDetails';
+    // var url = 'http://10.0.38.83:9508/NanoPay/Middleware/UiApi/mdrDetails';
     var url = 'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/mdrDetails';
     var response = await connection.post(url, requestBody);
     return response;
