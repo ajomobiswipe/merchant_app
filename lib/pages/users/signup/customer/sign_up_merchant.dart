@@ -428,6 +428,12 @@ class _MerchantSignupState extends State<MerchantSignup> {
     // });
   }
 
+  void setTnCWaitingFalse(){
+    setState(() {
+      isTermsWaiting = false;
+    });
+  }
+
   Future checkForTermsAcceptance(int count) async {
     var response = await userServices
         .getTcAndAgreementStatus(companyDetailsInforeq.emailId);
@@ -436,9 +442,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
     if (data['statusCode'] != 200) {
       if (count == 10) {
-        setState(() {
-          isTermsWaiting = false;
-        });
+        setTnCWaitingFalse();
         return;
       }
       Future.delayed(const Duration(seconds: 10), () {
@@ -446,11 +450,15 @@ class _MerchantSignupState extends State<MerchantSignup> {
       });
     }
 
-    if (data['data'] == null) return;
+    if(data['data']==null) {
+      setTnCWaitingFalse();
+      return;
+    }
 
     if (data['data'][0]['termsAndConditionsRead'] != null) {
       if (!data['data'][0]['termsAndConditionsRead']) {
         if (count == 10) {
+          setTnCWaitingFalse();
           return;
         }
         Future.delayed(const Duration(seconds: 10), () {
@@ -459,6 +467,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
       }
     } else {
       if (count == 10) {
+        setTnCWaitingFalse();
         return;
       }
       Future.delayed(const Duration(seconds: 10), () {
@@ -480,6 +489,13 @@ class _MerchantSignupState extends State<MerchantSignup> {
     // });
   }
 
+
+  void setServiceWaitingFalse(){
+    setState(() {
+      isServiceWaiting = false;
+    });
+  }
+
   Future checkForServiceAcceptance(int count) async {
     var response = await userServices
         .getTcAndAgreementStatus(companyDetailsInforeq.emailId);
@@ -488,9 +504,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
     if (data['statusCode'] != 200) {
       if (count == 10) {
-        setState(() {
-          isServiceWaiting = false;
-        });
+        setServiceWaitingFalse();
         return;
       }
 
@@ -500,11 +514,15 @@ class _MerchantSignupState extends State<MerchantSignup> {
       });
     }
 
-    if (data['data'] == null) return;
+    if(data['data']==null) {
+      setServiceWaitingFalse();
+      return;
+    }
 
     if (data['data'][0]['aggrementRead'] != null) {
       if (!data['data'][0]['aggrementRead']) {
         if (count == 10) {
+          setServiceWaitingFalse();
           return;
         }
         Future.delayed(const Duration(seconds: 10), () {
@@ -513,6 +531,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
       }
     } else {
       if (count == 10) {
+        setServiceWaitingFalse();
         return;
       }
       Future.delayed(const Duration(seconds: 10), () {
@@ -2381,7 +2400,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
             personalFormKey.currentState!.save();
             if (personalFormKey.currentState!.validate()) {
               if (selectedBusinessProofItems.isEmpty) {
-                alertWidget.error("plese Add Document");
+                alertWidget.error("please Add Document");
               } else {
                 businessIdProofReq.mechantKycDocuments =
                     selectedBusinessProofItems;
