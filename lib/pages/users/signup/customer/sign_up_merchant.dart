@@ -596,20 +596,17 @@ class _MerchantSignupState extends State<MerchantSignup> {
       mdrSummaryList = [];
 
       if (data['mmsMdrDetailsInfo'].length > 0) {
-
         for (var item in data['mmsMdrDetailsInfo']) {
           if (item['dcTxnAmount'] != null) {
             mdrSummaryList.add(item);
           }
         }
 
-
         for (var item in data['mmsMdrDetailsInfo']) {
           if (item['dcTxnAmount'] == null) {
             mdrSummaryList.add(item);
           }
         }
-
       }
 
       if (mdrType == "special") {
@@ -2756,10 +2753,15 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   print(merchantBankInfoReq.toJson());
                   if (loginFormKey.currentState!.validate()) {
                     loginFormKey.currentState!.save();
-                    setState(() {
-                      position++;
-                      currTabPosition = 5;
-                    });
+
+                    if (cancelledChequeImg == '') {
+                      alertWidget.error("Please Upload the check image");
+                    } else {
+                      setState(() {
+                        position++;
+                        currTabPosition = 5;
+                      });
+                    }
                   }
                 },
               ),

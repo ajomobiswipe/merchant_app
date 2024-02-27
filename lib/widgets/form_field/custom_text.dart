@@ -90,7 +90,9 @@ class CustomTextFormField extends StatelessWidget {
       this.minLines,
       this.maxLines,
       this.iconColor = Colors.black,
-      this.prefixWidget, this.titleEneabled=true,this.fromDocument=false})
+      this.prefixWidget,
+      this.titleEneabled = true,
+      this.fromDocument = false})
       : super(key: key);
 
   @override
@@ -99,15 +101,17 @@ class CustomTextFormField extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if(titleEneabled) SizedBox(
-            height: 20,
-          ),
-          if(titleEneabled) CustomTextWidget(
-              text: "$title *", fontWeight: FontWeight.w200, size: 14),
+          if (titleEneabled)
+            SizedBox(
+              height: 20,
+            ),
+          if (titleEneabled)
+            CustomTextWidget(
+                text: "$title *", fontWeight: FontWeight.w200, size: 14),
           Padding(
             padding: const EdgeInsets.only(top: 10),
             child: TextFormField(
-              style: const TextStyle(color: Colors.black,fontSize: 13),
+              style: const TextStyle(color: Colors.black, fontSize: 13),
               minLines: minLines,
               toolbarOptions: toolbarOptions,
               initialValue: initialValue,
@@ -119,7 +123,8 @@ class CustomTextFormField extends StatelessWidget {
               obscureText: obscureText ?? false,
               obscuringCharacter: obscuringCharacter ?? '*',
               autofocus: autofocus ?? false,
-              autovalidateMode: !fromDocument?AutovalidateMode.onUserInteraction:null,
+              autovalidateMode:
+                  !fromDocument ? AutovalidateMode.onUserInteraction : null,
               validator: validator,
               textCapitalization: textCapitalization ?? TextCapitalization.none,
               readOnly: readOnly ?? false,
@@ -165,7 +170,7 @@ class CustomTextFormField extends StatelessWidget {
                 suffixIcon: (suffixIconTrue && suffixText == null)
                     ? IconButton(
                         onPressed: suffixIconOnPressed,
-                        icon: suffixIcon??Text("Eeeor"),
+                        icon: suffixIcon ?? Text(""),
                       )
                     : suffixText != null
                         ? Container(
