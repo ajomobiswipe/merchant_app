@@ -297,6 +297,17 @@ class UserServices {
     return response;
   }
 
+  verifyEmailOtp({
+    required String emailId,
+    required String otp,
+  }) async {
+    Connection connection = Connection();
+    var url =
+        "http://213.42.225.250:9508/NanoPay/Middleware/UiApi/verifyEmailOtp";
+    var response = await connection.post(url, {"email": emailId, "otp": otp});
+    return response;
+  }
+
   /*
   * SERVICE NAME: updateMerchantStatus
   * DESC:Update Merchant Status Active/InActive

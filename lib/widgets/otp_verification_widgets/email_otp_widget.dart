@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
 import 'package:sifr_latest/config/app_color.dart';
+import 'package:sifr_latest/services/services.dart';
 import 'package:sifr_latest/widgets/app_widget/app_button.dart';
 import 'package:sifr_latest/widgets/custom_text_widget.dart';
 
-Future<void> otpWidget(
+Future<void> emailOtpWidget(
     {required BuildContext context,
     required String title,
+    required String emailId,
     required String? Function(String?)? validator,
     required Function(bool validated) onSubmit}) async {
-  final pinController = TextEditingController();
+  UserServices userServices = UserServices();
+  final _otpCtrl = TextEditingController();
   final focusNode = FocusNode();
   final formKey = GlobalKey<FormState>();
 
@@ -43,9 +46,14 @@ Future<void> otpWidget(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              const CustomTextWidget(
+                text: "Verify your email",
+                size: 14,
+                color: AppColors.kPrimaryColor,
+              ),
               CustomTextWidget(
                 text: title,
-                size: 20,
+                size: 12,
                 color: AppColors.kPrimaryColor,
               ),
               SizedBox(
@@ -55,7 +63,7 @@ Future<void> otpWidget(
                 // Specify direction if desired
                 textDirection: TextDirection.ltr,
                 child: Pinput(
-                  controller: pinController,
+                  controller: _otpCtrl,
                   focusNode: focusNode,
                   androidSmsAutofillMethod:
                       AndroidSmsAutofillMethod.smsUserConsentApi,
@@ -63,7 +71,12 @@ Future<void> otpWidget(
                   defaultPinTheme: defaultPinTheme,
                   separatorBuilder: (index) => const SizedBox(width: 8),
                   validator: (value) {
-                    return value == '2222' ? null : 'Pin is incorrect';
+                    if (value!.isNotEmpty && value.length < 4) {
+                      return '4 digits required';
+                    } else {
+                      null;
+                    }
+                    return null;
                   },
                   // onClipboardFound: (value) {
                   //   debugPrint('onClipboardFound: $value');
@@ -109,11 +122,23 @@ Future<void> otpWidget(
                 height: 40,
               ),
               AppButton(
+                backgroundColor: AppColors.kPrimaryColor,
                 onPressed: () {
+                  userServices
+                      .verifyEmailOtp(emailId: emailId, otp: _otpCtrl.text)
+                      .then((response) async {
+                    if (response.statusCode == 200 ||
+                        response.statusCode == 201) {
+                      print(response.body);
+                      onSubmit(true);
+                    } else {
+                      onSubmit(false);
+                    }
+                  });
+
                   focusNode.unfocus();
                   formKey.currentState!.validate();
                   Navigator.of(context).pop();
-                  onSubmit(true);
                 },
                 title: "Submit",
                 // child: const Text('Validate'),

@@ -23,6 +23,7 @@ import 'package:sifr_latest/pages/mechant_order/merchant_order_details.dart';
 import 'package:sifr_latest/widgets/Forms/merchant_store_form.dart';
 import 'package:sifr_latest/widgets/custom_text_widget.dart';
 import 'package:sifr_latest/widgets/loading.dart';
+import 'package:sifr_latest/widgets/otp_verification_widgets/aadhaar_otp_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../common_widgets/custom_app_button.dart';
 import '../../../../common_widgets/form_title_widget.dart';
@@ -32,13 +33,12 @@ import '../../../../models/models.dart';
 import '../../../../providers/providers.dart';
 import '../../../../services/services.dart';
 import '../../../../widgets/image_button/verifivation_success_button.dart';
-import '../../../../widgets/otpwidget.dart';
+import '../../../../widgets/otp_verification_widgets/email_otp_widget.dart';
 import '../../../../widgets/tabbar/tabbar.dart';
 import '../../../../widgets/widget.dart';
 import 'models/business_id_proof_requestmodel.dart';
 import 'models/company_detailsInfo_requestmodel.dart';
 import 'models/merchant_agreement_requestmodel.dart';
-import 'models/merchant_bank_Info_requestmodel.dart';
 import 'models/merchant_bank_Info_requestmodel.dart';
 import 'models/merchant_id_proof_requestmodel.dart';
 import 'models/merchant_store_info_requestmodel.dart';
@@ -167,6 +167,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
       TextEditingController();
   String merchantPanHelpertext = "click Verify";
   String gstHelperText = "click Verify";
+  bool isAadhaarVerifyed = false;
+  String aadhaarHelperText = '';
 
   //merchant Bussines proof
   final TextEditingController documentExpiryController =
@@ -241,10 +243,10 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
   String userCheck = '';
   String panOwnerName = '';
-  String addhaarCheck = '';
+
   String accountCheck = '';
   bool showVerify = true;
-  bool showaddharverify = true;
+
   bool showFirmPanVerify = true;
   bool isgstVerify = true;
 
@@ -837,9 +839,17 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   ? const VerificationSuccessButton()
                   : TextButton(
                       onPressed: () {
-                        sendEmailOtp(emailId: _emailController.text);
+                        if (Validators.isValidEmail(_emailController.text)) {
+                          sendEmailOtp(emailId: _emailController.text);
+                        } else {
+                          alertWidget.error("Enter a valid email");
+                        }
                       },
-                      child: Icon(Icons.send)),
+                      child: CustomTextWidget(
+                        text: "Send OTP",
+                        color: AppColors.kPrimaryColor,
+                        size: 12,
+                      )),
               suffixIconTrue: true,
               helperText: emailHelperText,
               onChanged: (String value) {
@@ -1748,52 +1758,72 @@ class _MerchantSignupState extends State<MerchantSignup> {
               onFieldSubmitted: (name) {
                 //getUser();
               },
-              helperText: isOtpVerifird ? "Verified" : "",
-              suffixIconOnPressed: () {
-                if (_merchantAddharController.text.length >= 12) {
-                  print("clicked");
-                  if (showaddharverify) {
-                    sendAddhaarOtp();
-                    print("validate");
-                  } else {
-                    print("change");
+              helperText: aadhaarHelperText,
+              // suffixIconOnPressed: () {
+              //   if (_merchantAddharController.text.length >= 12) {
+              //     print("clicked");
+              //     if (showaddharverify) {
+              //       sendAddhaarOtp();
+              //       print("validate");
+              //     } else {
+              //       print("change");
 
-                    setState(() {
-                      showaddharverify = true;
-                      isaddhaarOTPsent = false;
-                      isOtpVerifird = false;
-                    });
-                  }
-                }
-              },
-              suffixIcon: showaddharverify
-                  ? TextButton(
+              //       setState(() {
+              //         showaddharverify = true;
+              //         isaddhaarOTPsent = false;
+              //         isOtpVerifird = false;
+              //       });
+              //     }
+              //   }
+              // },
+              // suffixIcon: isAadhaarVerifyed
+              //     ? VerificationSuccessButton()
+              //     : IconButton(
+              //         icon: Text("data"),
+              //         onPressed: () {
+
+              //         }),
+              // suffixIcon: showaddharverify
+              //     ? TextButton(
+              //         onPressed: () {
+              //           if (_merchantAddharController.text.length >= 12) {
+              //             print("clicked");
+              //             if (showaddharverify) {
+              //               sendAddhaarOtp();
+              //               print("validate");
+              //             } else {
+              //               print("change");
+
+              //               setState(() {
+              //                 showaddharverify = true;
+              //                 isaddhaarOTPsent = false;
+              //                 isOtpVerifird = false;
+              //               });
+              //             }
+              //           }
+              //         },
+              //         child: Text("Verify"))
+              //     : VerificationSuccessButton(),
+              suffixIcon: isAadhaarVerifyed
+                  ? const VerificationSuccessButton()
+                  : TextButton(
                       onPressed: () {
                         if (_merchantAddharController.text.length >= 12) {
-                          print("clicked");
-                          if (showaddharverify) {
-                            sendAddhaarOtp();
-                            print("validate");
-                          } else {
-                            print("change");
-
-                            setState(() {
-                              showaddharverify = true;
-                              isaddhaarOTPsent = false;
-                              isOtpVerifird = false;
-                            });
-                          }
+                          sendAddhaarOtp();
+                        } else {
+                          alertWidget.error("Enter 12 digit aadhaar number");
                         }
                       },
-                      child: Text("Verify"))
-                  : VerificationSuccessButton(),
+                      child: CustomTextWidget(
+                        text: "Send OTP",
+                        color: AppColors.kPrimaryColor,
+                        size: 12,
+                      )),
               suffixIconTrue: true,
               helperStyle: Theme.of(context)
                   .textTheme
                   .bodySmall
                   ?.copyWith(color: Theme.of(context).primaryColor),
-              suffixText: showaddharverify ? 'Send OTP' : 'Change',
-              readOnly: !showaddharverify,
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp('[0-9]'))
               ],
@@ -1818,67 +1848,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 merchantIdProofReq.aadharCardNo = value;
               },
             ),
-
-            if (isaddhaarOTPsent)
-              CustomTextFormField(
-                keyboardType: TextInputType.number,
-                controller: _otpController,
-                title: 'Enter OTP',
-                required: true,
-                // prefixIcon: Icons.verified,
-                onFieldSubmitted: (name) {
-                  getUser();
-                },
-                onChanged: (String value) {
-                  setState(() {
-                    // if (value.isEmpty ||
-                    //     !userVerify ||
-                    //     userCheck.toString() == "true" ||
-                    //     !RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
-                    //         .hasMatch(value)) {
-                    //   enabledPassword = false;
-                    // } else {
-                    //   enabledPassword = true;
-                    // }
-                  });
-                },
-                suffixIconOnPressed: () {
-                  print("clicked");
-                  print(_otpController.text.length);
-                  if (_otpController.text.isNotEmpty) {
-                    validateAddhaarOtp();
-                  }
-                },
-                suffixIconTrue: true,
-                helperStyle: Theme.of(context)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(color: Theme.of(context).primaryColor),
-
-                suffixText: "Verify",
-                helperText: "Click verify",
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Otp is Mandatory!';
-                  }
-                  if (value.length < 6) {
-                    return 'Minimum length is 6 digit';
-                  }
-                  // if (userVerify && userCheck == "true") {
-                  //   return Constants.userNameFailureMessage;
-                  // }
-                  if (!RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
-                      .hasMatch(value)) {
-                    return 'InvalidAddhaar Number!';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  requestModel.userName = value;
-                },
-              ),
-
-            if (isaddhaarOTPsent) const SizedBox(height: 30.0),
 
             CustomAppButton(
               title: 'Next',
@@ -4595,12 +4564,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
     }
   }
 
-  customAddhaarHelper({required String text}) {
-    if (addhaarCheck == false) {
-      return "Click 'Send Opp' validate $text ";
-    }
-  }
-
   customHelperHelper({required String text}) {
     if (userVerify == false) {
       return "Click 'Verify' to validate $text ";
@@ -4796,11 +4759,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
   }
 
   sendAddhaarOtp() async {
-    if (_merchantAddharController.text.isNotEmpty) {
+    if (_merchantAddharController.text.length >= 12) {
       debugPrint("Calling AddhaarOtp API");
       //debugPrint(_merchantAddharController.text);
       setState(() {
-        addhaarCheck = "Loading...";
+        aadhaarHelperText = "Loading...";
       });
       // var user =
       //     await Validators.encrypt(_merchantAddharController.text.toString());
@@ -4810,16 +4773,24 @@ class _MerchantSignupState extends State<MerchantSignup> {
         print("response in");
         print(response);
         if (response.toString() == "true") {
+          aadhaarOtpWidget(
+              context: context,
+              aadhaarNumber: addhaarNumber,
+              onSubmit: (isSvalidated) {});
           setState(() {
+            aadhaarHelperText = "Otp sent";
             isaddhaarOTPsent = true;
-            showaddharverify = false;
+            // showaddharverify = false;
           });
           print("body is true");
         } else {
+          alertWidget.error("addarotp sent failed");
           print("body is false");
           isaddhaarOTPsent = false;
         }
       });
+    } else {
+      alertWidget.error("Enter 12 digit aadhaar number");
     }
   }
 
@@ -4827,9 +4798,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
     if (_merchantAddharController.text.isNotEmpty &&
         _otpController.text.isNotEmpty) {
       debugPrint("Calling AddhaarOtp validation API");
-      setState(() {
-        addhaarCheck = "Loading...";
-      });
+      setState(() {});
       // var user =
       //     await Validators.encrypt(_merchantAddharController.text.toString());
       var addhaarNumber = _merchantAddharController.text.toString();
@@ -4842,7 +4811,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
         if (response.toString() == "true") {
           setState(() {
             isaddhaarOTPsent = false;
-            showaddharverify = false;
+            // showaddharverify = false;
             isOtpVerifird = true;
           });
           print("body is true");
@@ -5007,12 +4976,15 @@ class _MerchantSignupState extends State<MerchantSignup> {
     });
     // request = await Validators.encrypt(request);
     userServices.sendEmailOtp(emailId: emailId).then((response) async {
+      emailHelperText = "OTP sent";
       if (response.statusCode == 200 || response.statusCode == 201) {
         print(response.body);
+        var decodedData = jsonDecode(response.body);
 
-        otpWidget(
+        emailOtpWidget(
+          emailId: emailId,
           context: context,
-          title: "Verify E-mail id",
+          title: decodedData["responseMessage"],
           validator: (dd) {},
           onSubmit: (emailVerified) {
             print("submit callback called");
@@ -5021,6 +4993,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
             });
           },
         );
+      } else {
+        alertWidget.error("Error sending otp");
       }
     });
   }
