@@ -863,6 +863,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               hintText: "Enter Your Email Address",
               controller: _emailController,
               required: true,
+              enabled: !isEmailVerified,
               // textCapitalization: TextCapitalization.words,
               prefixIcon: Icons.email,
               validator: (value) {
@@ -5089,9 +5090,10 @@ class _MerchantSignupState extends State<MerchantSignup> {
           context: context,
           title: decodedData["responseMessage"],
           validator: (dd) {},
-          onSubmit: (emailVerified) {
+          onSubmit: (emailVerified, messge) {
             print("submit callback called");
             setState(() {
+              emailHelperText = messge;
               isEmailVerified = emailVerified;
             });
           },
