@@ -2728,7 +2728,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CustomTextWidget(text: "Merchant Agreement"),
+            const CustomTextWidget(text: "Merchant Agreement",size: 18,),
 
             appTabbar(
               screenHeight: screenHeight,

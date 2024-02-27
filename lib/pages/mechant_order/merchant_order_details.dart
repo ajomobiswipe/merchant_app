@@ -70,7 +70,7 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
             children: [
               CustomTextWidget(
                 text: "Merchant Order",
-                size: 24,
+                size: 18,
               ),
             ],
           ),
