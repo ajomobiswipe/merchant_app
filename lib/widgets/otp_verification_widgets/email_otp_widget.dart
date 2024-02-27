@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
 import 'package:sifr_latest/config/app_color.dart';
+import 'package:sifr_latest/main.dart';
 import 'package:sifr_latest/services/services.dart';
 import 'package:sifr_latest/widgets/app_widget/app_button.dart';
 import 'package:sifr_latest/widgets/custom_text_widget.dart';
@@ -68,10 +69,12 @@ Future<void> emailOtpWidget(
                   androidSmsAutofillMethod:
                       AndroidSmsAutofillMethod.smsUserConsentApi,
                   listenForMultipleSmsOnAndroid: true,
+                  obscureText: true,
+                  obscuringCharacter: "*",
                   defaultPinTheme: defaultPinTheme,
                   separatorBuilder: (index) => const SizedBox(width: 8),
                   validator: (value) {
-                    if (value!.isNotEmpty && value.length < 4) {
+                    if (value!.isEmpty || value.length < 4) {
                       return '4 digits required';
                     } else {
                       null;
@@ -137,7 +140,8 @@ Future<void> emailOtpWidget(
 
                         Navigator.of(context).pop();
                       } else {
-                        onSubmit(true, "Valdated");
+                        onSubmit(false, "validation  Failed");
+                        alertService.error("Invalid otp");
                       }
                     });
                   }

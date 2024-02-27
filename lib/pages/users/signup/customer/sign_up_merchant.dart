@@ -193,6 +193,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
   final TextEditingController _storePinCodeCtrl = TextEditingController();
 
   /// merchsant  Merchant Bank Details
+  var accountInfoHelperText = "Click verify";
 
   String cancelledChequeImg = '';
   bool enabledLast = false;
@@ -266,7 +267,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
   bool enabledConfirmPin = false;
   late String userCheckMessage = '';
   bool userVerify = false;
-  bool accountVerify = true;
+  bool isAccountInfoVerifyed = false;
 
   List securityQuestionList = [];
   final TextEditingController selectedItem1 = TextEditingController();
@@ -430,7 +431,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
     // });
   }
 
-  void setTnCWaitingFalse(){
+  void setTnCWaitingFalse() {
     setState(() {
       isTermsWaiting = false;
     });
@@ -452,7 +453,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
       });
     }
 
-    if(data['data']==null) {
+    if (data['data'] == null) {
       setTnCWaitingFalse();
       return;
     }
@@ -491,8 +492,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
     // });
   }
 
-
-  void setServiceWaitingFalse(){
+  void setServiceWaitingFalse() {
     setState(() {
       isServiceWaiting = false;
     });
@@ -516,7 +516,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
       });
     }
 
-    if(data['data']==null) {
+    if (data['data'] == null) {
       setServiceWaitingFalse();
       return;
     }
@@ -2459,6 +2459,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 onFieldSubmitted: (name) {
                   getUser();
                 },
+                suffixIcon:
+                    isAccountInfoVerifyed ? VerificationSuccessButton() : null,
+                suffixIconTrue: true,
                 onChanged: (String value) {
                   setState(() {
                     if (value.isEmpty ||
@@ -2495,7 +2498,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 // suffixText: showVerify ? 'Verify' : 'Change',
                 keyboardType: TextInputType.number,
                 maxLength: 18,
-                readOnly: !accountVerify,
+                enabled: !isAccountInfoVerifyed,
+
                 // helperText: customHelperHelper(text: 'Account Number'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -2524,9 +2528,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 hintText: "Enter IFSC code",
                 required: true,
                 prefixIcon: Icons.numbers,
-                onFieldSubmitted: (name) {
-                  validateAccountNumber();
-                },
+                onFieldSubmitted: (name) {},
                 onChanged: (String value) {
                   setState(() {
                     // if (value.isEmpty ||
@@ -2540,22 +2542,21 @@ class _MerchantSignupState extends State<MerchantSignup> {
                     // }
                   });
                 },
-                suffixIconOnPressed: () {
-                  if (merchantIfscCodeCtrl.text.length >= 10) {
-                    print("clicked");
-                    if (accountVerify) {
-                      print("validate");
-                      validateAccountNumber();
-                    } else {
-                      print("change");
-
-                      setState(() {
-                        accountVerify = true;
-                      });
-                    }
-                  }
-                },
                 suffixIconTrue: true,
+                suffixIcon: isAccountInfoVerifyed
+                    ? const VerificationSuccessButton()
+                    : TextButton(
+                        onPressed: () {
+                          print(isAccountInfoVerifyed);
+                          print("clicked verify from ifsc");
+                          if (merchantIfscCodeCtrl.text.length >= 10 &&
+                              merchantAccountNumberCtrl.text.length >= 10) {
+                            validateAccountNumber();
+                          } else {
+                            alertWidget.error("Enter valid Account info");
+                          }
+                        },
+                        child: CustomTextWidget(text: "verify")),
                 helperStyle: Theme.of(context)
                     .textTheme
                     .bodySmall
@@ -2564,9 +2565,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   LengthLimitingTextInputFormatter(11),
                   FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')),
                 ],
-                suffixText: accountVerify ? 'Verify' : 'Change',
-                readOnly: !accountVerify,
-                helperText: customAccountHelper(text: 'Acc. No And IFSC '),
+                helperText: accountInfoHelperText,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'IFSC Code Mandatory!';
@@ -2627,7 +2626,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 hintText: "Beneficiary name",
                 titleEneabled: false,
                 required: true,
-                // readOnly: !accountVerify,
+                enabled: !isAccountInfoVerifyed,
                 controller: merchantBeneficiaryNamrCodeCtrl,
                 maxLength: 24,
                 keyboardType: TextInputType.visiblePassword,
@@ -2704,6 +2703,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               CustomAppButton(
                 title: 'Next',
                 onPressed: () {
+                  print(merchantBankInfoReq.toJson());
                   if (loginFormKey.currentState!.validate()) {
                     loginFormKey.currentState!.save();
                     setState(() {
@@ -2730,7 +2730,10 @@ class _MerchantSignupState extends State<MerchantSignup> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const CustomTextWidget(text: "Merchant Agreement",size: 18,),
+            const CustomTextWidget(
+              text: "Merchant Agreement",
+              size: 18,
+            ),
 
             appTabbar(
               screenHeight: screenHeight,
@@ -4696,18 +4699,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
     }
   }
 
-  customAccountHelper({required String text}) {
-    if (accountVerify) {
-      return "Click 'Verify' to validate $text ";
-    }
-    if (!accountVerify) {
-      return "Account Info Validated";
-    }
-    if (accountCheck == "Loading...") {
-      return "Please wait...";
-    }
-  }
-
   customPanHelper({required String text}) {
     if (userVerify == false) {
       return "Click 'Verify' to validate $text ";
@@ -4844,7 +4835,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
         merchantAccountNumberCtrl.text.isNotEmpty) {
       debugPrint("Calling Accountvalidation API");
       setState(() {
-        accountCheck = "Loading...";
+        accountInfoHelperText = "Loading...";
       });
       var accNumber = merchantAccountNumberCtrl.text.toString();
       var ifscNumber = merchantIfscCodeCtrl.text.toString();
@@ -4857,18 +4848,25 @@ class _MerchantSignupState extends State<MerchantSignup> {
           .accountValidation(accNumber, ifscNumber)
           .then((response) async {
         if (response.statusCode == 200 || response.statusCode == 201) {
-          merchantBankInfoReq.merchantBankVerifyStatus = true;
           print(response.body);
 
+          accountInfoHelperText = "Verified";
+          var decodedData = json.decode(response.body);
+          String beneficiaryName =
+              decodedData['result']['bankTransfer']['beneName'];
+
+          merchantBeneficiaryNamrCodeCtrl.text = beneficiaryName;
+          merchantBankInfoReq.beneficiaryName = beneficiaryName;
           merchantBankInfoReq.bankIfscCode = merchantIfscCodeCtrl.text;
           merchantBankInfoReq.bankAccountNo = merchantAccountNumberCtrl.text;
-          merchantBankInfoReq.beneficiaryName =
-              merchantBeneficiaryNamrCodeCtrl.text;
-          accountVerify = false;
-          merchantBankInfoReq.merchantBankVerifyStatus = true;
+          setState(() {
+            isAccountInfoVerifyed = true;
+            merchantBankInfoReq.merchantBankVerifyStatus = true;
+          });
         } else {
+          accountInfoHelperText = "Failed ";
           alertWidget.error(response.body ?? "Null response");
-          print("invalid ");
+          print("invalid  Account Info");
         }
 
         // print("response in");
@@ -4919,34 +4917,34 @@ class _MerchantSignupState extends State<MerchantSignup> {
     }
   }
 
-  validateAddhaarOtp() async {
-    if (_merchantAddharController.text.isNotEmpty &&
-        _otpController.text.isNotEmpty) {
-      debugPrint("Calling AddhaarOtp validation API");
-      setState(() {});
-      // var user =
-      //     await Validators.encrypt(_merchantAddharController.text.toString());
-      var addhaarNumber = _merchantAddharController.text.toString();
-      var addhaarOtp = _otpController.text.toString();
-      userServices
-          .validateAddhaarOtp(addhaarNumber, addhaarOtp)
-          .then((response) async {
-        print("response in");
-        print(response);
-        if (response.toString() == "true") {
-          setState(() {
-            isaddhaarOTPsent = false;
-            // showaddharverify = false;
-            isOtpVerifird = true;
-          });
-          print("body is true");
-        } else {
-          print("body is false");
-          isaddhaarOTPsent = false;
-        }
-      });
-    }
-  }
+  // validateAddhaarOtp() async {
+  //   if (_merchantAddharController.text.isNotEmpty &&
+  //       _otpController.text.isNotEmpty) {
+  //     debugPrint("Calling AddhaarOtp validation API");
+  //     setState(() {});
+  //     // var user =
+  //     //     await Validators.encrypt(_merchantAddharController.text.toString());
+  //     var addhaarNumber = _merchantAddharController.text.toString();
+  //     var addhaarOtp = _otpController.text.toString();
+  //     userServices
+  //         .validateAddhaarOtp(addhaarNumber, addhaarOtp)
+  //         .then((response) async {
+  //       print("response in");
+  //       print(response);
+  //       if (response.toString() == "true") {
+  //         setState(() {
+  //           isaddhaarOTPsent = false;
+  //           // showaddharverify = false;
+  //           isOtpVerifird = true;
+  //         });
+  //         print("body is true");
+  //       } else {
+  //         print("body is false");
+  //         isaddhaarOTPsent = false;
+  //       }
+  //     });
+  //   }
+  // }
 
   getUser() async {
     if (_userNameController.text.isNotEmpty) {
