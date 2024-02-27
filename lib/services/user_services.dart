@@ -103,7 +103,7 @@ class UserServices {
         "essentials": {
           "beneficiaryMobile": "7892461503",
           "beneficiaryAccount": accno,
-          "beneficiaryName": "name",
+          "beneficiaryName": "Ajosebastian",
           "beneficiaryIFSC": ifsc
         }
       };
@@ -284,7 +284,8 @@ class UserServices {
         headers: newheader, body: jsonEncode(newreqbody));
     // print(newheader);
     // print(userId);
-    print("second api reponseStatus code ${responseapi.statusCode}");
+    print(
+        "Addhaar Validation Api reponseStatus code ${responseapi.statusCode}");
     print(responseapi.body);
     return responseapi;
   }
