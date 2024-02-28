@@ -319,26 +319,26 @@ class _MerchantSignupState extends State<MerchantSignup> {
   List mdrTypeList = [];
   List mdrSummaryList = [];
 
-  // Merchant company detials feilda
-  TextEditingController merchantCommercialNameCtrl = TextEditingController();
-  TextEditingController onwershipNameCtrl = TextEditingController();
-  TextEditingController merchantIdCtrl = TextEditingController();
-  TextEditingController merchantAddressCtrl = TextEditingController();
-  TextEditingController merchantStreetNameCtrl = TextEditingController();
-  TextEditingController merchantDescriptionCtrl = TextEditingController();
-  TextEditingController merchantZipCodeCtrl = TextEditingController();
-  TextEditingController acquirerNameCtrl = TextEditingController();
-  TextEditingController acquirerApplicationIdCtrl = TextEditingController();
-  TextEditingController selectedCountry = TextEditingController();
-  TextEditingController selectedCityCtrl = TextEditingController();
-  TextEditingController selectedGeoFencingRadius = TextEditingController();
-  TextEditingController selectedCurrency = TextEditingController();
-  TextEditingController vatValueCtrl = TextEditingController();
-  TextEditingController VATRegistrationNumberCtrl = TextEditingController();
-  TextEditingController shareholderPercentCtrl = TextEditingController();
-  TextEditingController maxAuthAmountCtrl = TextEditingController();
-  TextEditingController maxTerminalCountCtrl = TextEditingController();
-  TextEditingController merchantPercentageAmountCtrl = TextEditingController();
+  // // Merchant company detials feilda
+  // TextEditingController merchantCommercialNameCtrl = TextEditingController();
+  // TextEditingController onwershipNameCtrl = TextEditingController();
+  // TextEditingController merchantIdCtrl = TextEditingController();
+  // TextEditingController merchantAddressCtrl = TextEditingController();
+  // TextEditingController merchantStreetNameCtrl = TextEditingController();
+  // TextEditingController merchantDescriptionCtrl = TextEditingController();
+  // TextEditingController merchantZipCodeCtrl = TextEditingController();
+  // TextEditingController acquirerNameCtrl = TextEditingController();
+  // TextEditingController acquirerApplicationIdCtrl = TextEditingController();
+  // TextEditingController selectedCountry = TextEditingController();
+  // TextEditingController selectedCityCtrl = TextEditingController();
+  // TextEditingController selectedGeoFencingRadius = TextEditingController();
+  // TextEditingController selectedCurrency = TextEditingController();
+  // TextEditingController vatValueCtrl = TextEditingController();
+  // TextEditingController VATRegistrationNumberCtrl = TextEditingController();
+  // TextEditingController shareholderPercentCtrl = TextEditingController();
+  // TextEditingController maxAuthAmountCtrl = TextEditingController();
+  // TextEditingController maxTerminalCountCtrl = TextEditingController();
+  // TextEditingController merchantPercentageAmountCtrl = TextEditingController();
 
   var dobSelectedDt = DateTime(
       DateTime.now().year - 18, DateTime.now().month, DateTime.now().day);
@@ -899,7 +899,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
               hintText: "Enter Your Email Address",
               controller: _emailController,
               required: true,
-              enabled: !isEmailVerified,
+              readOnly: isEmailVerified,
+              //enabled: !isEmailVerified,
               // textCapitalization: TextCapitalization.words,
               prefixIcon: Icons.email,
               validator: (value) {
@@ -914,7 +915,14 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 return null;
               },
               suffixIcon: isEmailVerified
-                  ? const VerificationSuccessButton()
+                  ? TextButton(
+                      onPressed: () {
+                        changeVerifiedEmail();
+                      },
+                      child: CustomTextWidget(
+                        text: "Edit",
+                        color: Colors.red,
+                      ))
                   : TextButton(
                       onPressed: () {
                         if (Validators.isValidEmail(_emailController.text)) {
@@ -930,6 +938,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                       )),
               suffixIconTrue: true,
               helperText: emailHelperText,
+              helperStyle: TextStyle(color: AppColors.kPrimaryColor),
               onChanged: (String value) {
                 value = value.trim();
                 setState(() {
@@ -4647,7 +4656,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
     print('merchantProductInfoReq$merchantProductInfoReq');
 
-
     final String jsonString = json.encode(merchantProductInfoReq);
     print(jsonString);
 
@@ -5212,6 +5220,13 @@ class _MerchantSignupState extends State<MerchantSignup> {
     });
   }
 
+  changeVerifiedEmail() {
+    setState(() {
+      emailHelperText = "Verify";
+      isEmailVerified = false;
+    });
+  }
+
   sendEmailOtp({required String emailId}) async {
     debugPrint("Calling Email otp Send API");
     setState(() {
@@ -5219,7 +5234,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
     });
     // request = await Validators.encrypt(request);
     userServices.sendEmailOtp(emailId: emailId).then((response) async {
-
       print(response.body);
 
       emailHelperText = "OTP sent";
