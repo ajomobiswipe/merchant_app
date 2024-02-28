@@ -133,9 +133,10 @@ Future<void> emailOtpWidget(
                     userServices
                         .verifyEmailOtp(emailId: emailId, otp: _otpCtrl.text)
                         .then((response) async {
+                      print('anas${response.body}');
                       if (response.statusCode == 200 ||
                           response.statusCode == 201) {
-                        print(response.body);
+
                         onSubmit(true, "Valdated");
 
                         Navigator.of(context).pop();

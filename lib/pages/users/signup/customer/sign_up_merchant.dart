@@ -4645,6 +4645,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
       "merchantProductDetails": productList,
     };
 
+    print('merchantProductInfoReq$merchantProductInfoReq');
+
+
     final String jsonString = json.encode(merchantProductInfoReq);
     print(jsonString);
 
@@ -5216,6 +5219,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
     });
     // request = await Validators.encrypt(request);
     userServices.sendEmailOtp(emailId: emailId).then((response) async {
+
+      print(response.body);
+
       emailHelperText = "OTP sent";
       if (response.statusCode == 200 || response.statusCode == 201) {
         print(response.body);
