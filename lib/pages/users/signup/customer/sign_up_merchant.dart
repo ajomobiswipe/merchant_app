@@ -608,11 +608,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
       }
     }
 
-    print('anasPk$mdrSummaryList');
-
     if (mdrType == "special") {
       isEditable = true;
-   }
+    }
 
     setState(() {});
 
@@ -1442,19 +1440,25 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   value: value,
                   child: Text(
                     value['turnoverAmount'],
-                    style: TextStyle(fontSize: 13),
+                    style: const TextStyle(fontSize: 13),
                   ),
                 );
               }).toList(),
               onChanged: (newValue) {
-                setState(() {
+
+
+
                   setState(() {
                     selectedBussinesTurnOver = newValue;
                     companyDetailsInforeq.annualTurnOver =
                         newValue['turnoverAmount'];
+
+                    mdrType = null;
+                    mdrSummaryList = [];
+
                     print(companyDetailsInforeq.annualTurnOver);
                   });
-                });
+
               },
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -2857,8 +2861,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
                 getMdrSummaryList(mdrType['mdrType']);
 
-                merchantAgreeMentReq.serviceAgreement = true;
-                merchantAgreeMentReq.termsCondition = true;
+                // merchantAgreeMentReq.serviceAgreement = true;
+                // merchantAgreeMentReq.termsCondition = true;
 
                 merchantAgreeMentReq.mdrType = mdrType['mdrId'];
 
@@ -5258,7 +5262,14 @@ class _MerchantSignupState extends State<MerchantSignup> {
           },
         );
       } else {
-        alertWidget.error("Error sending otp");
+        var decodedData = jsonDecode(response.body);
+        String errorString = decodedData['message'] ?? "Error sending otp";
+
+        setState(() {
+          emailHelperText = errorString;
+        });
+
+        alertWidget.error(errorString);
       }
     });
   }
