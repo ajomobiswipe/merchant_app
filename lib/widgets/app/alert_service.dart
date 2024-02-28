@@ -86,6 +86,7 @@ class AlertService {
         contentType: ContentType.failure,
         inMaterialBanner: true,
       ),
+
     );
     StateKey.snackBarKey.currentState!
       ..hideCurrentSnackBar()
