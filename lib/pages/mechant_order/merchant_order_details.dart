@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:sifr_latest/common_widgets/custom_app_button.dart';
 import 'package:sifr_latest/common_widgets/form_title_widget.dart';
@@ -7,7 +5,6 @@ import 'package:sifr_latest/common_widgets/icon_text_widget.dart';
 import 'package:sifr_latest/config/config.dart';
 import 'package:sifr_latest/helpers/default_height.dart';
 import 'package:sifr_latest/main.dart';
-import 'package:sifr_latest/pages/mechant_order/models/mechant_additionalingo_model.dart';
 import 'package:sifr_latest/widgets/app_scafold.dart';
 import 'package:sifr_latest/widgets/custom_text_widget.dart';
 import 'package:sifr_latest/widgets/widget.dart';
@@ -298,7 +295,7 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                             child: Text(entry.toString()),
                           );
                         }).toList(),
-                        onChanged: (int? value) {
+                        onChanged: (value) {
                           setState(() {
                             selectedProductQuantity = value;
                           });
@@ -472,151 +469,150 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                 // ),
                 // Container(
 
-                  // color: AppColors.kTileColor,
+                // color: AppColors.kTileColor,
 
-                  // child:
-                  Padding(
-                    padding: const EdgeInsets.all(2.0),
-                    child: Column(
-                      children: [
-                        // DataTable(
-                        //   headingRowHeight: 0,
-                        //   columnSpacing: 2,
-                        //   dataRowMinHeight: 20,
-                        //   dataRowMaxHeight: 30,
-                        //   columns: const [
-                        //     DataColumn(label: Text('Product')),
-                        //     DataColumn(label: Text('Package')),
-                        //     DataColumn(label: Text('Quantity')),
-                        //     DataColumn(label: Text('Actions')),
-                        //   ],
-                        //   rows: widget.selectedItems.map((item) {
-                        //     return DataRow(cells: [
-                        //       DataCell(CustomTextWidget(
-                        //         text: item.package,
-                        //         size: 11,
-                        //         fontWeight: FontWeight.w900,
-                        //       )),
-                        //       DataCell(CustomTextWidget(
-                        //         text: "${item.productName}+ 1999+499",
-                        //         size: 11,
-                        //         fontWeight: FontWeight.w900,
-                        //       )),
-                        //       DataCell(CustomTextWidget(
-                        //         text: ' - ${item.quantity}',
-                        //         size: 12,
-                        //         fontWeight: FontWeight.w900,
-                        //       )),
-                        //       DataCell(
-                        //         IconButton(
-                        //           icon: const Icon(
-                        //             Icons.cancel_outlined,
-                        //             color: Colors.red,
-                        //           ),
-                        //           onPressed: () {
-                        //             setState(() {
-                        //               widget.selectedItems.remove(item);
-                        //             });
-                        //           },
-                        //         ),
-                        //       ),
-                        //     ]);
-                        //   }).toList(),
-                        // ),
-                        // defaultHeight(15),
-                        Container(
-                          color: AppColors.kSelectedBackgroundColor,
-                          child: ExpansionTile(
-                            initiallyExpanded: true,
-                            title: CustomTextWidget(
-                              text: "View Complete product Summary",
-                              color: Colors.grey.shade600,
-                              size: 10,
-                            ),
-                            children: [
-
-                              DataTable(
-                                headingRowHeight: 0,
-                                columnSpacing: 2,
-                                dataRowMinHeight: 20,
-                                dataRowMaxHeight: 30,
-                                columns: const [
-                                  DataColumn(label: Text('Product')),
-                                  DataColumn(label: Text('Package')),
-                                  DataColumn(label: Text('Quantity')),
-                                  DataColumn(label: Text('Actions')),
-                                ],
-                                rows: widget.selectedItems.map((item) {
-                                  return DataRow(cells: [
-                                    DataCell(CustomTextWidget(
-                                      text: item.package,
-                                      size: 11,
-                                      fontWeight: FontWeight.w900,
-                                    )),
-                                    DataCell(CustomTextWidget(
-                                      text: "${item.productName}+ 1999+499",
-                                      size: 11,
-                                      fontWeight: FontWeight.w900,
-                                    )),
-                                    DataCell(CustomTextWidget(
-                                      text: ' - ${item.quantity}',
-                                      size: 12,
-                                      fontWeight: FontWeight.w900,
-                                    )),
-                                    DataCell(
-                                      IconButton(
-                                        icon: const Icon(
-                                          Icons.cancel_outlined,
-                                          color: Colors.red,
-                                        ),
-                                        onPressed: () {
-                                          setState(() {
-                                            widget.selectedItems.remove(item);
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                  ]);
-                                }).toList(),
-                              ),
-
-                              // const Padding(
-                              //   padding: EdgeInsets.all(16.0),
-                              //   child: Text("content"),
-                              // ),
-                            ],
+                // child:
+                Padding(
+                  padding: const EdgeInsets.all(2.0),
+                  child: Column(
+                    children: [
+                      // DataTable(
+                      //   headingRowHeight: 0,
+                      //   columnSpacing: 2,
+                      //   dataRowMinHeight: 20,
+                      //   dataRowMaxHeight: 30,
+                      //   columns: const [
+                      //     DataColumn(label: Text('Product')),
+                      //     DataColumn(label: Text('Package')),
+                      //     DataColumn(label: Text('Quantity')),
+                      //     DataColumn(label: Text('Actions')),
+                      //   ],
+                      //   rows: widget.selectedItems.map((item) {
+                      //     return DataRow(cells: [
+                      //       DataCell(CustomTextWidget(
+                      //         text: item.package,
+                      //         size: 11,
+                      //         fontWeight: FontWeight.w900,
+                      //       )),
+                      //       DataCell(CustomTextWidget(
+                      //         text: "${item.productName}+ 1999+499",
+                      //         size: 11,
+                      //         fontWeight: FontWeight.w900,
+                      //       )),
+                      //       DataCell(CustomTextWidget(
+                      //         text: ' - ${item.quantity}',
+                      //         size: 12,
+                      //         fontWeight: FontWeight.w900,
+                      //       )),
+                      //       DataCell(
+                      //         IconButton(
+                      //           icon: const Icon(
+                      //             Icons.cancel_outlined,
+                      //             color: Colors.red,
+                      //           ),
+                      //           onPressed: () {
+                      //             setState(() {
+                      //               widget.selectedItems.remove(item);
+                      //             });
+                      //           },
+                      //         ),
+                      //       ),
+                      //     ]);
+                      //   }).toList(),
+                      // ),
+                      // defaultHeight(15),
+                      Container(
+                        color: AppColors.kSelectedBackgroundColor,
+                        child: ExpansionTile(
+                          initiallyExpanded: true,
+                          title: CustomTextWidget(
+                            text: "View Complete product Summary",
+                            color: Colors.grey.shade600,
+                            size: 10,
                           ),
-                        )
-                      ],
-                    ),
-                  ),
+                          children: [
+                            DataTable(
+                              headingRowHeight: 0,
+                              columnSpacing: 2,
+                              dataRowMinHeight: 20,
+                              dataRowMaxHeight: 30,
+                              columns: const [
+                                DataColumn(label: Text('Product')),
+                                DataColumn(label: Text('Package')),
+                                DataColumn(label: Text('Quantity')),
+                                DataColumn(label: Text('Actions')),
+                              ],
+                              rows: widget.selectedItems.map((item) {
+                                return DataRow(cells: [
+                                  DataCell(CustomTextWidget(
+                                    text: item.package,
+                                    size: 11,
+                                    fontWeight: FontWeight.w900,
+                                  )),
+                                  DataCell(CustomTextWidget(
+                                    text: "${item.productName}+ 1999+499",
+                                    size: 11,
+                                    fontWeight: FontWeight.w900,
+                                  )),
+                                  DataCell(CustomTextWidget(
+                                    text: ' - ${item.quantity}',
+                                    size: 12,
+                                    fontWeight: FontWeight.w900,
+                                  )),
+                                  DataCell(
+                                    IconButton(
+                                      icon: const Icon(
+                                        Icons.cancel_outlined,
+                                        color: Colors.red,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          widget.selectedItems.remove(item);
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                ]);
+                              }).toList(),
+                            ),
 
-                  //  Column(
-                  //   crossAxisAlignment: CrossAxisAlignment.stretch,
-                  //   children: selectedItems.asMap().entries.map((entry) {
-                  //     int index = entry.key;
-                  //     SelectedProduct item = entry.value;
-                  //     return Padding(
-                  //       padding: const EdgeInsets.all(8.0),
-                  //       child: Row(
-                  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //         children: [
-                  //           Text(
-                  //             '${item.productName},\n Package: ${item.package},\n Quantity: ${item.quantity}',
-                  //           ),
-                  //           IconButton(
-                  //             icon: Icon(Icons.delete),
-                  //             onPressed: () {
-                  //               setState(() {
-                  //                 selectedItems.removeAt(index);
-                  //               });
-                  //             },
-                  //           ),
-                  //         ],
-                  //       ),
-                  //     );
-                  //   }).toList(),
-                  // ),
+                            // const Padding(
+                            //   padding: EdgeInsets.all(16.0),
+                            //   child: Text("content"),
+                            // ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+
+                //  Column(
+                //   crossAxisAlignment: CrossAxisAlignment.stretch,
+                //   children: selectedItems.asMap().entries.map((entry) {
+                //     int index = entry.key;
+                //     SelectedProduct item = entry.value;
+                //     return Padding(
+                //       padding: const EdgeInsets.all(8.0),
+                //       child: Row(
+                //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //         children: [
+                //           Text(
+                //             '${item.productName},\n Package: ${item.package},\n Quantity: ${item.quantity}',
+                //           ),
+                //           IconButton(
+                //             icon: Icon(Icons.delete),
+                //             onPressed: () {
+                //               setState(() {
+                //                 selectedItems.removeAt(index);
+                //               });
+                //             },
+                //           ),
+                //         ],
+                //       ),
+                //     );
+                //   }).toList(),
+                // ),
                 // ),
 
                 defaultHeight(20),

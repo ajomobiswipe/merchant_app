@@ -738,6 +738,20 @@ class _MerchantSignupState extends State<MerchantSignup> {
   }
 
   orderNext() {
+    final List<Map<String, dynamic>> productList = selectedItems.map((product) {
+      return {
+        "productId": product.productId.toString(),
+        "packageId": product.packagetId.toString(),
+        "qty": product.quantity.toString(),
+      };
+    }).toList();
+
+    final Map<String, dynamic> merchantProductInfoReq = {
+      "merchantProductDetails": productList,
+    };
+
+    final String jsonString = json.encode(merchantProductInfoReq);
+    print(jsonString);
     setState(() {
       position = 1;
     });
@@ -4914,11 +4928,22 @@ class _MerchantSignupState extends State<MerchantSignup> {
     );
 
     if (result != null) {
-      print(result.files.first.path);
-      setState(() {
-        businessDocumentFileFullpath = result.files.first.path;
-        businessProofDocumentCtrl.text = result.files.single.name;
-      });
+      final File file = File(result.files.first.path!); // Get the file
+      int fileSize = await file.length(); // Get file size in bytes
+      double fileSizeInKB = fileSize / 1024; // Convert bytes to KB
+
+      if (fileSizeInKB > 500) {
+        alertWidget.error(
+            "Oops! The selected file is too large.\n Please choose a file under 500 KB.");
+
+        print('File size exceeds 500 KB limit');
+      } else {
+        print(result.files.first.path);
+        setState(() {
+          businessDocumentFileFullpath = result.files.first.path;
+          businessProofDocumentCtrl.text = result.files.single.name;
+        });
+      }
     }
   }
 
