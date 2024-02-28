@@ -590,31 +590,33 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
     final Map<String, dynamic> data = json.decode(response.body);
 
-    setState(() {
-      isEditable = false;
+    isEditable = false;
 
-      mdrSummaryList = [];
+    mdrSummaryList = [];
 
-      if (data['mmsMdrDetailsInfo'].length > 0) {
-        for (var item in data['mmsMdrDetailsInfo']) {
-          if (item['dcTxnAmount'] != null) {
-            mdrSummaryList.add(item);
-          }
-        }
-
-        for (var item in data['mmsMdrDetailsInfo']) {
-          if (item['dcTxnAmount'] == null) {
-            mdrSummaryList.add(item);
-          }
+    if (data['mmsMdrDetailsInfo'].length > 0) {
+      for (var item in data['mmsMdrDetailsInfo']) {
+        if (item['dcTxnAmount'] != null) {
+          mdrSummaryList.add(item);
         }
       }
 
-      if (mdrType == "special") {
-        isEditable = true;
+      for (var item in data['mmsMdrDetailsInfo']) {
+        if (item['dcTxnAmount'] == null) {
+          mdrSummaryList.add(item);
+        }
       }
+    }
 
-      // mdrSummaryList = data['mmsMdrDetailsInfo'];
-    });
+    print('anasPk$mdrSummaryList');
+
+    if (mdrType == "special") {
+      isEditable = true;
+   }
+
+    setState(() {});
+
+    // mdrSummaryList = data['mmsMdrDetailsInfo'];
   }
 
   void getIntByKey(
@@ -2272,7 +2274,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                     initialEntryMode: DatePickerEntryMode.calendarOnly,
                     context: context,
                     initialDate: tradeSelectedDate,
-                    firstDate: DateTime.now().add(const Duration(days: 0)),
+                    firstDate: DateTime.now().add(const Duration(days: 1)),
                     lastDate: DateTime(DateTime.now().year + 10),
                   );
                   if (pickedDate != null) {
@@ -2851,15 +2853,16 @@ class _MerchantSignupState extends State<MerchantSignup> {
               onChanged: (newValue) {
                 setState(() {
                   mdrType = newValue;
-                  getMdrSummaryList(mdrType['mdrType']);
-
-                  merchantAgreeMentReq.serviceAgreement = true;
-                  merchantAgreeMentReq.termsCondition = true;
-
-                  merchantAgreeMentReq.mdrType = mdrType['mdrId'];
-
-                  // requestModel.city = value;
                 });
+
+                getMdrSummaryList(mdrType['mdrType']);
+
+                merchantAgreeMentReq.serviceAgreement = true;
+                merchantAgreeMentReq.termsCondition = true;
+
+                merchantAgreeMentReq.mdrType = mdrType['mdrId'];
+
+                // requestModel.city = value;
               },
               validator: (value) {
                 if (value == null || value.isEmpty) {

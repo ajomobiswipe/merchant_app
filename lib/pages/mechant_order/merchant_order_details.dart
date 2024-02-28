@@ -13,9 +13,9 @@ import '../../decurations/dropdownDecurations.dart';
 
 class MerchantOrderDetails extends StatefulWidget {
   CustomAlert customAlert = CustomAlert();
-  List tmsProductMaster;
-  Function orderNext;
-  List<SelectedProduct> selectedItems;
+  final List tmsProductMaster;
+  final Function orderNext;
+  final List<SelectedProduct> selectedItems;
   MerchantOrderDetails({
     super.key,
     required this.orderNext,
