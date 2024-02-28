@@ -75,9 +75,9 @@ class UserTypeSelection extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CustomTextWidget(text: 'Please select yourself',isBold: false,size: 12,),
+                    // CustomTextWidget(text: 'Please select yourself',isBold: false,size: 12,),
                     CustomTextWidget(
-                        text: 'You are onboarding the Merchant as',isBold: false,size: 14,),
+                        text: 'Merchant Onboarding By',size: 14,),
                   ],
                 )
               ],

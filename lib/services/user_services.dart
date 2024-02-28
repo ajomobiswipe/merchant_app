@@ -306,8 +306,10 @@ class UserServices {
     var url =
         "http://213.42.225.250:9508/NanoPay/Middleware/UiApi/verifyEmailOtp";
     var response = await connection.post(url, {"email": emailId, "otp": otp});
+
     return response;
   }
+
 
   /*
   * SERVICE NAME: updateMerchantStatus
@@ -875,6 +877,7 @@ class UserServices {
     String barrertoken = boxStorage.getToken();
 
     var url =
+        // 'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/merchantMobileOnboarding';
         'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/merchantMobileOnboarding';
     // Set up the headers
     Map<String, String> headers = {
