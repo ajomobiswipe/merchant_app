@@ -107,6 +107,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
       TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   bool isEmailVerified = false;
+  bool isEmailOtpSending = false;
   final TextEditingController _mobileNoController = TextEditingController();
   final TextEditingController _whatsAppNumberController =
       TextEditingController();
@@ -212,6 +213,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
   TextStyle? style;
   String countryCode = 'IN';
   String merchantPanHelperText = "Click verify";
+  String merchantFirmPanHelperText = "Click verify";
 
   List merchantBankList = [];
   List merchantProofDocumentList = [];
@@ -242,7 +244,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
   final TextEditingController _pinController = TextEditingController();
   final TextEditingController _confirmPinController = TextEditingController();
 
-  String firmPanHelpertext = ' please Verify';
   String panOwnerName = '';
 
   String accountCheck = '';
@@ -687,9 +688,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
         selectedItems: selectedItems,
       );
     } else if (position == 1) {
-      return mainControl(merchantDetialsPartOne());
+      return mainControl(merchantDetailsPartOne());
     } else if (position == 2) {
-      return mainControl(merchantDetialsPartTwo());
+      return mainControl(merchantDetailsPartTwo());
     } else if (position == 3) {
       return mainControl(merchantIdproof());
     } else if (position == 4) {
@@ -803,7 +804,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
           );
   }
 
-  Widget merchantDetialsPartOne() {
+  Widget merchantDetailsPartOne() {
     var screenHeight = MediaQuery.of(context).size.height;
     return Form(
         key: personalFormKey,
@@ -914,28 +915,33 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 }
                 return null;
               },
-              suffixIcon: isEmailVerified
-                  ? TextButton(
-                      onPressed: () {
-                        changeVerifiedEmail();
-                      },
-                      child: const Icon(
-                        Icons.edit_outlined,
-                        color: AppColors.kPrimaryColor,
-                      ))
-                  : TextButton(
-                      onPressed: () {
-                        if (Validators.isValidEmail(_emailController.text)) {
-                          sendEmailOtp(emailId: _emailController.text);
-                        } else {
-                          alertWidget.error("Enter a valid email");
-                        }
-                      },
-                      child: const CustomTextWidget(
-                        text: "Send OTP",
-                        color: AppColors.kPrimaryColor,
-                        size: 12,
-                      )),
+              suffixIcon: isEmailOtpSending
+                  ? const CircularProgressIndicator(
+                      strokeWidth: 3,
+                    )
+                  : isEmailVerified
+                      ? TextButton(
+                          onPressed: () {
+                            changeVerifiedEmail();
+                          },
+                          child: const Icon(
+                            Icons.edit_outlined,
+                            color: AppColors.kPrimaryColor,
+                          ))
+                      : TextButton(
+                          onPressed: () {
+                            if (Validators.isValidEmail(
+                                _emailController.text)) {
+                              sendEmailOtp(emailId: _emailController.text);
+                            } else {
+                              alertWidget.error("Enter a valid email");
+                            }
+                          },
+                          child: const CustomTextWidget(
+                            text: "Send OTP",
+                            color: AppColors.kPrimaryColor,
+                            size: 12,
+                          )),
               suffixIconTrue: true,
               helperText: emailHelperText,
               helperStyle: TextStyle(
@@ -1144,7 +1150,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
         ));
   }
 
-  Widget merchantDetialsPartTwo() {
+  Widget merchantDetailsPartTwo() {
     var screenHeight = MediaQuery.of(context).size.height;
     return Form(
         key: personalFormKey,
@@ -2012,7 +2018,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   });
                 },
                 suffixIcon: isgstverified
-                    ? VerificationSuccessButton()
+                    ? const VerificationSuccessButton()
                     : TextButton(
                         onPressed: () {
                           if (_gstController.text.length >= 15) {
@@ -2022,7 +2028,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                             alertWidget.error("Enter a valid GST number");
                           }
                         },
-                        child: CustomTextWidget(
+                        child: const CustomTextWidget(
                           text: "Verify",
                           color: AppColors.kRedColor,
                           size: 12,
@@ -2067,7 +2073,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   //getUser();
                 },
                 suffixIcon: isFirmPanVerified
-                    ? VerificationSuccessButton()
+                    ? const VerificationSuccessButton()
                     : TextButton(
                         onPressed: () {
                           if (_gstController.text.length >= 15) {
@@ -2077,7 +2083,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                             alertWidget.error("Enter a valid Firm Pan number");
                           }
                         },
-                        child: CustomTextWidget(
+                        child: const CustomTextWidget(
                           text: "Verify",
                           color: AppColors.kRedColor,
                           size: 12,
@@ -2088,7 +2094,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                     .bodySmall
                     ?.copyWith(color: Theme.of(context).primaryColor),
                 enabled: !isFirmPanVerified,
-                helperText: merchantPanHelperText,
+                helperText: merchantFirmPanHelperText,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Firm Pan number Mandatory!';
@@ -2394,7 +2400,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 Container(
                   color: AppColors.kTileColor,
                   child: Theme(
-                    data: ThemeData().copyWith(dividerColor: Colors.transparent),
+                    data:
+                        ThemeData().copyWith(dividerColor: Colors.transparent),
                     child: ExpansionTile(
                       initiallyExpanded: true,
                       title: CustomTextWidget(
@@ -2910,7 +2917,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                     // Container(
                     // color: AppColors.kSelectedBackgroundColor,
                     Theme(
-                      data: ThemeData().copyWith(dividerColor: Colors.transparent),
+                      data: ThemeData()
+                          .copyWith(dividerColor: Colors.transparent),
                       child: ExpansionTile(
                         initiallyExpanded: true,
                         title: CustomTextWidget(
@@ -2925,14 +2933,17 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                 margin: EdgeInsets.only(
                                   top: screenHeight * .015,
                                 ),
-                                width: item['dcTxnAmount'] == null && !isEditable
-                                    ? ((MediaQuery.of(context).size.width) -
-                                            ((MediaQuery.of(context).size.width *
-                                                    .02) *
-                                                3) -
-                                            30) /
-                                        2
-                                    : double.infinity,
+                                width:
+                                    item['dcTxnAmount'] == null && !isEditable
+                                        ? ((MediaQuery.of(context).size.width) -
+                                                ((MediaQuery.of(context)
+                                                            .size
+                                                            .width *
+                                                        .02) *
+                                                    3) -
+                                                30) /
+                                            2
+                                        : double.infinity,
                                 padding: item['dcTxnAmount'] != null
                                     ? EdgeInsets.all(
                                         MediaQuery.of(context).size.width * .02)
@@ -2966,7 +2977,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                             onTap: () {
                                               showDialog(
                                                 context: context,
-                                                builder: (BuildContext context) {
+                                                builder:
+                                                    (BuildContext context) {
                                                   return AlertDialog(
                                                     title: Text(
                                                         '${item['paymentName']}'),
@@ -2991,7 +3003,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                                     .height *
                                                                 .01),
                                                         Container(
-                                                          width: double.infinity,
+                                                          width:
+                                                              double.infinity,
                                                           height: MediaQuery.of(
                                                                       context)
                                                                   .size
@@ -3036,8 +3049,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
                                                               print(
                                                                   mdrSummaryList[
-                                                                          0]
-                                                                      ['amount']);
+                                                                          0][
+                                                                      'amount']);
                                                             },
                                                             inputFormatters: [
                                                               FilteringTextInputFormatter
@@ -3055,13 +3068,15 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                             enabled: true,
                                                             style:
                                                                 const TextStyle(
-                                                                    fontSize: 14,
+                                                                    fontSize:
+                                                                        14,
                                                                     color: Colors
                                                                         .black),
                                                             decoration:
                                                                 const InputDecoration(
-                                                              border: InputBorder
-                                                                  .none,
+                                                              border:
+                                                                  InputBorder
+                                                                      .none,
                                                               counterText: '',
                                                             ),
                                                             initialValue:
@@ -3076,7 +3091,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                           Navigator.of(context)
                                                               .pop(); // Close the dialog
                                                         },
-                                                        child: Text('OK'),
+                                                        child: const Text('OK'),
                                                       ),
                                                     ],
                                                   );
@@ -3152,7 +3167,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                   //       '${item['amount'] ?? item['dcTxnAmount']}'),
                                                   // ),
                                                   if (isEditable &&
-                                                      item['dcTxnAmount'] == null)
+                                                      item['dcTxnAmount'] ==
+                                                          null)
                                                     const Icon(
                                                       Icons.edit,
                                                       size: 15,
@@ -3334,8 +3350,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                   onTap: () {
                                                     showDialog(
                                                       context: context,
-                                                      builder:
-                                                          (BuildContext context) {
+                                                      builder: (BuildContext
+                                                          context) {
                                                         return AlertDialog(
                                                           title: Text(
                                                               'Amount less than ${item['dcTxnAmount']}'),
@@ -3348,7 +3364,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                                       'Mont'),
                                                           content: Column(
                                                             mainAxisSize:
-                                                                MainAxisSize.min,
+                                                                MainAxisSize
+                                                                    .min,
                                                             crossAxisAlignment:
                                                                 CrossAxisAlignment
                                                                     .start,
@@ -3370,8 +3387,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                                         .height *
                                                                     .06,
                                                                 padding: EdgeInsets.only(
-                                                                    left: MediaQuery.of(
-                                                                                context)
+                                                                    left: MediaQuery.of(context)
                                                                             .size
                                                                             .width *
                                                                         .025),
@@ -3382,20 +3398,19 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                                             .withOpacity(
                                                                                 .1)),
                                                                     borderRadius:
-                                                                        BorderRadius
-                                                                            .circular(
-                                                                                5)),
+                                                                        BorderRadius.circular(
+                                                                            5)),
                                                                 child:
                                                                     TextFormField(
                                                                   onChanged:
                                                                       (value) {
                                                                     final double
                                                                         parsedValue =
-                                                                        double.tryParse(
-                                                                                value) ??
+                                                                        double.tryParse(value) ??
                                                                             0.0;
 
-                                                                    setState(() {
+                                                                    setState(
+                                                                        () {
                                                                       item['amountLePercent'] =
                                                                           value;
                                                                     });
@@ -3416,11 +3431,10 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                                           r'^\d{0,3}(\.\d{0,2})?$'), // Allows up to 3 digits (0-100) and optional decimal with up to 2 digits
                                                                     ),
                                                                   ],
-                                                                  keyboardType:
-                                                                      const TextInputType
-                                                                          .numberWithOptions(
-                                                                          decimal:
-                                                                              true),
+                                                                  keyboardType: const TextInputType
+                                                                      .numberWithOptions(
+                                                                      decimal:
+                                                                          true),
                                                                   maxLength: 6,
                                                                   enabled: true,
                                                                   style: const TextStyle(
@@ -3449,7 +3463,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                                         context)
                                                                     .pop(); // Close the dialog
                                                               },
-                                                              child: Text('OK'),
+                                                              child: const Text(
+                                                                  'OK'),
                                                             ),
                                                           ],
                                                         );
@@ -3457,20 +3472,22 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                     );
                                                   },
                                                   child: Container(
-                                                    width: MediaQuery.of(context)
-                                                            .size
-                                                            .width *
-                                                        .18,
-                                                    height: MediaQuery.of(context)
-                                                            .size
-                                                            .height *
-                                                        .04,
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            .18,
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height *
+                                                            .04,
                                                     padding: EdgeInsets.only(
-                                                        left:
-                                                            MediaQuery.of(context)
-                                                                    .size
-                                                                    .width *
-                                                                .025),
+                                                        left: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            .025),
                                                     decoration: BoxDecoration(
                                                         border: Border.all(
                                                             color: isEditable
@@ -3480,8 +3497,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                                 : Colors
                                                                     .transparent),
                                                         borderRadius:
-                                                            BorderRadius.circular(
-                                                                5)),
+                                                            BorderRadius
+                                                                .circular(5)),
                                                     child: Row(
                                                       children: [
                                                         CustomTextWidget(
@@ -3696,8 +3713,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                   onTap: () {
                                                     showDialog(
                                                       context: context,
-                                                      builder:
-                                                          (BuildContext context) {
+                                                      builder: (BuildContext
+                                                          context) {
                                                         return AlertDialog(
                                                           title: Text(
                                                               'Amount greater than ${item['dcTxnAmount']}'),
@@ -3710,7 +3727,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                                       'Mont'),
                                                           content: Column(
                                                             mainAxisSize:
-                                                                MainAxisSize.min,
+                                                                MainAxisSize
+                                                                    .min,
                                                             crossAxisAlignment:
                                                                 CrossAxisAlignment
                                                                     .start,
@@ -3732,8 +3750,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                                         .height *
                                                                     .06,
                                                                 padding: EdgeInsets.only(
-                                                                    left: MediaQuery.of(
-                                                                                context)
+                                                                    left: MediaQuery.of(context)
                                                                             .size
                                                                             .width *
                                                                         .025),
@@ -3744,20 +3761,19 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                                             .withOpacity(
                                                                                 .1)),
                                                                     borderRadius:
-                                                                        BorderRadius
-                                                                            .circular(
-                                                                                5)),
+                                                                        BorderRadius.circular(
+                                                                            5)),
                                                                 child:
                                                                     TextFormField(
                                                                   onChanged:
                                                                       (value) {
                                                                     final double
                                                                         parsedValue =
-                                                                        double.tryParse(
-                                                                                value) ??
+                                                                        double.tryParse(value) ??
                                                                             0.0;
 
-                                                                    setState(() {
+                                                                    setState(
+                                                                        () {
                                                                       item['amountGtPercent'] =
                                                                           value;
                                                                     });
@@ -3778,11 +3794,10 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                                           r'^\d{0,3}(\.\d{0,2})?$'), // Allows up to 3 digits (0-100) and optional decimal with up to 2 digits
                                                                     ),
                                                                   ],
-                                                                  keyboardType:
-                                                                      const TextInputType
-                                                                          .numberWithOptions(
-                                                                          decimal:
-                                                                              true),
+                                                                  keyboardType: const TextInputType
+                                                                      .numberWithOptions(
+                                                                      decimal:
+                                                                          true),
                                                                   maxLength: 6,
                                                                   enabled: true,
                                                                   style: const TextStyle(
@@ -3811,7 +3826,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                                         context)
                                                                     .pop(); // Close the dialog
                                                               },
-                                                              child: Text('OK'),
+                                                              child: const Text(
+                                                                  'OK'),
                                                             ),
                                                           ],
                                                         );
@@ -3819,20 +3835,22 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                     );
                                                   },
                                                   child: Container(
-                                                    width: MediaQuery.of(context)
-                                                            .size
-                                                            .width *
-                                                        .18,
-                                                    height: MediaQuery.of(context)
-                                                            .size
-                                                            .height *
-                                                        .04,
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            .18,
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height *
+                                                            .04,
                                                     padding: EdgeInsets.only(
-                                                        left:
-                                                            MediaQuery.of(context)
-                                                                    .size
-                                                                    .width *
-                                                                .025),
+                                                        left: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            .025),
                                                     decoration: BoxDecoration(
                                                         border: Border.all(
                                                             color: isEditable
@@ -3842,8 +3860,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                                 : Colors
                                                                     .transparent),
                                                         borderRadius:
-                                                            BorderRadius.circular(
-                                                                5)),
+                                                            BorderRadius
+                                                                .circular(5)),
                                                     child: Row(
                                                       children: [
                                                         CustomTextWidget(
@@ -4740,7 +4758,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
     if (_firmPanController.text.isNotEmpty) {
       debugPrint("Calling Firm pan validation API");
       setState(() {
-        firmPanHelpertext = "Loading...";
+        merchantFirmPanHelperText = "Loading...";
       });
       var panNumber = _firmPanController.text.toString();
       // var user = await Validators.encrypt(_merchantPanController.text.toString());
@@ -4748,7 +4766,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
         if (response.toString() == "true") {
           setState(() {
             isFirmPanVerified = true;
-            firmPanHelpertext = "Verified";
+            merchantFirmPanHelperText = "Verified";
             businessIdProofReq.firmPanNumberVerifyStatus = true;
             businessIdProofReq.firmPanNo = panNumber;
             _firmPanController.text = panNumber;
@@ -4757,7 +4775,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
         } else {
           businessIdProofReq.firmPanNumberVerifyStatus = false;
           setState(() {
-            firmPanHelpertext =
+            merchantFirmPanHelperText =
                 "Failed try again with valid Merchant pan number";
           });
         }
@@ -5094,6 +5112,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
   sendEmailOtp({required String emailId}) async {
     debugPrint("Calling Email otp Send API");
     setState(() {
+      isEmailOtpSending = true;
       emailHelperText = "Loading...";
     });
     // request = await Validators.encrypt(request);
@@ -5113,6 +5132,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
           onSubmit: (emailVerified, messge) {
             print("submit callback called");
             setState(() {
+              isEmailOtpSending = false;
               emailHelperText = messge;
               isEmailVerified = emailVerified;
             });
@@ -5123,6 +5143,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
         String errorString = decodedData['message'] ?? "Error sending otp";
 
         setState(() {
+          isEmailOtpSending = false;
           emailHelperText = errorString;
         });
 
