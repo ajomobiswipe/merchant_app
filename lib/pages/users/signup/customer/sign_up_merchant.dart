@@ -2400,8 +2400,16 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 Container(
                   color: AppColors.kTileColor,
                   child: Theme(
+<<<<<<< HEAD
                     data:
                         ThemeData().copyWith(dividerColor: Colors.transparent),
+=======
+                    data: ThemeData().copyWith(
+                        dividerColor: Colors.transparent,
+                        listTileTheme: const ListTileThemeData(
+                            contentPadding:
+                                EdgeInsets.symmetric(horizontal: 10))),
+>>>>>>> 2965460abdc45d7a1c40071fda517ea3be266c1e
                     child: ExpansionTile(
                       initiallyExpanded: true,
                       title: CustomTextWidget(
@@ -2410,52 +2418,112 @@ class _MerchantSignupState extends State<MerchantSignup> {
                         size: 10,
                       ),
                       children: [
-                        DataTable(
-                          // headingRowHeight: 0,
-                          columnSpacing: 8,
-                          dataRowMinHeight: 20,
-                          dataRowMaxHeight: 30,
-                          columns: [
-                            const DataColumn(label: Text('Name')),
-                            const DataColumn(label: Text('Expy Date')),
-                            const DataColumn(label: Text('')),
-                          ],
-                          rows: selectedBusinessProofItems.map((item) {
-                            return DataRow(cells: [
-                              DataCell(SizedBox(
-                                width: 100,
-                                child: CustomTextWidget(
-                                  text: item.documentTypeName.toString(),
-                                  size: 11,
-                                  fontWeight: FontWeight.w900,
-                                ),
-                              )),
-                              // DataCell(CustomTextWidget(
-                              //   text: "${item.productName}+ 1499+499",
-                              //   size: 11,
-                              //   fontWeight: FontWeight.w900,
-                              // )),
-                              DataCell(CustomTextWidget(
-                                text: item.documentExpiry.toString(),
-                                size: 12,
-                                fontWeight: FontWeight.w900,
-                              )),
-                              DataCell(
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.cancel_outlined,
-                                    color: Colors.red,
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      selectedBusinessProofItems.remove(item);
-                                    });
-                                  },
-                                ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                               Row(
+                                children: [
+                                  SizedBox(width: MediaQuery.of(context).size.width*.3,child:  const CustomTextWidget(text:'Name',size: 13,)),
+                                  SizedBox(width: MediaQuery.of(context).size.width*.3,child:  const CustomTextWidget(text:'Expiry',size: 13,)),
+                                  SizedBox(width: MediaQuery.of(context).size.width*.1,child:   const CustomTextWidget(text:'',size: 13,)),
+                                ],
                               ),
-                            ]);
-                          }).toList(),
+
+                              const Divider(),
+
+                              for (var item in selectedBusinessProofItems)
+                                Row(children: [
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width*.3,
+                                    child: CustomTextWidget(
+                                      text: item.documentTypeName.toString(),
+                                      size: 11,isBold:false,
+
+                                    ),
+                                  ),
+                                  // DataCell(CustomTextWidget(
+                                  //   text: "${item.productName}+ 1499+499",
+                                  //   size: 11,
+                                  //   fontWeight: FontWeight.w900,
+                                  // )),
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width*.3,
+                                    child: CustomTextWidget(
+                                      text: item.documentExpiry.toString(),
+                                      isBold:false,
+                                      size: 12,
+
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width*.1,
+                                    child: IconButton(
+                                      icon: const Icon(
+                                        Icons.cancel_outlined,
+                                        color: Colors.red,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          selectedBusinessProofItems.remove(item);
+                                        });
+                                      },
+                                    ),
+                                  ),
+
+                                ])
+                            ],
+                          ),
                         ),
+
+                        // DataTable(
+                        //   // headingRowHeight: 0,
+                        //   columnSpacing: 8,
+                        //   dataRowMinHeight: 20,
+                        //   dataRowMaxHeight: 30,
+                        //   columns: const [
+                        //     DataColumn(label: Text('Name')),
+                        //     DataColumn(label: Text('Expy Date')),
+                        //     DataColumn(label: Text('')),
+                        //   ],
+                        //   rows: selectedBusinessProofItems.map((item) {
+                        //     return DataRow(cells: [
+                        //       DataCell(SizedBox(
+                        //         width: 100,
+                        //         child: CustomTextWidget(
+                        //           text: item.documentTypeName.toString(),
+                        //           size: 11,
+                        //           fontWeight: FontWeight.w900,
+                        //         ),
+                        //       )),
+                        //       // DataCell(CustomTextWidget(
+                        //       //   text: "${item.productName}+ 1499+499",
+                        //       //   size: 11,
+                        //       //   fontWeight: FontWeight.w900,
+                        //       // )),
+                        //       DataCell(CustomTextWidget(
+                        //         text: item.documentExpiry.toString(),
+                        //         size: 12,
+                        //         fontWeight: FontWeight.w900,
+                        //       )),
+                        //       DataCell(
+                        //         IconButton(
+                        //           icon: const Icon(
+                        //             Icons.cancel_outlined,
+                        //             color: Colors.red,
+                        //           ),
+                        //           onPressed: () {
+                        //             setState(() {
+                        //               selectedBusinessProofItems.remove(item);
+                        //             });
+                        //           },
+                        //         ),
+                        //       ),
+                        //     ]);
+                        //   }).toList(),
+                        // ),
                       ],
                     ),
                   ),
