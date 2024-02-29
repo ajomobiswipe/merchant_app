@@ -1,3 +1,5 @@
+
+
 import 'package:flutter/material.dart';
 import 'package:sifr_latest/common_widgets/custom_app_button.dart';
 import 'package:sifr_latest/common_widgets/form_title_widget.dart';
@@ -36,6 +38,8 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
 
   String selectedPackage = '';
   String selectedProduct = '';
+
+  bool expansionOpened=true;
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -348,11 +352,15 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                       var Product = selectedProductPackages.firstWhere(
                           (package) =>
                               package['packageId'] ==
-                              selectedPackageId)['packageName'];
+                              selectedPackageId)['description'];
                       var package = widget.tmsProductMaster.firstWhere(
                           (product) =>
                               product['productId'] ==
-                              selectedProductId)['description'];
+                              selectedProductId)['productName'];
+
+                      print('package$package');
+                      print('Product$Product');
+
                       SelectedProduct newItem = SelectedProduct(
                         productName: Product,
                         package: package,
@@ -478,59 +486,144 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                   color: AppColors.kTileColor,
                   child: Theme(
                     data:
-                        ThemeData().copyWith(dividerColor: Colors.transparent),
+                        ThemeData().copyWith(dividerColor: Colors.transparent,listTileTheme: const ListTileThemeData(contentPadding: EdgeInsets.symmetric(horizontal: 10))),
                     child: ExpansionTile(
+                      onExpansionChanged: (boolValue){
+                        expansionOpened=boolValue;
+                        setState(() {
+
+                        });
+                      },
                       initiallyExpanded: true,
                       title: CustomTextWidget(
-                        text: "View Complete product Summary",
+                        text: !expansionOpened?"View Complete product Summary":"product Summary",
                         color: Colors.grey.shade600,
                         size: 10,
                       ),
                       children: [
-                        DataTable(
-                          headingRowHeight: 0,
-                          columnSpacing: 2,
-                          dataRowMinHeight: 20,
-                          dataRowMaxHeight: 30,
-                          columns: const [
-                            DataColumn(label: Text('Product')),
-                            DataColumn(label: Text('Package')),
-                            DataColumn(label: Text('Quantity')),
-                            DataColumn(label: Text('Actions')),
-                          ],
-                          rows: widget.selectedItems.map((item) {
-                            return DataRow(cells: [
-                              DataCell(CustomTextWidget(
-                                text: item.package,
-                                size: 11,
-                                fontWeight: FontWeight.w900,
-                              )),
-                              DataCell(CustomTextWidget(
-                                text: "${item.productName}+ 1999+499",
-                                size: 11,
-                                fontWeight: FontWeight.w900,
-                              )),
-                              DataCell(CustomTextWidget(
-                                text: ' - ${item.quantity}',
-                                size: 12,
-                                fontWeight: FontWeight.w900,
-                              )),
-                              DataCell(
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.cancel_outlined,
-                                    color: Colors.red,
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      widget.selectedItems.remove(item);
-                                    });
-                                  },
+
+                         Column(
+                          children:
+                            widget.selectedItems.map((item) {
+
+                              return Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: CustomTextWidget(
+                                        text: item.package,
+                                        size: 11,
+                                        fontWeight: FontWeight.w900,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: CustomTextWidget(
+                                        text: item.productName,
+                                        size: 11,
+                                        fontWeight: FontWeight.w900,
+                                      ),
+                                    ),
+                                    CustomTextWidget(
+                                        text: '${item.quantity}',
+                                        size: 12,
+                                        fontWeight: FontWeight.w900,
+                                      ),
+
+                                    IconButton(
+                                        icon: const Icon(
+                                          Icons.cancel_outlined,
+                                          color: Colors.red,
+                                        ),
+                                        onPressed: () {
+                                          setState(() {
+                                            widget.selectedItems.remove(item);
+                                          });
+                                        },
+                                      ),
+
+                                  ],
                                 ),
-                              ),
-                            ]);
-                          }).toList(),
+                              );
+
+                              // return DataRow(cells: [
+                              //   DataCell(CustomTextWidget(
+                              //     text: item.package,
+                              //     size: 11,
+                              //     fontWeight: FontWeight.w900,
+                              //   )),
+                              //   DataCell(CustomTextWidget(
+                              //     text: "${item.productName}+ 1999+499",
+                              //     size: 11,
+                              //     fontWeight: FontWeight.w900,
+                              //   )),
+                              //   DataCell(CustomTextWidget(
+                              //     text: ' - ${item.quantity}',
+                              //     size: 12,
+                              //     fontWeight: FontWeight.w900,
+                              //   )),
+                              //   DataCell(
+                              //     IconButton(
+                              //       icon: const Icon(
+                              //         Icons.cancel_outlined,
+                              //         color: Colors.red,
+                              //       ),
+                              //       onPressed: () {
+                              //         setState(() {
+                              //           widget.selectedItems.remove(item);
+                              //         });
+                              //       },
+                              //     ),
+                              //   ),
+                              // ]);
+                            }).toList()
                         ),
+
+                        // DataTable(
+                        //   headingRowHeight: 0,
+                        //   columnSpacing: 2,
+                        //   dataRowMinHeight: 20,
+                        //   dataRowMaxHeight: 30,
+                        //   columns: const [
+                        //     DataColumn(label: Text('Product')),
+                        //     DataColumn(label: Text('Package')),
+                        //     DataColumn(label: Text('Quantity')),
+                        //     DataColumn(label: Text('Actions')),
+                        //   ],
+                        //   rows: widget.selectedItems.map((item) {
+                        //     return DataRow(cells: [
+                        //       DataCell(CustomTextWidget(
+                        //         text: item.package,
+                        //         size: 11,
+                        //         fontWeight: FontWeight.w900,
+                        //       )),
+                        //       DataCell(CustomTextWidget(
+                        //         text: "${item.productName}+ 1999+499",
+                        //         size: 11,
+                        //         fontWeight: FontWeight.w900,
+                        //       )),
+                        //       DataCell(CustomTextWidget(
+                        //         text: ' - ${item.quantity}',
+                        //         size: 12,
+                        //         fontWeight: FontWeight.w900,
+                        //       )),
+                        //       DataCell(
+                        //         IconButton(
+                        //           icon: const Icon(
+                        //             Icons.cancel_outlined,
+                        //             color: Colors.red,
+                        //           ),
+                        //           onPressed: () {
+                        //             setState(() {
+                        //               widget.selectedItems.remove(item);
+                        //             });
+                        //           },
+                        //         ),
+                        //       ),
+                        //     ]);
+                        //   }).toList(),
+                        // ),
                       ],
                     ),
                   ),

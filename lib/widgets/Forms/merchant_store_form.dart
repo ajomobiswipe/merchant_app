@@ -453,6 +453,7 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                   print(widget.merchantStoreInfoReq.currentState);
                 },
                 validator: (value) {
+
                   if (value == null || value.isEmpty) {
                     return 'Current state is Mandatory!';
                   }

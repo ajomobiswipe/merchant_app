@@ -2394,7 +2394,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 Container(
                   color: AppColors.kTileColor,
                   child: Theme(
-                    data: ThemeData().copyWith(dividerColor: Colors.transparent),
+                    data: ThemeData().copyWith(
+                        dividerColor: Colors.transparent,
+                        listTileTheme: const ListTileThemeData(
+                            contentPadding:
+                                EdgeInsets.symmetric(horizontal: 10))),
                     child: ExpansionTile(
                       initiallyExpanded: true,
                       title: CustomTextWidget(
@@ -2403,52 +2407,112 @@ class _MerchantSignupState extends State<MerchantSignup> {
                         size: 10,
                       ),
                       children: [
-                        DataTable(
-                          // headingRowHeight: 0,
-                          columnSpacing: 8,
-                          dataRowMinHeight: 20,
-                          dataRowMaxHeight: 30,
-                          columns: [
-                            const DataColumn(label: Text('Name')),
-                            const DataColumn(label: Text('Expy Date')),
-                            const DataColumn(label: Text('')),
-                          ],
-                          rows: selectedBusinessProofItems.map((item) {
-                            return DataRow(cells: [
-                              DataCell(SizedBox(
-                                width: 100,
-                                child: CustomTextWidget(
-                                  text: item.documentTypeName.toString(),
-                                  size: 11,
-                                  fontWeight: FontWeight.w900,
-                                ),
-                              )),
-                              // DataCell(CustomTextWidget(
-                              //   text: "${item.productName}+ 1499+499",
-                              //   size: 11,
-                              //   fontWeight: FontWeight.w900,
-                              // )),
-                              DataCell(CustomTextWidget(
-                                text: item.documentExpiry.toString(),
-                                size: 12,
-                                fontWeight: FontWeight.w900,
-                              )),
-                              DataCell(
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.cancel_outlined,
-                                    color: Colors.red,
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      selectedBusinessProofItems.remove(item);
-                                    });
-                                  },
-                                ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                               Row(
+                                children: [
+                                  SizedBox(width: MediaQuery.of(context).size.width*.3,child:  const CustomTextWidget(text:'Name',size: 13,)),
+                                  SizedBox(width: MediaQuery.of(context).size.width*.3,child:  const CustomTextWidget(text:'Expiry',size: 13,)),
+                                  SizedBox(width: MediaQuery.of(context).size.width*.1,child:   const CustomTextWidget(text:'',size: 13,)),
+                                ],
                               ),
-                            ]);
-                          }).toList(),
+
+                              const Divider(),
+
+                              for (var item in selectedBusinessProofItems)
+                                Row(children: [
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width*.3,
+                                    child: CustomTextWidget(
+                                      text: item.documentTypeName.toString(),
+                                      size: 11,isBold:false,
+
+                                    ),
+                                  ),
+                                  // DataCell(CustomTextWidget(
+                                  //   text: "${item.productName}+ 1499+499",
+                                  //   size: 11,
+                                  //   fontWeight: FontWeight.w900,
+                                  // )),
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width*.3,
+                                    child: CustomTextWidget(
+                                      text: item.documentExpiry.toString(),
+                                      isBold:false,
+                                      size: 12,
+
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width*.1,
+                                    child: IconButton(
+                                      icon: const Icon(
+                                        Icons.cancel_outlined,
+                                        color: Colors.red,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          selectedBusinessProofItems.remove(item);
+                                        });
+                                      },
+                                    ),
+                                  ),
+
+                                ])
+                            ],
+                          ),
                         ),
+
+                        // DataTable(
+                        //   // headingRowHeight: 0,
+                        //   columnSpacing: 8,
+                        //   dataRowMinHeight: 20,
+                        //   dataRowMaxHeight: 30,
+                        //   columns: const [
+                        //     DataColumn(label: Text('Name')),
+                        //     DataColumn(label: Text('Expy Date')),
+                        //     DataColumn(label: Text('')),
+                        //   ],
+                        //   rows: selectedBusinessProofItems.map((item) {
+                        //     return DataRow(cells: [
+                        //       DataCell(SizedBox(
+                        //         width: 100,
+                        //         child: CustomTextWidget(
+                        //           text: item.documentTypeName.toString(),
+                        //           size: 11,
+                        //           fontWeight: FontWeight.w900,
+                        //         ),
+                        //       )),
+                        //       // DataCell(CustomTextWidget(
+                        //       //   text: "${item.productName}+ 1499+499",
+                        //       //   size: 11,
+                        //       //   fontWeight: FontWeight.w900,
+                        //       // )),
+                        //       DataCell(CustomTextWidget(
+                        //         text: item.documentExpiry.toString(),
+                        //         size: 12,
+                        //         fontWeight: FontWeight.w900,
+                        //       )),
+                        //       DataCell(
+                        //         IconButton(
+                        //           icon: const Icon(
+                        //             Icons.cancel_outlined,
+                        //             color: Colors.red,
+                        //           ),
+                        //           onPressed: () {
+                        //             setState(() {
+                        //               selectedBusinessProofItems.remove(item);
+                        //             });
+                        //           },
+                        //         ),
+                        //       ),
+                        //     ]);
+                        //   }).toList(),
+                        // ),
                       ],
                     ),
                   ),
@@ -2910,7 +2974,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                     // Container(
                     // color: AppColors.kSelectedBackgroundColor,
                     Theme(
-                      data: ThemeData().copyWith(dividerColor: Colors.transparent),
+                      data: ThemeData()
+                          .copyWith(dividerColor: Colors.transparent),
                       child: ExpansionTile(
                         initiallyExpanded: true,
                         title: CustomTextWidget(
@@ -2925,14 +2990,17 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                 margin: EdgeInsets.only(
                                   top: screenHeight * .015,
                                 ),
-                                width: item['dcTxnAmount'] == null && !isEditable
-                                    ? ((MediaQuery.of(context).size.width) -
-                                            ((MediaQuery.of(context).size.width *
-                                                    .02) *
-                                                3) -
-                                            30) /
-                                        2
-                                    : double.infinity,
+                                width:
+                                    item['dcTxnAmount'] == null && !isEditable
+                                        ? ((MediaQuery.of(context).size.width) -
+                                                ((MediaQuery.of(context)
+                                                            .size
+                                                            .width *
+                                                        .02) *
+                                                    3) -
+                                                30) /
+                                            2
+                                        : double.infinity,
                                 padding: item['dcTxnAmount'] != null
                                     ? EdgeInsets.all(
                                         MediaQuery.of(context).size.width * .02)
@@ -2966,7 +3034,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                             onTap: () {
                                               showDialog(
                                                 context: context,
-                                                builder: (BuildContext context) {
+                                                builder:
+                                                    (BuildContext context) {
                                                   return AlertDialog(
                                                     title: Text(
                                                         '${item['paymentName']}'),
@@ -2991,7 +3060,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                                     .height *
                                                                 .01),
                                                         Container(
-                                                          width: double.infinity,
+                                                          width:
+                                                              double.infinity,
                                                           height: MediaQuery.of(
                                                                       context)
                                                                   .size
@@ -3036,8 +3106,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
                                                               print(
                                                                   mdrSummaryList[
-                                                                          0]
-                                                                      ['amount']);
+                                                                          0][
+                                                                      'amount']);
                                                             },
                                                             inputFormatters: [
                                                               FilteringTextInputFormatter
@@ -3055,13 +3125,15 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                             enabled: true,
                                                             style:
                                                                 const TextStyle(
-                                                                    fontSize: 14,
+                                                                    fontSize:
+                                                                        14,
                                                                     color: Colors
                                                                         .black),
                                                             decoration:
                                                                 const InputDecoration(
-                                                              border: InputBorder
-                                                                  .none,
+                                                              border:
+                                                                  InputBorder
+                                                                      .none,
                                                               counterText: '',
                                                             ),
                                                             initialValue:
@@ -3152,7 +3224,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                   //       '${item['amount'] ?? item['dcTxnAmount']}'),
                                                   // ),
                                                   if (isEditable &&
-                                                      item['dcTxnAmount'] == null)
+                                                      item['dcTxnAmount'] ==
+                                                          null)
                                                     const Icon(
                                                       Icons.edit,
                                                       size: 15,
@@ -3334,8 +3407,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                   onTap: () {
                                                     showDialog(
                                                       context: context,
-                                                      builder:
-                                                          (BuildContext context) {
+                                                      builder: (BuildContext
+                                                          context) {
                                                         return AlertDialog(
                                                           title: Text(
                                                               'Amount less than ${item['dcTxnAmount']}'),
@@ -3348,7 +3421,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                                       'Mont'),
                                                           content: Column(
                                                             mainAxisSize:
-                                                                MainAxisSize.min,
+                                                                MainAxisSize
+                                                                    .min,
                                                             crossAxisAlignment:
                                                                 CrossAxisAlignment
                                                                     .start,
@@ -3370,8 +3444,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                                         .height *
                                                                     .06,
                                                                 padding: EdgeInsets.only(
-                                                                    left: MediaQuery.of(
-                                                                                context)
+                                                                    left: MediaQuery.of(context)
                                                                             .size
                                                                             .width *
                                                                         .025),
@@ -3382,20 +3455,19 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                                             .withOpacity(
                                                                                 .1)),
                                                                     borderRadius:
-                                                                        BorderRadius
-                                                                            .circular(
-                                                                                5)),
+                                                                        BorderRadius.circular(
+                                                                            5)),
                                                                 child:
                                                                     TextFormField(
                                                                   onChanged:
                                                                       (value) {
                                                                     final double
                                                                         parsedValue =
-                                                                        double.tryParse(
-                                                                                value) ??
+                                                                        double.tryParse(value) ??
                                                                             0.0;
 
-                                                                    setState(() {
+                                                                    setState(
+                                                                        () {
                                                                       item['amountLePercent'] =
                                                                           value;
                                                                     });
@@ -3416,11 +3488,10 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                                           r'^\d{0,3}(\.\d{0,2})?$'), // Allows up to 3 digits (0-100) and optional decimal with up to 2 digits
                                                                     ),
                                                                   ],
-                                                                  keyboardType:
-                                                                      const TextInputType
-                                                                          .numberWithOptions(
-                                                                          decimal:
-                                                                              true),
+                                                                  keyboardType: const TextInputType
+                                                                      .numberWithOptions(
+                                                                      decimal:
+                                                                          true),
                                                                   maxLength: 6,
                                                                   enabled: true,
                                                                   style: const TextStyle(
@@ -3457,20 +3528,22 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                     );
                                                   },
                                                   child: Container(
-                                                    width: MediaQuery.of(context)
-                                                            .size
-                                                            .width *
-                                                        .18,
-                                                    height: MediaQuery.of(context)
-                                                            .size
-                                                            .height *
-                                                        .04,
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            .18,
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height *
+                                                            .04,
                                                     padding: EdgeInsets.only(
-                                                        left:
-                                                            MediaQuery.of(context)
-                                                                    .size
-                                                                    .width *
-                                                                .025),
+                                                        left: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            .025),
                                                     decoration: BoxDecoration(
                                                         border: Border.all(
                                                             color: isEditable
@@ -3480,8 +3553,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                                 : Colors
                                                                     .transparent),
                                                         borderRadius:
-                                                            BorderRadius.circular(
-                                                                5)),
+                                                            BorderRadius
+                                                                .circular(5)),
                                                     child: Row(
                                                       children: [
                                                         CustomTextWidget(
@@ -3696,8 +3769,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                   onTap: () {
                                                     showDialog(
                                                       context: context,
-                                                      builder:
-                                                          (BuildContext context) {
+                                                      builder: (BuildContext
+                                                          context) {
                                                         return AlertDialog(
                                                           title: Text(
                                                               'Amount greater than ${item['dcTxnAmount']}'),
@@ -3710,7 +3783,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                                       'Mont'),
                                                           content: Column(
                                                             mainAxisSize:
-                                                                MainAxisSize.min,
+                                                                MainAxisSize
+                                                                    .min,
                                                             crossAxisAlignment:
                                                                 CrossAxisAlignment
                                                                     .start,
@@ -3732,8 +3806,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                                         .height *
                                                                     .06,
                                                                 padding: EdgeInsets.only(
-                                                                    left: MediaQuery.of(
-                                                                                context)
+                                                                    left: MediaQuery.of(context)
                                                                             .size
                                                                             .width *
                                                                         .025),
@@ -3744,20 +3817,19 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                                             .withOpacity(
                                                                                 .1)),
                                                                     borderRadius:
-                                                                        BorderRadius
-                                                                            .circular(
-                                                                                5)),
+                                                                        BorderRadius.circular(
+                                                                            5)),
                                                                 child:
                                                                     TextFormField(
                                                                   onChanged:
                                                                       (value) {
                                                                     final double
                                                                         parsedValue =
-                                                                        double.tryParse(
-                                                                                value) ??
+                                                                        double.tryParse(value) ??
                                                                             0.0;
 
-                                                                    setState(() {
+                                                                    setState(
+                                                                        () {
                                                                       item['amountGtPercent'] =
                                                                           value;
                                                                     });
@@ -3778,11 +3850,10 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                                           r'^\d{0,3}(\.\d{0,2})?$'), // Allows up to 3 digits (0-100) and optional decimal with up to 2 digits
                                                                     ),
                                                                   ],
-                                                                  keyboardType:
-                                                                      const TextInputType
-                                                                          .numberWithOptions(
-                                                                          decimal:
-                                                                              true),
+                                                                  keyboardType: const TextInputType
+                                                                      .numberWithOptions(
+                                                                      decimal:
+                                                                          true),
                                                                   maxLength: 6,
                                                                   enabled: true,
                                                                   style: const TextStyle(
@@ -3819,20 +3890,22 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                     );
                                                   },
                                                   child: Container(
-                                                    width: MediaQuery.of(context)
-                                                            .size
-                                                            .width *
-                                                        .18,
-                                                    height: MediaQuery.of(context)
-                                                            .size
-                                                            .height *
-                                                        .04,
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            .18,
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height *
+                                                            .04,
                                                     padding: EdgeInsets.only(
-                                                        left:
-                                                            MediaQuery.of(context)
-                                                                    .size
-                                                                    .width *
-                                                                .025),
+                                                        left: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            .025),
                                                     decoration: BoxDecoration(
                                                         border: Border.all(
                                                             color: isEditable
@@ -3842,8 +3915,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                                 : Colors
                                                                     .transparent),
                                                         borderRadius:
-                                                            BorderRadius.circular(
-                                                                5)),
+                                                            BorderRadius
+                                                                .circular(5)),
                                                     child: Row(
                                                       children: [
                                                         CustomTextWidget(
