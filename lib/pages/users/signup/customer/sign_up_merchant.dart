@@ -1783,6 +1783,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               screenHeight: screenHeight,
               currTabPosition: currTabPosition,
             ),
+            const SizedBox(height: 10),
 
             const FormTitleWidget(subWord: 'Merchant ID proof'),
             const SizedBox(height: 10),

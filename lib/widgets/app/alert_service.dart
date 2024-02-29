@@ -75,19 +75,29 @@ class AlertService {
 
   //Global Error Alert
   error(String message) {
+
     final snackBar = SnackBar(
       elevation: 0,
-      behavior: SnackBarBehavior.floating,
-      backgroundColor: Colors.transparent,
-      width: double.infinity,
-      content: AwesomeSnackbarContent(
-        title: 'Failed',
-        message: message,
-        contentType: ContentType.failure,
-        inMaterialBanner: true,
-      ),
+      content: Text(message),
 
+      backgroundColor: Colors.red,
+      showCloseIcon:true,
+
+      behavior: SnackBarBehavior.floating,
     );
+
+    // final snackBar = SnackBar(
+    //   elevation: 0,
+    //   behavior: SnackBarBehavior.floating,
+    //   backgroundColor: Colors.transparent,
+    //   width: double.infinity,
+    //   content: AwesomeSnackbarContent(
+    //     title: 'Failed',
+    //     message: message,
+    //     contentType: ContentType.failure,
+    //     inMaterialBanner: true,
+    //   ),
+    // );
     StateKey.snackBarKey.currentState!
       ..hideCurrentSnackBar()
       ..showSnackBar(snackBar);

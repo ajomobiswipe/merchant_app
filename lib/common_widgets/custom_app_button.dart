@@ -34,7 +34,7 @@ class CustomAppButton extends StatelessWidget {
             backgroundColor: backgroundColor ??
                 AppColors.getMaterialColorFromColor(AppColors.kPrimaryColor),
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15))),
+                borderRadius: BorderRadius.circular(10))),
         child: Text(title,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 color: fromOtpScreen
