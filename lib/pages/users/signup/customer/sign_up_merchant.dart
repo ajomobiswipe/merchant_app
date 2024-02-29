@@ -2400,16 +2400,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 Container(
                   color: AppColors.kTileColor,
                   child: Theme(
-<<<<<<< HEAD
-                    data:
-                        ThemeData().copyWith(dividerColor: Colors.transparent),
-=======
                     data: ThemeData().copyWith(
                         dividerColor: Colors.transparent,
                         listTileTheme: const ListTileThemeData(
                             contentPadding:
                                 EdgeInsets.symmetric(horizontal: 10))),
->>>>>>> 2965460abdc45d7a1c40071fda517ea3be266c1e
                     child: ExpansionTile(
                       initiallyExpanded: true,
                       title: CustomTextWidget(
@@ -2423,24 +2418,41 @@ class _MerchantSignupState extends State<MerchantSignup> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                               Row(
+                              Row(
                                 children: [
-                                  SizedBox(width: MediaQuery.of(context).size.width*.3,child:  const CustomTextWidget(text:'Name',size: 13,)),
-                                  SizedBox(width: MediaQuery.of(context).size.width*.3,child:  const CustomTextWidget(text:'Expiry',size: 13,)),
-                                  SizedBox(width: MediaQuery.of(context).size.width*.1,child:   const CustomTextWidget(text:'',size: 13,)),
+                                  SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          .3,
+                                      child: const CustomTextWidget(
+                                        text: 'Name',
+                                        size: 13,
+                                      )),
+                                  SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          .3,
+                                      child: const CustomTextWidget(
+                                        text: 'Expiry',
+                                        size: 13,
+                                      )),
+                                  SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          .1,
+                                      child: const CustomTextWidget(
+                                        text: '',
+                                        size: 13,
+                                      )),
                                 ],
                               ),
-
                               const Divider(),
-
                               for (var item in selectedBusinessProofItems)
                                 Row(children: [
                                   SizedBox(
-                                    width: MediaQuery.of(context).size.width*.3,
+                                    width:
+                                        MediaQuery.of(context).size.width * .3,
                                     child: CustomTextWidget(
                                       text: item.documentTypeName.toString(),
-                                      size: 11,isBold:false,
-
+                                      size: 11,
+                                      isBold: false,
                                     ),
                                   ),
                                   // DataCell(CustomTextWidget(
@@ -2449,17 +2461,18 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                   //   fontWeight: FontWeight.w900,
                                   // )),
                                   SizedBox(
-                                    width: MediaQuery.of(context).size.width*.3,
+                                    width:
+                                        MediaQuery.of(context).size.width * .3,
                                     child: CustomTextWidget(
                                       text: item.documentExpiry.toString(),
-                                      isBold:false,
+                                      isBold: false,
                                       size: 12,
-
                                     ),
                                   ),
                                   const Spacer(),
                                   SizedBox(
-                                    width: MediaQuery.of(context).size.width*.1,
+                                    width:
+                                        MediaQuery.of(context).size.width * .1,
                                     child: IconButton(
                                       icon: const Icon(
                                         Icons.cancel_outlined,
@@ -2467,12 +2480,12 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                       ),
                                       onPressed: () {
                                         setState(() {
-                                          selectedBusinessProofItems.remove(item);
+                                          selectedBusinessProofItems
+                                              .remove(item);
                                         });
                                       },
                                     ),
                                   ),
-
                                 ])
                             ],
                           ),
