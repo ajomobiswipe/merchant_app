@@ -11,7 +11,6 @@ class VerificationSuccessButton extends StatelessWidget {
     return SvgPicture.asset(
       "assets/merchant_icons/successtick.svg",
       height: iconSize,
-      color: AppColors.grayDark,
     );
     // return Image.asset("assets/app_icons/verified_icon.png",height: iconSize,);assets\merchant_icons\successtick.svg
   }
