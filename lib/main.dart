@@ -79,31 +79,24 @@ class MainPage extends StatelessWidget {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(
-            create: (_) =>
-                ThemeProvider(storageService)
-            ,
+            create: (_) => ThemeProvider(storageService),
           ),
           ChangeNotifierProvider(
             create: (context) => ConnectivityProvider(),
           ),
         ],
         child: Consumer<ThemeProvider>(
-        builder: (c, themeProvider, home)
-    =>
-        MaterialApp(
-          debugShowCheckedModeBanner: false,
-          scaffoldMessengerKey: StateKey.snackBarKey,
-          initialRoute: 'splash',
-          onGenerateRoute: CustomRoute.allRoutes,
-          navigatorKey: navigatorKey,
-          locale: Locale(themeProvider.currentLanguage),
-          // localizationsDelegates: AppLocalizations.localizationsDelegates,
-          // supportedLocales: AppLocalizations.supportedLocales,
-          theme: ThemeData(
-            fontFamily: "Mont-regular",
-
-          )
-
-        )));
+            builder: (c, themeProvider, home) => MaterialApp(
+                debugShowCheckedModeBanner: false,
+                scaffoldMessengerKey: StateKey.snackBarKey,
+                initialRoute: 'splash',
+                onGenerateRoute: CustomRoute.allRoutes,
+                navigatorKey: navigatorKey,
+                locale: Locale(themeProvider.currentLanguage),
+                // localizationsDelegates: AppLocalizations.localizationsDelegates,
+                // supportedLocales: AppLocalizations.supportedLocales,
+                theme: ThemeData(
+                  fontFamily: "Mont-regular",
+                ))));
   }
 }

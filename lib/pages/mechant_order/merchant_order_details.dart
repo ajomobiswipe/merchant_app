@@ -16,6 +16,7 @@ class MerchantOrderDetails extends StatefulWidget {
   final List tmsProductMaster;
   final Function orderNext;
   final List<SelectedProduct> selectedItems;
+
   MerchantOrderDetails({
     super.key,
     required this.orderNext,
@@ -37,6 +38,7 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
   String selectedProduct = '';
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   @override
   void initState() {
     super.initState();
@@ -181,8 +183,8 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                     Padding(
                       padding: const EdgeInsets.only(top: 8),
                       child: DropdownButtonFormField<int>(
-                        key: ValueKey<int>(selectedProductId ??
-                            0), // Use ValueKey to track selectedProductId
+                        key: ValueKey<int>(selectedProductId ?? 0),
+                        // Use ValueKey to track selectedProductId
                         value: selectedPackageId,
                         style: const TextStyle(
                             fontSize: 13,
@@ -472,118 +474,65 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                 // color: AppColors.kTileColor,
 
                 // child:
-                Padding(
-                  padding: const EdgeInsets.all(2.0),
-                  child: Column(
-                    children: [
-                      // DataTable(
-                      //   headingRowHeight: 0,
-                      //   columnSpacing: 2,
-                      //   dataRowMinHeight: 20,
-                      //   dataRowMaxHeight: 30,
-                      //   columns: const [
-                      //     DataColumn(label: Text('Product')),
-                      //     DataColumn(label: Text('Package')),
-                      //     DataColumn(label: Text('Quantity')),
-                      //     DataColumn(label: Text('Actions')),
-                      //   ],
-                      //   rows: widget.selectedItems.map((item) {
-                      //     return DataRow(cells: [
-                      //       DataCell(CustomTextWidget(
-                      //         text: item.package,
-                      //         size: 11,
-                      //         fontWeight: FontWeight.w900,
-                      //       )),
-                      //       DataCell(CustomTextWidget(
-                      //         text: "${item.productName}+ 1999+499",
-                      //         size: 11,
-                      //         fontWeight: FontWeight.w900,
-                      //       )),
-                      //       DataCell(CustomTextWidget(
-                      //         text: ' - ${item.quantity}',
-                      //         size: 12,
-                      //         fontWeight: FontWeight.w900,
-                      //       )),
-                      //       DataCell(
-                      //         IconButton(
-                      //           icon: const Icon(
-                      //             Icons.cancel_outlined,
-                      //             color: Colors.red,
-                      //           ),
-                      //           onPressed: () {
-                      //             setState(() {
-                      //               widget.selectedItems.remove(item);
-                      //             });
-                      //           },
-                      //         ),
-                      //       ),
-                      //     ]);
-                      //   }).toList(),
-                      // ),
-                      // defaultHeight(15),
-                      Container(
-                        color: AppColors.kSelectedBackgroundColor,
-                        child: ExpansionTile(
-                          initiallyExpanded: true,
-                          title: CustomTextWidget(
-                            text: "View Complete product Summary",
-                            color: Colors.grey.shade600,
-                            size: 10,
-                          ),
-                          children: [
-                            DataTable(
-                              headingRowHeight: 0,
-                              columnSpacing: 2,
-                              dataRowMinHeight: 20,
-                              dataRowMaxHeight: 30,
-                              columns: const [
-                                DataColumn(label: Text('Product')),
-                                DataColumn(label: Text('Package')),
-                                DataColumn(label: Text('Quantity')),
-                                DataColumn(label: Text('Actions')),
-                              ],
-                              rows: widget.selectedItems.map((item) {
-                                return DataRow(cells: [
-                                  DataCell(CustomTextWidget(
-                                    text: item.package,
-                                    size: 11,
-                                    fontWeight: FontWeight.w900,
-                                  )),
-                                  DataCell(CustomTextWidget(
-                                    text: "${item.productName}+ 1999+499",
-                                    size: 11,
-                                    fontWeight: FontWeight.w900,
-                                  )),
-                                  DataCell(CustomTextWidget(
-                                    text: ' - ${item.quantity}',
-                                    size: 12,
-                                    fontWeight: FontWeight.w900,
-                                  )),
-                                  DataCell(
-                                    IconButton(
-                                      icon: const Icon(
-                                        Icons.cancel_outlined,
-                                        color: Colors.red,
-                                      ),
-                                      onPressed: () {
-                                        setState(() {
-                                          widget.selectedItems.remove(item);
-                                        });
-                                      },
-                                    ),
-                                  ),
-                                ]);
-                              }).toList(),
-                            ),
-
-                            // const Padding(
-                            //   padding: EdgeInsets.all(16.0),
-                            //   child: Text("content"),
-                            // ),
+                Container(
+                  color: AppColors.kTileColor,
+                  child: Theme(
+                    data:
+                        ThemeData().copyWith(dividerColor: Colors.transparent),
+                    child: ExpansionTile(
+                      initiallyExpanded: true,
+                      title: CustomTextWidget(
+                        text: "View Complete product Summary",
+                        color: Colors.grey.shade600,
+                        size: 10,
+                      ),
+                      children: [
+                        DataTable(
+                          headingRowHeight: 0,
+                          columnSpacing: 2,
+                          dataRowMinHeight: 20,
+                          dataRowMaxHeight: 30,
+                          columns: const [
+                            DataColumn(label: Text('Product')),
+                            DataColumn(label: Text('Package')),
+                            DataColumn(label: Text('Quantity')),
+                            DataColumn(label: Text('Actions')),
                           ],
+                          rows: widget.selectedItems.map((item) {
+                            return DataRow(cells: [
+                              DataCell(CustomTextWidget(
+                                text: item.package,
+                                size: 11,
+                                fontWeight: FontWeight.w900,
+                              )),
+                              DataCell(CustomTextWidget(
+                                text: "${item.productName}+ 1999+499",
+                                size: 11,
+                                fontWeight: FontWeight.w900,
+                              )),
+                              DataCell(CustomTextWidget(
+                                text: ' - ${item.quantity}',
+                                size: 12,
+                                fontWeight: FontWeight.w900,
+                              )),
+                              DataCell(
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.cancel_outlined,
+                                    color: Colors.red,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      widget.selectedItems.remove(item);
+                                    });
+                                  },
+                                ),
+                              ),
+                            ]);
+                          }).toList(),
                         ),
-                      )
-                    ],
+                      ],
+                    ),
                   ),
                 ),
 
