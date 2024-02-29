@@ -116,7 +116,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
   String? businessDocumentTypename;
   String? businessDocumentFileFullpath;
   String? businessDocumentTypeId;
-  String emailHelperText = "verify the Email id";
+  String emailHelperText = "Verify E-mail Address";
 
   // List<Map<String, dynamic>> BusinessTypeList = [
   //   {"value": 1, "label": "Individual"},
@@ -170,6 +170,10 @@ class _MerchantSignupState extends State<MerchantSignup> {
   String gstHelperText = "click Verify";
   bool isAadhaarverified = false;
   String aadhaarHelperText = '';
+
+  bool isPanIsverifying = false;
+  bool isAadhaarotpSending = false;
+  bool isPanNumberVerified = false;
 
   //merchant Bussines proof
   final TextEditingController documentExpiryController =
@@ -247,10 +251,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
   String panOwnerName = '';
 
   String accountCheck = '';
-  bool showVerify = true;
 
   bool isFirmPanVerified = false;
+  bool isFirmPanVerifying = false;
   bool isgstverified = false;
+  bool isgstverifying = false;
 
   bool showVerify1 = true;
   bool isaddhaarOTPsent = false;
@@ -269,6 +274,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
   late String userCheckMessage = '';
   bool userVerify = false;
   bool isAccountInfoverified = false;
+  bool isAccountInfoverifying = false;
 
   List securityQuestionList = [];
   final TextEditingController selectedItem1 = TextEditingController();
@@ -904,6 +910,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
               //enabled: !isEmailVerified,
               // textCapitalization: TextCapitalization.words,
               prefixIcon: Icons.email,
+              onChanged: (value) {
+                setState(() {
+                  emailHelperText = "";
+                });
+              },
               validator: (value) {
                 value = value.trim();
                 if (value == null || value.isEmpty) {
@@ -916,8 +927,12 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 return null;
               },
               suffixIcon: isEmailOtpSending
-                  ? const CircularProgressIndicator(
-                      strokeWidth: 3,
+                  ? const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: CircularProgressIndicator(
+                        color: AppColors.kLightGreen,
+                        strokeWidth: 2,
+                      ),
                     )
                   : isEmailVerified
                       ? TextButton(
@@ -947,15 +962,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
               helperStyle: TextStyle(
                   color: isEmailVerified
                       ? AppColors.kLightGreen
-                      : AppColors.kRedColor),
-              onChanged: (String value) {
-                value = value.trim();
-                setState(() {
-                  value.isEmpty ||
-                      value.length < 3 ||
-                      !Validators.isValidName(value);
-                });
-              },
+                      : AppColors.kPrimaryColor),
+
               onSaved: (value) {
                 companyDetailsInforeq.emailId = value;
               },
@@ -1791,32 +1799,29 @@ class _MerchantSignupState extends State<MerchantSignup> {
               },
 
               suffixIconTrue: true,
-              suffixIcon: showVerify
-                  ? TextButton(
-                      onPressed: () {
-                        if (_merchantPanController.text.length >= 10) {
-                          print("clicked");
-                          if (showVerify) {
-                            validatePan();
-                            print("validate");
-                          } else {
-                            print("change");
-
-                            setState(() {
-                              showVerify = true;
-                            });
-                          }
-                        }
-                      },
-                      child: const Text("Verify"))
-                  : const VerificationSuccessButton(),
-              helperStyle: Theme.of(context)
-                  .textTheme
-                  .bodySmall
-                  ?.copyWith(color: Theme.of(context).primaryColor),
+              suffixIcon: isPanIsverifying
+                  ? CircularProgressIndicator(
+                      color: AppColors.kLightGreen,
+                    )
+                  : isPanNumberVerified
+                      ? const VerificationSuccessButton()
+                      : TextButton(
+                          onPressed: () {
+                            if (_merchantPanController.text.length >= 10) {
+                              validatePan();
+                            }
+                          },
+                          child: const CustomTextWidget(
+                            text: "Verify",
+                            color: AppColors.kRedColor,
+                          )),
+              helperStyle: TextStyle(
+                  color: isPanNumberVerified
+                      ? AppColors.kLightGreen
+                      : AppColors.kPrimaryColor),
               inputFormatters: <TextInputFormatter>[PanNumberFormatter()],
               // suffixText: showVerify ? 'Verify' : 'Change',
-              readOnly: !showVerify,
+              enabled: !isPanNumberVerified,
               helperText: merchantPanHelperText,
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -1850,6 +1855,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 //getUser();
               },
               helperText: aadhaarHelperText,
+
               // suffixIconOnPressed: () {
               //   if (_merchantAddharController.text.length >= 12) {
               //     print("clicked");
@@ -1895,26 +1901,32 @@ class _MerchantSignupState extends State<MerchantSignup> {
               //         },
               //         child: Text("Verify"))
               //     : VerificationSuccessButton(),
-              suffixIcon: isAadhaarverified
-                  ? const VerificationSuccessButton()
-                  : TextButton(
-                      onPressed: () {
-                        if (_merchantAddharController.text.length >= 12) {
-                          sendAddhaarOtp();
-                        } else {
-                          alertWidget.error("Enter 12 digit aadhaar number");
-                        }
-                      },
-                      child: const CustomTextWidget(
-                        text: "Send OTP",
-                        color: AppColors.kPrimaryColor,
-                        size: 12,
-                      )),
+              suffixIcon: isAadhaarotpSending
+                  ? const CircularProgressIndicator(
+                      color: AppColors.kLightGreen,
+                      strokeWidth: 3,
+                    )
+                  : isAadhaarverified
+                      ? const VerificationSuccessButton()
+                      : TextButton(
+                          onPressed: () {
+                            if (_merchantAddharController.text.length >= 12) {
+                              sendAddhaarOtp();
+                            } else {
+                              alertWidget
+                                  .error("Enter 12 digit aadhaar number");
+                            }
+                          },
+                          child: const CustomTextWidget(
+                            text: "Send OTP",
+                            color: AppColors.kPrimaryColor,
+                            size: 12,
+                          )),
               suffixIconTrue: true,
-              helperStyle: Theme.of(context)
-                  .textTheme
-                  .bodySmall
-                  ?.copyWith(color: Theme.of(context).primaryColor),
+              helperStyle: TextStyle(
+                  color: isAadhaarverified
+                      ? AppColors.kLightGreen
+                      : AppColors.kPrimaryColor),
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp('[0-9]'))
               ],
@@ -2017,29 +2029,33 @@ class _MerchantSignupState extends State<MerchantSignup> {
                     // }
                   });
                 },
-                suffixIcon: isgstverified
-                    ? const VerificationSuccessButton()
-                    : TextButton(
-                        onPressed: () {
-                          if (_gstController.text.length >= 15) {
-                            print("clicked");
-                            validategst();
-                          } else {
-                            alertWidget.error("Enter a valid GST number");
-                          }
-                        },
-                        child: const CustomTextWidget(
-                          text: "Verify",
-                          color: AppColors.kRedColor,
-                          size: 12,
-                        )),
+                suffixIcon: isgstverifying
+                    ? CircularProgressIndicator(
+                        color: AppColors.kLightGreen,
+                      )
+                    : isgstverified
+                        ? const VerificationSuccessButton()
+                        : TextButton(
+                            onPressed: () {
+                              if (_gstController.text.length >= 15) {
+                                print("clicked");
+                                validategst();
+                              } else {
+                                alertWidget.error("Enter a valid GST number");
+                              }
+                            },
+                            child: const CustomTextWidget(
+                              text: "Verify",
+                              color: AppColors.kRedColor,
+                              size: 12,
+                            )),
 
                 suffixIconTrue: true,
 
-                helperStyle: Theme.of(context)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(color: Theme.of(context).primaryColor),
+                helperStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: isgstverified
+                        ? AppColors.kLightGreen
+                        : AppColors.kPrimaryColor),
                 //inputFormatters: <TextInputFormatter>[AadhaarNumberFormatter()],
                 // suffixText:gstHelperText,
                 // readOnly: !isgstVerify,
@@ -2072,27 +2088,32 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 onFieldSubmitted: (name) {
                   //getUser();
                 },
-                suffixIcon: isFirmPanVerified
-                    ? const VerificationSuccessButton()
-                    : TextButton(
-                        onPressed: () {
-                          if (_gstController.text.length >= 15) {
-                            print("clicked");
-                            validateFirmPan();
-                          } else {
-                            alertWidget.error("Enter a valid Firm Pan number");
-                          }
-                        },
-                        child: const CustomTextWidget(
-                          text: "Verify",
-                          color: AppColors.kRedColor,
-                          size: 12,
-                        )),
+                suffixIcon: isFirmPanVerifying
+                    ? CircularProgressIndicator(
+                        color: AppColors.kLightGreen,
+                      )
+                    : isFirmPanVerified
+                        ? const VerificationSuccessButton()
+                        : TextButton(
+                            onPressed: () {
+                              if (_gstController.text.length >= 15) {
+                                print("clicked");
+                                validateFirmPan();
+                              } else {
+                                alertWidget
+                                    .error("Enter a valid Firm Pan number");
+                              }
+                            },
+                            child: const CustomTextWidget(
+                              text: "Verify",
+                              color: AppColors.kRedColor,
+                              size: 12,
+                            )),
                 suffixIconTrue: true,
-                helperStyle: Theme.of(context)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(color: Theme.of(context).primaryColor),
+                helperStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: isFirmPanVerified
+                        ? AppColors.kLightGreen
+                        : AppColors.kPrimaryColor),
                 enabled: !isFirmPanVerified,
                 helperText: merchantFirmPanHelperText,
                 validator: (value) {
@@ -2107,6 +2128,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   // }
                   if (!RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
                       .hasMatch(value)) {
+                    print("object");
+                    debugPrint("dsdd");
                     return 'Invalid pan Number!';
                   }
                   return null;
@@ -2230,7 +2253,10 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 },
               ),
               CustomTextFormField(
-                onTap: _openFilePicker,
+                // onTap: _openFilePicker,
+                onTap: () {
+                  selectPdfDialog(context);
+                },
                 title: 'Upload Business Proof Document',
                 hintText:
                     "Upload selected business proof document\n(format : pdf)",
@@ -2607,27 +2633,14 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 required: true,
                 prefixIcon: Icons.person,
 
-                suffixIcon: isAccountInfoverified
-                    ? const VerificationSuccessButton()
-                    : null,
+                suffixIcon: isAccountInfoverifying
+                    ? CircularProgressIndicator(
+                        color: AppColors.kLightGreen,
+                      )
+                    : isAccountInfoverified
+                        ? const VerificationSuccessButton()
+                        : null,
                 suffixIconTrue: true,
-
-                // suffixIconOnPressed: () {
-                //   if (merchantAccountNumberCtrl.text.length >= 10) {
-                //     setState(() {
-                //       if (!showVerify && userVerify) {
-                //         userVerify = false;
-                //       } else {
-                //         userVerify = true;
-                //       }
-                //     });
-                //     showVerify = true;
-                //     if (userVerify) {
-                //       getUser();
-                //     }
-                //   }
-                // },
-                // suffixIconTrue: true,
                 helperStyle: Theme.of(context)
                     .textTheme
                     .bodySmall
@@ -2681,24 +2694,31 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   });
                 },
                 suffixIconTrue: true,
-                suffixIcon: isAccountInfoverified
-                    ? const VerificationSuccessButton()
-                    : TextButton(
-                        onPressed: () {
-                          print(isAccountInfoverified);
-                          print("clicked verify from ifsc");
-                          if (merchantIfscCodeCtrl.text.length >= 10 &&
-                              merchantAccountNumberCtrl.text.length >= 10) {
-                            validateAccountNumber();
-                          } else {
-                            alertWidget.error("Enter valid Account info");
-                          }
-                        },
-                        child: const CustomTextWidget(text: "verify")),
-                helperStyle: Theme.of(context)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(color: Theme.of(context).primaryColor),
+                suffixIcon: isAccountInfoverifying
+                    ? CircularProgressIndicator(
+                        color: AppColors.kLightGreen,
+                      )
+                    : isAccountInfoverified
+                        ? const VerificationSuccessButton()
+                        : TextButton(
+                            onPressed: () {
+                              print(isAccountInfoverified);
+                              print("clicked verify from ifsc");
+                              if (merchantIfscCodeCtrl.text.length >= 10 &&
+                                  merchantAccountNumberCtrl.text.length >= 10) {
+                                validateAccountNumber();
+                              } else {
+                                alertWidget.error("Enter valid Account info");
+                              }
+                            },
+                            child: const CustomTextWidget(
+                              text: "verify",
+                              color: AppColors.kRedColor,
+                            )),
+                helperStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: isAccountInfoverified
+                        ? AppColors.kLightGreen
+                        : AppColors.kPrimaryColor),
                 inputFormatters: <TextInputFormatter>[
                   LengthLimitingTextInputFormatter(11),
                   FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')),
@@ -4619,6 +4639,62 @@ class _MerchantSignupState extends State<MerchantSignup> {
     );
   }
 
+  selectPdfDialog(
+    BuildContext context,
+  ) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          child: Container(
+            height: MediaQuery.of(context).size.height / 8,
+            padding:
+                const EdgeInsets.only(left: 20, top: 20, right: 20, bottom: 20),
+            margin: const EdgeInsets.only(top: 45),
+            decoration: BoxDecoration(
+                shape: BoxShape.rectangle,
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: const [
+                  BoxShadow(
+                      color: Colors.black,
+                      offset: Offset(0, 10),
+                      blurRadius: 10),
+                ]),
+            child: InkWell(
+              splashColor: Theme.of(context).primaryColor,
+              onTap: () {
+                Navigator.pop(context);
+                _openFilePicker();
+              },
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Icon(
+                    FontAwesome.file_pdf,
+                    color: Theme.of(context).primaryColor,
+                    size: 30,
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  const Text(
+                    "Pdf Max Size 500 KB",
+                  ), // <-- Text
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   uploadAction(String type, ImageSource src) async {
     final ImagePicker picker = ImagePicker();
     XFile? photo = await picker.pickImage(source: src);
@@ -4813,7 +4889,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
     if (_merchantPanController.text.isNotEmpty) {
       debugPrint("Calling pan validation API");
       setState(() {
-        merchantPanHelperText = "Loading...";
+        merchantPanHelperText = "Verifying...";
+        isPanIsverifying = true;
       });
       var panNumber = _merchantPanController.text.toString();
       // var user = await Validators.encrypt(_merchantPanController.text.toString());
@@ -4822,11 +4899,13 @@ class _MerchantSignupState extends State<MerchantSignup> {
           setState(() {
             merchantIdProofReq.panNumberVerifyStatus = true;
             merchantPanHelperText = "Verified";
-            showVerify = false;
+            isPanIsverifying = false;
+            isPanNumberVerified = true;
           });
           print("Pan Api response is true");
         } else {
           setState(() {
+            isPanIsverifying = false;
             print("Pan Api response is false");
             merchantPanHelperText = "Failed try again with valid pan number";
           });
@@ -4839,7 +4918,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
     if (_firmPanController.text.isNotEmpty) {
       debugPrint("Calling Firm pan validation API");
       setState(() {
-        merchantFirmPanHelperText = "Loading...";
+        isFirmPanVerifying = true;
+        merchantFirmPanHelperText = "verifying...";
       });
       var panNumber = _firmPanController.text.toString();
       // var user = await Validators.encrypt(_merchantPanController.text.toString());
@@ -4847,6 +4927,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
         if (response.toString() == "true") {
           setState(() {
             isFirmPanVerified = true;
+            isFirmPanVerifying = false;
             merchantFirmPanHelperText = "Verified";
             businessIdProofReq.firmPanNumberVerifyStatus = true;
             businessIdProofReq.firmPanNo = panNumber;
@@ -4856,6 +4937,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
         } else {
           businessIdProofReq.firmPanNumberVerifyStatus = false;
           setState(() {
+            isFirmPanVerifying = false;
             merchantFirmPanHelperText =
                 "Failed try again with valid Merchant pan number";
           });
@@ -4868,7 +4950,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
     if (_gstController.text.isNotEmpty && _gstController.text.length >= 15) {
       debugPrint("Calling Gst API");
       setState(() {
-        gstHelperText = "Loading....";
+        isgstverifying = true;
+        gstHelperText = "Verifying....";
       });
       var gstnumber = _gstController.text.toString();
 
@@ -4880,6 +4963,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
         print(response);
         if (response.toString() == "true") {
           setState(() {
+            isgstverifying = false;
             isgstverified = true;
             gstHelperText = "verified";
             businessIdProofReq.gstnVerifyStatus = true;
@@ -4908,6 +4992,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
         } else {
           print("gst valodation response is not true");
           setState(() {
+            isgstverifying = false;
             businessIdProofReq.gstnVerifyStatus = false;
             alertWidget.error("Failed try Again with valid Gst!");
             gstHelperText = "Failed try Again with valid Gst!";
@@ -4949,7 +5034,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
         merchantAccountNumberCtrl.text.isNotEmpty) {
       debugPrint("Calling Accountvalidation API");
       setState(() {
-        accountInfoHelperText = "Loading...";
+        isAccountInfoverifying = true;
+        accountInfoHelperText = "Verifying...";
       });
       var accNumber = merchantAccountNumberCtrl.text.toString();
       var ifscNumber = merchantIfscCodeCtrl.text.toString();
@@ -4964,7 +5050,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
         if (response.statusCode == 200 || response.statusCode == 201) {
           print(response.body);
 
-          accountInfoHelperText = "Verified";
+          accountInfoHelperText = " Account Info Verified";
           var decodedData = json.decode(response.body);
           String beneficiaryName =
               decodedData['result']['bankTransfer']['beneName'];
@@ -4974,12 +5060,17 @@ class _MerchantSignupState extends State<MerchantSignup> {
           merchantBankInfoReq.bankIfscCode = merchantIfscCodeCtrl.text;
           merchantBankInfoReq.bankAccountNo = merchantAccountNumberCtrl.text;
           setState(() {
+            isAccountInfoverifying = false;
             isAccountInfoverified = true;
             merchantBankInfoReq.merchantBankVerifyStatus = true;
           });
         } else {
-          accountInfoHelperText = "Failed ";
-          alertWidget.error(response.body ?? "Null response");
+          setState(() {
+            accountInfoHelperText = "Failed ";
+            isAccountInfoverifying = false;
+          });
+
+          alertWidget.error("Invalid credentilas");
           print("invalid  Account Info");
         }
 
@@ -4995,7 +5086,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
       debugPrint("Calling AddhaarOtp API");
       //debugPrint(_merchantAddharController.text);
       setState(() {
-        aadhaarHelperText = "Loading...";
+        isAadhaarotpSending = true;
+        aadhaarHelperText = "Sending Otp..";
       });
       // var user =
       //     await Validators.encrypt(_merchantAddharController.text.toString());
@@ -5010,6 +5102,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               aadhaarNumber: addhaarNumber,
               onSubmit: (isSvalidated, message) {
                 setState(() {
+                  isAadhaarotpSending = false;
                   isAadhaarverified = isSvalidated;
                   aadhaarHelperText = message;
                 });
@@ -5021,9 +5114,12 @@ class _MerchantSignupState extends State<MerchantSignup> {
           });
           print("body is true");
         } else {
+          setState(() {
+            isAadhaarotpSending = false;
+            isaddhaarOTPsent = false;
+          });
           alertWidget.error("addarotp sent failed");
           print("body is false");
-          isaddhaarOTPsent = false;
         }
       });
     } else {
@@ -5185,7 +5281,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
   changeVerifiedEmail() {
     setState(() {
-      emailHelperText = "Verify";
+      emailHelperText = "Verify the E-mail";
       isEmailVerified = false;
     });
   }
