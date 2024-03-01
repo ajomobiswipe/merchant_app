@@ -638,8 +638,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
   @override
   Widget build(BuildContext context) {
-    if (kDebugMode) print(tmsProductMasterlist);
-
     return PopScope(
       onPopInvoked: (didPop) => _onWillPop(context),
       child: Form(
