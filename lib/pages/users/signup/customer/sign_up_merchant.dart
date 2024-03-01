@@ -5086,8 +5086,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
             isAccountInfoverifying = false;
           });
 
-          alertWidget.error("invalid bank accound details");
-          if (kDebugMode) print("invalid bank accound details");
+          alertWidget.error("invalid bank account details");
+          if (kDebugMode) print("invalid bank account details");
         }
 
         //if(kDebugMode)print("response in");
