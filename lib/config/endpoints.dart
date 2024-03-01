@@ -8,10 +8,11 @@
 import 'config.dart';
 
 class EndPoints {
+  static const baseApiPublic = 'http://213.42.225.250:9508';
   /*
     * This End Points URL are based of development and production
   */
-  static const  baseApi9502 = 'http://sandboxdev.omaemirates.com:9502';
+  static const baseApi9502 = 'http://sandboxdev.omaemirates.com:9502';
   static const baseApi9503 = 'http://sandboxdev.omaemirates.com:9503';
   static const baseApi8988 = 'https://softposreceipt.omaemirates.com:8988';
   static const serviceUrl =
@@ -161,6 +162,4 @@ class EndPoints {
 
   static const refundApi =
       "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/refund";
-
-
 }

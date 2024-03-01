@@ -36,7 +36,7 @@ class UserServices {
 
   salesTeamlogin(requestModel) async {
     Connection connection = Connection();
-    var url = "http://213.42.225.250:9508/NanoPay/v1/login";
+    var url = "${EndPoints.baseApiPublic}/NanoPay/v1/login";
     // var url = EndPoints.baseApi9502 + EndPoints.loginAPI;
     var response = await connection.postWithOutToken(url, requestModel);
     return response;
@@ -58,7 +58,7 @@ class UserServices {
   sendForgotPasswordLink(String userName) async {
     Connection connection = Connection();
     // var url = EndPoints.baseApi9502 + EndPoints.userCheckAPI + userName;
-    var url = "http://213.42.225.250:9508/NanoPay/v1/forgotPassword/$userName";
+    var url = "${EndPoints.baseApiPublic}/NanoPay/v1/forgotPassword/$userName";
     var response = await connection.getWithOutToken(url);
     return response;
   }
@@ -76,7 +76,7 @@ class UserServices {
     };
     // final headers = {'Authorization': 'Bearer $token'};
     var urlnew = Uri.parse(
-        'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/addOrUpdateLogin');
+        '${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/addOrUpdateLogin');
     var body = jsonEncode(
         {"username": "omaEmirates_preprod_v2", "password": "doXpr3KeKT"});
 
@@ -96,7 +96,7 @@ class UserServices {
       };
 
       var verifyAccountUel = Uri.parse(
-          "http://213.42.225.250:9508/NanoPay/Middleware/UiApi/validateBankAccountVerifications");
+          "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/validateBankAccountVerifications");
 
       final newreqbody = {
         "task": "bankTransferLite",
@@ -134,7 +134,7 @@ class UserServices {
     };
     // final headers = {'Authorization': 'Bearer $token'};
     var urlnew = Uri.parse(
-        'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/addOrUpdateLogin');
+        '${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/addOrUpdateLogin');
     var body = jsonEncode(
         {"username": "omaEmirates_preprod_v2", "password": "doXpr3KeKT"});
 
@@ -153,7 +153,7 @@ class UserServices {
         'Content-Type': 'application/json',
       };
       var gstVerify = Uri.parse(
-          "http://213.42.225.250:9508/NanoPay/Middleware/UiApi/searchGSTNS");
+          "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/searchGSTNS");
 
       final newreqbody = {
         "task": "gstinSearch",
@@ -186,7 +186,7 @@ class UserServices {
       };
       // final headers = {'Authorization': 'Bearer $token'};
       var urlnew = Uri.parse(
-          'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/addOrUpdateLogin');
+          '${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/addOrUpdateLogin');
       var body = jsonEncode(
           {"username": "omaEmirates_preprod_v2", "password": "doXpr3KeKT"});
 
@@ -210,7 +210,7 @@ class UserServices {
         };
 
         var gstVerify = Uri.parse(
-            "http://213.42.225.250:9508/NanoPay/Middleware/UiApi/validatePanAadhar");
+            "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/validatePanAadhar");
 
         final newreqbody = {
           "requestType": "PAN",
@@ -248,7 +248,7 @@ class UserServices {
     };
 
     var addhaarverify = Uri.parse(
-        "http://213.42.225.250:9508/NanoPay/Middleware/UiApi/getEkycOtp");
+        "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/getEkycOtp");
 
     final newreqbody = {
       "requestType": "AADHAAR",
@@ -274,7 +274,7 @@ class UserServices {
     };
 
     var addhaarverify = Uri.parse(
-        "http://213.42.225.250:9508/NanoPay/Middleware/UiApi/verifyEkycData");
+        "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/verifyEkycData");
 
     final newreqbody = {
       "requestType": "VERIFYAADHAROTP",
@@ -297,7 +297,7 @@ class UserServices {
   sendEmailOtp({required String emailId}) async {
     Connection connection = Connection();
     var url =
-        "http://213.42.225.250:9508/NanoPay/Middleware/UiApi/sendOtpToEmail/$emailId";
+        "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/sendOtpToEmail/$emailId";
     var response = await connection.get(url);
     return response;
   }
@@ -308,7 +308,7 @@ class UserServices {
   }) async {
     Connection connection = Connection();
     var url =
-        "http://213.42.225.250:9508/NanoPay/Middleware/UiApi/verifyEmailOtp";
+        "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/verifyEmailOtp";
     var response = await connection.post(url, {"email": emailId, "otp": otp});
 
     return response;
@@ -491,7 +491,7 @@ class UserServices {
     if (kDebugMode) print(requestBody);
 
     // var url = 'http://10.0.38.83:9508/NanoPay/Middleware/UiApi/mdrDetails';
-    var url = 'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/mdrDetails';
+    var url = '${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/mdrDetails';
     var response = await connection.post(url, requestBody);
     return response;
     // old merchant onboarding implimentation
@@ -537,7 +537,7 @@ class UserServices {
     // var url =
     //     'http://10.0.38.83:9508/NanoPay/Middleware/UiApi/sendTermsAndConditions';
     var url =
-        'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/sendTermsAndConditions';
+        '${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/sendTermsAndConditions';
     var response = await connection.post(url, requestBody, timeOutSeconds: 20);
 
     return response;
@@ -549,7 +549,7 @@ class UserServices {
     // var url =
     //     'http://10.0.38.83:9508/NanoPay/Middleware/UiApi/getTcAndAgreementStatus/$mailId';
     var url =
-        'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/getTcAndAgreementStatus/$mailId';
+        '${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/getTcAndAgreementStatus/$mailId';
     var response = await connection.get(
       url,
     );
@@ -560,7 +560,7 @@ class UserServices {
   Future<dynamic> GetMerchantOnboardingValues() async {
     Connection connection = Connection();
     var url =
-        'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/GetMerchantOnboardingValues';
+        '${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/GetMerchantOnboardingValues';
     var response = await connection.get(url);
     if (kDebugMode)
       print("Defaultvalues Api response code" + response.statusCode.toString());
@@ -641,7 +641,7 @@ class UserServices {
     };
 
     var url =
-        'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/MerchantOnboardList';
+        '${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/MerchantOnboardList';
     var response = await connection.post(url, requestBody);
     if (kDebugMode)
       print("Defaultvalues Api response code" + response.statusCode.toString());
@@ -677,7 +677,7 @@ class UserServices {
     final requestBody = {"merchantId": "$merchantInd"};
 
     var url =
-        'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/MerchantOnboardingStatus';
+        '${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/MerchantOnboardingStatus';
     var response = await connection.post(url, requestBody);
 
     return response;
@@ -711,7 +711,7 @@ class UserServices {
     Connection connection = Connection();
 
     var url =
-        'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/onboardByHitachiOrAuBank/$merchantInd';
+        '${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/onboardByHitachiOrAuBank/$merchantInd';
     var response = await connection.get(url);
 
     return response;
@@ -882,8 +882,8 @@ class UserServices {
     String barrertoken = boxStorage.getToken();
 
     var url =
-        // 'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/merchantMobileOnboarding';
-        'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/merchantMobileOnboarding';
+        // '${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/merchantMobileOnboarding';
+        '${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/merchantMobileOnboarding';
     // Set up the headers
     Map<String, String> headers = {
       'Content-Type': 'multipart/form-data',
@@ -964,7 +964,7 @@ class UserServices {
     String barrertoken = boxStorage.getToken();
 
     var url =
-        'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/productDeployment';
+        '${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/productDeployment';
     // Set up the headers
     Map<String, String> headers = {
       'Authorization': 'Bearer $barrertoken', // Add any other headers you need
