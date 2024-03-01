@@ -184,12 +184,6 @@ Future<void> emailOtpWidget(
                                     onSubmit(false, "validation failed");
                                     alertService.error("Invalid otp");
                                     errorMessage = "Invalid otp";
-                                    Future.delayed(const Duration(seconds: 2))
-                                        .then((value) {
-                                      setState() {
-                                        errorMessage = "";
-                                      }
-                                    });
                                     setState(
                                       () {
                                         isOtpVerifying = false;
@@ -207,15 +201,16 @@ Future<void> emailOtpWidget(
                       ),
                     ),
               Positioned(
-                  right: 0,
-                  top: 0,
-                  child: IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () {
-                      onSubmit(false, "Verification Canceled By User");
-                      Navigator.pop(context);
-                    },
-                  ))
+                right: 0,
+                top: 0,
+                child: IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () {
+                    onSubmit(false, "Verification Canceled By User");
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
             ],
           ),
         );
