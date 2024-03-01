@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:sifr_latest/config/app_color.dart';
 
 class VerificationSuccessButton extends StatelessWidget {
   final double iconSize;
@@ -10,7 +9,7 @@ class VerificationSuccessButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Image.asset(
-      "assets/app_icons/success_sumbol.png",
+      "assets/app_icons/success_symbol.png",
       height: iconSize,
     );
 

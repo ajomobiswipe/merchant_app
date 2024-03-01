@@ -256,7 +256,7 @@ class UserServices {
         headers: newheader, body: jsonEncode(newreqbody));
     // print(newheader);
     // print(userId);
-    print("second api reponseStatus code ${responseapi.statusCode}");
+    print("second api responseStatus code ${responseapi.statusCode}");
     print(responseapi.body);
     return responseapi.body;
   }
@@ -309,7 +309,6 @@ class UserServices {
 
     return response;
   }
-
 
   /*
   * SERVICE NAME: updateMerchantStatus

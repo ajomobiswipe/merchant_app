@@ -1801,7 +1801,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
               suffixIconTrue: true,
               suffixIcon: isPanIsverifying
-                  ? CircularProgressIndicator(
+                  ? const CircularProgressIndicator(
                       color: AppColors.kLightGreen,
                     )
                   : isPanNumberVerified
@@ -2031,7 +2031,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   });
                 },
                 suffixIcon: isgstverifying
-                    ? CircularProgressIndicator(
+                    ? const CircularProgressIndicator(
                         color: AppColors.kLightGreen,
                       )
                     : isgstverified
@@ -2090,7 +2090,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   //getUser();
                 },
                 suffixIcon: isFirmPanVerifying
-                    ? CircularProgressIndicator(
+                    ? const CircularProgressIndicator(
                         color: AppColors.kLightGreen,
                       )
                     : isFirmPanVerified
@@ -2635,7 +2635,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 prefixIcon: Icons.person,
 
                 suffixIcon: isAccountInfoverifying
-                    ? CircularProgressIndicator(
+                    ? const CircularProgressIndicator(
                         color: AppColors.kLightGreen,
                       )
                     : isAccountInfoverified
@@ -2696,7 +2696,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 },
                 suffixIconTrue: true,
                 suffixIcon: isAccountInfoverifying
-                    ? CircularProgressIndicator(
+                    ? const CircularProgressIndicator(
                         color: AppColors.kLightGreen,
                       )
                     : isAccountInfoverified

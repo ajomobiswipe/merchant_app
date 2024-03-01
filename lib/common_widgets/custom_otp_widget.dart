@@ -8,7 +8,6 @@ import 'package:sifr_latest/pages/users/signup/customer/customer.dart';
 import '../config/app_color.dart';
 import '../widgets/custom_text_widget.dart';
 import '../widgets/form_field/custom_text.dart';
-import 'copyright_widget.dart';
 
 class CustomOtpWidget extends StatefulWidget {
   final Function(String)? onCompleted;
@@ -93,10 +92,9 @@ class _CustomOtpWidgetState extends State<CustomOtpWidget> {
                   return;
                 }
                 setState(() {
-
                   FocusManager.instance.primaryFocus?.unfocus();
 
-                  Future.delayed(const Duration(milliseconds: 500),(){
+                  Future.delayed(const Duration(milliseconds: 500), () {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text('OTP has been sent successfully'),
@@ -106,8 +104,6 @@ class _CustomOtpWidgetState extends State<CustomOtpWidget> {
                   });
 
                   isOtpVisible = true;
-
-
                 });
               },
               child: const Column(
@@ -238,8 +234,6 @@ class _CustomOtpWidgetState extends State<CustomOtpWidget> {
               const SizedBox(
                 height: 20,
               ),
-
-
               CustomAppButton(
                 backgroundColor: (isOtpVisible)
                     ? AppColors.getMaterialColorFromColor(
@@ -266,7 +260,6 @@ class _CustomOtpWidgetState extends State<CustomOtpWidget> {
                   // Navigator.push(context, route);
                 },
               ),
-
               if (isOtpVisible)
                 TextButton(
                     onPressed: () {},

@@ -170,7 +170,7 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
               const SizedBox(
                 height: 20.0,
               ),
-              Row(
+              const Row(
                 children: [
                   CustomTextWidget(
                     text: "Merchant KYC",
@@ -244,8 +244,8 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                                 ),
                                 width: double.maxFinite,
                                 height: 100,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(8.0),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     crossAxisAlignment:
@@ -262,7 +262,7 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                                       SizedBox(
                                         height: 10,
                                       ),
-                                      const Icon(
+                                      Icon(
                                         Icons.camera_sharp,
                                         size: 40,
                                         color: AppColors.kPrimaryColor,
@@ -295,8 +295,8 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                                 ),
                                 width: double.maxFinite,
                                 height: 100,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(8.0),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     crossAxisAlignment:
@@ -310,10 +310,10 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                                               color: Colors.grey),
                                         ],
                                       ),
-                                      const SizedBox(
+                                      SizedBox(
                                         height: 10,
                                       ),
-                                      const Icon(
+                                      Icon(
                                         Icons.camera_sharp,
                                         size: 40,
                                         color: AppColors.kPrimaryColor,
@@ -453,7 +453,6 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                   print(widget.merchantStoreInfoReq.currentState);
                 },
                 validator: (value) {
-
                   if (value == null || value.isEmpty) {
                     return 'Current state is Mandatory!';
                   }

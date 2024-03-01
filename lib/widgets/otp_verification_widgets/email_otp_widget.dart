@@ -17,9 +17,9 @@ Future<void> emailOtpWidget(
   final focusNode = FocusNode();
   final formKey = GlobalKey<FormState>();
   bool isOtpVerifying = false;
-  var focusedBorderColor = Color.fromRGBO(23, 171, 144, 1);
+  var focusedBorderColor = const Color.fromRGBO(23, 171, 144, 1);
   const fillColor = Color.fromRGBO(243, 246, 249, 0);
-  var borderColor = Color.fromRGBO(23, 171, 144, 0.4);
+  var borderColor = const Color.fromRGBO(23, 171, 144, 0.4);
   String errorMessage = "";
 
   final defaultPinTheme = PinTheme(
@@ -80,7 +80,7 @@ Future<void> emailOtpWidget(
                             size: 12,
                             color: Colors.black,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 20,
                           ),
                           Directionality(
@@ -148,7 +148,7 @@ Future<void> emailOtpWidget(
                               ),
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 20,
                           ),
                           if (errorMessage != "")
@@ -156,7 +156,7 @@ Future<void> emailOtpWidget(
                               text: errorMessage,
                               color: Colors.red,
                             ),
-                          SizedBox(
+                          const SizedBox(
                             height: 20,
                           ),
                           AppButton(
@@ -184,7 +184,7 @@ Future<void> emailOtpWidget(
                                     onSubmit(false, "validation failed");
                                     alertService.error("Invalid otp");
                                     errorMessage = "Invalid otp";
-                                    Future.delayed(Duration(seconds: 2))
+                                    Future.delayed(const Duration(seconds: 2))
                                         .then((value) {
                                       setState() {
                                         errorMessage = "";
@@ -210,7 +210,7 @@ Future<void> emailOtpWidget(
                   right: 0,
                   top: 0,
                   child: IconButton(
-                    icon: Icon(Icons.close),
+                    icon: const Icon(Icons.close),
                     onPressed: () {
                       onSubmit(false, "Verification Canceled By User");
                       Navigator.pop(context);

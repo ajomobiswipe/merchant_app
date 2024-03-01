@@ -43,7 +43,8 @@ class NewDropDown extends StatelessWidget {
     this.filterFn,
     this.compareFn,
     this.autoValidateMode,
-    this.enabled = true, this.selectedIntItem,
+    this.enabled = true,
+    this.selectedIntItem,
   }) : super(key: key);
 
   @override
@@ -55,30 +56,30 @@ class NewDropDown extends StatelessWidget {
       children: [
         required
             ? RichText(
-          text: TextSpan(
-              text: title,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodySmall
-                  ?.copyWith(fontWeight: FontWeight.normal),
-              children: const [
-                TextSpan(text: ' *', style: TextStyle(color: Colors.red))
-              ]),
-        )
+                text: TextSpan(
+                    text: title,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(fontWeight: FontWeight.normal),
+                    children: const [
+                      TextSpan(text: ' *', style: TextStyle(color: Colors.red))
+                    ]),
+              )
             : Text(
-          title,
-          style: Theme.of(context)
-              .textTheme
-              .bodySmall
-              ?.copyWith(fontWeight: FontWeight.normal),
-        ),
+                title,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodySmall
+                    ?.copyWith(fontWeight: FontWeight.normal),
+              ),
         //Global Drop Down
 
         DropdownSearch(
           items: itemList,
           onChanged: onChanged,
           onSaved: onSaved,
-          selectedItem: selectedItem??selectedIntItem,
+          selectedItem: selectedItem ?? selectedIntItem,
           validator: validator,
           enabled: enabled,
           asyncItems: asyncItems,
@@ -89,7 +90,7 @@ class NewDropDown extends StatelessWidget {
               icon: Icon(Icons.keyboard_arrow_down),
               color: AppColors.kPrimaryColor),
           autoValidateMode: AutovalidateMode.onUserInteraction,
-          popupProps: PopupProps.menu(
+          popupProps: const PopupProps.menu(
               showSearchBox: false,
               menuProps: MenuProps(
                 elevation: 16,
@@ -110,7 +111,7 @@ class NewDropDown extends StatelessWidget {
               fillColor: AppColors.kTileColor,
               filled: true,
               contentPadding:
-              const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                  const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(5.0),
                 borderSide: const BorderSide(
