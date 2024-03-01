@@ -48,7 +48,7 @@ class CustomAppDropdown<T> extends StatelessWidget {
   final ValueChanged<T?> onChanged;
   final String? Function(T?)? validator;
 
-  CustomAppDropdown({
+  const CustomAppDropdown({super.key, 
     required this.label,
     required this.value,
     required this.items,

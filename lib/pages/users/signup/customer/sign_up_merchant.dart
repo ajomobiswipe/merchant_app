@@ -2721,7 +2721,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                   merchantAccountNumberCtrl.text.length >= 10) {
                                 validateAccountNumber();
                               } else {
-                                alertWidget.error("Enter valid Account info");
+                                alertWidget
+                                    .error("Enter valid Bank Account info");
                               }
                             },
                             child: const CustomTextWidget(
