@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 // import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -429,7 +430,8 @@ class _ViewMyAccountState extends State<ViewMyAccount> {
     accountRequestModel.changeAccountRefToPrimary =
         await Validators.encrypt(card['accountReferenceNumber'].toString());
     if (getPreviousPrimary[0].containsKey('accountReferenceNumber')) {
-      debugPrint("---------------- ACCOUNT TO ACCOUNT ---------------------");
+      if (kDebugMode)
+        print("---------------- ACCOUNT TO ACCOUNT ---------------------");
       accountRequestModel.primaryAccountRefNumber = await Validators.encrypt(
           getPreviousPrimary[0]['accountReferenceNumber']);
       accountRequestModel.primaryCardRefNumber = null;
@@ -440,7 +442,8 @@ class _ViewMyAccountState extends State<ViewMyAccount> {
         responseAlert(response);
       });
     } else {
-      debugPrint("---------------- CARD TO ACCOUNT ---------------------");
+      if (kDebugMode)
+        print("---------------- CARD TO ACCOUNT ---------------------");
       accountRequestModel.changeAccountToPrimary =
           await Validators.encrypt(card['accountReferenceNumber'].toString());
       accountRequestModel.primaryCardRefNumber = await Validators.encrypt(

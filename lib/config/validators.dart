@@ -15,7 +15,7 @@ class Validators {
   static Future<String> encrypt(String key) async {
     var password = 'naethratechnologiespvtltdchennai';
     var encrypted = await Aes256Gcm.encrypt(key, password);
-    // print(encrypted);
+    //if(kDebugMode)print(encrypted);
     return encrypted;
   }
 

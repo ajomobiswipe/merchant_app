@@ -277,12 +277,12 @@
 //                 splashRadius: 50.0,
 //                 value: enableBioMetric,
 //                 onChanged: (value) async {
-//                   // print(value);s
+//                   //if(kDebugMode)print(value);s
 //                   var check = await Global.availableBiometrics();
-//                   // print(check);
+//                   //if(kDebugMode)print(check);
 //                   if (check.isNotEmpty) {
 //                     var authentication = await Global.authenticate();
-//                     // print(authentication);
+//                     //if(kDebugMode)print(authentication);
 //                     if (authentication) {
 //                       setState(() {
 //                         enableBioMetric = value;

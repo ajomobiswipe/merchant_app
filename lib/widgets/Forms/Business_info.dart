@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:email_validator/email_validator.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:icons_plus/icons_plus.dart';
@@ -790,7 +791,7 @@ class _BusinessInfoState extends State<BusinessInfo> {
                     });
                   },
                   onSaved: (phone) {
-                    // print(phone.completeNumber+'onsavedfromphonenumber');
+                    //if(kDebugMode)print(phone.completeNumber+'onsavedfromphonenumber');
                     widget.merchantCompanyDetailsReq.mobileNo =
                         phone.completeNumber;
                   },
@@ -1034,7 +1035,8 @@ class _BusinessInfoState extends State<BusinessInfo> {
                                 .format(pickedDate);
                         widget.merchantCompanyDetailsReq
                             .tradeLicenseExpiryDate = formattedDate;
-                        print('Formatted Date: ${formattedDate}Z');
+                        if (kDebugMode)
+                          print('Formatted Date: ${formattedDate}Z');
                       }
                     },
                     validator: (value) {
@@ -1194,8 +1196,9 @@ class _BusinessInfoState extends State<BusinessInfo> {
                         onPressed: () {
                           if (businessFormKey.currentState!.validate()) {
                             businessFormKey.currentState!.save();
-                            print(jsonEncode(
-                                widget.merchantCompanyDetailsReq.toJson()));
+                            if (kDebugMode)
+                              print(jsonEncode(
+                                  widget.merchantCompanyDetailsReq.toJson()));
 
                             widget.next();
                           }
@@ -1228,19 +1231,19 @@ class _BusinessInfoState extends State<BusinessInfo> {
           String acquirerId = acqApplication['acquirerId'];
           acquierApplicationidList[acquirerName] = acquirerId;
 
-          print(acqApplication['acquirerId']);
+          if (kDebugMode) print(acqApplication['acquirerId']);
         }
 
         isAquirerselected = true;
         // for (var acquirer in acquirerDetails) {
         //   String acquirerName = acquirer['description'];
-        //   print('Acquirer Name: $acquirerName');
+        //  if(kDebugMode)print('Acquirer Name: $acquirerName');
         // }
 
-        //     print('length  : ${acqApplicationId.length}');
+        //    if(kDebugMode)print('length  : ${acqApplicationId.length}');
         // for (var acquirer in acqApplicationId) {
         //   String acquirerName = acquirer['description'];
-        //   print('Acquirer Application id: $acquirerName');
+        //  if(kDebugMode)print('Acquirer Application id: $acquirerName');
         // }
         // countryList = decodeData['responseValue']['list'];
         // if (countryList.isNotEmpty) {

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 // import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -487,7 +488,8 @@ class _ViewMyCardState extends State<ViewMyCard> {
           userCardInfo.where((element) => element['primary'] == true).toList();
     }
     if (getPreviousPrimary[0].containsKey('accountReferenceNumber')) {
-      debugPrint("---------------- ACCOUNT TO CARD ---------------------");
+      if (kDebugMode)
+        print("---------------- ACCOUNT TO CARD ---------------------");
       cardManageRequestModel.primaryAccountRefNumber = await Validators.encrypt(
           getPreviousPrimary[0]['accountReferenceNumber']);
       accountCardService
@@ -497,7 +499,8 @@ class _ViewMyCardState extends State<ViewMyCard> {
         responseAlert(response);
       });
     } else {
-      debugPrint("------------------ CARD TO CARD ---------------------");
+      if (kDebugMode)
+        print("------------------ CARD TO CARD ---------------------");
       cardManageRequestModel.changeAccountRefToPrimary =
           await Validators.encrypt(card['cardReferenceNumber'].toString());
       cardManageRequestModel.primaryCardRefNumber = await Validators.encrypt(

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:custom_timer/custom_timer.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:sifr_latest/storage/secure_storage.dart';
 import 'package:sifr_latest/widgets/app/alert_service.dart';
@@ -82,7 +83,7 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
     var getQrCodeStatusResponse = await userServices.getQrCodeStatus(qrCodeId!);
     var getQrCodeStatusResponseValue = jsonDecode(getQrCodeStatusResponse.body);
 
-    print(getQrCodeStatusResponseValue['qrCodeRequestStatus']);
+    if (kDebugMode) print(getQrCodeStatusResponseValue['qrCodeRequestStatus']);
     if (getQrCodeStatusResponseValue['qrCodeRequestStatus'] == 'ATT') return;
 
     Future.delayed(const Duration(seconds: 1), () {
@@ -140,7 +141,7 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
     int max = 9999999; // Largest 7-digit number (9,999,999).
     int randomSevenDigitNumber = min + random.nextInt(max - min + 1);
 
-    // print("Random 7-digit number: $randomSevenDigitNumber");
+    //if(kDebugMode)print("Random 7-digit number: $randomSevenDigitNumber");
 
     Map<String, dynamic> objectBody = {
       "payment": {
@@ -158,7 +159,7 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
     transactionServices.generateQRCode(objectBody).then((response) {
       var decodeData = jsonDecode(response.body);
 
-      print(decodeData);
+      if (kDebugMode) print(decodeData);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         String inputString = decodeData['link'];
@@ -180,7 +181,7 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
 
             qrCodeTransactionId = objectBody['qrCodeTransactionId']!;
             qrCodeId = decodeData['qrCodeId'];
-            // print(verifiedQrData);
+            //if(kDebugMode)print(verifiedQrData);
             timer = Timer.periodic(const Duration(seconds: 20), (Timer t) {
               _checkQrStatus(decodeData['qrCodeId']);
             });
@@ -235,9 +236,10 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
       var getQrCodeStatusResponseValue =
           jsonDecode(getQrCodeStatusResponse.body);
 
-      print(getQrCodeStatusResponseValue['qrCodeRequestStatus']);
+      if (kDebugMode)
+        print(getQrCodeStatusResponseValue['qrCodeRequestStatus']);
 
-      // print(getQrCodeStatusResponseValue['qrCodeRequestStatus']);
+      //if(kDebugMode)print(getQrCodeStatusResponseValue['qrCodeRequestStatus']);
       if (getQrCodeStatusResponseValue['qrCodeRequestStatus'] != 'EXECUTED' &&
           getQrCodeStatusResponseValue['qrCodeRequestStatus'] != 'EFF') {
         Future.delayed(const Duration(seconds: 1), () {
@@ -299,7 +301,8 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
         var verifyReversalResponseValue =
             jsonDecode(verifyReversalResponse.body);
 
-        print('verifyReversalResponseValue$verifyReversalResponseValue');
+        if (kDebugMode)
+          print('verifyReversalResponseValue$verifyReversalResponseValue');
 
         if (verifyReversalResponseValue['status'] == "Failed") {
           Navigator.pushReplacementNamed(context, 'home');
@@ -323,15 +326,16 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
             }
           };
 
-          print(requestBody);
+          if (kDebugMode) print(requestBody);
 
           // return;
 
           var confirmReversalResponse =
               await transactionServices.confirmReversal(requestBody);
 
-          print(
-              'confirmReversalResponse${jsonDecode(confirmReversalResponse.body)}');
+          if (kDebugMode)
+            print(
+                'confirmReversalResponse${jsonDecode(confirmReversalResponse.body)}');
 
           if (confirmReversalResponse.statusCode != 200) {
             Navigator.pushReplacementNamed(context, 'home');
@@ -352,7 +356,7 @@ class _MerchantQRCodeState extends State<MerchantQRCode>
         }
       }
     } catch (_) {
-      print('Error Logs$_');
+      if (kDebugMode) print('Error Logs$_');
     }
   }
 

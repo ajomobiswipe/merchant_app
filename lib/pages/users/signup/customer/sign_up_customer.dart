@@ -549,7 +549,7 @@ class _SignUpCustomerState extends State<SignUpCustomer> {
                 if (phone.number.isNotEmpty &&
                     (phone.number.length >= _country.minLength &&
                         phone.number.length <= _country.maxLength)) {
-                  // print("--renzo");
+                  //if(kDebugMode)print("--renzo");
                   getEmailIdOrMobileNo('mobileNumber', phone.number);
                 } else {
                   mobile = false;
@@ -1347,7 +1347,7 @@ class _SignUpCustomerState extends State<SignUpCustomer> {
         await Validators.encrypt(registerRequestModel.confirmPin.toString());
     registerRequestModel.deviceId =
         await Validators.encrypt(await Global.getUniqueId());
-    // print(jsonEncode(registerRequestModel));
+    //if(kDebugMode)print(jsonEncode(registerRequestModel));
     userServices
         .newCustomerSignup(registerRequestModel, newProfilePicture,
             kycFrontImage.text, kycBackImage.text)
@@ -1464,7 +1464,7 @@ class _SignUpCustomerState extends State<SignUpCustomer> {
 
   getUser() async {
     if (_userNameController.text.isNotEmpty) {
-      debugPrint("Calling API");
+      if (kDebugMode) print("Calling API");
       setState(() {
         userCheck = "Loading...";
       });
@@ -1509,7 +1509,7 @@ class _SignUpCustomerState extends State<SignUpCustomer> {
       title: 'Email ID',
       suffixText: showVerify1 ? 'Verify' : 'Change',
       suffixIconOnPressed: () {
-        // print('Button Pressed');
+        //if(kDebugMode)print('Button Pressed');
         setState(() {
           if (!showVerify1 && emailVerify) {
             emailVerify = false;
@@ -1565,17 +1565,17 @@ class _SignUpCustomerState extends State<SignUpCustomer> {
   }
 
   getEmailIdOrMobileNo(String type, String request) async {
-    debugPrint("Calling API");
+    if (kDebugMode) print("Calling API");
     setState(() {
       emailCheck = "Loading...";
     });
     request = await Validators.encrypt(request);
-    // print(request);
+    //if(kDebugMode)print(request);
     userServices.emailMobileCheck(type, request).then((response) async {
-      // print("----------------------");
-      // print(response.statusCode);
-      // print(response.body);
-      // print("----------------------");
+      //if(kDebugMode)print("----------------------");
+      //if(kDebugMode)print(response.statusCode);
+      //if(kDebugMode)print(response.body);
+      //if(kDebugMode)print("----------------------");
       if (response.statusCode == 200 || response.statusCode == 201) {
         if (type == 'emailId') {
           setState(() {

@@ -7,6 +7,7 @@
 
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sifr_latest/config/constants.dart';
@@ -86,8 +87,8 @@ class UserServices {
       String id = jsonResponse['id'];
       String userId = jsonResponse['userId'];
 
-      print("id from response  $id");
-      print("userId from response $userId");
+      if (kDebugMode) print("id from response  $id");
+      if (kDebugMode) print("userId from response $userId");
       var newheader = {
         'Authorization': 'Bearer $token',
         'accessToken': id,
@@ -110,11 +111,11 @@ class UserServices {
 
       var responseapi = await http.post(verifyAccountUel,
           headers: newheader, body: jsonEncode(newreqbody));
-      // print(newheader);
-      // print(userId);
-      // print("second api reponseStatus code ${responseapi.statusCode}");
-      // print(responseapi.body);
-      // print(responseapi.statusCode);
+      //if(kDebugMode)print(newheader);
+      //if(kDebugMode)print(userId);
+      //if(kDebugMode)print("second api reponseStatus code ${responseapi.statusCode}");
+      //if(kDebugMode)print(responseapi.body);
+      //if(kDebugMode)print(responseapi.statusCode);
       return responseapi;
     }
 
@@ -138,14 +139,14 @@ class UserServices {
         {"username": "omaEmirates_preprod_v2", "password": "doXpr3KeKT"});
 
     var response = await http.post(urlnew, headers: headers, body: body);
-    print("Fist Api responsecode ${response.statusCode}");
+    if (kDebugMode) print("Fist Api responsecode ${response.statusCode}");
     if (response.statusCode == 200) {
       Map<String, dynamic> jsonResponse = jsonDecode(response.body);
       String id = jsonResponse['id'];
       String userId = jsonResponse['userId'];
 
-      print("id from response  $id");
-      print("userId from response $userId");
+      if (kDebugMode) print("id from response  $id");
+      if (kDebugMode) print("userId from response $userId");
       var newheader = {
         'Authorization': 'Bearer $token',
         'accessToken': id,
@@ -162,10 +163,10 @@ class UserServices {
 
       var responseapi = await http.post(gstVerify,
           headers: newheader, body: jsonEncode(newreqbody));
-      // print(newheader);
-      // print(userId);
-      // print("second api reponseStatus code ${responseapi.statusCode}");
-      print(responseapi.body);
+      //if(kDebugMode)print(newheader);
+      //if(kDebugMode)print(userId);
+      //if(kDebugMode)print("second api reponseStatus code ${responseapi.statusCode}");
+      if (kDebugMode) print(responseapi.body);
       return responseapi.body;
     }
 
@@ -193,15 +194,15 @@ class UserServices {
           .post(urlnew, headers: headers, body: body)
           .timeout(Duration(seconds: 10));
 
-      print("Fist Api responsecode ${response.statusCode}");
-      print("Fist Api responsecode ${response.body}");
+      if (kDebugMode) print("Fist Api responsecode ${response.statusCode}");
+      if (kDebugMode) print("Fist Api responsecode ${response.body}");
       if (response.statusCode == 200) {
         Map<String, dynamic> jsonResponse = jsonDecode(response.body);
         String id = jsonResponse['id'];
         String userId = jsonResponse['userId'];
 
-        print("id from response  $id");
-        print("userId from response $userId");
+        if (kDebugMode) print("id from response  $id");
+        if (kDebugMode) print("userId from response $userId");
         var newheader = {
           'Authorization': 'Bearer $token',
           'accessToken': id,
@@ -219,22 +220,23 @@ class UserServices {
 
         var responseapi = await http.post(gstVerify,
             headers: newheader, body: jsonEncode(newreqbody));
-        // print(newheader);
-        // print(userId);
-        print("second api reponseStatus code ${responseapi.statusCode}");
-        print(responseapi.body);
+        //if(kDebugMode)print(newheader);
+        //if(kDebugMode)print(userId);
+        if (kDebugMode)
+          print("second api reponseStatus code ${responseapi.statusCode}");
+        if (kDebugMode) print(responseapi.body);
         return responseapi.body;
       }
 
       return false;
     } catch (e) {
-      print(e);
+      if (kDebugMode) print(e);
     }
   }
 
   sendAddhaarOtp(String addhaarNumber) async {
     String token = boxStorage.getToken();
-    print("addhaarz$addhaarNumber");
+    if (kDebugMode) print("addhaarz$addhaarNumber");
 // Ensure token is not null or empty
 
     // final headers = {'Authorization': 'Bearer $token'};
@@ -254,10 +256,11 @@ class UserServices {
     };
     var responseapi = await http.post(addhaarverify,
         headers: newheader, body: jsonEncode(newreqbody));
-    // print(newheader);
-    // print(userId);
-    print("second api responseStatus code ${responseapi.statusCode}");
-    print(responseapi.body);
+    //if(kDebugMode)print(newheader);
+    //if(kDebugMode)print(userId);
+    if (kDebugMode)
+      print("second api responseStatus code ${responseapi.statusCode}");
+    if (kDebugMode) print(responseapi.body);
     return responseapi.body;
   }
 
@@ -282,11 +285,12 @@ class UserServices {
 
     var responseapi = await http.post(addhaarverify,
         headers: newheader, body: jsonEncode(newreqbody));
-    // print(newheader);
-    // print(userId);
-    print(
-        "Addhaar Validation Api reponseStatus code ${responseapi.statusCode}");
-    print(responseapi.body);
+    //if(kDebugMode)print(newheader);
+    //if(kDebugMode)print(userId);
+    if (kDebugMode)
+      print(
+          "Addhaar Validation Api reponseStatus code ${responseapi.statusCode}");
+    if (kDebugMode) print(responseapi.body);
     return responseapi;
   }
 
@@ -484,7 +488,7 @@ class UserServices {
       "turnOverType": turnOver
     };
 
-    print(requestBody);
+    if (kDebugMode) print(requestBody);
 
     // var url = 'http://10.0.38.83:9508/NanoPay/Middleware/UiApi/mdrDetails';
     var url = 'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/mdrDetails';
@@ -493,7 +497,7 @@ class UserServices {
     // old merchant onboarding implimentation
     // SharedPreferences prefs = await SharedPreferences.getInstance();
     // String? barrertoken = prefs.getString('bearerToken');
-    // print(barrertoken);
+    //if(kDebugMode)print(barrertoken);
     // http.Response resonr = await http.get(
     //   Uri.parse(
     //       'http://omasoftposqc.omaemirates.com:9508/NanoPay/Middleware/UiApi/GetMerchantDefaultValues'),
@@ -504,13 +508,13 @@ class UserServices {
     // );
 
     // con
-    // print(resonr.body);
-    // // print(prefs.getString('bearerToken') ?? 'error in reciving token');
+    //if(kDebugMode)print(resonr.body);
+    // //if(kDebugMode)print(prefs.getString('bearerToken') ?? 'error in reciving token');
 
-    // // print('length  : ${acquirerDetails.length}');
+    // //if(kDebugMode)print('length  : ${acquirerDetails.length}');
     // // for (var acquirer in acquirerDetails) {
     // //   String acquirerName = acquirer['acquirerName'];
-    // //   print('Acquirer Name: $acquirerName');
+    // //  if(kDebugMode)print('Acquirer Name: $acquirerName');
     // // }
     // return resonr;
   }
@@ -528,7 +532,7 @@ class UserServices {
       "requestType": requestType
     };
 
-    print(requestBody);
+    if (kDebugMode) print(requestBody);
 
     // var url =
     //     'http://10.0.38.83:9508/NanoPay/Middleware/UiApi/sendTermsAndConditions';
@@ -558,13 +562,14 @@ class UserServices {
     var url =
         'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/GetMerchantOnboardingValues';
     var response = await connection.get(url);
-    print("Defaultvalues Api response code" + response.statusCode.toString());
+    if (kDebugMode)
+      print("Defaultvalues Api response code" + response.statusCode.toString());
     return response;
 
     // old merchant onboarding implimentation
     // SharedPreferences prefs = await SharedPreferences.getInstance();
     // String? barrertoken = prefs.getString('bearerToken');
-    // print(barrertoken);
+    //if(kDebugMode)print(barrertoken);
     // http.Response resonr = await http.get(
     //   Uri.parse(
     //       'http://omasoftposqc.omaemirates.com:9508/NanoPay/Middleware/UiApi/GetMerchantDefaultValues'),
@@ -575,13 +580,13 @@ class UserServices {
     // );
 
     // con
-    // print(resonr.body);
-    // // print(prefs.getString('bearerToken') ?? 'error in reciving token');
+    //if(kDebugMode)print(resonr.body);
+    // //if(kDebugMode)print(prefs.getString('bearerToken') ?? 'error in reciving token');
 
-    // // print('length  : ${acquirerDetails.length}');
+    // //if(kDebugMode)print('length  : ${acquirerDetails.length}');
     // // for (var acquirer in acquirerDetails) {
     // //   String acquirerName = acquirer['acquirerName'];
-    // //   print('Acquirer Name: $acquirerName');
+    // //  if(kDebugMode)print('Acquirer Name: $acquirerName');
     // // }
     // return resonr;
   }
@@ -591,13 +596,13 @@ class UserServices {
   //   var url =
   //       'http://172.29.100.221:9508/NanoPay/Middleware/UiApi/merchantInvoiceDetails/$merchantId';
   //   var response = await connection.get(url);
-  //   print("Defaultvalues Api response code" +url);
+  //  if(kDebugMode)print("Defaultvalues Api response code" +url);
   //   return response;
   //
   //   // old merchant onboarding implimentation
   //   // SharedPreferences prefs = await SharedPreferences.getInstance();
   //   // String? barrertoken = prefs.getString('bearerToken');
-  //   // print(barrertoken);
+  //   //if(kDebugMode)print(barrertoken);
   //   // http.Response resonr = await http.get(
   //   //   Uri.parse(
   //   //       'http://omasoftposqc.omaemirates.com:9508/NanoPay/Middleware/UiApi/GetMerchantDefaultValues'),
@@ -608,13 +613,13 @@ class UserServices {
   //   // );
   //
   //   // con
-  //   // print(resonr.body);
-  //   // // print(prefs.getString('bearerToken') ?? 'error in reciving token');
+  //   //if(kDebugMode)print(resonr.body);
+  //   // //if(kDebugMode)print(prefs.getString('bearerToken') ?? 'error in reciving token');
   //
-  //   // // print('length  : ${acquirerDetails.length}');
+  //   // //if(kDebugMode)print('length  : ${acquirerDetails.length}');
   //   // // for (var acquirer in acquirerDetails) {
   //   // //   String acquirerName = acquirer['acquirerName'];
-  //   // //   print('Acquirer Name: $acquirerName');
+  //   // //  if(kDebugMode)print('Acquirer Name: $acquirerName');
   //   // // }
   //   // return resonr;
   // }
@@ -627,7 +632,7 @@ class UserServices {
 
     String? userName = prefs.getString('userName');
 
-    print(userName);
+    if (kDebugMode) print(userName);
 
     final requestBody = {
       "stage": stage,
@@ -638,13 +643,14 @@ class UserServices {
     var url =
         'http://213.42.225.250:9508/NanoPay/Middleware/UiApi/MerchantOnboardList';
     var response = await connection.post(url, requestBody);
-    print("Defaultvalues Api response code" + response.statusCode.toString());
+    if (kDebugMode)
+      print("Defaultvalues Api response code" + response.statusCode.toString());
     return response;
 
     // old merchant onboarding implimentation
     // SharedPreferences prefs = await SharedPreferences.getInstance();
     // String? barrertoken = prefs.getString('bearerToken');
-    // print(barrertoken);
+    //if(kDebugMode)print(barrertoken);
     // http.Response resonr = await http.get(
     //   Uri.parse(
     //       'http://omasoftposqc.omaemirates.com:9508/NanoPay/Middleware/UiApi/GetMerchantDefaultValues'),
@@ -655,13 +661,13 @@ class UserServices {
     // );
 
     // con
-    // print(resonr.body);
-    // // print(prefs.getString('bearerToken') ?? 'error in reciving token');
+    //if(kDebugMode)print(resonr.body);
+    // //if(kDebugMode)print(prefs.getString('bearerToken') ?? 'error in reciving token');
 
-    // // print('length  : ${acquirerDetails.length}');
+    // //if(kDebugMode)print('length  : ${acquirerDetails.length}');
     // // for (var acquirer in acquirerDetails) {
     // //   String acquirerName = acquirer['acquirerName'];
-    // //   print('Acquirer Name: $acquirerName');
+    // //  if(kDebugMode)print('Acquirer Name: $acquirerName');
     // // }
     // return resonr;
   }
@@ -679,7 +685,7 @@ class UserServices {
     // old merchant onboarding implimentation
     // SharedPreferences prefs = await SharedPreferences.getInstance();
     // String? barrertoken = prefs.getString('bearerToken');
-    // print(barrertoken);
+    //if(kDebugMode)print(barrertoken);
     // http.Response resonr = await http.get(
     //   Uri.parse(
     //       'http://omasoftposqc.omaemirates.com:9508/NanoPay/Middleware/UiApi/GetMerchantDefaultValues'),
@@ -690,13 +696,13 @@ class UserServices {
     // );
 
     // con
-    // print(resonr.body);
-    // // print(prefs.getString('bearerToken') ?? 'error in reciving token');
+    //if(kDebugMode)print(resonr.body);
+    // //if(kDebugMode)print(prefs.getString('bearerToken') ?? 'error in reciving token');
 
-    // // print('length  : ${acquirerDetails.length}');
+    // //if(kDebugMode)print('length  : ${acquirerDetails.length}');
     // // for (var acquirer in acquirerDetails) {
     // //   String acquirerName = acquirer['acquirerName'];
-    // //   print('Acquirer Name: $acquirerName');
+    // //  if(kDebugMode)print('Acquirer Name: $acquirerName');
     // // }
     // return resonr;
   }
@@ -713,7 +719,7 @@ class UserServices {
     // old merchant onboarding implimentation
     // SharedPreferences prefs = await SharedPreferences.getInstance();
     // String? barrertoken = prefs.getString('bearerToken');
-    // print(barrertoken);
+    //if(kDebugMode)print(barrertoken);
     // http.Response resonr = await http.get(
     //   Uri.parse(
     //       'http://omasoftposqc.omaemirates.com:9508/NanoPay/Middleware/UiApi/GetMerchantDefaultValues'),
@@ -724,13 +730,13 @@ class UserServices {
     // );
 
     // con
-    // print(resonr.body);
-    // // print(prefs.getString('bearerToken') ?? 'error in reciving token');
+    //if(kDebugMode)print(resonr.body);
+    // //if(kDebugMode)print(prefs.getString('bearerToken') ?? 'error in reciving token');
 
-    // // print('length  : ${acquirerDetails.length}');
+    // //if(kDebugMode)print('length  : ${acquirerDetails.length}');
     // // for (var acquirer in acquirerDetails) {
     // //   String acquirerName = acquirer['acquirerName'];
-    // //   print('Acquirer Name: $acquirerName');
+    // //  if(kDebugMode)print('Acquirer Name: $acquirerName');
     // // }
     // return resonr;
   }
@@ -749,18 +755,18 @@ class UserServices {
     //     'Authorization': 'Bearer $barrertoken',
     //   },
     // );
-    print('---------Get application id---------------');
-    print(resonr.body);
+    if (kDebugMode) print('---------Get application id---------------');
+    if (kDebugMode) print(resonr.body);
 
-    // print(prefs.getString('bearerToken') ?? 'error in reciving token');
+    //if(kDebugMode)print(prefs.getString('bearerToken') ?? 'error in reciving token');
     final Map<String, dynamic> data = json.decode(resonr.body);
     List<dynamic> acqApplications = data['data'];
     // List<dynamic> data = jsonResponseMap['data'];
 
-    // print('length  : ${acqApplicationId.length}');
+    //if(kDebugMode)print('length  : ${acqApplicationId.length}');
     // for (var acquirer in acqApplicationId) {
     //   String acquirerName = acquirer['description'];
-    //   print('Acquirer Application id: $acquirerName');
+    //  if(kDebugMode)print('Acquirer Application id: $acquirerName');
     // }
     return acqApplications;
   }
@@ -802,43 +808,43 @@ class UserServices {
     request.fields['postalCode'] = req.zipCode;
     request.fields['kycType'] = "E-KYC";
     request.fields['currencyId'] = req.currencyId ?? "784";
-    print("-------");
-    print(request.fields['instId']);
-    print(request.fields['notificationToken']);
-    print(request.fields['deviceId']);
-    print(request.fields['userName']);
-    print(request.fields['role']);
-    print(request.fields['password']);
-    print(request.fields['pin']);
-    print(request.fields['mobileCountryCode']);
-    print(request.fields['mobileNumber']);
-    print(request.fields['emailId']);
-    print(request.fields['deviceType']);
-    print(request.fields['questionOne']);
-    print(request.fields['answerOne']);
-    print(request.fields['questionTwo']);
-    print(request.fields['answerTwo']);
-    print(request.fields['questionThree']);
-    print(request.fields['answerThree']);
-    print(request.fields['firstName']);
-    print(request.fields['lastName']);
-    print(request.fields['dob']);
-    print(request.fields['nickName']);
-    print(request.fields['country']);
-    print(request.fields['state']);
-    print(request.fields['city']);
-    print(request.fields['postalCode']);
-    print(request.fields['kycType']);
-    print(request.fields['currencyId']);
+    if (kDebugMode) print("-------");
+    if (kDebugMode) print(request.fields['instId']);
+    if (kDebugMode) print(request.fields['notificationToken']);
+    if (kDebugMode) print(request.fields['deviceId']);
+    if (kDebugMode) print(request.fields['userName']);
+    if (kDebugMode) print(request.fields['role']);
+    if (kDebugMode) print(request.fields['password']);
+    if (kDebugMode) print(request.fields['pin']);
+    if (kDebugMode) print(request.fields['mobileCountryCode']);
+    if (kDebugMode) print(request.fields['mobileNumber']);
+    if (kDebugMode) print(request.fields['emailId']);
+    if (kDebugMode) print(request.fields['deviceType']);
+    if (kDebugMode) print(request.fields['questionOne']);
+    if (kDebugMode) print(request.fields['answerOne']);
+    if (kDebugMode) print(request.fields['questionTwo']);
+    if (kDebugMode) print(request.fields['answerTwo']);
+    if (kDebugMode) print(request.fields['questionThree']);
+    if (kDebugMode) print(request.fields['answerThree']);
+    if (kDebugMode) print(request.fields['firstName']);
+    if (kDebugMode) print(request.fields['lastName']);
+    if (kDebugMode) print(request.fields['dob']);
+    if (kDebugMode) print(request.fields['nickName']);
+    if (kDebugMode) print(request.fields['country']);
+    if (kDebugMode) print(request.fields['state']);
+    if (kDebugMode) print(request.fields['city']);
+    if (kDebugMode) print(request.fields['postalCode']);
+    if (kDebugMode) print(request.fields['kycType']);
+    if (kDebugMode) print(request.fields['currencyId']);
     final k1 = await http.MultipartFile.fromPath('file', kf);
     final k2 = await http.MultipartFile.fromPath('file', kb);
     if (pp != '') {
       final p1 = await http.MultipartFile.fromPath('profilePic', pp);
       request.files.add(p1);
     }
-    print(k1);
-    print(k2);
-    print(pp);
+    if (kDebugMode) print(k1);
+    if (kDebugMode) print(k2);
+    if (kDebugMode) print(pp);
     request.files.add(k1);
     request.files.add(k2);
     final streamedResponse = await request.send();
@@ -911,21 +917,21 @@ class UserServices {
     //businessIdProofReq.mechantKycDocuments![0].fileFullPath,
 
     for (var files in businessIdProofReq.mechantKycDocuments) {
-      print("File path in Submit" + files.fileFullPath);
+      if (kDebugMode) print("File path in Submit" + files.fileFullPath);
     }
-    print(jsonEncode(businessIdProofReq.toJson()));
-    print(jsonEncode(merchantStoreInfoReq.toJson()));
-    print(jsonEncode(merchantIdProofReq.toJson()));
-    print(jsonEncode(companyDetailsInforeq.toJson()));
-    print(jsonEncode(merchantBankInfoReq.toJson()));
-    print(jsonEncode(merchantAgreeMentReq.toJson()));
+    if (kDebugMode) print(jsonEncode(businessIdProofReq.toJson()));
+    if (kDebugMode) print(jsonEncode(merchantStoreInfoReq.toJson()));
+    if (kDebugMode) print(jsonEncode(merchantIdProofReq.toJson()));
+    if (kDebugMode) print(jsonEncode(companyDetailsInforeq.toJson()));
+    if (kDebugMode) print(jsonEncode(merchantBankInfoReq.toJson()));
+    if (kDebugMode) print(jsonEncode(merchantAgreeMentReq.toJson()));
 
     // adding list of document in
     for (var files in businessIdProofReq.mechantKycDocuments) {
       var multipartFile = await http.MultipartFile.fromPath(
           'mechantKycDocuments', files.fileFullPath);
       request.files.add(multipartFile);
-      print("File path in Submit" + files.fileFullPath);
+      if (kDebugMode) print("File path in Submit" + files.fileFullPath);
     }
     request.files.add(storeInsideImg);
     request.files.add(storeOutsideImg);
@@ -951,8 +957,8 @@ class UserServices {
     deviceAtStoreCtrl,
     transactionSlipImageCtrl,
   ) async {
-    // print(deviceAtStoreCtrl);
-    // print(transactionSlipImageCtrl);
+    //if(kDebugMode)print(deviceAtStoreCtrl);
+    //if(kDebugMode)print(transactionSlipImageCtrl);
     //var url = EndPoints.baseApi9502 + EndPoints.registerAPI;
     BoxStorage boxStorage = BoxStorage();
     String barrertoken = boxStorage.getToken();
@@ -986,8 +992,8 @@ class UserServices {
 
     final streamedResponse = await request.send();
     final response = await http.Response.fromStream(streamedResponse);
-    // print(response.body);
-    // print(response.statusCode);
+    //if(kDebugMode)print(response.body);
+    //if(kDebugMode)print(response.statusCode);
     return response;
   }
 
@@ -1279,7 +1285,7 @@ class UserServices {
   Future getQrCodeStatus(String qrCodeId) async {
     Connection connection = Connection();
     var url = '${EndPoints.getQrCodeStatusApi}?qrCodeId=$qrCodeId';
-    print(url);
+    if (kDebugMode) print(url);
     var response = await connection.get(url);
 
     return response;

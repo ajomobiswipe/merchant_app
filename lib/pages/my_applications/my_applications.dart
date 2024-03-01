@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sifr_latest/services/services.dart';
@@ -334,6 +335,8 @@ class _MyApplicationsState extends State<MyApplications> {
             DropdownButtonFormField(
               // hint: const Text('Select Stage'),
               value: selectedValue ?? 0,
+              icon: const Icon(Icons.keyboard_arrow_down,
+                  color: AppColors.kPrimaryColor),
               items: [
                 const DropdownMenuItem(
                   value: 0,
@@ -355,7 +358,7 @@ class _MyApplicationsState extends State<MyApplications> {
                   getAllMerchantApplications();
 
                   // packagelist = selectedValue["tmsPackage"];
-                  // print(value);
+                  //if(kDebugMode)print(value);
                 });
               },
               decoration: InputDecoration(
@@ -377,6 +380,7 @@ class _MyApplicationsState extends State<MyApplications> {
                 // helperStyle: helperStyle,
                 fillColor: AppColors.kTileColor,
                 filled: true,
+
                 hintStyle: Theme.of(context)
                     .textTheme
                     .displaySmall
@@ -434,13 +438,13 @@ class _MyApplicationsState extends State<MyApplications> {
               onFieldSubmitted: (value) {
                 // _lastNameController.text = value.trim();
               },
-              suffixIcon: Icon(Icons.search),
+              suffixIcon: const Icon(Icons.search),
               suffixIconTrue: true,
               suffixIconOnPressed: () {
                 setState(() {
-                  print("sufix pressed");
-                  print(_merchantNameController.text);
-                  print(selectesStage);
+                  if (kDebugMode) print("sufix pressed");
+                  if (kDebugMode) print(_merchantNameController.text);
+                  if (kDebugMode) print(selectesStage.toString());
                   // getAllMerchantApplications();
                   allOnboardingApplications.clear();
                   getAllMerchantApplications();
@@ -453,7 +457,7 @@ class _MyApplicationsState extends State<MyApplications> {
             allOnboardingApplications.isNotEmpty
                 ? ListView(
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     children: List.generate(allOnboardingApplications.length,
                         (index) {
                       return ListTile(
@@ -537,7 +541,7 @@ class _MyApplicationsState extends State<MyApplications> {
                                     for (var item in response['data'][0]
                                             ['merchantProductDetailsResponse']
                                         ['merchantProductDetails']) {
-                                      print(item);
+                                      if (kDebugMode) print(item);
 
                                       _devices.add(Device(
                                         productId: item['productId'],
@@ -633,7 +637,7 @@ class _MyApplicationsState extends State<MyApplications> {
   }
 
   getDefaultMerchantValues() async {
-    print("----default value called----");
+    if (kDebugMode) print("----default value called----");
     await userServices.GetMerchantOnboardingValues().then((response) async {
       final Map<String, dynamic> data = json.decode(response.body);
       // List<dynamic> acquirerDetails =
@@ -676,34 +680,35 @@ class _MyApplicationsState extends State<MyApplications> {
 
       for (var applications in applicationStatus) {
         String applicationStatusis = applications['statusInfoId'].toString();
-        print('Application Status id: $applicationStatusis');
-        print('Application Name: ${applications['statusDesc']}');
+        if (kDebugMode) print('Application Status id: $applicationStatusis');
+        if (kDebugMode)
+          print('Application Name: ${applications['statusDesc']}');
       }
 
-      print("Total Items${applicationStatus.length}");
+      if (kDebugMode) print("Total Items${applicationStatus.length}");
 
       // for (var mccGroup in mccGroups) {
       //   String mccGroupId = mccGroup['mccGroupId'].toString();
-      //   print('mccGroupId : $mccGroupId');
+      //  if(kDebugMode)print('mccGroupId : $mccGroupId');
       // }
 
       // for (var mccType in mccTypes) {
       //   String acquirerName = mccType['mccTypeDesc'];
-      //   print('mccTypeDesc: $acquirerName');
+      //  if(kDebugMode)print('mccTypeDesc: $acquirerName');
       // }
 
       // for (var products in tmsProductMaster) {
       //   String acquirerName = products['productName'];
-      //   print('productName: $acquirerName');
+      //  if(kDebugMode)print('productName: $acquirerName');
       // }
-      // print("length" + "${tmsProductMaster.length}");
+      //if(kDebugMode)print("length" + "${tmsProductMaster.length}");
     });
   }
 
   Map<String, dynamic>? getChartCount;
 
   getAllMerchantApplications() async {
-    print("----AllMerchantApplications called----");
+    if (kDebugMode) print("----AllMerchantApplications called----");
     await userServices
         .getMerchantApplication(
             stage: selectesStage, merchantname: _merchantNameController.text)
@@ -720,37 +725,39 @@ class _MyApplicationsState extends State<MyApplications> {
 
       for (var applications in applicationsFromJson) {
         String applicationStatusis = applications['merchantName'].toString();
-        print('merchant Name: $applicationStatusis');
-        print('Merchant Mobile number : ${applications['mobileNo']}');
+        if (kDebugMode) print('merchant Name: $applicationStatusis');
+        if (kDebugMode)
+          print('Merchant Mobile number : ${applications['mobileNo']}');
       }
 
-      print("Total Irems" "${allOnboardingApplications.length}");
+      if (kDebugMode)
+        print("Total Irems" "${allOnboardingApplications.length}");
 
       // for (var mccGroup in mccGroups) {
       //   String mccGroupId = mccGroup['mccGroupId'].toString();
-      //   print('mccGroupId : $mccGroupId');
+      //  if(kDebugMode)print('mccGroupId : $mccGroupId');
       // }
 
       // for (var mccType in mccTypes) {
       //   String acquirerName = mccType['mccTypeDesc'];
-      //   print('mccTypeDesc: $acquirerName');
+      //  if(kDebugMode)print('mccTypeDesc: $acquirerName');
       // }
 
       // for (var products in tmsProductMaster) {
       //   String acquirerName = products['productName'];
-      //   print('productName: $acquirerName');
+      //  if(kDebugMode)print('productName: $acquirerName');
       // }
-      // print("length" + "${tmsProductMaster.length}");
+      //if(kDebugMode)print("length" + "${tmsProductMaster.length}");
     });
   }
 
   _getApplicationStatus(merchantId) async {
-    print("----AllMerchantApplications called$merchantId");
+    if (kDebugMode) print("----AllMerchantApplications called$merchantId");
     var response = await userServices.getMerchantApplicationStatus(merchantId);
     final Map<String, dynamic> data = json.decode(response.body);
     List<dynamic> applicationsFromJson = data['data'] ?? [];
     if (applicationsFromJson.isEmpty) return null;
-    print('response before  return$applicationsFromJson');
+    if (kDebugMode) print('response before  return$applicationsFromJson');
     return data;
   }
 
@@ -801,7 +808,7 @@ class _MyApplicationsState extends State<MyApplications> {
                   ],
                 ),
               ),
-              // const Expanded(child: SizedBox()),
+              const Spacer(),
               IconButton(
                 icon:
                     const Icon(Icons.cancel_outlined, color: Color(0xFF97098D)),
@@ -840,15 +847,13 @@ class _MyApplicationsState extends State<MyApplications> {
                   endChild: Row(
                     children: [
                       const Text(
-                        " Application",
+                        "Application",
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontFamily: 'Mont'),
                       ),
                       const Expanded(child: SizedBox()),
-                      Expanded(
-                        child: statusTextWidget(
-                            title: "Kyc", status: data.kycApproved ?? false),
-                      ),
+                      statusTextWidget(
+                          title: "Kyc", status: data.kycApproved ?? false),
                     ],
                   ),
                 ),
@@ -900,7 +905,7 @@ class _MyApplicationsState extends State<MyApplications> {
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10.0),
                                     ),
-                                    minimumSize: Size(60.0, 30.0),
+                                    minimumSize: const Size(60.0, 30.0),
                                   ),
                                   child: const Text(
                                     "Collect",
@@ -932,12 +937,12 @@ class _MyApplicationsState extends State<MyApplications> {
                   ),
                   endChild: Row(
                     children: [
-                      Text(
+                      const Text(
                         " Onboarding",
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontFamily: 'Mont'),
                       ),
-                      Expanded(child: SizedBox()),
+                      const Expanded(child: SizedBox()),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -987,61 +992,55 @@ class _MyApplicationsState extends State<MyApplications> {
                   endChild: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
+                      const Text(
                         " Deployment",
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontFamily: 'Mont'),
                       ),
-
+                      const Expanded(child: SizedBox()),
                       // if (data.midtidGenerated!)
-                      Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: List.generate(
-                            data.devices!.length,
-                            (index) => SizedBox(
-                              child: data.devices![index].deploymentStatus!
-                                  ? statusTextWidget(
-                                      title: data.devices![index].productName!,
-                                      status: data
-                                          .devices![index].deploymentStatus!)
-                                  : ElevatedButton(
-                                      onPressed: () {
-                                        Navigator.pushNamed(
-                                            context, "DeviceDeploymentScreen",
-                                            arguments: {
-                                              "productId": data
-                                                  .devices![index].productId,
-                                              "packageId": data
-                                                  .devices![index].packageId,
-                                              "merchantId": data
-                                                  .devices![index].merchantId,
-                                              "guid": data.devices![index].guid,
-                                              "productName": data
-                                                  .devices![index].productName,
-                                              "deploymentStatus": data
-                                                  .devices![index]
-                                                  .deploymentStatus,
-                                              "MerchantName": name,
-                                              "phoneNumber": phoneNumber,
-                                            });
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.red,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                        ),
-                                        minimumSize: const Size(60.0, 30.0),
-                                      ),
-                                      child: Text(
-                                        data.devices![index].productName!,
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 13),
-                                      )),
-                            ),
-                          ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(
+                          data.devices!.length,
+                          (index) => data.devices![index].deploymentStatus!
+                              ? statusTextWidget(
+                                  title: data.devices![index].productName!,
+                                  status:
+                                      data.devices![index].deploymentStatus!)
+                              : ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.pushNamed(
+                                        context, "DeviceDeploymentScreen",
+                                        arguments: {
+                                          "productId":
+                                              data.devices![index].productId,
+                                          "packageId":
+                                              data.devices![index].packageId,
+                                          "merchantId":
+                                              data.devices![index].merchantId,
+                                          "guid": data.devices![index].guid,
+                                          "productName":
+                                              data.devices![index].productName,
+                                          "deploymentStatus": data
+                                              .devices![index].deploymentStatus,
+                                          "MerchantName": name,
+                                          "phoneNumber": phoneNumber,
+                                        });
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.red,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                    minimumSize: const Size(60.0, 30.0),
+                                  ),
+                                  child: Text(
+                                    data.devices![index].productName!,
+                                    style: const TextStyle(
+                                        color: Colors.white, fontSize: 13),
+                                  )),
                         ),
                       ),
                       // Container(
@@ -1084,7 +1083,7 @@ class _MyApplicationsState extends State<MyApplications> {
                 const SizedBox(
                   height: 40,
                 ),
-                Column(
+                const Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
@@ -1190,7 +1189,7 @@ class DashboardChart extends StatelessWidget {
           ],
           xValueMapper: (ChartData data, _) => data.category,
           yValueMapper: (ChartData data, _) => data.sales,
-          dataLabelSettings: DataLabelSettings(isVisible: true),
+          dataLabelSettings: const DataLabelSettings(isVisible: true),
           innerRadius: '50%',
           pointColorMapper: (ChartData data, _) => data.color,
           radius: '100%',

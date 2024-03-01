@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:sifr_latest/common_widgets/custom_app_button.dart';
 import 'package:sifr_latest/widgets/app/customAlert.dart';
@@ -27,28 +28,28 @@ class _PaymentPageState extends State<PaymentPage> {
     // TODO: implement initState
     super.initState();
 
-    print(widget.merchantDetails!['merchantId']);
+    if (kDebugMode) print(widget.merchantDetails!['merchantId']);
 
     getMerchantInvoiceDetails(widget.merchantDetails!['merchantId'], 0);
   }
 
   getMerchantInvoiceDetails(merchantId, int count) async {
     invoiceDetails = widget.merchantDetails!['merchantProductDetailsResponse'];
-    print(invoiceDetails);
+    if (kDebugMode) print(invoiceDetails);
 
     setState(() {});
 
-    // print("----AllMerchantApplications called----$merchantId");
+    //if(kDebugMode)print("----AllMerchantApplications called----$merchantId");
     //
     // var response = await userServices.getMerchantInvoiceDetails(merchantId);
     //
     // final Map<String, dynamic> data = json.decode(response.body);
     //
-    // print(data);
+    //if(kDebugMode)print(data);
     //
     // if (data['totalAmount'] != null) {
     //   invoiceDetails = data;
-    //   print(invoiceDetails);
+    //  if(kDebugMode)print(invoiceDetails);
     //   setState(() {});
     //   return;
     // }

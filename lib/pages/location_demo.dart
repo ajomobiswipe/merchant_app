@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -49,7 +50,7 @@ class _LocationPageState extends State<LocationPage> {
       setState(() => _currentPosition = position);
       //_getAddressFromLatLng(_currentPosition!);
     }).catchError((e) {
-      debugPrint(e);
+      if (kDebugMode) print(e);
     });
   }
 

@@ -566,7 +566,7 @@ class _AddMoneyToWalletState extends State<AddMoneyToWallet> {
       cardData.cvv = await Validators.encrypt(
           userCardInfo[selectedCardIndex]['cvv'].toString());
     }
-    // print(jsonEncode(addMoneyModel));
+    //if(kDebugMode)print(jsonEncode(addMoneyModel));
     accountCardService.addMoneyToWallet(addMoneyModel).then((response) {
       var jsonDecodeData = json.decode(response.body);
       if (response.statusCode == 200 || response.statusCode == 201) {

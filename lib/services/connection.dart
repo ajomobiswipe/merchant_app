@@ -30,7 +30,7 @@ class Connection {
     SecurityContext sc = SecurityContext(withTrustedRoots: false);
     sc.setTrustedCertificatesBytes(sslCert1.buffer.asInt8List());
     if (kDebugMode) {
-      // print(sc);
+      //if(kDebugMode)print(sc);
     }
     return sc;
   }
@@ -98,7 +98,8 @@ class Connection {
       navigatorKey.currentState?.pushReplacementNamed('login');
       clearStorage();
     } else {
-      print("connection get response code" + res.statusCode.toString());
+      if (kDebugMode)
+        print("connection get response code" + res.statusCode.toString());
       return res;
     }
   }
@@ -134,7 +135,7 @@ class Connection {
   * METHOD: POST
   * Params: url and requestData
   */
-  post(url, requestData,{int? timeOutSeconds}) async {
+  post(url, requestData, {int? timeOutSeconds}) async {
     String token = boxStorage.getToken();
     final header = {
       'Authorization': 'Bearer $token',
@@ -142,7 +143,7 @@ class Connection {
       'Content-Type': 'application/json'
     };
 
-    // print(token);
+    //if(kDebugMode)print(token);
     // var res = await http.post(Uri.parse(url),
     //     body: jsonEncode(requestData), headers: header);
 
@@ -152,8 +153,8 @@ class Connection {
     IOClient ioClient = IOClient(client);
     var res = await ioClient
         .post(Uri.parse(url), body: jsonEncode(requestData), headers: header)
-        .timeout(Duration(seconds: timeOutSeconds??10));
-    // print(res.body);
+        .timeout(Duration(seconds: timeOutSeconds ?? 10));
+    //if(kDebugMode)print(res.body);
 
     if (res.statusCode == 401) {
       alertService.errorToast(Constants.unauthorized);

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:geolocator/geolocator.dart';
@@ -55,12 +56,12 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
     productDeploymentReq.productId = widget.deviceInfo!["productId"];
     productDeploymentReq.packageId = widget.deviceInfo!["packageId"];
     productDeploymentReq.productSerialNo = deviceSerialNumberCntrl.text;
-    // print(productDeploymentReq.toJson());
+    //if(kDebugMode)print(productDeploymentReq.toJson());
     userServices
         .deviceDeployment(productDeploymentReq, deviceAtStoreImage.text,
             testTransactionChargeSlipImage.text)
         .then((response) async {
-      print(response.body);
+      if (kDebugMode) print(response.body);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         var decodeData = jsonDecode(response.body);
@@ -398,7 +399,7 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
                       child: CustomAppButton(
                         title: "Deploy",
                         onPressed: () {
-                          print(widget.deviceInfo);
+                          if (kDebugMode) print(widget.deviceInfo);
                           if (_formKey.currentState!.validate()) {
                             if (testTransactionChargeSlipImage.text != '' &&
                                 deviceAtStoreImage.text != '') {

@@ -8,6 +8,7 @@
 // Dependencies or Plugins - Models - Services - Global Functions
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html_to_pdf/flutter_html_to_pdf.dart';
 import 'package:intl/intl.dart';
@@ -40,7 +41,7 @@ class _SuccessReceiptForDemoState extends State<SuccessReceiptForDemo> {
     // var data = widget.receipt;
     return WillPopScope(
         onWillPop: () async {
-          debugPrint("Will pop");
+          if (kDebugMode) print("Will pop");
           Navigator.pushNamedAndRemoveUntil(context, 'home', (route) => false);
           return true;
         },

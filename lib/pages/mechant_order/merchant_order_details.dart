@@ -1,5 +1,4 @@
-
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:sifr_latest/common_widgets/custom_app_button.dart';
 import 'package:sifr_latest/common_widgets/form_title_widget.dart';
@@ -39,7 +38,7 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
   String selectedPackage = '';
   String selectedProduct = '';
 
-  bool expansionOpened=true;
+  bool expansionOpened = true;
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -333,7 +332,7 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                     //     },
                     //     onSaved: (value) {},
                     //     validator: (value) {
-                    //       print('value12345563545$value');
+                    //      if(kDebugMode)print('value12345563545$value');
 
                     //       if (value == null) {
                     //         return 'Please Select Quantity!';
@@ -358,8 +357,8 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                               product['productId'] ==
                               selectedProductId)['productName'];
 
-                      print('package$package');
-                      print('Product$Product');
+                      if (kDebugMode) print('package$package');
+                      if (kDebugMode) print('Product$Product');
 
                       SelectedProduct newItem = SelectedProduct(
                         productName: Product,
@@ -402,19 +401,19 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                         selectedProductQuantity = null;
                         // selectedQuantity = '';
                         selectedProductPackages = [];
-                        print(widget.selectedItems.length);
+                        if (kDebugMode) print(widget.selectedItems.length);
                         if (widget.selectedItems.isEmpty) {
                           widget.selectedItems.add(newItem);
                         } else {
                           for (var item in widget.selectedItems) {
                             if (item.packagetId == newItem.packagetId &&
                                 item.productId == newItem.productId) {
-                              print("duplicate found");
+                              if (kDebugMode) print("duplicate found");
                               alertService.error("Item already exist");
                               return;
                             }
                           }
-                          print("executed");
+                          if (kDebugMode) print("executed");
                           widget.selectedItems.add(newItem);
                         }
                       });
@@ -485,100 +484,97 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                 Container(
                   color: AppColors.kTileColor,
                   child: Theme(
-                    data:
-                        ThemeData().copyWith(dividerColor: Colors.transparent,listTileTheme: const ListTileThemeData(contentPadding: EdgeInsets.symmetric(horizontal: 10))),
+                    data: ThemeData().copyWith(
+                        dividerColor: Colors.transparent,
+                        listTileTheme: const ListTileThemeData(
+                            contentPadding:
+                                EdgeInsets.symmetric(horizontal: 10))),
                     child: ExpansionTile(
-                      onExpansionChanged: (boolValue){
-                        expansionOpened=boolValue;
-                        setState(() {
-
-                        });
+                      onExpansionChanged: (boolValue) {
+                        expansionOpened = boolValue;
+                        setState(() {});
                       },
                       initiallyExpanded: true,
                       title: CustomTextWidget(
-                        text: !expansionOpened?"View Complete product Summary":"product Summary",
+                        text: !expansionOpened
+                            ? "View Complete product Summary"
+                            : "product Summary",
                         color: Colors.grey.shade600,
                         size: 10,
                       ),
                       children: [
-
-                         Column(
-                          children:
-                            widget.selectedItems.map((item) {
-
-                              return Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 10),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                      child: CustomTextWidget(
-                                        text: item.package,
-                                        size: 11,
-                                        fontWeight: FontWeight.w900,
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: CustomTextWidget(
-                                        text: item.productName,
-                                        size: 11,
-                                        fontWeight: FontWeight.w900,
-                                      ),
-                                    ),
-                                    CustomTextWidget(
-                                        text: '${item.quantity}',
-                                        size: 12,
-                                        fontWeight: FontWeight.w900,
-                                      ),
-
-                                    IconButton(
-                                        icon: const Icon(
-                                          Icons.cancel_outlined,
-                                          color: Colors.red,
-                                        ),
-                                        onPressed: () {
-                                          setState(() {
-                                            widget.selectedItems.remove(item);
-                                          });
-                                        },
-                                      ),
-
-                                  ],
+                        Column(
+                            children: widget.selectedItems.map((item) {
+                          return Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: CustomTextWidget(
+                                    text: item.package,
+                                    size: 11,
+                                    fontWeight: FontWeight.w900,
+                                  ),
                                 ),
-                              );
+                                Expanded(
+                                  child: CustomTextWidget(
+                                    text: item.productName,
+                                    size: 11,
+                                    fontWeight: FontWeight.w900,
+                                  ),
+                                ),
+                                CustomTextWidget(
+                                  text: '${item.quantity}',
+                                  size: 12,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.cancel_outlined,
+                                    color: Colors.red,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      widget.selectedItems.remove(item);
+                                    });
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
 
-                              // return DataRow(cells: [
-                              //   DataCell(CustomTextWidget(
-                              //     text: item.package,
-                              //     size: 11,
-                              //     fontWeight: FontWeight.w900,
-                              //   )),
-                              //   DataCell(CustomTextWidget(
-                              //     text: "${item.productName}+ 1999+499",
-                              //     size: 11,
-                              //     fontWeight: FontWeight.w900,
-                              //   )),
-                              //   DataCell(CustomTextWidget(
-                              //     text: ' - ${item.quantity}',
-                              //     size: 12,
-                              //     fontWeight: FontWeight.w900,
-                              //   )),
-                              //   DataCell(
-                              //     IconButton(
-                              //       icon: const Icon(
-                              //         Icons.cancel_outlined,
-                              //         color: Colors.red,
-                              //       ),
-                              //       onPressed: () {
-                              //         setState(() {
-                              //           widget.selectedItems.remove(item);
-                              //         });
-                              //       },
-                              //     ),
-                              //   ),
-                              // ]);
-                            }).toList()
-                        ),
+                          // return DataRow(cells: [
+                          //   DataCell(CustomTextWidget(
+                          //     text: item.package,
+                          //     size: 11,
+                          //     fontWeight: FontWeight.w900,
+                          //   )),
+                          //   DataCell(CustomTextWidget(
+                          //     text: "${item.productName}+ 1999+499",
+                          //     size: 11,
+                          //     fontWeight: FontWeight.w900,
+                          //   )),
+                          //   DataCell(CustomTextWidget(
+                          //     text: ' - ${item.quantity}',
+                          //     size: 12,
+                          //     fontWeight: FontWeight.w900,
+                          //   )),
+                          //   DataCell(
+                          //     IconButton(
+                          //       icon: const Icon(
+                          //         Icons.cancel_outlined,
+                          //         color: Colors.red,
+                          //       ),
+                          //       onPressed: () {
+                          //         setState(() {
+                          //           widget.selectedItems.remove(item);
+                          //         });
+                          //       },
+                          //     ),
+                          //   ),
+                          // ]);
+                        }).toList()),
 
                         // DataTable(
                         //   headingRowHeight: 0,
@@ -665,9 +661,10 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                     if (widget.selectedItems.isEmpty) {
                       AlertService alert = AlertService();
                       alert.error("please add a product");
-                      print("add atlest one product");
+                      if (kDebugMode) print("add atlest one product");
                     } else {
-                      print("no of products: ${widget.selectedItems.length}");
+                      if (kDebugMode)
+                        print("no of products: ${widget.selectedItems.length}");
                       widget.orderNext();
                     }
                   },

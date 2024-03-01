@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -108,7 +109,7 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
       widget.merchantStoreInfoReq.currentCountry = "356";
       //_getAddressFromLatLng(_currentPosition!);
     }).catchError((e) {
-      // debugPrint(e);
+      //if(kDebugMode)print(e);
     });
   }
 
@@ -425,7 +426,7 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                 // cityList.map((e) => e['citName']).toList(),
                 onChanged: (value) {
                   setState(() {
-                    print(widget.storeStatesList);
+                    if (kDebugMode) print(widget.storeStatesList);
 
                     widget.selectedStoreCity.text = '';
                     widget.selectedStoreState.text = value;
@@ -450,7 +451,8 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                   //         .toList())[0]['stateId']
                   //     .toString();
 
-                  print(widget.merchantStoreInfoReq.currentState);
+                  if (kDebugMode)
+                    print(widget.merchantStoreInfoReq.currentState);
                 },
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -491,10 +493,11 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
 
                 //cityList.map((e) => e['citName']).toList(),
                 onChanged: (value) {
-                  // print(citysList[value]);
+                  //if(kDebugMode)print(citysList[value]);
                   setState(() {
-                    print(widget.storeCitysList);
-                    print(widget.merchantStoreInfoReq.currentState);
+                    if (kDebugMode) print(widget.storeCitysList);
+                    if (kDebugMode)
+                      print(widget.merchantStoreInfoReq.currentState);
 
                     widget.selectedStoreCity.text = value;
 
@@ -515,7 +518,8 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                           .toList())[0]['cityId']
                       .toString();
 
-                  print(widget.merchantStoreInfoReq.currentCity);
+                  if (kDebugMode)
+                    print(widget.merchantStoreInfoReq.currentCity);
                 },
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -582,7 +586,8 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                           widget.next();
                         });
                       }
-                      print(jsonEncode(widget.merchantStoreInfoReq.toJson()));
+                      if (kDebugMode)
+                        print(jsonEncode(widget.merchantStoreInfoReq.toJson()));
                     }
                   },
                 ),

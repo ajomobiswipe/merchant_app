@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import '../config/endpoints.dart';
 
 List<Map<String, dynamic>> emvFields = [
@@ -19,7 +21,7 @@ List<Map<String, dynamic>> emvFields = [
 ];
 
 Future getDataFromScanData(String? scanData) async {
-  print(scanData);
+  if (kDebugMode) print(scanData);
 
   int? index54 = scanData?.indexOf("54"); // To get Amount
   int? index26 = scanData?.indexOf("26"); // To get account number
@@ -39,7 +41,7 @@ Future getDataFromScanData(String? scanData) async {
 
     amount = scanData!.substring(index54! + 4, (index54! + 4) + numberOfDigits);
 
-    // print(amount);
+    //if(kDebugMode)print(amount);
   }
 
   if (index26 != -1) {
@@ -52,7 +54,7 @@ Future getDataFromScanData(String? scanData) async {
     accountInfo =
         scanData!.substring(index54! + 4, (index54! + 4) + numberOfDigits);
 
-    // print(accountInfo);
+    //if(kDebugMode)print(accountInfo);
   }
 
   if (index62 != -1) {
@@ -66,9 +68,9 @@ Future getDataFromScanData(String? scanData) async {
 
     if (startIndex != -1 && endIndex != -1 && startIndex != endIndex) {
       qrCodeId = scanData?.substring(startIndex! + 1, endIndex);
-      print("Extracted qrcodeId: $qrCodeId");
+      if (kDebugMode) print("Extracted qrcodeId: $qrCodeId");
     } else {
-      print("No content found between delimiters after '62'.");
+      if (kDebugMode) print("No content found between delimiters after '62'.");
     }
 
     int indexOfTarget = index62! + 8;
@@ -76,13 +78,13 @@ Future getDataFromScanData(String? scanData) async {
 
     if (indexOfHash != -1 && indexOfTarget < indexOfHash!) {
       merchantTag = scanData?.substring(indexOfTarget, indexOfHash);
-      print("Extracted merchantTag: $merchantTag");
+      if (kDebugMode) print("Extracted merchantTag: $merchantTag");
     } else {
-      print("No '#' found or pattern doesn't match.");
+      if (kDebugMode) print("No '#' found or pattern doesn't match.");
     }
   }
 
-  // print('amount$amount');
+  //if(kDebugMode)print('amount$amount');
 
   var requestBody = {
     "payment": {

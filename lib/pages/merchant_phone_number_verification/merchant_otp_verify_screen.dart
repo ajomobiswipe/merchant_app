@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sifr_latest/common_widgets/app_text_form_feild.dart';
@@ -52,7 +53,7 @@ class _MerchantOTPVerifyScreenState extends State<MerchantOTPVerifyScreen> {
                   ),
                   Text(
                     "My Profile",
-                    style: TextStyle(color: Colors.black87,fontFamily: 'Mont'),
+                    style: TextStyle(color: Colors.black87, fontFamily: 'Mont'),
                   )
                 ],
               ),
@@ -72,7 +73,7 @@ class _MerchantOTPVerifyScreenState extends State<MerchantOTPVerifyScreen> {
                   ),
                   Text(
                     "My Applications",
-                    style: TextStyle(color: Colors.black87,fontFamily: 'Mont'),
+                    style: TextStyle(color: Colors.black87, fontFamily: 'Mont'),
                   ),
                 ],
               ),
@@ -107,7 +108,7 @@ class _MerchantOTPVerifyScreenState extends State<MerchantOTPVerifyScreen> {
                   ),
                   Text(
                     "Log Out",
-                    style: TextStyle(color: Colors.black87,fontFamily: 'Mont'),
+                    style: TextStyle(color: Colors.black87, fontFamily: 'Mont'),
                   ),
                 ],
               ),
@@ -150,7 +151,10 @@ class _MerchantOTPVerifyScreenState extends State<MerchantOTPVerifyScreen> {
               ),
               const Padding(
                 padding: EdgeInsets.only(top: 8.0),
-                child: Text('Vinay',style: TextStyle(fontFamily: 'Mont'),),
+                child: Text(
+                  'Vinay',
+                  style: TextStyle(fontFamily: 'Mont'),
+                ),
               )
             ],
           ),
@@ -215,9 +219,8 @@ class _MerchantOTPVerifyScreenState extends State<MerchantOTPVerifyScreen> {
             const SizedBox(
               height: 20,
             ),
-             Row(
+            Row(
               children: [
-
                 const Expanded(
                   child: MerchantRegnTypeSelector(
                     iconPath: "assets/app_icons/new_merchant.png",
@@ -227,18 +230,14 @@ class _MerchantOTPVerifyScreenState extends State<MerchantOTPVerifyScreen> {
                     titleColor: Colors.black54,
                   ),
                 ),
-
-                SizedBox(width:MediaQuery.of(context).size.width*.025),
-
+                SizedBox(width: MediaQuery.of(context).size.width * .025),
                 const Expanded(
                   child: MerchantRegnTypeSelector(
                     iconPath: "assets/app_icons/existing_merchant.png",
                     title: 'Existing\nMerchant',
-
                     titleColor: Colors.black54,
                   ),
                 ),
-
               ],
             ),
             const SizedBox(
@@ -257,7 +256,7 @@ class _MerchantOTPVerifyScreenState extends State<MerchantOTPVerifyScreen> {
             ),
             CustomOtpWidget(
               onCompleted: (pin) {
-                print('onCompleted: $pin');
+                if (kDebugMode) print('onCompleted: $pin');
               },
               phonemumbercontroller: _mobileNoController,
               validator: (pin) {

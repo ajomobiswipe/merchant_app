@@ -85,7 +85,7 @@ class _QRTransactionListState extends State<QRTransactionList> {
           _isLoadMoreRunning = false;
         });
         if (kDebugMode) {
-          // print('Something went wrong!');
+          //if(kDebugMode)print('Something went wrong!');
         }
       }
     }
@@ -99,7 +99,7 @@ class _QRTransactionListState extends State<QRTransactionList> {
       // var req = {"custId": customerId};
       var req = {"qrTransaction": true};
       transactionServices.getAllQRTransaction(req, _page).then((response) {
-        print(response.body);
+        if (kDebugMode) print(response.body);
 
         if (response.statusCode == 200 || response.statusCode == 201) {
           var decodeData = json.decode(response.body);
@@ -120,7 +120,7 @@ class _QRTransactionListState extends State<QRTransactionList> {
         _isFirstLoadRunning = false;
       });
       if (kDebugMode) {
-        // print('Something went wrong');
+        //if(kDebugMode)print('Something went wrong');
       }
     }
   }
@@ -178,7 +178,7 @@ class _QRTransactionListState extends State<QRTransactionList> {
     transactionServices.checkRefundStatus(paymentId).then((response) {
       var result = jsonDecode(response.body);
 
-      if (result['status'] == "EFF" && result['responseMessage']!=null) {
+      if (result['status'] == "EFF" && result['responseMessage'] != null) {
         final snackBar = SnackBar(
           content: Text('${result['responseMessage']}'),
         );
@@ -186,7 +186,6 @@ class _QRTransactionListState extends State<QRTransactionList> {
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
         return;
       }
-
 
       var refundObject = {
         "refund": {
@@ -205,7 +204,7 @@ class _QRTransactionListState extends State<QRTransactionList> {
       };
 
       transactionServices.refundAction(paymentId, refundObject).then((value) {
-        var responseBody=jsonDecode(value.body);
+        var responseBody = jsonDecode(value.body);
         final snackBar = SnackBar(
           content: Text('${responseBody['responseMessage']}'),
         );
@@ -369,8 +368,8 @@ class _QRTransactionListState extends State<QRTransactionList> {
                                               .textTheme
                                               .titleLarge
                                               ?.copyWith(
-                                              fontWeight: FontWeight.normal,
-                                              fontSize: 16),
+                                                  fontWeight: FontWeight.normal,
+                                                  fontSize: 16),
                                         ),
 
                                         subtitle: Text(

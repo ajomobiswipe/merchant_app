@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pinput/pinput.dart';
@@ -134,7 +135,7 @@ class _CustomOtpWidgetState extends State<CustomOtpWidget> {
             },
 
             // validator: (value) {
-            //   print(value);
+            //  if(kDebugMode)print(value);
             //   return '';
             // },
           ),
@@ -190,17 +191,17 @@ class _CustomOtpWidgetState extends State<CustomOtpWidget> {
                   separatorBuilder: (index) => const SizedBox(width: 8),
                   validator: widget.validator,
                   // onClipboardFound: (value) {
-                  //   debugPrint('onClipboardFound: $value');
+                  //  if(kDebugMode)print('onClipboardFound: $value');
                   //   pinController.setText(value);
                   // },
                   hapticFeedbackType: HapticFeedbackType.lightImpact,
                   onCompleted: widget.onCompleted,
 
                   // (pin) {
-                  //   debugPrint('onCompleted: $pin');
+                  //  if(kDebugMode)print('onCompleted: $pin');
                   // },
                   onChanged: (value) {
-                    debugPrint('onChanged: $value');
+                    if (kDebugMode) print('onChanged: $value');
                   },
                   cursor: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -255,7 +256,7 @@ class _CustomOtpWidgetState extends State<CustomOtpWidget> {
                     );
                   }
 
-                  print(pinController.text);
+                  if (kDebugMode) print(pinController.text);
                   // Navigator.pushNamed(context, 'merchantOnboarding');
                   // Navigator.push(context, route);
                 },

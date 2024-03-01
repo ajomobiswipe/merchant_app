@@ -52,16 +52,16 @@ class _WithdrawConfirmationState extends State<WithdrawConfirmation> {
     // getScannedData(widget.scanData);
 
     // var scanData = jsonDecode(widget.scanData);
-    // print(scanData.runtimeType);
-    // print('scanData$scanData');
+    //if(kDebugMode)print(scanData.runtimeType);
+    //if(kDebugMode)print('scanData$scanData');
     // if (scanData.runtimeType == "String") {
     //   alertWidget.failure(context, "Error", "Invalid QR Code!");
     //   Navigator.pushReplacementNamed(context, 'home');
     // }
     // setState(() {
-    //   print("-----------------");
-    //   print(scanData);
-    //   print("-----------------");
+    //  if(kDebugMode)print("-----------------");
+    //  if(kDebugMode)print(scanData);
+    //  if(kDebugMode)print("-----------------");
     //   if (scanData['qrData'].toString() != null) {
     //     description.text = scanData['transaction'].toString();
     //     currency = scanData['qrData'].toString().split('#')[4];
@@ -90,7 +90,7 @@ class _WithdrawConfirmationState extends State<WithdrawConfirmation> {
 
   //   var getQrCodeStatusResponseValue = jsonDecode(getQrCodeStatusResponse.body);
 
-  //   print(getQrCodeStatusResponseValue['paymentId']);
+  //  if(kDebugMode)print(getQrCodeStatusResponseValue['paymentId']);
 
   //   if (getQrCodeStatusResponseValue['qrCodeRequestStatus'] != 'ATT') {
   //     Future.delayed(const Duration(seconds: 1), () {
@@ -163,9 +163,9 @@ class _WithdrawConfirmationState extends State<WithdrawConfirmation> {
   //   }
 
   //   // setState(() {
-  //   //   print("-----------------");
-  //   //   print(scanData);
-  //   //   print("-----------------");
+  //   //  if(kDebugMode)print("-----------------");
+  //   //  if(kDebugMode)print(scanData);
+  //   //  if(kDebugMode)print("-----------------");
   //   //
   //   //   if (scanData['qrData'].toString() != null) {
   //   //     description.text = scanData['transaction'].toString();

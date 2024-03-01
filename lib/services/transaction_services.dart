@@ -8,6 +8,7 @@
 // Dependencies or Plugins - Models - Services - Global Functions
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:sifr_latest/config/constants.dart';
 import 'package:sifr_latest/models/TransactionRequest.dart';
 import '../config/endpoints.dart';
@@ -38,24 +39,22 @@ class TransactionServices {
     var url = '${EndPoints.getQrCodeStatusApi}?qrCodeId=$qrCodeId';
     var response = await connection.get(url);
 
-    // print('response$response');
+    //if(kDebugMode)print('response$response');
     return response;
   }
 
   Future deleteQr(String qrCodeId, String qrCodeTransactionId) async {
-
     Connection connection = Connection();
     // var url = EndPoints.baseApi9502 + EndPoints.generateQrCode;
 
     var url =
         '${EndPoints.deleteQrCodeAPI}?qrCodeId=$qrCodeId&qrCodeTransactionId=$qrCodeTransactionId';
 
-
     // var url = "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/deleteQRCode/12345/AA1234567890/UB776WH";
 
     var response = await connection.delete(url);
 
-    print('response${response.body}');
+    if (kDebugMode) print('response${response.body}');
     return response;
   }
 
@@ -69,7 +68,7 @@ class TransactionServices {
     //     "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/verifyReversal";
     var response = await connection.post(url, requestModel);
 
-    // print('response$response');
+    //if(kDebugMode)print('response$response');
     return response;
   }
 
@@ -83,7 +82,7 @@ class TransactionServices {
     //     "http://10.0.38.60:8080/NanoSmartBanking/v1/qrPayment/verifyReversal";
     var response = await connection.putWithRequestBody(url, requestBody);
 
-    // print('response$response');
+    //if(kDebugMode)print('response$response');
     return response;
   }
 
@@ -147,15 +146,11 @@ class TransactionServices {
   * to pass token in Headers
   */
   loadAllNotification(size1, String custId) async {
-
     Connection connection = Connection();
     var size = '?size=$size1';
     var url =
         '${EndPoints.baseApi9503}${EndPoints.notificationListing}${Constants.instId}/$custId$size';
     var response = await connection.get(url);
-
-
-
 
     return response;
   }
@@ -182,7 +177,7 @@ class TransactionServices {
   * to pass token in Headers
   */
   cashOut(requestModel) async {
-    // print(requestModel);
+    //if(kDebugMode)print(requestModel);
 
     Connection connection = Connection();
     var url = EndPoints.baseApi9503 + EndPoints.cashOut;
@@ -190,8 +185,8 @@ class TransactionServices {
     return response;
   }
 
-  refundAction(paymentId,requestBody) async {
-    // print(requestModel);
+  refundAction(paymentId, requestBody) async {
+    //if(kDebugMode)print(requestModel);
 
     Connection connection = Connection();
     var url = '${EndPoints.refundApi}/$paymentId';

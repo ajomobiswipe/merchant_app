@@ -9,6 +9,7 @@
 import 'dart:async';
 
 import 'package:easy_splash_screen/easy_splash_screen.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 // import 'package:freerasp/freerasp.dart';
@@ -53,7 +54,7 @@ class _SplashScreenState extends State<SplashScreen> {
   // Future<void> isRooted() async {
   //   final callback = ThreatCallback(
   //     onPrivilegedAccess: () {
-  //       print("Root access");
+  //      if(kDebugMode)print("Root access");
   //       alertService.errorToast("Debug access");
   //       if (Platform.isAndroid) {
   //         // SystemNavigator.pop();
@@ -64,7 +65,7 @@ class _SplashScreenState extends State<SplashScreen> {
   //       }
   //     },
   //     onHooks: () {
-  //       print("Hook access");
+  //      if(kDebugMode)print("Hook access");
   //       // customAlert.rootExits(context);
   //       alertService.errorToast("Debug access");
   //       if (Platform.isAndroid) {
@@ -76,7 +77,7 @@ class _SplashScreenState extends State<SplashScreen> {
   //       }
   //     },
   //     onDebug: () {
-  //       print("Debug access");
+  //      if(kDebugMode)print("Debug access");
   //       // customAlert.rootExits(context);
   //       alertService.errorToast("Debug access");
   //       if (Platform.isAndroid) {
@@ -93,7 +94,7 @@ class _SplashScreenState extends State<SplashScreen> {
   // }
 
   Future getValidationData() async {
-    debugPrint('--- Splash Screen ---');
+    if (kDebugMode) print('--- Splash Screen ---');
     final SharedPreferences sharedPreferences =
         await SharedPreferences.getInstance();
     bool? isLogged = sharedPreferences.getBool('isLogged') ?? false;
@@ -171,7 +172,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   dynamicNavigation() async {
-    debugPrint("--- Dynamic Navigation ---");
+    if (kDebugMode) print("--- Dynamic Navigation ---");
     return isLoggedIn == false ? const UserTypeSelection() : const HomePage();
   }
 }

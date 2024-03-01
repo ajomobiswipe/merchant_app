@@ -338,7 +338,7 @@ class _ProfilePageState extends State<ProfilePage> {
   List<Widget> merchant() {
     var du = mDetails[0];
     var docArray = Validators.urlDecrypt(du['merchantDocs']).split(',');
-    // print(docArray);
+    //if(kDebugMode)print(docArray);
     return [
       const Align(
         alignment: Alignment.centerLeft,
@@ -451,7 +451,6 @@ class _ProfilePageState extends State<ProfilePage> {
           data.clear();
           data = [response['customer']];
           mDetails = [response];
-
 
           if (data[0]['dob'] != null) {
             var a = DateFormat('yyyy-MM-dd').parse(data[0]['dob'].toString());

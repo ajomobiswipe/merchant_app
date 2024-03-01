@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:badges/badges.dart' as badge;
 import 'package:email_validator/email_validator.dart';
+import 'package:flutter/foundation.dart';
 
 // import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/gestures.dart';
@@ -374,7 +375,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
   bool isServiceWaiting = false;
 
   Future _sendTermsAndConditionsToMail() async {
-    print(acceptAggrement);
+    if (kDebugMode) print(acceptAggrement);
 
     // if (_debounce?.isActive ?? false) _debounce!.cancel();
 
@@ -387,13 +388,13 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
     final data = json.decode(response.body);
 
-    print(data);
+    if (kDebugMode) print(data);
 
     if (data['responseCode'] != '00') {
       return;
     }
 
-    print(data);
+    if (kDebugMode) print(data);
 
     // _debounce = Timer(const Duration(milliseconds: 1000), () {
     // ScaffoldMessenger.of(context).showSnackBar(
@@ -408,7 +409,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
   }
 
   Future _sendServiceAgreementsToMail() async {
-    print(acceptTnc);
+    if (kDebugMode) print(acceptTnc);
 
     // if (_debounce?.isActive ?? false) _debounce!.cancel();
 
@@ -495,7 +496,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
     // _timerForTerms = Timer.periodic(const Duration(seconds: 10), (timer) {
     //   // Perform your action here
     //
-    //   print('hit');
+    //  if(kDebugMode)print('hit');
     // });
   }
 
@@ -518,7 +519,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
       }
 
       Future.delayed(const Duration(seconds: 10), () {
-        print('hellooo');
+        if (kDebugMode) print('hellooo');
         checkForServiceAcceptance(count + 1);
       });
     }
@@ -629,15 +630,15 @@ class _MerchantSignupState extends State<MerchantSignup> {
     int? countryValue = dataMap[countryKey];
 
     if (countryValue != null) {
-      print('$countryKey: $countryValue');
+      if (kDebugMode) print('$countryKey: $countryValue');
     } else {
-      print('Country not found');
+      if (kDebugMode) print('Country not found');
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    print(tmsProductMasterlist);
+    if (kDebugMode) print(tmsProductMasterlist);
 
     return PopScope(
       onPopInvoked: (didPop) => _onWillPop(context),
@@ -758,7 +759,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
     };
 
     final String jsonString = json.encode(merchantProductInfoReq);
-    print(jsonString);
+    if (kDebugMode) print(jsonString);
     setState(() {
       position = 1;
     });
@@ -785,7 +786,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                     position--;
                   });
                 } else {
-                  print("else executed");
+                  if (kDebugMode) print("else executed");
                   Navigator.pop(context);
                 }
               },
@@ -1062,6 +1063,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
               autovalidateMode: AutovalidateMode.onUserInteraction,
               isDense: true,
               isExpanded: true,
+              icon: const Icon(Icons.keyboard_arrow_down,
+                  color: AppColors.kPrimaryColor),
               decoration: commonInputDecoration(Icons.maps_home_work_outlined,
                       hintText: "Select merchant business type")
                   .copyWith(
@@ -1085,7 +1088,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               }).toList(),
               onChanged: (newValue) {
                 setState(() {
-                  print(newValue['businessType'].runtimeType);
+                  if (kDebugMode) print(newValue['businessType'].runtimeType);
                   businessType = newValue;
                   companyDetailsInforeq.businessTypeId =
                       newValue['businessType'].runtimeType == String
@@ -1140,7 +1143,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
               onPressed: () async {
                 personalFormKey.currentState!.save();
                 if (personalFormKey.currentState!.validate()) {
-                  print(jsonEncode(merchantPersonalReq.toJson()));
+                  if (kDebugMode)
+                    print(jsonEncode(merchantPersonalReq.toJson()));
                   if (!isEmailVerified) {
                     alertWidget.error("please verify your Email ");
                   } else {
@@ -1229,6 +1233,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
               autovalidateMode: AutovalidateMode.onUserInteraction,
               isDense: true,
               isExpanded: true,
+              icon: const Icon(Icons.keyboard_arrow_down,
+                  color: AppColors.kPrimaryColor),
               decoration: commonInputDecoration(Icons.location_city_outlined,
                       hintText: "Merchant Business category")
                   .copyWith(
@@ -1254,9 +1260,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
               onChanged: (newValue) {
                 setState(() {
                   selectedBusinessCategory = newValue;
-                  print(selectedBusinessCategory['mccGroupId']);
+                  if (kDebugMode) print(selectedBusinessCategory['mccGroupId']);
                   selectedBusinessSubCategory = null;
-                  print(selectedBusinessSubCategory);
+                  if (kDebugMode) print(selectedBusinessSubCategory);
                 });
               },
               validator: (value) {
@@ -1342,6 +1348,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                               fontSize: 13,
                               color: Colors.black.withOpacity(0.25))),
               value: selectedBusinessSubCategory,
+              icon: const Icon(Icons.keyboard_arrow_down,
+                  color: AppColors.kPrimaryColor),
               items: selectedBusinessCategory != null
                   ? merchantBusinessSubCategory
                       .where((item) =>
@@ -1451,6 +1459,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                               fontSize: 13,
                               color: Colors.black.withOpacity(0.25))),
               value: selectedBussinesTurnOver,
+              icon: const Icon(Icons.keyboard_arrow_down,
+                  color: AppColors.kPrimaryColor),
               items:
                   businessTurnoverList.map<DropdownMenuItem>((dynamic value) {
                 return DropdownMenuItem(
@@ -1470,7 +1480,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   mdrType = null;
                   mdrSummaryList = [];
 
-                  print(companyDetailsInforeq.annualTurnOver);
+                  if (kDebugMode) print(companyDetailsInforeq.annualTurnOver);
                 });
               },
               validator: (value) {
@@ -1538,7 +1548,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               },
               onChanged: (String value) {},
               onSaved: (value) {
-                print(value);
+                if (kDebugMode) print(value);
                 companyDetailsInforeq.merchantAddress = value;
               },
               onFieldSubmitted: (value) {
@@ -1610,11 +1620,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
                       .where((element) => element['stateName'] == value)
                       .toList())[0]['stateId'];
 
-                  print(selectedBusinessStateId);
+                  if (kDebugMode) print(selectedBusinessStateId);
 
                   companyDetailsInforeq.stateId = selectedBusinessStateId;
 
-                  print(merchantPersonalReq.currentState);
+                  if (kDebugMode) print(merchantPersonalReq.currentState);
 
                   // String stateString=;
                 });
@@ -1670,7 +1680,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               //cityList.map((e) => e['citName']).toList(),
 
               onChanged: (value) {
-                print(value);
+                if (kDebugMode) print(value);
                 setState(() {
                   selectedCity = value;
 
@@ -1678,11 +1688,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
                       .where((element) => element['cityName'] == value)
                       .toList())[0]['cityId'];
 
-                  print(selectedBusinessCityId);
+                  if (kDebugMode) print(selectedBusinessCityId);
 
                   companyDetailsInforeq.cityCode = selectedBusinessCityId;
 
-                  print(selectedBusinessCityId);
+                  if (kDebugMode) print(selectedBusinessCityId);
                 });
               },
 
@@ -1745,7 +1755,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
                 personalFormKey.currentState!.save();
                 if (personalFormKey.currentState!.validate()) {
-                  print(companyDetailsInforeq.toJson());
+                  if (kDebugMode) print(companyDetailsInforeq.toJson());
                   setState(() {
                     position++;
                     currTabPosition = 2;
@@ -1859,12 +1869,12 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
               // suffixIconOnPressed: () {
               //   if (_merchantAddharController.text.length >= 12) {
-              //     print("clicked");
+              //    if(kDebugMode)print("clicked");
               //     if (showaddharverify) {
               //       sendAddhaarOtp();
-              //       print("validate");
+              //      if(kDebugMode)print("validate");
               //     } else {
-              //       print("change");
+              //      if(kDebugMode)print("change");
 
               //       setState(() {
               //         showaddharverify = true;
@@ -1885,12 +1895,12 @@ class _MerchantSignupState extends State<MerchantSignup> {
               //     ? TextButton(
               //         onPressed: () {
               //           if (_merchantAddharController.text.length >= 12) {
-              //             print("clicked");
+              //            if(kDebugMode)print("clicked");
               //             if (showaddharverify) {
               //               sendAddhaarOtp();
-              //               print("validate");
+              //              if(kDebugMode)print("validate");
               //             } else {
-              //               print("change");
+              //              if(kDebugMode)print("change");
 
               //               setState(() {
               //                 showaddharverify = true;
@@ -1960,7 +1970,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               onPressed: () {
                 if (loginFormKey.currentState!.validate()) {
                   loginFormKey.currentState!.save();
-                  print(merchantIdProofReq.toJson());
+                  if (kDebugMode) print(merchantIdProofReq.toJson());
 
                   setState(() {
                     position++; //old 2
@@ -1977,7 +1987,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
   Widget merchantBusinessProof() {
     var screenHeight = MediaQuery.of(context).size.height;
 
-    print('currTabPosition$currTabPosition');
+    if (kDebugMode) print('currTabPosition$currTabPosition');
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -2039,7 +2049,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                         : TextButton(
                             onPressed: () {
                               if (_gstController.text.length >= 15) {
-                                print("clicked");
+                                if (kDebugMode) print("clicked");
                                 validategst();
                               } else {
                                 alertWidget.error("Enter a valid GST number");
@@ -2098,7 +2108,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                         : TextButton(
                             onPressed: () {
                               if (_firmPanController.text.length == 10) {
-                                print("clicked");
+                                if (kDebugMode) print("clicked");
                                 validateFirmPan();
                               } else {
                                 alertWidget
@@ -2129,8 +2139,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   // }
                   if (!RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
                       .hasMatch(value)) {
-                    print("object");
-                    debugPrint("dsdd");
+                    if (kDebugMode) print("object");
+                    if (kDebugMode) print("dsdd");
                     return 'Invalid pan Number!';
                   }
                   return null;
@@ -2165,7 +2175,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               //   //countryList.map((e) => e['ctyName']).toList(),
               //   onChanged: (value) {
               //     setState(() {
-              //       print(merchantProofDocumentList);
+              //      if(kDebugMode)print(merchantProofDocumentList);
 
               //       businessDocumentType = value;
               //       merchantPersonalReq.poaType =
@@ -2194,7 +2204,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               //                 (element) => element['businessType'] == newValue)
               //             .toList())[0]['businessDocId'];
 
-              //     // print(businessIdProofReq.businessProofDocumntType);
+              //     //if(kDebugMode)print(businessIdProofReq.businessProofDocumntType);
               //   },
               // ),
               const Row(
@@ -2219,6 +2229,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                 fontSize: 13,
                                 color: Colors.black.withOpacity(0.25))),
                 value: businessProofType,
+                icon: const Icon(Icons.keyboard_arrow_down,
+                    color: AppColors.kPrimaryColor),
                 items: merchantProofDocumentList
                     .map<DropdownMenuItem>((dynamic value) {
                   return DropdownMenuItem(
@@ -2231,12 +2243,12 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 }).toList(),
                 onChanged: (newValue) {
                   setState(() {
-                    print(newValue);
+                    if (kDebugMode) print(newValue);
                     businessProofType = newValue;
                     businessDocumentTypename = newValue["businessType"];
                     businessDocumentTypeId = newValue["businessDocId"];
-                    print(newValue["businessType"]);
-                    print(newValue["businessDocId"]);
+                    if (kDebugMode) print(newValue["businessType"]);
+                    if (kDebugMode) print(newValue["businessDocId"]);
                     // businessType = newValue;
                     // companyDetailsInforeq.businessTypeId =
                     //     newValue['businessType'].runtimeType == String
@@ -2287,7 +2299,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 prefixIcon: LineAwesome.calendar,
                 readOnly: true,
                 onTap: () async {
-                  print('ontap');
+                  if (kDebugMode) print('ontap');
                   DateTime? pickedDate = await showDatePicker(
                     initialDatePickerMode: DatePickerMode.day,
                     initialEntryMode: DatePickerEntryMode.calendarOnly,
@@ -2310,11 +2322,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
                         .format(pickedDate);
                     //  selected=
                     //       formattedDate;
-                    print('Formatted Date: ${formattedDate}Z');
+                    if (kDebugMode) print('Formatted Date: ${formattedDate}Z');
                   }
                 },
                 validator: (value) {
-                  print('helloooo');
+                  if (kDebugMode) print('helloooo');
 
                   if (value == null || value.isEmpty) {
                     return 'Expiry Date is Mandatory!';
@@ -2330,7 +2342,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
         ),
         IconButton(
             onPressed: () async {
-              print('validateAction');
+              if (kDebugMode) print('validateAction');
 
               documentFormkey.currentState!.save();
               if (documentFormkey.currentState!.validate()) {
@@ -2349,7 +2361,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 businessDocumentFileFullpath = "";
                 businessProofType = null;
               } else {
-                print("form not validated");
+                if (kDebugMode) print("form not validated");
                 // Reset validation state if form is not validated
               }
             },
@@ -2585,9 +2597,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 businessIdProofReq.mechantKycDocuments =
                     selectedBusinessProofItems;
                 for (var item in selectedBusinessProofItems) {
-                  print(item.fileFullPath);
+                  if (kDebugMode) print(item.fileFullPath);
                 }
-                print(jsonEncode(businessIdProofReq.toJson()));
+                if (kDebugMode) print(jsonEncode(businessIdProofReq.toJson()));
                 setState(() {
                   currTabPosition = 2;
                   position++;
@@ -2703,8 +2715,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                         ? const VerificationSuccessButton()
                         : TextButton(
                             onPressed: () {
-                              print(isAccountInfoverified);
-                              print("clicked verify from ifsc");
+                              if (kDebugMode) print(isAccountInfoverified);
+                              if (kDebugMode) print("clicked verify from ifsc");
                               if (merchantIfscCodeCtrl.text.length >= 10 &&
                                   merchantAccountNumberCtrl.text.length >= 10) {
                                 validateAccountNumber();
@@ -2759,7 +2771,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 //countryList.map((e) => e['ctyName']).toList(),
                 onChanged: (value) {
                   setState(() {
-                    // print(merchantBankList);
+                    //if(kDebugMode)print(merchantBankList);
                     ifscCode = value;
 
                     // requestModel.city = value;
@@ -2771,7 +2783,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                           .where((element) => element['bankName'] == value)
                           .toList())[0]['bankId']
                       .toString();
-                  print(merchantBankInfoReq.bankNameId);
+                  if (kDebugMode) print(merchantBankInfoReq.bankNameId);
                 },
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -2862,7 +2874,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               CustomAppButton(
                 title: 'Next',
                 onPressed: () {
-                  print(merchantBankInfoReq.toJson());
+                  if (kDebugMode) print(merchantBankInfoReq.toJson());
                   if (loginFormKey.currentState!.validate()) {
                     loginFormKey.currentState!.save();
 
@@ -2884,8 +2896,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
   Widget review() {
     var screenHeight = MediaQuery.of(context).size.height;
 
-    print(acceptAggrement);
-    print(acceptTnc);
+    if (kDebugMode) print(acceptAggrement);
+    if (kDebugMode) print(acceptTnc);
 
     return SingleChildScrollView(
       child: Form(
@@ -2927,6 +2939,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                               fontSize: 13,
                               color: Colors.black.withOpacity(0.25))),
               value: mdrType,
+              icon: const Icon(Icons.keyboard_arrow_down,
+                  color: AppColors.kPrimaryColor),
               items: mdrTypeList.map<DropdownMenuItem>((dynamic value) {
                 return DropdownMenuItem(
                   value: value,
@@ -3149,10 +3163,10 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                                 });
                                                               }
 
-                                                              print(
-                                                                  mdrSummaryList[
-                                                                          0][
-                                                                      'amount']);
+                                                              if (kDebugMode)
+                                                                print(mdrSummaryList[
+                                                                        0]
+                                                                    ['amount']);
                                                             },
                                                             inputFormatters: [
                                                               FilteringTextInputFormatter
@@ -3369,7 +3383,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                         //                           });
                                         //                         }
                                         //
-                                        //                         print(
+                                        //                        if(kDebugMode)print(
                                         //                             mdrSummaryList[0]
                                         //                             ['amount']);
                                         //                       },
@@ -4481,7 +4495,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
       });
       return position;
     }).catchError((e) {
-      // debugPrint(e);
+      //if(kDebugMode)print(e);
     });
   }
 
@@ -4507,7 +4521,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
   List mdrApiSummaryList = [];
 
   getDefaultMerchantValues() async {
-    print("----default value called----");
+    if (kDebugMode) print("----default value called----");
     await userServices.GetMerchantOnboardingValues().then((response) async {
       final Map<String, dynamic> data = json.decode(response.body);
 
@@ -4566,24 +4580,24 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
       // for (var acquirer in acquirerDetails) {
       //   String acquirerName = acquirer['acquirerName'];
-      //   print('Acquirer Name: $acquirerName');
+      //  if(kDebugMode)print('Acquirer Name: $acquirerName');
       // }
 
       for (var mccGroup in mccGroups) {
         String mccGroupId = mccGroup['mccGroupId'].toString();
-        print('mccGroupId : $mccGroupId');
+        if (kDebugMode) print('mccGroupId : $mccGroupId');
       }
 
       for (var mccType in mccTypes) {
         String acquirerName = mccType['mccTypeDesc'];
-        print('mccTypeDesc: $acquirerName');
+        if (kDebugMode) print('mccTypeDesc: $acquirerName');
       }
 
       for (var products in tmsProductMaster) {
         String acquirerName = products['productName'];
-        print('productName: $acquirerName');
+        if (kDebugMode) print('productName: $acquirerName');
       }
-      print("length" + "${tmsProductMaster.length}");
+      if (kDebugMode) print("length" + "${tmsProductMaster.length}");
     });
   }
 
@@ -4763,7 +4777,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
   }
 
   filepaths() {
-    print("file ");
+    if (kDebugMode) print("file ");
   }
 
   submitUserRegistration() async {
@@ -4799,31 +4813,32 @@ class _MerchantSignupState extends State<MerchantSignup> {
     //   "mdrSummary": json.encode(mdrSummaryList),
     // };
 
-    print(mdrSummaryList);
+    if (kDebugMode) print(mdrSummaryList);
 
     merchantAgreeMentReq.mdrSummary = json.encode(mdrSummaryList);
 
-    print(merchantAgreeMentReq.mdrSummary);
-    print(merchantAgreeMentReq.toJson());
-    print('pkm');
+    if (kDebugMode) print(merchantAgreeMentReq.mdrSummary);
+    if (kDebugMode) print(merchantAgreeMentReq.toJson());
+    if (kDebugMode) print('pkm');
 
-    // print(jsonEncode(merchantAgreeMentReq.mdrSummary.toJson()));
+    //if(kDebugMode)print(jsonEncode(merchantAgreeMentReq.mdrSummary.toJson()));
 
     final Map<String, dynamic> merchantProductInfoReq = {
       "merchantProductDetails": productList,
     };
 
-    print('merchantProductInfoReq$merchantProductInfoReq');
+    if (kDebugMode) print('merchantProductInfoReq$merchantProductInfoReq');
 
     final String jsonString = json.encode(merchantProductInfoReq);
-    print(jsonString);
+    if (kDebugMode) print(jsonString);
 
-    print("Image kyc  ${_merchantStoreFrontImageCtrl.text}");
-    print("Image kycBack  ${_merchantStoreInsideImageCtrl.text}");
-    print("Image tradeLicense  ${tradeLicense.text}");
-    print("Image nationalIdFront  ${nationalIdFront.text}");
-    print("Image nationalIdBack  ${nationalIdBack.text}");
-    print("Image cancelCheque  ${cancelCheque.text}");
+    if (kDebugMode) print("Image kyc  ${_merchantStoreFrontImageCtrl.text}");
+    if (kDebugMode)
+      print("Image kycBack  ${_merchantStoreInsideImageCtrl.text}");
+    if (kDebugMode) print("Image tradeLicense  ${tradeLicense.text}");
+    if (kDebugMode) print("Image nationalIdFront  ${nationalIdFront.text}");
+    if (kDebugMode) print("Image nationalIdBack  ${nationalIdBack.text}");
+    if (kDebugMode) print("Image cancelCheque  ${cancelCheque.text}");
     userServices
         .newMerchantSignup(
       merchantProductInfoReq,
@@ -4847,7 +4862,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
     )
         .then((response) {
       var decodeData = jsonDecode(response.body);
-      print(response.body);
+      if (kDebugMode) print(response.body);
       if (response.statusCode == 200 || response.statusCode == 201) {
         if (decodeData['statusCode'].toString() == "200") {
           setState(() {
@@ -4888,7 +4903,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
   validatePan() async {
     if (_merchantPanController.text.isNotEmpty) {
-      debugPrint("Calling pan validation API");
+      if (kDebugMode) print("Calling pan validation API");
       setState(() {
         merchantPanHelperText = "Verifying...";
         isPanIsverifying = true;
@@ -4903,11 +4918,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
             isPanIsverifying = false;
             isPanNumberVerified = true;
           });
-          print("Pan Api response is true");
+          if (kDebugMode) print("Pan Api response is true");
         } else {
           setState(() {
             isPanIsverifying = false;
-            print("Pan Api response is false");
+            if (kDebugMode) print("Pan Api response is false");
             merchantPanHelperText = "Failed try again with valid pan number";
           });
         }
@@ -4917,7 +4932,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
   validateFirmPan() async {
     if (_firmPanController.text.isNotEmpty) {
-      debugPrint("Calling Firm pan validation API");
+      if (kDebugMode) print("Calling Firm pan validation API");
       setState(() {
         isFirmPanVerifying = true;
         merchantFirmPanHelperText = "verifying...";
@@ -4934,7 +4949,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
             businessIdProofReq.firmPanNo = panNumber;
             _firmPanController.text = panNumber;
           });
-          print("body is true");
+          if (kDebugMode) print("body is true");
         } else {
           businessIdProofReq.firmPanNumberVerifyStatus = false;
           setState(() {
@@ -4949,19 +4964,19 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
   validategst() async {
     if (_gstController.text.isNotEmpty && _gstController.text.length >= 15) {
-      debugPrint("Calling Gst API");
+      if (kDebugMode) print("Calling Gst API");
       setState(() {
         isgstverifying = true;
         gstHelperText = "Verifying....";
       });
       var gstnumber = _gstController.text.toString();
 
-      print(gstnumber);
+      if (kDebugMode) print(gstnumber);
 
       // var user = await Validators.encrypt(_merchantPanController.text.toString());
       userServices.gstValidation(gstnumber).then((response) async {
-        print("response in");
-        print(response);
+        if (kDebugMode) print("response in");
+        if (kDebugMode) print(response);
         if (response.toString() == "true") {
           setState(() {
             isgstverifying = false;
@@ -4983,15 +4998,15 @@ class _MerchantSignupState extends State<MerchantSignup> {
             // //   accountCheck = 'VALID';
             // //   panOwnerName = name;
             // //   showVerify = false;
-            // //   print(name);
+            // //  if(kDebugMode)print(name);
             // //   userCheckMessage = Constants.userNameSuccessMessage;
             // // } else {
             // //   setState(() => showVerify = true);
             // // }
           });
-          print("body is true");
+          if (kDebugMode) print("body is true");
         } else {
-          print("gst valodation response is not true");
+          if (kDebugMode) print("gst valodation response is not true");
           setState(() {
             isgstverifying = false;
             businessIdProofReq.gstnVerifyStatus = false;
@@ -5019,9 +5034,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
         alertWidget.error(
             "Oops! The selected file is too large.\n Please choose a file under 500 KB.");
 
-        print('File size exceeds 500 KB limit');
+        if (kDebugMode) print('File size exceeds 500 KB limit');
       } else {
-        print(result.files.first.path);
+        if (kDebugMode) print(result.files.first.path);
         setState(() {
           businessDocumentFileFullpath = result.files.first.path;
           businessProofDocumentCtrl.text = result.files.single.name;
@@ -5033,7 +5048,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
   validateAccountNumber() async {
     if (merchantIfscCodeCtrl.text.isNotEmpty &&
         merchantAccountNumberCtrl.text.isNotEmpty) {
-      debugPrint("Calling Accountvalidation API");
+      if (kDebugMode) print("Calling Accountvalidation API");
       setState(() {
         isAccountInfoverifying = true;
         accountInfoHelperText = "Verifying...";
@@ -5041,15 +5056,15 @@ class _MerchantSignupState extends State<MerchantSignup> {
       var accNumber = merchantAccountNumberCtrl.text.toString();
       var ifscNumber = merchantIfscCodeCtrl.text.toString();
 
-      print(accNumber);
-      print(ifscNumber);
+      if (kDebugMode) print(accNumber);
+      if (kDebugMode) print(ifscNumber);
 
       // var user = await Validators.encrypt(_merchantPanController.text.toString());
       userServices
           .accountValidation(accNumber, ifscNumber)
           .then((response) async {
         if (response.statusCode == 200 || response.statusCode == 201) {
-          print(response.body);
+          if (kDebugMode) print(response.body);
 
           accountInfoHelperText = " Account Info Verified";
           var decodedData = json.decode(response.body);
@@ -5071,12 +5086,12 @@ class _MerchantSignupState extends State<MerchantSignup> {
             isAccountInfoverifying = false;
           });
 
-          alertWidget.error("Invalid credentilas");
-          print("invalid  Account Info");
+          alertWidget.error("invalid bank accound details");
+          if (kDebugMode) print("invalid bank accound details");
         }
 
-        // print("response in");
-        // print(response);
+        //if(kDebugMode)print("response in");
+        //if(kDebugMode)print(response);
         // merchantBankInfoReq.merchantBankVerifyStatus = true;
       });
     }
@@ -5084,7 +5099,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
   sendAddhaarOtp() async {
     if (_merchantAddharController.text.length >= 12) {
-      debugPrint("Calling AddhaarOtp API");
+      if (kDebugMode) print("Calling AddhaarOtp API");
       //debugPrint(_merchantAddharController.text);
       setState(() {
         isAadhaarotpSending = true;
@@ -5093,10 +5108,10 @@ class _MerchantSignupState extends State<MerchantSignup> {
       // var user =
       //     await Validators.encrypt(_merchantAddharController.text.toString());
       var addhaarNumber = _merchantAddharController.text;
-      print(addhaarNumber);
+      if (kDebugMode) print(addhaarNumber);
       userServices.sendAddhaarOtp(addhaarNumber).then((response) async {
-        print("response in");
-        print(response);
+        if (kDebugMode) print("response in");
+        if (kDebugMode) print(response);
         if (response.toString() == "true") {
           aadhaarOtpWidget(
               context: context,
@@ -5113,14 +5128,14 @@ class _MerchantSignupState extends State<MerchantSignup> {
             isaddhaarOTPsent = true;
             // showaddharverify = false;
           });
-          print("body is true");
+          if (kDebugMode) print("body is true");
         } else {
           setState(() {
             isAadhaarotpSending = false;
             isaddhaarOTPsent = false;
           });
           alertWidget.error("addarotp sent failed");
-          print("body is false");
+          if (kDebugMode) print("body is false");
         }
       });
     } else {
@@ -5131,7 +5146,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
   // validateAddhaarOtp() async {
   //   if (_merchantAddharController.text.isNotEmpty &&
   //       _otpController.text.isNotEmpty) {
-  //     debugPrint("Calling AddhaarOtp validation API");
+  //    if(kDebugMode)print("Calling AddhaarOtp validation API");
   //     setState(() {});
   //     // var user =
   //     //     await Validators.encrypt(_merchantAddharController.text.toString());
@@ -5140,17 +5155,17 @@ class _MerchantSignupState extends State<MerchantSignup> {
   //     userServices
   //         .validateAddhaarOtp(addhaarNumber, addhaarOtp)
   //         .then((response) async {
-  //       print("response in");
-  //       print(response);
+  //      if(kDebugMode)print("response in");
+  //      if(kDebugMode)print(response);
   //       if (response.toString() == "true") {
   //         setState(() {
   //           isaddhaarOTPsent = false;
   //           // showaddharverify = false;
   //           isOtpVerifird = true;
   //         });
-  //         print("body is true");
+  //        if(kDebugMode)print("body is true");
   //       } else {
-  //         print("body is false");
+  //        if(kDebugMode)print("body is false");
   //         isaddhaarOTPsent = false;
   //       }
   //     });
@@ -5181,7 +5196,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
       title: 'Email ID',
       suffixText: showVerify1 ? 'Verify' : 'Change',
       suffixIconOnPressed: () {
-        print('Button Pressed');
+        if (kDebugMode) print('Button Pressed');
         setState(() {
           if (!showVerify1 && emailVerify) {
             emailVerify = false;
@@ -5235,7 +5250,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
   }
 
   getEmailIdOrMobileNo(String type, String request) async {
-    debugPrint("Calling API");
+    if (kDebugMode) print("Calling API");
     setState(() {
       emailCheck = "Loading...";
     });
@@ -5288,18 +5303,18 @@ class _MerchantSignupState extends State<MerchantSignup> {
   }
 
   sendEmailOtp({required String emailId}) async {
-    debugPrint("Calling Email otp Send API");
+    if (kDebugMode) print("Calling Email otp Send API");
     setState(() {
       isEmailOtpSending = true;
       emailHelperText = "Loading...";
     });
     // request = await Validators.encrypt(request);
     userServices.sendEmailOtp(emailId: emailId).then((response) async {
-      print(response.body);
+      if (kDebugMode) print(response.body);
 
       emailHelperText = "OTP sent";
       if (response.statusCode == 200 || response.statusCode == 201) {
-        print(response.body);
+        if (kDebugMode) print(response.body);
         var decodedData = jsonDecode(response.body);
 
         emailOtpWidget(
@@ -5308,7 +5323,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
           title: decodedData["responseMessage"],
           validator: (dd) {},
           onSubmit: (emailVerified, messge) {
-            print("submit callback called");
+            if (kDebugMode) print("submit callback called");
             setState(() {
               isEmailOtpSending = false;
               emailHelperText = messge;

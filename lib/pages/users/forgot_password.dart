@@ -8,6 +8,7 @@
 // Dependencies or Plugins - Models - Services - Global Functions
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sifr_latest/common_widgets/custom_app_button.dart';
@@ -120,7 +121,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           var parsedResponse = json.decode(response.body);
           //  parsedResponse['responseMessage']
           // Print the responseMessage
-          print(parsedResponse['responseMessage'].toString());
+          if (kDebugMode) print(parsedResponse['responseMessage'].toString());
           alertService.success(context, 'Link send Success',
               parsedResponse['responseMessage'].toString());
           Navigator.pushNamedAndRemoveUntil(context, 'login', (route) => false);

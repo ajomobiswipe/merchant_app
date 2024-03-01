@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:icons_plus/icons_plus.dart';
@@ -641,7 +642,8 @@ class _CardPageState extends State<CardPage> {
             .toList();
       }
       if (getPreviousPrimary[0].containsKey('accountNumber')) {
-        debugPrint("---------------- ACCOUNT TO CARD ---------------------");
+        if (kDebugMode)
+          print("---------------- ACCOUNT TO CARD ---------------------");
         cardManageRequestModel.primaryAccountNumber =
             getPreviousPrimary[0]['accountNumber'];
         accountCardService
@@ -651,7 +653,8 @@ class _CardPageState extends State<CardPage> {
           responseAlert(response);
         });
       } else {
-        debugPrint("------------------ CARD TO CARD ---------------------");
+        if (kDebugMode)
+          print("------------------ CARD TO CARD ---------------------");
         cardManageRequestModel.primaryCardRefNumber =
             getPreviousPrimary[0]['cardReferenceNumber'];
         accountCardService
@@ -676,7 +679,8 @@ class _CardPageState extends State<CardPage> {
           card['accountNumber'].toString();
 
       if (getPreviousPrimary[0].containsKey('accountNumber')) {
-        debugPrint("---------------- ACCOUNT TO ACCOUNT ---------------------");
+        if (kDebugMode)
+          print("---------------- ACCOUNT TO ACCOUNT ---------------------");
         accountRequestModel.primaryAccountNumber =
             getPreviousPrimary[0]['accountNumber'];
         accountRequestModel.primaryCardRefNumber = null;
@@ -687,7 +691,8 @@ class _CardPageState extends State<CardPage> {
           responseAlert(response);
         });
       } else {
-        debugPrint("---------------- CARD TO ACCOUNT ---------------------");
+        if (kDebugMode)
+          print("---------------- CARD TO ACCOUNT ---------------------");
         accountRequestModel.changeAccountToPrimary =
             card['accountNumber'].toString();
         accountRequestModel.primaryCardRefNumber =

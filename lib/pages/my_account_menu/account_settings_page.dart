@@ -328,7 +328,7 @@ class _MyAccountPageState extends State<MyAccountPage> {
     setState(() {
       _isLoading = true;
     });
-    // print(type);
+    //if(kDebugMode)print(type);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var customerId = prefs.getString('custId').toString();
     var requestModel = {

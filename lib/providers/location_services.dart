@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:geocoding/geocoding.dart' as goa;
 import 'package:location/location.dart';
@@ -29,7 +30,8 @@ class LocationService {
         _serviceEnabled = await _location.requestService();
       }
     } on PlatformException catch (error) {
-      debugPrint('error code is ${error.code} and message = ${error.message}');
+      if (kDebugMode)
+        print('error code is ${error.code} and message = ${error.message}');
       _serviceEnabled = false;
       await _checkService();
     }

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_shimmer_widget/flutter_shimmer_widget.dart';
@@ -175,12 +176,12 @@ class _LoginAuthOTPState extends State<LoginAuthOTP> {
                     textInputAction: TextInputAction.done,
                     mainAxisAlignment: MainAxisAlignment.center,
                     onCompleted: (v) {
-                      // print("Pin Comleted: $v");
+                      //if(kDebugMode)print("Pin Comleted: $v");
                     },
                     onChanged: (value) {
-                      // print(value);
+                      //if(kDebugMode)print(value);
                       setState(() {
-                        // print("x");
+                        //if(kDebugMode)print("x");
                         otpCode = value;
                         if (value.length == 4) {
                           _enableButton = true;
@@ -227,7 +228,7 @@ class _LoginAuthOTPState extends State<LoginAuthOTP> {
                   //   onPressed: () async {
                   //     signature = await SmsAutoDetect().getAppSignature;
                   //     setState(() {});
-                  //     print(signature);
+                  //    if(kDebugMode)print(signature);
                   //   },
                   // ),
                 ],
@@ -306,21 +307,19 @@ class _LoginAuthOTPState extends State<LoginAuthOTP> {
       enableOtpField = false;
     });
 
+    userServices.otpVerification(username).then((response) {
+      if (kDebugMode) print('user${response.body}');
 
-      userServices.otpVerification(username).then((response) {
-        print('user${response.body}');
+      var data = jsonDecode(response.body);
 
-        var data = jsonDecode(response.body);
-
-        if (data['responseCode'] == "00") {
-          setState(() {
-            message = data['responseMessage'];
-            isLoading = false;
-            enableOtpField = true;
-          });
-        }
-      });
-
+      if (data['responseCode'] == "00") {
+        setState(() {
+          message = data['responseMessage'];
+          isLoading = false;
+          enableOtpField = true;
+        });
+      }
+    });
   }
 
   /// VERIFY OTP
@@ -333,13 +332,13 @@ class _LoginAuthOTPState extends State<LoginAuthOTP> {
       "otp": await Validators.encrypt(otpCode),
     };
 
-    print(params);
+    if (kDebugMode) print(params);
     // return;
 
     userServices.otpValidate(params).then((response) async {
       var data = jsonDecode(response.body);
 
-      print('otpValidate$data');
+      if (kDebugMode) print('otpValidate$data');
 
       if (data['responseCode'].toString() == "00") {
         var params = {
@@ -348,13 +347,11 @@ class _LoginAuthOTPState extends State<LoginAuthOTP> {
           "deviceId": await Validators.encrypt(await Global.getUniqueId()),
         };
 
-        print(params);
+        if (kDebugMode) print(params);
 
         enableOtpField = false;
         userServices.deviceRegister(params).then((response) {
-
-          print('deviceRegister${response.body}');
-
+          if (kDebugMode) print('deviceRegister${response.body}');
 
           setState(() {
             _isLoadingButton = false;

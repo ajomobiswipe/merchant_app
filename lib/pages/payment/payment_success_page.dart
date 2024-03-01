@@ -17,7 +17,7 @@ class PaymentSuccessPage extends StatelessWidget {
           child: SizedBox(),
         ),
         Image.asset(
-          "assets/app_icons/success_sumbol.png",
+          "assets/app_icons/success_symbol.png",
           height: 60,
         ),
         SizedBox(

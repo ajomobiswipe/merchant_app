@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_swipe_button/flutter_swipe_button.dart';
@@ -275,18 +276,18 @@ class _LoginPageState extends State<LoginPage> {
       //   requestModel.pin =
       //       await Validators.encrypt(requestModel.pin.toString());
       // }
-      print(json.encode(requestModel));
+      if (kDebugMode) print(json.encode(requestModel));
 
       _passwordController.clear();
       userServices.salesTeamlogin(requestModel).then((response) async {
-        print(response.body);
+        if (kDebugMode) print(response.body);
 
         var result = jsonDecode(response.body);
 
         var code = response.statusCode;
         if (code == 200 || code == 201) {
           if (result['responseCode'] == "00") {
-            saveSecureStorage(result,userName: requestModel.userName);
+            saveSecureStorage(result, userName: requestModel.userName);
             Navigator.pushReplacementNamed(context, 'MerchantNumVerify');
             setLoading(false);
           } else if (result['responseCode'] == "03") {
@@ -299,13 +300,12 @@ class _LoginPageState extends State<LoginPage> {
           } else {
             setLoading(false);
 
-           try{
-             alertWidget.failure(context, 'Failure', result['responseMessage']);
-           }catch(e){
-             alertWidget.failure(context, 'Failure', 'Wrong Credentials');
-           }
-
-
+            try {
+              alertWidget.failure(
+                  context, 'Failure', result['responseMessage']);
+            } catch (e) {
+              alertWidget.failure(context, 'Failure', 'Wrong Credentials');
+            }
           }
         } else {
           setLoading(false);
@@ -315,7 +315,7 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  saveSecureStorage(decodeData,{String? userName}) async {
+  saveSecureStorage(decodeData, {String? userName}) async {
     /// NEW HIVE STORAGE CONTROLS
     var datetime = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
     String dateStr = datetime.toString();
@@ -334,7 +334,6 @@ class _LoginPageState extends State<LoginPage> {
 
     // prefs.setString('userName', decodeData['userName'].toString());
     prefs.setString('userName', userName!);
-
 
     prefs.setString('role', decodeData['role'].toString());
     prefs.setString('lastLogin', dateStr);
@@ -416,8 +415,10 @@ class _LoginPageState extends State<LoginPage> {
           ),
           TextFormField(
               keyboardType: TextInputType.text,
-              style:
-                  Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 13,fontFamily: 'Mont'),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyLarge
+                  ?.copyWith(fontSize: 13, fontFamily: 'Mont'),
               autovalidateMode: AutovalidateMode.onUserInteraction,
               inputFormatters: <TextInputFormatter>[
                 FilteringTextInputFormatter.allow(RegExp(r'\w'))
@@ -482,8 +483,10 @@ class _LoginPageState extends State<LoginPage> {
           ),
           TextFormField(
             controller: _passwordController,
-            style:
-                Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 13,fontFamily: 'Mont'),
+            style: Theme.of(context)
+                .textTheme
+                .bodyLarge
+                ?.copyWith(fontSize: 13, fontFamily: 'Mont'),
             obscureText: hidePassword,
             obscuringCharacter: '*',
             maxLength: password != 'Password' ? 4 : null,

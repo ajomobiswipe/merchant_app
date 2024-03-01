@@ -8,7 +8,7 @@ class DevicePermission {
       Permission.storage,
       Permission.notification,
     ].request();
-    // print(statuses);
+    //if(kDebugMode)print(statuses);
     // if (statuses[Permission.camera] == PermissionStatus.permanentlyDenied) {
     //   openAppSettings();
     // }

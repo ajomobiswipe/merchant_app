@@ -10,65 +10,65 @@ class SignUpSucessScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppScafofld(
-      canPop: false,
-      eneableAppbar:false,
+        canPop: false,
+        eneableAppbar: false,
         child: Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Expanded(
-          child: SizedBox(),
-        ),
-        Image.asset(
-          "assets/app_icons/success_sumbol.png",
-          height: 60,
-        ),
-        SizedBox(
-          height: 10,
-        ),
-        CustomTextWidget(
-          text: "Congratulations!",
-          fontWeight: FontWeight.bold,
-          size: 24,
-          color: AppColors.kLightGreen,
-        ),
-        SizedBox(
-          height: 30,
-        ),
-        CustomTextWidget(
-          text:
-              "Merchant onboarding application\nhas been submitted successfully..",
-        ),
-        SizedBox(
-          height: 30,
-        ),
-        CustomTextWidget(
-          text: "Check for the Status in",
-          fontWeight: FontWeight.w800,
-          size: 16,
-          color: Colors.grey.shade500,
-        ),
-        GestureDetector(
-            onTap: () {
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                'myApplications',
-                (route) => false,
-              );
-            },
-            child: CustomTextWidget(
-              text: "My Applications",
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: SizedBox(),
+            ),
+            Image.asset(
+              "assets/app_icons/success_symbol.png",
+              height: 60,
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            CustomTextWidget(
+              text: "Congratulations!",
+              fontWeight: FontWeight.bold,
+              size: 24,
+              color: AppColors.kLightGreen,
+            ),
+            SizedBox(
+              height: 30,
+            ),
+            CustomTextWidget(
+              text:
+                  "Merchant onboarding application\nhas been submitted successfully..",
+            ),
+            SizedBox(
+              height: 30,
+            ),
+            CustomTextWidget(
+              text: "Check for the Status in",
+              fontWeight: FontWeight.w800,
               size: 16,
-              fontWeight: FontWeight.w700,
-              color: AppColors.kPrimaryColor,
-            )),
-        Expanded(
-          child: SizedBox(),
-        ),
-        copyRightWidget(),
-        SizedBox(
-          height: 30,
-        )
-      ],
-    ));
+              color: Colors.grey.shade500,
+            ),
+            GestureDetector(
+                onTap: () {
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    'myApplications',
+                    (route) => false,
+                  );
+                },
+                child: CustomTextWidget(
+                  text: "My Applications",
+                  size: 16,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.kPrimaryColor,
+                )),
+            Expanded(
+              child: SizedBox(),
+            ),
+            copyRightWidget(),
+            SizedBox(
+              height: 30,
+            )
+          ],
+        ));
   }
 }
