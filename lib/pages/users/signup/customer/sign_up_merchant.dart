@@ -2097,7 +2097,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                         ? const VerificationSuccessButton()
                         : TextButton(
                             onPressed: () {
-                              if (_gstController.text.length == 10) {
+                              if (_firmPanController.text.length == 10) {
                                 print("clicked");
                                 validateFirmPan();
                               } else {
