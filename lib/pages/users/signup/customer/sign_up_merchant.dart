@@ -3048,25 +3048,34 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                 margin: EdgeInsets.only(
                                   top: screenHeight * .015,
                                 ),
-                                width:
-                                    item['dcTxnAmount'] == null && !isEditable
-                                        ? ((MediaQuery.of(context).size.width) -
-                                                ((MediaQuery.of(context)
-                                                            .size
-                                                            .width *
-                                                        .02) *
-                                                    3) -
-                                                30) /
-                                            2
-                                        : double.infinity,
-                                padding: item['dcTxnAmount'] != null
-                                    ? EdgeInsets.all(
+                                width: double.infinity,
+                                // width:
+                                //     item['dcTxnAmount'] == null && !isEditable
+                                //         ? ((MediaQuery.of(context).size.width) -
+                                //                 ((MediaQuery.of(context)
+                                //                             .size
+                                //                             .width *
+                                //                         .02) *
+                                //                     3) -
+                                //                 30) /
+                                //             2
+                                //         : double.infinity,
+                                // padding: item['dcTxnAmount'] != null
+                                //     ? EdgeInsets.all(
+                                //         MediaQuery.of(context).size.width * .02)
+                                //     : const EdgeInsets.all(0),
+                                padding:
+                                    // item['dcTxnAmount'] != null
+                                    //     ?
+                                    EdgeInsets.all(
                                         MediaQuery.of(context).size.width * .02)
-                                    : const EdgeInsets.all(0),
+                                // : const EdgeInsets.all(0)
+                                ,
                                 // width:double.infinity,
-                                color: item['dcTxnAmount'] != null
-                                    ? Colors.white
-                                    : Colors.transparent,
+                                color: Colors.white,
+                                // color: item['dcTxnAmount'] != null
+                                //     ? Colors.white
+                                //     : Colors.transparent,
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -3076,230 +3085,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                               ? CrossAxisAlignment.center
                                               : CrossAxisAlignment.start,
                                       children: [
-                                        Expanded(
-                                          flex: !isEditable ? 0 : 1,
-                                          child: CustomTextWidget(
-                                            text:
-                                                '${item['paymentName']}${item['dcTxnAmount'] == null ? ' - ' : ''}',
-                                            isBold: true,
-                                            size: 12,
-                                          ),
+                                        CustomTextWidget(
+                                          text: '${item['paymentName']}',
+                                          isBold: true,
+                                          size: 12,
                                         ),
-
-                                        if (item['dcTxnAmount'] == null &&
-                                            isEditable)
-                                          GestureDetector(
-                                            onTap: () {
-                                              showDialog(
-                                                context: context,
-                                                builder:
-                                                    (BuildContext context) {
-                                                  return AlertDialog(
-                                                    title: Text(
-                                                        '${item['paymentName']}'),
-                                                    titleTextStyle:
-                                                        const TextStyle(
-                                                            color: Colors.black,
-                                                            fontSize: 18,
-                                                            fontFamily: 'Mont'),
-                                                    content: Column(
-                                                      mainAxisSize:
-                                                          MainAxisSize.min,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        const Text(
-                                                            'Please enter your value'),
-                                                        SizedBox(
-                                                            height: MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .height *
-                                                                .01),
-                                                        Container(
-                                                          width:
-                                                              double.infinity,
-                                                          height: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .height *
-                                                              .06,
-                                                          padding: EdgeInsets.only(
-                                                              left: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width *
-                                                                  .025),
-                                                          decoration: BoxDecoration(
-                                                              border: Border.all(
-                                                                  color: Colors
-                                                                      .black
-                                                                      .withOpacity(
-                                                                          .1)),
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          5)),
-                                                          child: TextFormField(
-                                                            onChanged: (value) {
-                                                              final double
-                                                                  parsedValue =
-                                                                  double.tryParse(
-                                                                          value) ??
-                                                                      0.0;
-
-                                                              setState(() {
-                                                                item['amount'] =
-                                                                    value;
-                                                              });
-
-                                                              if (parsedValue >
-                                                                  100) {
-                                                                setState(() {
-                                                                  item['amount'] =
-                                                                      '100.00';
-                                                                });
-                                                              }
-
-                                                              if (kDebugMode)
-                                                                print(mdrSummaryList[
-                                                                        0]
-                                                                    ['amount']);
-                                                            },
-                                                            inputFormatters: [
-                                                              FilteringTextInputFormatter
-                                                                  .allow(
-                                                                RegExp(
-                                                                    r'^\d{0,3}(\.\d{0,2})?$'), // Allows up to 3 digits (0-100) and optional decimal with up to 2 digits
-                                                              ),
-                                                            ],
-                                                            keyboardType:
-                                                                const TextInputType
-                                                                    .numberWithOptions(
-                                                                    decimal:
-                                                                        true),
-                                                            maxLength: 6,
-                                                            enabled: true,
-                                                            style:
-                                                                const TextStyle(
-                                                                    fontSize:
-                                                                        14,
-                                                                    color: Colors
-                                                                        .black),
-                                                            decoration:
-                                                                const InputDecoration(
-                                                              border:
-                                                                  InputBorder
-                                                                      .none,
-                                                              counterText: '',
-                                                            ),
-                                                            initialValue:
-                                                                '${item['amount'] ?? item['dcTxnAmount']}',
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    actions: [
-                                                      TextButton(
-                                                        onPressed: () {
-                                                          Navigator.of(context)
-                                                              .pop(); // Close the dialog
-                                                        },
-                                                        child: const Text('OK'),
-                                                      ),
-                                                    ],
-                                                  );
-                                                },
-                                              );
-                                            },
-                                            child: Container(
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  .18,
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  .04,
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal:
-                                                      MediaQuery.of(context)
-                                                              .size
-                                                              .width *
-                                                          .02),
-                                              decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                      color: Colors.black
-                                                          .withOpacity(.1)),
-                                                  borderRadius:
-                                                      BorderRadius.circular(5)),
-                                              child: Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  CustomTextWidget(
-                                                    text:
-                                                        '${item['amount'] ?? item['dcTxnAmount']}',
-                                                    isBold: false,
-                                                    size: 10,
-                                                  ),
-                                                  const Spacer(),
-                                                  // TextFormField(
-                                                  //   onChanged: (value) {
-                                                  //     final double parsedValue =
-                                                  //         double.tryParse(value) ?? 0.0;
-                                                  //
-                                                  //     TextEditingController(text: value);
-                                                  //
-                                                  //     // setState(() {
-                                                  //     //   item['amount'] = value;
-                                                  //     // });
-                                                  //     //
-                                                  //     // if (parsedValue > 100) {
-                                                  //     //   setState(() {
-                                                  //     //     item['amount'] = '100.00';
-                                                  //     //   });
-                                                  //     // }
-                                                  //   },
-                                                  //   inputFormatters: [
-                                                  //     FilteringTextInputFormatter.allow(
-                                                  //       RegExp(
-                                                  //           r'^\d{0,3}(\.\d{0,2})?$'), // Allows up to 3 digits (0-100) and optional decimal with up to 2 digits
-                                                  //     ),
-                                                  //   ],
-                                                  //   keyboardType: const TextInputType
-                                                  //       .numberWithOptions(decimal: true),
-                                                  //   maxLength: 6,
-                                                  //   enabled: false,
-                                                  //   style: const TextStyle(
-                                                  //       fontSize: 14, color: Colors.black),
-                                                  //   decoration: const InputDecoration(
-                                                  //     border: InputBorder.none,
-                                                  //     counterText: '',
-                                                  //   ),
-                                                  //   controller: TextEditingController(
-                                                  //       text:
-                                                  //       '${item['amount'] ?? item['dcTxnAmount']}'),
-                                                  // ),
-                                                  if (isEditable &&
-                                                      item['dcTxnAmount'] ==
-                                                          null)
-                                                    const Icon(
-                                                      Icons.edit,
-                                                      size: 15,
-                                                    ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-
-                                        if (item['dcTxnAmount'] == null &&
-                                            !isEditable)
-                                          CustomTextWidget(
-                                            text: '${item['amount']} %',
-                                            isBold: false,
-                                            size: 11,
-                                          ),
 
                                         // if (item['dcTxnAmount'] == null &&
                                         //     !isEditable)
@@ -4172,6 +3962,249 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                               //   ),
                                             ],
                                           ),
+                                        ],
+                                      ),
+                                    if (item['dcTxnAmount'] == null)
+                                      Column(
+                                        children: [
+                                          SizedBox(
+                                            height: screenHeight * .01,
+                                          ),
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: CustomTextWidget(
+                                                  text:
+                                                      '${item['paymentName']} Amount ${!isEditable ? '  -   ${item['amount']} %' : ''}',
+                                                  size: 11,
+                                                  isBold: false,
+                                                ),
+                                              ),
+                                              if (isEditable)
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    showDialog(
+                                                      context: context,
+                                                      builder: (BuildContext
+                                                          context) {
+                                                        return AlertDialog(
+                                                          title: Text(
+                                                              '${item['paymentName']}'),
+                                                          titleTextStyle:
+                                                              const TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontSize: 18,
+                                                                  fontFamily:
+                                                                      'Mont'),
+                                                          content: Column(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              const Text(
+                                                                  'Please enter your value'),
+                                                              SizedBox(
+                                                                  height: MediaQuery.of(
+                                                                              context)
+                                                                          .size
+                                                                          .height *
+                                                                      .01),
+                                                              Container(
+                                                                width: double
+                                                                    .infinity,
+                                                                height: MediaQuery.of(
+                                                                            context)
+                                                                        .size
+                                                                        .height *
+                                                                    .06,
+                                                                padding: EdgeInsets.only(
+                                                                    left: MediaQuery.of(context)
+                                                                            .size
+                                                                            .width *
+                                                                        .025),
+                                                                decoration: BoxDecoration(
+                                                                    border: Border.all(
+                                                                        color: Colors
+                                                                            .black
+                                                                            .withOpacity(
+                                                                                .1)),
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            5)),
+                                                                child:
+                                                                    TextFormField(
+                                                                  onChanged:
+                                                                      (value) {
+                                                                    final double
+                                                                        parsedValue =
+                                                                        double.tryParse(value) ??
+                                                                            0.0;
+
+                                                                    setState(
+                                                                        () {
+                                                                      item['amount'] =
+                                                                          value;
+                                                                    });
+
+                                                                    if (parsedValue >
+                                                                        100) {
+                                                                      setState(
+                                                                          () {
+                                                                        item['amount'] =
+                                                                            '100.00';
+                                                                      });
+                                                                    }
+
+                                                                    if (kDebugMode)
+                                                                      print(mdrSummaryList[
+                                                                              0]
+                                                                          [
+                                                                          'amount']);
+                                                                  },
+                                                                  inputFormatters: [
+                                                                    FilteringTextInputFormatter
+                                                                        .allow(
+                                                                      RegExp(
+                                                                          r'^\d{0,3}(\.\d{0,2})?$'), // Allows up to 3 digits (0-100) and optional decimal with up to 2 digits
+                                                                    ),
+                                                                  ],
+                                                                  keyboardType: const TextInputType
+                                                                      .numberWithOptions(
+                                                                      decimal:
+                                                                          true),
+                                                                  maxLength: 6,
+                                                                  enabled: true,
+                                                                  style: const TextStyle(
+                                                                      fontSize:
+                                                                          14,
+                                                                      color: Colors
+                                                                          .black),
+                                                                  decoration:
+                                                                      const InputDecoration(
+                                                                    border:
+                                                                        InputBorder
+                                                                            .none,
+                                                                    counterText:
+                                                                        '',
+                                                                  ),
+                                                                  initialValue:
+                                                                      '${item['amount'] ?? item['dcTxnAmount']}',
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          actions: [
+                                                            TextButton(
+                                                              onPressed: () {
+                                                                Navigator.of(
+                                                                        context)
+                                                                    .pop(); // Close the dialog
+                                                              },
+                                                              child: const Text(
+                                                                  'OK'),
+                                                            ),
+                                                          ],
+                                                        );
+                                                      },
+                                                    );
+                                                  },
+                                                  child: Container(
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            .18,
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height *
+                                                            .04,
+                                                    padding: EdgeInsets.symmetric(
+                                                        horizontal:
+                                                            MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width *
+                                                                .02),
+                                                    decoration: BoxDecoration(
+                                                        border: Border.all(
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                    .1)),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(5)),
+                                                    child: Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        CustomTextWidget(
+                                                          text:
+                                                              '${item['amount'] ?? item['dcTxnAmount']}',
+                                                          isBold: false,
+                                                          size: 10,
+                                                        ),
+                                                        const Spacer(),
+                                                        // TextFormField(
+                                                        //   onChanged: (value) {
+                                                        //     final double parsedValue =
+                                                        //         double.tryParse(value) ?? 0.0;
+                                                        //
+                                                        //     TextEditingController(text: value);
+                                                        //
+                                                        //     // setState(() {
+                                                        //     //   item['amount'] = value;
+                                                        //     // });
+                                                        //     //
+                                                        //     // if (parsedValue > 100) {
+                                                        //     //   setState(() {
+                                                        //     //     item['amount'] = '100.00';
+                                                        //     //   });
+                                                        //     // }
+                                                        //   },
+                                                        //   inputFormatters: [
+                                                        //     FilteringTextInputFormatter.allow(
+                                                        //       RegExp(
+                                                        //           r'^\d{0,3}(\.\d{0,2})?$'), // Allows up to 3 digits (0-100) and optional decimal with up to 2 digits
+                                                        //     ),
+                                                        //   ],
+                                                        //   keyboardType: const TextInputType
+                                                        //       .numberWithOptions(decimal: true),
+                                                        //   maxLength: 6,
+                                                        //   enabled: false,
+                                                        //   style: const TextStyle(
+                                                        //       fontSize: 14, color: Colors.black),
+                                                        //   decoration: const InputDecoration(
+                                                        //     border: InputBorder.none,
+                                                        //     counterText: '',
+                                                        //   ),
+                                                        //   controller: TextEditingController(
+                                                        //       text:
+                                                        //       '${item['amount'] ?? item['dcTxnAmount']}'),
+                                                        // ),
+                                                        if (isEditable &&
+                                                            item['dcTxnAmount'] ==
+                                                                null)
+                                                          const Icon(
+                                                            Icons.edit,
+                                                            size: 15,
+                                                          ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              // if (!isEditable)
+                                              //   CustomTextWidget(
+                                              //     text: '${item['amount']} %',
+                                              //     isBold: false,
+                                              //     size: 11,
+                                              //   ),
+                                            ],
+                                          )
                                         ],
                                       )
                                   ],
