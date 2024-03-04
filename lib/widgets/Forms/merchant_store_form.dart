@@ -9,10 +9,12 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sifr_latest/common_widgets/app_appbar.dart';
 import 'package:sifr_latest/common_widgets/custom_app_button.dart';
+import 'package:sifr_latest/models/merchant_requestmodel.dart';
 import 'package:sifr_latest/widgets/tabbar/tabbar.dart';
 import 'package:sifr_latest/widgets/widget.dart';
 import '../../config/config.dart';
 import '../../config/constants.dart';
+import '../../pages/users/signup/customer/models/company_detailsInfo_requestmodel.dart';
 import '../../pages/users/signup/customer/models/merchant_store_info_requestmodel.dart';
 import '../app/alert_service.dart';
 import '../app/camera_image_picker.dart';
@@ -33,6 +35,7 @@ class MerchantStoreImagesForm extends StatefulWidget {
   final TextEditingController selectedStoreCity;
   final TextEditingController storePinCodeCtrl;
   final TextEditingController businessAddressPinCodeCtrl;
+  final CompanyDetailsInfoRequestmodel merchantCompanyDetailsReq;
 
   final List storeCitysList;
   final List storeStatesList;
@@ -56,7 +59,8 @@ class MerchantStoreImagesForm extends StatefulWidget {
       required this.merchantBusinessAddressController,
       required this.businessAddressPinCodeCtrl,
       required this.selectedBusinessState,
-      required this.selectedBusinessCity})
+      required this.selectedBusinessCity,
+      required this.merchantCompanyDetailsReq})
       : super(key: key);
 
   @override
@@ -378,13 +382,16 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                 onChanged: (String value) {
                   value = value.trim();
                 },
+
                 onSaved: (value) {
-                  widget.merchantStoreInfoReq.currentAddress = value;
-                  // merchantPersonalReq.currentAddress = value;
+                  if (widget.merchantStoreInfoReq.isBusinessAddSameAsStore) {
+                    widget.merchantStoreInfoReq.currentAddress =
+                        widget.merchantCompanyDetailsReq.merchantAddress;
+                  } else {
+                    widget.merchantStoreInfoReq.currentAddress = value;
+                  }
                 },
-                onFieldSubmitted: (value) {
-                  // _merchantBusinessAddressController.text = value.trim();
-                },
+                onFieldSubmitted: (value) {},
               ),
               const SizedBox(
                 height: 15.0,
@@ -435,15 +442,17 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                   });
                 },
                 onSaved: (value) {
-                  // widget.merchantStoreInfoReq.currentState = value;
-                  // widget.merchantStoreInfoReq.currentState = (widget
-                  //         .storeStatesList
-                  //         .where((item) =>
-                  //             item['tmsMasterCountry'] != null &&
-                  //             item['tmsMasterCountry']['countryIsoNumId'] ==
-                  //                 356)
-                  //         .toList())[0]['stateId']
-                  //     .toString();
+                  if (widget.merchantStoreInfoReq.isBusinessAddSameAsStore) {
+                    widget.merchantStoreInfoReq.currentState =
+                        widget.merchantCompanyDetailsReq.stateId.toString();
+                  } else {
+                    widget.merchantStoreInfoReq.currentState = (widget
+                            .storeStatesList
+                            .where((item) => item['stateName'] == value)
+                            .toList())[0]['stateId']
+                        .toString();
+                    ;
+                  }
 
                   if (kDebugMode)
                     print(widget.merchantStoreInfoReq.currentState);
@@ -499,21 +508,24 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                   });
                 },
                 onSaved: (value) {
-                  // widget.merchantStoreInfoReq.currentCity = value;
+                  if (widget.merchantStoreInfoReq.isBusinessAddSameAsStore) {
+                    widget.merchantStoreInfoReq.currentCity =
+                        widget.merchantCompanyDetailsReq.cityCode.toString();
+                  } else {
+                    if (widget.storeCitysList
+                        .where((element) => element['cityName'] == value)
+                        .toList()
+                        .isEmpty) return;
 
-                  if (widget.storeCitysList
-                      .where((element) => element['cityName'] == value)
-                      .toList()
-                      .isEmpty) return;
+                    widget.merchantStoreInfoReq.currentCity = (widget
+                            .storeCitysList
+                            .where((element) => element['cityName'] == value)
+                            .toList())[0]['cityId']
+                        .toString();
 
-                  widget.merchantStoreInfoReq.currentCity = (widget
-                          .storeCitysList
-                          .where((element) => element['cityName'] == value)
-                          .toList())[0]['cityId']
-                      .toString();
-
-                  if (kDebugMode)
-                    print(widget.merchantStoreInfoReq.currentCity);
+                    if (kDebugMode)
+                      print(widget.merchantStoreInfoReq.currentCity);
+                  }
                 },
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -553,7 +565,12 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                 ],
                 prefixIcon: Icons.map_outlined,
                 onSaved: (value) {
-                  widget.merchantStoreInfoReq.currentZipCode = value;
+                  if (widget.merchantStoreInfoReq.isBusinessAddSameAsStore) {
+                    widget.merchantStoreInfoReq.currentZipCode =
+                        widget.merchantCompanyDetailsReq.zipCode;
+                  } else {
+                    widget.merchantStoreInfoReq.currentZipCode = value;
+                  }
                 },
               ),
 

@@ -65,11 +65,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
   AlertService alertWidget = AlertService();
   CustomAlert customAlert = CustomAlert();
   UserServices userServices = UserServices();
-  MerchantRequestModel requestModel = MerchantRequestModel();
-  MerchantRegPersonalReqModel merchantPersonalReq =
-      MerchantRegPersonalReqModel();
-  MerchantCompanyDetailsReqModel merchantCompanyDetailsReq =
-      MerchantCompanyDetailsReqModel();
+  // MerchantRequestModel requestModel = MerchantRequestModel();
+  // MerchantRegPersonalReqModel merchantPersonalReq =
+  //     MerchantRegPersonalReqModel();
+  // MerchantCompanyDetailsReqModel merchantCompanyDetailsReq =
+  //     MerchantCompanyDetailsReqModel();
 
   CompanyDetailsInfoRequestmodel companyDetailsInforeq =
       CompanyDetailsInfoRequestmodel();
@@ -673,6 +673,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
         businessAddressPinCodeCtrl: _PinCodeCtrl,
         selectedBusinessState: selectedBusinessState,
         selectedBusinessCity: selectedCity,
+        merchantCompanyDetailsReq: companyDetailsInforeq,
       );
     } else if (position == 6) {
       return mainControl(merchantBankDetails());
@@ -949,8 +950,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
               //   color: AppColors.kPrimaryColor,
               // ),
               // suffixIconTrue: true,
-              onChanged: (phone) {
-                merchantPersonalReq.currentMobileNo = phone;
+              onChanged: (value) {
+                companyDetailsInforeq.landlineNo = value;
               },
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -1097,9 +1098,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               onPressed: () async {
                 personalFormKey.currentState!.save();
                 if (personalFormKey.currentState!.validate()) {
-                  if (kDebugMode)
-                    print(jsonEncode(merchantPersonalReq.toJson()));
-                  if (!isEmailVerified) {
+                  if (kDebugMode) if (!isEmailVerified) {
                     alertWidget.error("please verify your Email ");
                   } else {
                     setState(() {
@@ -1577,8 +1576,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   if (kDebugMode) print(selectedBusinessStateId);
 
                   companyDetailsInforeq.stateId = selectedBusinessStateId;
-
-                  if (kDebugMode) print(merchantPersonalReq.currentState);
 
                   // String stateString=;
                 });
@@ -4476,8 +4473,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
     await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
         .then((Position position) {
       setState(() {
-        requestModel.latitude = position.latitude;
-        requestModel.longitude = position.longitude;
+        // requestModel.latitude = position.latitude;
+        // requestModel.longitude = position.longitude;
       });
       return position;
     }).catchError((e) {
@@ -4818,14 +4815,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
       _merchantStoreFrontImageCtrl.text,
       _merchantStoreInsideImageCtrl.text,
       cancelledChequeImg,
-      // merchantPersonalReq,
-      // merchantCompanyDetailsReq,
-      // _merchantStoreFrontImageCtrl.text,
-      // _merchantStoreInsideImageCtrl.text,
-      // tradeLicense.text,
-      // nationalIdFront.text,
-      // nationalIdBack.text,
-      // cancelCheque.text,
     )
         .then((response) {
       var decodeData = jsonDecode(response.body);
@@ -4839,7 +4828,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
               context, 'SignUpSucessScreen', (route) => false);
           // alertWidget.successPopup(
           //     context, 'Success', decodeData['responseMessage'], () {
-
           // });
         } else {
           setState(() {
@@ -5184,7 +5172,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
         return null;
       },
       onSaved: (value) {
-        requestModel.emailId = value;
+        // requestModel.emailId = value;
       },
     );
   }
