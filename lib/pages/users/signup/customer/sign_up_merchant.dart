@@ -4954,26 +4954,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
             isgstverified = true;
             gstHelperText = "verified";
             businessIdProofReq.gstnVerifyStatus = true;
-            // merchantAdditionalInfoReq.merchantBankVerifyStatus = true;
-            // accountCheck = 'VALID';
-
-            // merchantAdditionalInfoReq.bankIfscCode = merchantIfscCodeCtrl.text;
-            // merchantAdditionalInfoReq.bankAccountNo =
-            //     merchantAccountNumberCtrl.text;
-            // merchantAdditionalInfoReq.beneficiaryName =
-            //     merchantBeneficiaryNamrCodeCtrl.text;
-            // merchantAdditionalInfoReq.bankAccountNo =
-            //     merchantAccountNumberCtrl.text;
-            // accountVerify = false;
-            // // if (idStatus == 'VALID') {
-            // //   accountCheck = 'VALID';
-            // //   panOwnerName = name;
-            // //   showVerify = false;
-            // //  if(kDebugMode)print(name);
-            // //   userCheckMessage = Constants.userNameSuccessMessage;
-            // // } else {
-            // //   setState(() => showVerify = true);
-            // // }
           });
           if (kDebugMode) print("body is true");
         } else {
@@ -4993,13 +4973,13 @@ class _MerchantSignupState extends State<MerchantSignup> {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowMultiple: false,
-      allowedExtensions: ['pdf'], // Specify only PDF files
+      allowedExtensions: ['pdf'],
     );
 
     if (result != null) {
-      final File file = File(result.files.first.path!); // Get the file
-      int fileSize = await file.length(); // Get file size in bytes
-      double fileSizeInKB = fileSize / 1024; // Convert bytes to KB
+      final File file = File(result.files.first.path!);
+      int fileSize = await file.length();
+      double fileSizeInKB = fileSize / 1024;
 
       if (fileSizeInKB > 500) {
         alertWidget.error(
@@ -5030,7 +5010,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
       if (kDebugMode) print(accNumber);
       if (kDebugMode) print(ifscNumber);
 
-      // var user = await Validators.encrypt(_merchantPanController.text.toString());
       userServices
           .accountValidation(accNumber, ifscNumber)
           .then((response) async {
