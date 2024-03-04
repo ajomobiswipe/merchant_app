@@ -243,9 +243,6 @@ class UserServices {
   sendAddhaarOtp(String addhaarNumber) async {
     String token = boxStorage.getToken();
     if (kDebugMode) print("addhaarz$addhaarNumber");
-// Ensure token is not null or empty
-
-    // final headers = {'Authorization': 'Bearer $token'};
 
     var newheader = {
       'Authorization': 'Bearer $token',
@@ -262,8 +259,7 @@ class UserServices {
     };
     var responseapi = await http.post(addhaarverify,
         headers: newheader, body: jsonEncode(newreqbody));
-    //if(kDebugMode)print(newheader);
-    //if(kDebugMode)print(userId);
+
     if (kDebugMode)
       print("second api responseStatus code ${responseapi.statusCode}");
     if (kDebugMode) print(responseapi.body);
@@ -291,8 +287,7 @@ class UserServices {
 
     var responseapi = await http.post(addhaarverify,
         headers: newheader, body: jsonEncode(newreqbody));
-    //if(kDebugMode)print(newheader);
-    //if(kDebugMode)print(userId);
+
     if (kDebugMode)
       print(
           "Addhaar Validation Api reponseStatus code ${responseapi.statusCode}");
