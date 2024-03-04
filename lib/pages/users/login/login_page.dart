@@ -36,6 +36,7 @@ class _LoginPageState extends State<LoginPage> {
   UserServices userServices = UserServices();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _userNameController = TextEditingController();
   String password = "Password";
   String pin = "PIN";
   var keyboardType = TextInputType.text;
@@ -47,6 +48,7 @@ class _LoginPageState extends State<LoginPage> {
     buildNumber: 'Unknown',
     buildSignature: 'Unknown',
   );
+
   // VARIABLE DECLARATION
   late bool _isLoading = false;
   bool hidePassword = true;
@@ -55,13 +57,35 @@ class _LoginPageState extends State<LoginPage> {
   AlertService alertWidget = AlertService();
   final Uri _url = Uri.parse('https://sifr.ae/privacy.html');
   final Uri _url1 = Uri.parse('https://sifr.ae/terms.html');
-  bool isChecked = false;
+  bool isRemember = false;
 
   @override
   void initState() {
-    DevicePermission().checkPermission();
-    _initPackageInfo();
     super.initState();
+    DevicePermission().checkPermission();
+    _checkRememberMe();
+    _initPackageInfo();
+  }
+
+  Future _checkRememberMe() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool? rememberMe = prefs.getBool('rememberMe');
+
+    print('rememberMe$rememberMe');
+
+    if (rememberMe == null) {
+      isRemember = false;
+      return;
+    }
+
+    isRemember = rememberMe;
+
+    if (isRemember) {
+      _userNameController.text = prefs.getString('userName')!;
+      _passwordController.text = prefs.getString('password')!;
+    }
+
+    setState(() {});
   }
 
   Future<void> _initPackageInfo() async {
@@ -75,6 +99,7 @@ class _LoginPageState extends State<LoginPage> {
   void dispose() {
     _formKey.currentState?.dispose();
     _passwordController.dispose();
+    _userNameController.dispose();
     super.dispose();
   }
 
@@ -145,11 +170,13 @@ class _LoginPageState extends State<LoginPage> {
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             //forgotUserName(),
             Checkbox(
-              value: isChecked,
-              onChanged: (value) {
-                setState(() {
-                  isChecked = value!;
-                });
+              value: isRemember,
+              onChanged: (value) async {
+                isRemember = value!;
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                prefs.setBool('rememberMe', value);
+                print(prefs.getBool('rememberMe'));
+                setState(() {});
               },
             ),
 
@@ -280,8 +307,7 @@ class _LoginPageState extends State<LoginPage> {
 
       _passwordController.clear();
       userServices.salesTeamlogin(requestModel).then((response) async {
-
-        if(response==null){
+        if (response == null) {
           setLoading(false);
           alertWidget.failure(context, 'Failure', 'Something went wrong');
           return;
@@ -295,7 +321,9 @@ class _LoginPageState extends State<LoginPage> {
         var code = response.statusCode;
         if (code == 200 || code == 201) {
           if (result['responseCode'] == "00") {
-            saveSecureStorage(result, userName: requestModel.userName);
+            saveSecureStorage(result,
+                userName: requestModel.userName,
+                password: requestModel.password);
             Navigator.pushReplacementNamed(context, 'MerchantNumVerify');
             setLoading(false);
           } else if (result['responseCode'] == "03") {
@@ -323,7 +351,7 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  saveSecureStorage(decodeData, {String? userName}) async {
+  saveSecureStorage(decodeData, {String? userName, String? password}) async {
     /// NEW HIVE STORAGE CONTROLS
     var datetime = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
     String dateStr = datetime.toString();
@@ -342,6 +370,7 @@ class _LoginPageState extends State<LoginPage> {
 
     // prefs.setString('userName', decodeData['userName'].toString());
     prefs.setString('userName', userName!);
+    prefs.setString('password', password!);
 
     prefs.setString('role', decodeData['role'].toString());
     prefs.setString('lastLogin', dateStr);
@@ -422,6 +451,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
           TextFormField(
+              controller: _userNameController,
               keyboardType: TextInputType.text,
               style: Theme.of(context)
                   .textTheme
@@ -444,8 +474,8 @@ class _LoginPageState extends State<LoginPage> {
                 focusedErrorBorder: InputBorder.none,
                 contentPadding:
                     const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                fillColor:
-                    AppColors.kTileColor, // Set the background color here
+                fillColor: AppColors.kTileColor,
+                // Set the background color here
                 filled: true,
                 hintStyle: const TextStyle(
                     color: Colors.grey,

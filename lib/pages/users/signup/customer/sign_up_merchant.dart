@@ -595,6 +595,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
+      canPop: false,
       onPopInvoked: (didPop) => _onWillPop(context),
       child: Form(
         key: _formKey,
@@ -612,10 +613,10 @@ class _MerchantSignupState extends State<MerchantSignup> {
     );
   }
 
-  Future<bool?> _onWillPop(BuildContext context) async {
-    customAlert.displayDialogConfirm(context, 'Please confirm',
+  Future _onWillPop(BuildContext context) async {
+    await customAlert.displayDialogConfirm(context, 'Please confirm',
         'Do you want to quit your registration?', onTapConfirm);
-    return null;
+    // return null;
     // return exitResult ?? false;
   }
 

@@ -96,6 +96,7 @@ class Logout {
                                       ),
                                       ElevatedButton(
                                         onPressed: () async {
+
                                           Navigator.pushNamedAndRemoveUntil(
                                               context,
                                               'login',
@@ -103,7 +104,21 @@ class Logout {
                                           SharedPreferences prefs =
                                               await SharedPreferences
                                                   .getInstance();
-                                          prefs.clear();
+
+
+                                          prefs.remove('isLogged');
+                                          prefs.remove('lastLogin');
+
+                                          if(prefs.getBool('rememberMe')==null){
+                                            prefs.clear();
+                                          }else{
+                                            if(!(prefs.getBool('rememberMe')!)){
+                                              prefs.clear();
+                                            }
+                                          }
+
+                                          // prefs.clear();
+
                                         },
                                         style: ElevatedButton.styleFrom(
                                             backgroundColor: Theme.of(context)

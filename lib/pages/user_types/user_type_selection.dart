@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sifr_latest/common_widgets/copyright_widget.dart';
 import 'package:sifr_latest/config/config.dart';
 import 'package:sifr_latest/main.dart';
 import 'package:sifr_latest/widgets/app_scafold.dart';
 import 'package:sifr_latest/widgets/custom_text_widget.dart';
 
+import '../../config/state_key.dart';
 import 'user_type_select_widget.dart';
 
 class UserTypeSelection extends StatelessWidget {
@@ -25,31 +27,25 @@ class UserTypeSelection extends StatelessWidget {
               child: SizedBox(),
               flex: 1,
             ),
-
             const Expanded(
               child: SizedBox(),
               flex: 2,
             ),
-
             const CustomTextWidget(
               text: 'Welcome to',
               size: 22,
               fontWeight: FontWeight.w500,
               color: AppColors.kLightGreen,
             ),
-
             const Expanded(
               child: SizedBox(),
               flex: 2,
             ),
-
             Image.asset('assets/screen/anet.png', height: 100),
-
             const Expanded(
               child: SizedBox(),
               flex: 2,
             ),
-
             const CustomTextWidget(
               text: 'Merchant Onboarding',
               size: 22,
@@ -77,7 +73,9 @@ class UserTypeSelection extends StatelessWidget {
                   children: [
                     // CustomTextWidget(text: 'Please select yourself',isBold: false,size: 12,),
                     CustomTextWidget(
-                        text: 'Merchant Onboarding By',size: 14,),
+                      text: 'Merchant Onboarding By',
+                      size: 14,
+                    ),
                   ],
                 )
               ],
@@ -89,8 +87,20 @@ class UserTypeSelection extends StatelessWidget {
             UserSelectContainer(
               iconPath: 'assets/app_icons/sales_team.png',
               title: 'Sales Team',
-              onTap: () {
-                Navigator.pushNamed(context, 'login');
+              onTap: () async {
+                final SharedPreferences sharedPreferences =
+                    await SharedPreferences.getInstance();
+                bool? isLogged = sharedPreferences.getBool('isLogged') ?? false;
+
+                if (context.mounted){
+                  if(isLogged){
+                    Navigator.pushNamed(context, 'MerchantNumVerify');
+                    return;
+                  }
+
+                  Navigator.pushNamed(context, 'login');
+                }
+
               },
               borderColor: AppColors.kPrimaryColor,
               iconColor: AppColors.kLightGreen,
