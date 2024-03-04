@@ -46,14 +46,24 @@ class Connection {
     //     body: jsonEncode(requestData), headers: header);
     // return response;
 
-    HttpClient client = HttpClient(context: await globalContext);
-    client.badCertificateCallback =
-        (X509Certificate cert, String host, int port) => false;
-    IOClient ioClient = IOClient(client);
-    var response = await ioClient.post(Uri.parse(url),
-        body: jsonEncode(requestData), headers: header);
+    try{
 
-    return response;
+      HttpClient client = HttpClient(context: await globalContext);
+      client.badCertificateCallback =
+          (X509Certificate cert, String host, int port) => false;
+      IOClient ioClient = IOClient(client);
+      var response = await ioClient.post(Uri.parse(url),
+          body: jsonEncode(requestData), headers: header).timeout(const Duration(seconds: 20));
+
+
+
+      return response;
+
+    }catch(_){
+
+    }
+
+
   }
 
   /*
