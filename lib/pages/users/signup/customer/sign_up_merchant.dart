@@ -119,12 +119,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
   String? businessDocumentTypeId;
   String emailHelperText = "Verify E-mail Address";
 
-  // List<Map<String, dynamic>> BusinessTypeList = [
-  //   {"value": 1, "label": "Individual"},
-  //   {"value": 2, "label": "Sole Proprietorship"},
-  //   {"value": 3, "label": "Partnership Firm"},
-  // ];
-
 // Merchant Detials screen 3
   final TextEditingController _merchantDBANameController =
       TextEditingController();
@@ -135,18 +129,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
   int? selectedDocumentId;
 
-  // List<Map<String, dynamic>> bussinesCatogeryList = [
-  //   {"value": 1, "label": "Individual"},
-  //   {"value": 2, "label": "Sole Proprietorship"},
-  //   {"value": 3, "label": "Partnership Firm"},
-  // ];
   dynamic selectedBusinessSubCategory;
 
-  // List<Map<String, dynamic>> merchantBusinessSubList = [
-  //   {"value": 1, "label": "CAT001"},
-  //   {"value": 2, "label": "CAT002"},
-  //   {"value": 3, "label": "CAT003"},
-  // ];
   dynamic selectedBussinesTurnOver;
 
   List businessTurnoverList = [];
@@ -327,27 +311,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
   List mdrTypeList = [];
   List mdrSummaryList = [];
 
-  // // Merchant company detials feilda
-  // TextEditingController merchantCommercialNameCtrl = TextEditingController();
-  // TextEditingController onwershipNameCtrl = TextEditingController();
-  // TextEditingController merchantIdCtrl = TextEditingController();
-  // TextEditingController merchantAddressCtrl = TextEditingController();
-  // TextEditingController merchantStreetNameCtrl = TextEditingController();
-  // TextEditingController merchantDescriptionCtrl = TextEditingController();
-  // TextEditingController merchantZipCodeCtrl = TextEditingController();
-  // TextEditingController acquirerNameCtrl = TextEditingController();
-  // TextEditingController acquirerApplicationIdCtrl = TextEditingController();
-  // TextEditingController selectedCountry = TextEditingController();
-  // TextEditingController selectedCityCtrl = TextEditingController();
-  // TextEditingController selectedGeoFencingRadius = TextEditingController();
-  // TextEditingController selectedCurrency = TextEditingController();
-  // TextEditingController vatValueCtrl = TextEditingController();
-  // TextEditingController VATRegistrationNumberCtrl = TextEditingController();
-  // TextEditingController shareholderPercentCtrl = TextEditingController();
-  // TextEditingController maxAuthAmountCtrl = TextEditingController();
-  // TextEditingController maxTerminalCountCtrl = TextEditingController();
-  // TextEditingController merchantPercentageAmountCtrl = TextEditingController();
-
   var dobSelectedDt = DateTime(
       DateTime.now().year - 18, DateTime.now().month, DateTime.now().day);
   var nationalSelectedDt = DateTime.now();
@@ -362,11 +325,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
     _mobileNoController.text = widget.verifiednumber.text;
     DevicePermission().checkPermission();
     getCurrentPosition();
-    //getSecurityQuestions();
-    //loadMcc();
-    //getCountry();
     getDefaultMerchantValues();
-    //userServices.getAcqApplicationid('1');
   }
 
   // Timer? _debounce;
@@ -376,9 +335,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
   Future _sendTermsAndConditionsToMail() async {
     if (kDebugMode) print(acceptAggrement);
-
-    // if (_debounce?.isActive ?? false) _debounce!.cancel();
-
     setState(() {
       isTermsWaiting = true;
     });
@@ -2324,8 +2280,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   }
                 },
                 validator: (value) {
-                  if (kDebugMode) print('helloooo');
-
                   if (value == null || value.isEmpty) {
                     return 'Expiry Date is Mandatory!';
                   }
@@ -4531,25 +4485,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
     });
   }
 
-  getCountry() {
-    userServices.getCountry().then((response) async {
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        var decodeData = jsonDecode(response.body);
-        if (decodeData['responseType'] == "S") {
-          setState(() {
-            countryList = decodeData['responseValue']['list'];
-            if (countryList.isNotEmpty) {
-              selectedCountries = countryList[0]['ctyName'].toString();
-              requestModel.country = selectedCountries;
-              requestModel.currencyId =
-                  countryList[0]['currencyCode'].toString();
-            }
-          });
-        }
-      }
-    });
-  }
-
   List mdrApiSummaryList = [];
 
   getDefaultMerchantValues() async {
@@ -4943,6 +4878,10 @@ class _MerchantSignupState extends State<MerchantSignup> {
       var panNumber = _merchantPanController.text.toString();
       // var user = await Validators.encrypt(_merchantPanController.text.toString());
       userServices.panValidation(panNumber).then((response) async {
+        if (response == 'ERROR') {
+          alertWidget.error("Something Went Wrong");
+          return;
+        }
         if (response.toString() == "true") {
           setState(() {
             merchantIdProofReq.panNumberVerifyStatus = true;
@@ -5152,6 +5091,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 setState(() {
                   isAadhaarotpSending = false;
                   isAadhaarverified = isSvalidated;
+                  merchantIdProofReq.aadhaarNumberVerifyStatus = isSvalidated;
                   aadhaarHelperText = message;
                 });
               });
@@ -5162,6 +5102,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
           });
           if (kDebugMode) print("body is true");
         } else {
+          merchantIdProofReq.aadhaarNumberVerifyStatus = false;
           setState(() {
             isAadhaarotpSending = false;
             isaddhaarOTPsent = false;

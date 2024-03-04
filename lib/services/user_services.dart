@@ -228,9 +228,9 @@ class UserServices {
         return responseapi.body;
       }
 
-      return false;
+      return "ERROR";
     } catch (e) {
-      if (kDebugMode) print(e);
+      return "ERROR";
     }
   }
 
