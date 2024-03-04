@@ -101,8 +101,12 @@ class UserServices {
         'Content-Type': 'application/json',
       };
 
+      if (kDebugMode) print("newheader$newheader");
+
       var verifyAccountUel = Uri.parse(
           "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/validateBankAccountVerifications");
+
+      if (kDebugMode) print("verifyAccountUel${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/validateBankAccountVerifications");
 
       final newreqbody = {
         "task": "bankTransferLite",
@@ -114,6 +118,8 @@ class UserServices {
           "beneficiaryIFSC": ifsc
         }
       };
+
+      if (kDebugMode) print("newreqbody$newreqbody");
 
       var responseapi = await http.post(verifyAccountUel,
           headers: newheader, body: jsonEncode(newreqbody));
@@ -250,8 +256,12 @@ class UserServices {
       'Content-Type': 'application/json',
     };
 
+    if (kDebugMode) print("newheader$newheader");
+
     var addhaarverify = Uri.parse(
         "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/getEkycOtp");
+
+    if (kDebugMode) print("addhaarverify${'${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/getEkycOtp'}");
 
     final newreqbody = {
       "requestType": "AADHAAR",
@@ -275,8 +285,12 @@ class UserServices {
       'Content-Type': 'application/json',
     };
 
+    if (kDebugMode) print("newheader$newheader");
+
     var addhaarverify = Uri.parse(
         "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/verifyEkycData");
+
+    if (kDebugMode) print("addhaarverify${"${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/verifyEkycData"}");
 
     final newreqbody = {
       "requestType": "VERIFYAADHAROTP",
@@ -284,6 +298,8 @@ class UserServices {
       "otp": addhaarOtp,
       "aadharNumber": addhaarNumber
     };
+
+    if (kDebugMode) print("newreqbody$newreqbody");
 
     var responseapi = await http.post(addhaarverify,
         headers: newheader, body: jsonEncode(newreqbody));

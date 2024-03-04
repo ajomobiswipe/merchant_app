@@ -20,33 +20,22 @@ class AppScafofld extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: canPop,
-      onPopInvoked: (value) {
-        if (value) {
-          onPressed ??
-              () {
-                Navigator.pop(context);
-              };
-        }
-      },
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: eneableAppbar
-            ? AppAppbar(
-                onPressed: onPressed ??
-                    () {
-                      Navigator.pop(context);
-                    },
-                closePressed: closePressed,
-              )
-            : null,
-        body: Padding(
-            padding: padding ??
-                EdgeInsets.only(
-                    left: 15, right: 15, top: eneableAppbar ? 0 : 40),
-            child: child),
-      ),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: eneableAppbar
+          ? AppAppbar(
+              onPressed: onPressed ??
+                  () {
+                    Navigator.pop(context);
+                  },
+              closePressed: closePressed,
+            )
+          : null,
+      body: Padding(
+          padding: padding ??
+              EdgeInsets.only(
+                  left: 15, right: 15, top: eneableAppbar ? 0 : 40),
+          child: child),
     );
   }
 }

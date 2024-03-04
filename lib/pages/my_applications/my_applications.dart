@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sifr_latest/services/services.dart';
+import 'package:sifr_latest/utilities/screen_size.dart';
 import 'package:sifr_latest/widgets/app_scafold.dart';
 import 'package:sifr_latest/widgets/custom_text_widget.dart';
 import 'package:sifr_latest/widgets/widget.dart';
@@ -28,6 +29,8 @@ class _MyApplicationsState extends State<MyApplications> {
   List allOnboardingApplications = [];
   int selectesStage = 0;
   dynamic selectedValue;
+
+  bool loader = true;
   List<ApplicationStatus> ststusdata = [
     // ApplicationStatus(
     //   kycApproved: true,
@@ -454,6 +457,16 @@ class _MyApplicationsState extends State<MyApplications> {
             // if (selectedValue != null)
             //   Text(selectedValue["statusInfoId"].toString()),
 
+
+            loader?Container(
+              margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*.1),
+              color: AppColors.white,
+              child: const Center(
+                child: CircularProgressIndicator(
+                  strokeWidth: 3,
+                ),
+              ),
+            ):
             allOnboardingApplications.isNotEmpty
                 ? ListView(
                     shrinkWrap: true,
@@ -708,6 +721,10 @@ class _MyApplicationsState extends State<MyApplications> {
   Map<String, dynamic>? getChartCount;
 
   getAllMerchantApplications() async {
+    setState(() {
+      loader = true;
+    });
+
     if (kDebugMode) print("----AllMerchantApplications called----");
     await userServices
         .getMerchantApplication(
@@ -721,6 +738,7 @@ class _MyApplicationsState extends State<MyApplications> {
 
       setState(() {
         allOnboardingApplications = applicationsFromJson.reversed.toList();
+        loader = false;
       });
 
       for (var applications in applicationsFromJson) {

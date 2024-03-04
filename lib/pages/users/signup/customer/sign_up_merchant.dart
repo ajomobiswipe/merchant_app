@@ -613,8 +613,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
     );
   }
 
-  Future _onWillPop(BuildContext context) async {
-    await customAlert.displayDialogConfirm(context, 'Please confirm',
+   _onWillPop(BuildContext context)  {
+
+     customAlert.displayDialogConfirm(context, 'Please confirm',
         'Do you want to quit your registration?', onTapConfirm);
     // return null;
     // return exitResult ?? false;
@@ -1145,7 +1146,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               required: true,
               keyboardType: TextInputType.text,
               inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9.]'))
+                FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9. ]'))
               ],
               textCapitalization: TextCapitalization.words,
               // enabled: _firstNameController.text.isEmpty ||
