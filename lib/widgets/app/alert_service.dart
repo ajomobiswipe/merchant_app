@@ -37,21 +37,23 @@ class AlertService {
 
   //Global Failure Alert
   failure(BuildContext context, String? title, String message) {
-    final snackBar = SnackBar(
-      elevation: 0,
-      behavior: SnackBarBehavior.floating,
-      backgroundColor: Colors.transparent,
-      width: double.infinity,
-      content: AwesomeSnackbarContent(
-        title: title.toString().isEmpty ? 'Failed!' : title.toString(),
-        message: message,
-        contentType: ContentType.failure,
-        inMaterialBanner: true,
-      ),
-    );
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(snackBar);
+    // final snackBar = SnackBar(
+    //   elevation: 0,
+    //   behavior: SnackBarBehavior.floating,
+    //   backgroundColor: Colors.transparent,
+    //   width: double.infinity,
+    //   content: AwesomeSnackbarContent(
+    //     title: title.toString().isEmpty ? 'Failed!' : title.toString(),
+    //     message: message,
+    //     contentType: ContentType.failure,
+    //     inMaterialBanner: true,
+    //   ),
+    // );
+    // ScaffoldMessenger.of(context)
+    //   ..hideCurrentSnackBar()
+    //   ..showSnackBar(snackBar);
+
+    error(message);
   }
 
   //Global Warning Alert

@@ -153,7 +153,7 @@ class _LoginPageState extends State<LoginPage> {
               },
             ),
 
-            CustomTextWidget(
+            const CustomTextWidget(
               text: "Remember me", fontWeight: FontWeight.bold,
               // color: AppColors.kPrimaryColor,
             ),
@@ -280,9 +280,17 @@ class _LoginPageState extends State<LoginPage> {
 
       _passwordController.clear();
       userServices.salesTeamlogin(requestModel).then((response) async {
+
+        if(response==null){
+          setLoading(false);
+          alertWidget.failure(context, 'Failure', 'Something went wrong');
+          return;
+        }
+
         if (kDebugMode) print(response.body);
 
         var result = jsonDecode(response.body);
+        print('result$result');
 
         var code = response.statusCode;
         if (code == 200 || code == 201) {

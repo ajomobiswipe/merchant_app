@@ -37,8 +37,14 @@ class UserServices {
   salesTeamlogin(requestModel) async {
     Connection connection = Connection();
     var url = "${EndPoints.baseApiPublic}/NanoPay/v1/login";
+
+    print(url);
     // var url = EndPoints.baseApi9502 + EndPoints.loginAPI;
+
     var response = await connection.postWithOutToken(url, requestModel);
+
+    print('response$response');
+
     return response;
   }
 
