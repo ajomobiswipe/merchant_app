@@ -10,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:sifr_latest/common_widgets/app_appbar.dart';
 import 'package:sifr_latest/common_widgets/custom_app_button.dart';
 import 'package:sifr_latest/models/merchant_requestmodel.dart';
+import 'package:sifr_latest/widgets/image_button/verifivation_success_button.dart';
 import 'package:sifr_latest/widgets/tabbar/tabbar.dart';
 import 'package:sifr_latest/widgets/widget.dart';
 import '../../config/config.dart';
@@ -187,22 +188,19 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
-                    CustomTextWidget(text: 'Merchant Store Image'),
-                    SizedBox(
+                    const CustomTextWidget(text: 'Merchant Store Image'),
+                    const SizedBox(
                       height: 20,
                     ),
                     widget.storeFrontImage.text != ''
-                        ? GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                widget.storeFrontImage.text = '';
-                              });
-                            },
-                            child: afterSelect(widget.storeFrontImage.text),
-                          )
+                        ? afterSelect(widget.storeFrontImage.text, () {
+                            setState(() {
+                              widget.storeFrontImage.text = '';
+                            });
+                          })
                         : Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 10),
                             child: GestureDetector(
@@ -242,14 +240,11 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                             )),
                     const SizedBox(height: 20),
                     widget.insideStoreImage.text != ''
-                        ? GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                widget.insideStoreImage.text = '';
-                              });
-                            },
-                            child: afterSelect(widget.insideStoreImage.text),
-                          )
+                        ? afterSelect(widget.insideStoreImage.text, () {
+                            setState(() {
+                              widget.insideStoreImage.text = '';
+                            });
+                          })
                         : Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 10),
                             child: GestureDetector(
@@ -653,38 +648,60 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
     }
   }
 
-  Widget afterSelect(path) {
+  Widget afterSelect(path, Function()? onTap) {
     var screenHeight = MediaQuery.of(context).size.height;
 
-    return badge.Badge(
-      position: badge.BadgePosition.topEnd(top: -5, end: -10),
-      showBadge: true,
-      ignorePointer: false,
-      //elevation: 5,
-      badgeStyle: const badge.BadgeStyle(elevation: 5),
-      badgeContent: Row(
-        children: [
-          const Icon(Icons.close, color: Colors.white, size: 20),
-          const Icon(Icons.close, color: Colors.white, size: 20),
-        ],
-      ),
-      child: Container(
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: AppColors.kTileColor),
-        width: double.maxFinite,
-        height: screenHeight * .2,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Image.file(
-              File(path),
-              fit: BoxFit.fitWidth,
+    return Stack(
+      children: [
+        badge.Badge(
+          badgeStyle: const badge.BadgeStyle(
+            badgeColor: Colors.white,
+          ),
+          badgeContent: const CircleAvatar(
+            backgroundColor: Colors.white,
+            child: VerificationSuccessButton(iconSize: 30),
+          ),
+          child: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: AppColors.kTileColor),
+            width: double.maxFinite,
+            height: screenHeight * .2,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.file(
+                  File(path),
+                  fit: BoxFit.fitWidth,
+                ),
+              ),
             ),
           ),
         ),
-      ),
+        Positioned(
+          right: 20,
+          bottom: 20,
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 10,
+              ),
+              InkWell(
+                onTap: onTap,
+                child: CircleAvatar(
+                  backgroundColor: Colors.grey.shade400,
+                  child: const Icon(
+                    Icons.delete_outline,
+                    color: Colors.black,
+                    size: 25,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

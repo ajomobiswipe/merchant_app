@@ -483,7 +483,12 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
 
                 // child:
                 Container(
-                  color: AppColors.kTileColor,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(
+                      10,
+                    ),
+                    color: AppColors.kTileColor,
+                  ),
                   child: Theme(
                     data: ThemeData().copyWith(
                         dividerColor: Colors.transparent,

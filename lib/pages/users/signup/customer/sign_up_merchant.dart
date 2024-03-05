@@ -19,7 +19,6 @@ import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sifr_latest/common_widgets/app_appbar.dart';
 import 'package:sifr_latest/helpers/default_height.dart';
-import 'package:sifr_latest/models/merchant_requestmodel.dart';
 import 'package:sifr_latest/pages/mechant_order/merchant_order_details.dart';
 import 'package:sifr_latest/widgets/Forms/merchant_store_form.dart';
 import 'package:sifr_latest/widgets/custom_text_widget.dart';
@@ -29,8 +28,8 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../common_widgets/custom_app_button.dart';
 import '../../../../common_widgets/form_title_widget.dart';
 import '../../../../config/config.dart';
+import '../../../../decurations/dropdownDecurations.dart';
 import '../../../../helpers/pan_validateer.dart';
-import '../../../../models/models.dart';
 import '../../../../providers/providers.dart';
 import '../../../../services/services.dart';
 import '../../../../widgets/image_button/verifivation_success_button.dart';
@@ -298,12 +297,13 @@ class _MerchantSignupState extends State<MerchantSignup> {
   final TextEditingController kycBack = TextEditingController();
 
   /// Bank detials
-  String ifscCode = '';
+
   TextEditingController merchantAccountNumberCtrl = TextEditingController();
   TextEditingController merchantphoneNumberCtrl = TextEditingController();
   TextEditingController merchantIfscCodeCtrl = TextEditingController();
   TextEditingController merchantBeneficiaryNamrCodeCtrl =
       TextEditingController();
+  int? selectedBankId;
 
   String _selectedOption = "Current";
 
@@ -2592,7 +2592,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               const FormTitleWidget(subWord: 'Merchant Bank Details'),
               const SizedBox(height: 10),
               const SizedBox(height: 20.0),
-              CustomTextWidget(
+              const CustomTextWidget(
                   text: "Merchant Bank Account Details*",
                   fontWeight: FontWeight.w200,
                   size: 14),
@@ -2627,7 +2627,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                             });
                           },
                         ),
-                        CustomTextWidget(
+                        const CustomTextWidget(
                             text: 'Current',
                             color: Colors.black,
                             isBold: false),
@@ -2642,7 +2642,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                             });
                           },
                         ),
-                        CustomTextWidget(
+                        const CustomTextWidget(
                             text: 'Savings',
                             color: Colors.black,
                             isBold: false),
@@ -2651,7 +2651,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   ],
                 ),
               ),
-
               CustomTextFormField(
                 titleEneabled: false,
                 controller: merchantAccountNumberCtrl,
@@ -2772,40 +2771,43 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   merchantBankInfoReq.bankIfscCode = value;
                 },
               ),
-              CustomDropdown(
-                title: "Select Bank",
-                hintText: "Select bank",
-                titleEnabled: false,
-                required: true,
-                //enabled: accountVerify,
-                selectedItem: ifscCode != '' ? ifscCode : null,
-                prefixIcon: FontAwesome.building_solid,
-                itemList: merchantBankList
-                    .map((map) => map['bankName'].toString())
-                    .toList(),
-                //countryList.map((e) => e['ctyName']).toList(),
+              DropdownButtonFormField<int>(
+                style: const TextStyle(
+                    fontSize: 13,
+                    color: Colors.black,
+                    fontFamily: 'Mont-regular'),
+                value: selectedBankId,
+                icon: const Icon(Icons.keyboard_arrow_down,
+                    color: AppColors.kPrimaryColor),
+                hint: const Text(
+                  'Select Bank',
+                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                ),
+                items: merchantBankList
+                    .asMap()
+                    .entries
+                    .map<DropdownMenuItem<int>>((entry) {
+                  Map<String, dynamic> product = entry.value;
+                  return DropdownMenuItem<int>(
+                    value: product['bankId'],
+                    child: Text(product['bankName'].toString()),
+                  );
+                }).toList(),
                 onChanged: (value) {
-                  setState(() {
-                    //if(kDebugMode)print(merchantBankList);
-                    ifscCode = value;
-
-                    // requestModel.city = value;
-                  });
-                },
-                onSaved: (value) {
-                  // merchantBankInfoReq.bankNameId = value;
-                  merchantBankInfoReq.bankNameId = (merchantBankList
-                          .where((element) => element['bankName'] == value)
-                          .toList())[0]['bankId']
-                      .toString();
-                  if (kDebugMode) print(merchantBankInfoReq.bankNameId);
+                  selectedBankId = value;
+                  merchantBankInfoReq.bankNameId = value.toString();
+                  print("Selected Bank id  " + value.toString());
                 },
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
+                  if (value == null) {
                     return 'Please Select a Bank!';
                   }
                   return null;
                 },
+                onSaved: (newValue) {
+                  merchantBankInfoReq.bankNameId = newValue.toString();
+                },
+                decoration: dropdownDecoration(context),
               ),
               CustomTextFormField(
                 title: 'Beneficiary Name',
@@ -2831,46 +2833,15 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   return null;
                 },
               ),
-              // const SizedBox(height: 20.0),
-              // Row(
-              //   children: <Widget>[
-              //     CustomTextWidget(text: "Account Type"),
-              //     Spacer(),
-              //     Radio(
-              //       value: 'Current',
-              //       groupValue: _selectedOption,
-              //       onChanged: (value) {
-              //         setState(() {
-              //           _selectedOption = value!;
-              //         });
-              //       },
-              //     ),
-              //     Text('Current'),
-              //     Spacer(),
-              //     Radio(
-              //       value: 'Savings',
-              //       groupValue: _selectedOption,
-              //       onChanged: (value) {
-              //         setState(() {
-              //           _selectedOption = value!;
-              //         });
-              //       },
-              //     ),
-              //     Text('Savings'),
-              //   ],
-              // ),
               const SizedBox(height: 20.0),
               const CustomTextWidget(text: "Cheque Image"),
               const SizedBox(height: 10.0),
               cancelledChequeImg != ''
-                  ? GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          cancelledChequeImg = '';
-                        });
-                      },
-                      child: afterSelect(cancelledChequeImg),
-                    )
+                  ? afterSelect(cancelledChequeImg, () {
+                      setState(() {
+                        cancelledChequeImg = '';
+                      });
+                    })
                   : Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: GestureDetector(
@@ -2887,17 +2858,13 @@ class _MerchantSignupState extends State<MerchantSignup> {
                           child: const Padding(
                             padding: EdgeInsets.all(8.0),
                             child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Row(
-                                  children: [
-                                    CustomTextWidget(
-                                        text:
-                                            "Click the image of a cancelled cheque",
-                                        color: Colors.grey),
-                                  ],
-                                ),
+                                CustomTextWidget(
+                                    text:
+                                        "Click the image of a cancelled cheque",
+                                    color: Colors.grey),
                                 SizedBox(
                                   height: 10,
                                 ),
@@ -4672,33 +4639,60 @@ class _MerchantSignupState extends State<MerchantSignup> {
     });
   }
 
-  Widget afterSelect(path) {
+  Widget afterSelect(path, Function()? onTap) {
     var screenHeight = MediaQuery.of(context).size.height;
 
-    return badge.Badge(
-      position: badge.BadgePosition.topEnd(top: -5, end: -10),
-      showBadge: true,
-      ignorePointer: false,
-      //elevation: 5,
-      badgeStyle: const badge.BadgeStyle(elevation: 5),
-      badgeContent: const Icon(Icons.close, color: Colors.white, size: 20),
-      child: Container(
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: AppColors.kTileColor),
-        width: double.maxFinite,
-        height: screenHeight * .2,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Image.file(
-              File(path),
-              fit: BoxFit.fitWidth,
+    return Stack(
+      children: [
+        badge.Badge(
+          badgeStyle: const badge.BadgeStyle(
+            badgeColor: Colors.white,
+          ),
+          badgeContent: const CircleAvatar(
+            backgroundColor: Colors.white,
+            child: VerificationSuccessButton(iconSize: 30),
+          ),
+          child: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: AppColors.kTileColor),
+            width: double.maxFinite,
+            height: screenHeight * .2,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.file(
+                  File(path),
+                  fit: BoxFit.fitWidth,
+                ),
+              ),
             ),
           ),
         ),
-      ),
+        Positioned(
+          right: 20,
+          bottom: 20,
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 10,
+              ),
+              InkWell(
+                onTap: onTap,
+                child: CircleAvatar(
+                  backgroundColor: Colors.grey.shade400,
+                  child: const Icon(
+                    Icons.delete_outline,
+                    color: Colors.black,
+                    size: 25,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 

@@ -9,7 +9,7 @@ class VerificationSuccessButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Image.asset(
-      "assets/app_icons/success_symbol.png",
+      "assets/app_icons/verified_icon.png",
       height: iconSize,
     );
   }
