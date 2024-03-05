@@ -26,6 +26,7 @@ class CompanyDetailsInfoRequestmodel {
   int? stateId;
   int? cityCode;
   int? businessTypeId;
+  bool? gstApplicable;
 
   CompanyDetailsInfoRequestmodel({
     this.merchantName,
@@ -40,7 +41,7 @@ class CompanyDetailsInfoRequestmodel {
     this.contactPerson,
     this.stateId,
     this.cityCode,
-    this.businessTypeId,
+    this.businessTypeId,this.gstApplicable
   });
 
   factory CompanyDetailsInfoRequestmodel.fromJson(Map<String, dynamic> json) =>
@@ -74,5 +75,6 @@ class CompanyDetailsInfoRequestmodel {
         "stateId": stateId,
         "cityCode": cityCode,
         "businessTypeId": businessTypeId,
+        "gstApplicable":gstApplicable
       };
 }

@@ -81,10 +81,12 @@ class _CustomOtpWidgetState extends State<CustomOtpWidget> {
             prefixIcon: Icons.phone,
 
             onChanged: (phone) {
-              // merchantPersonalReq.currentMobileNo =
-              //     phone.countryCode + phone.number;
+             setState(() {
+
+             });
             },
-            suffixIcon: GestureDetector(
+            suffixIcon: widget.phonemumbercontroller.text.length ==10?GestureDetector(
+
               onTap: () {
                 if (widget.phonemumbercontroller.text.isEmpty) {
                   return;
@@ -107,6 +109,7 @@ class _CustomOtpWidgetState extends State<CustomOtpWidget> {
                   isOtpVisible = true;
                 });
               },
+
               child: const Column(
                 children: [
                   Icon(
@@ -120,7 +123,8 @@ class _CustomOtpWidgetState extends State<CustomOtpWidget> {
                   )
                 ],
               ),
-            ),
+            ):Container(width: 0),
+
             suffixIconTrue: true,
 
             validator: (value) {
@@ -190,6 +194,7 @@ class _CustomOtpWidgetState extends State<CustomOtpWidget> {
                   defaultPinTheme: defaultPinTheme,
                   separatorBuilder: (index) => const SizedBox(width: 8),
                   validator: widget.validator,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   // onClipboardFound: (value) {
                   //  if(kDebugMode)print('onClipboardFound: $value');
                   //   pinController.setText(value);

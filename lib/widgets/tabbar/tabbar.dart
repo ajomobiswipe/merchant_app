@@ -10,7 +10,7 @@ Container appTabbar({
 }) {
   return Container(
     decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(5),
       color: AppColors.kSelectedBackgroundColor,
     ),
     // height: screenHeight / 10,

@@ -254,6 +254,7 @@ class _MerchantOTPVerifyScreenState extends State<MerchantOTPVerifyScreen> {
             const SizedBox(
               height: 5,
             ),
+
             CustomOtpWidget(
               onCompleted: (pin) {
                 if (kDebugMode) print('onCompleted: $pin');
@@ -267,6 +268,7 @@ class _MerchantOTPVerifyScreenState extends State<MerchantOTPVerifyScreen> {
                 }
               },
             ),
+
             const SizedBox(
               height: 20,
             ),

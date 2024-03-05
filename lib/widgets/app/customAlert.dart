@@ -61,54 +61,59 @@ class CustomAlert {
       );
     }
 
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            titlePadding: EdgeInsets.only(
+    try{
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              titlePadding: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height*.03,
+                  left: paddingSymmetric,
+                  right: paddingSymmetric),
+              contentPadding: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height*.015,
+                  left: paddingSymmetric,
+                  right: paddingSymmetric),
+              actionsPadding: EdgeInsets.only(
                 top: MediaQuery.of(context).size.height*.03,
-                left: paddingSymmetric,
-                right: paddingSymmetric),
-            contentPadding: EdgeInsets.only(
-                top: MediaQuery.of(context).size.height*.015,
-                left: paddingSymmetric,
-                right: paddingSymmetric),
-            actionsPadding: EdgeInsets.only(
-              top: MediaQuery.of(context).size.height*.03,
-              bottom: paddingTop,
-              right: paddingSymmetric,
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius:
-                  BorderRadius.circular(10.0), // Set the border radius
-            ),
-            title: Text(
-              title,
-              style: const TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
+                bottom: paddingTop,
+                right: paddingSymmetric,
               ),
-            ),
-            content: Text(
-              message,
-              style: const TextStyle(
-                  color: Colors.black87, fontWeight: FontWeight.w400),
-            ),
-            actionsAlignment: MainAxisAlignment.center,
-            actions: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  actionButton(fromNo: true),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * .025,
-                  ),
-                  actionButton()
-                ],
-              )
-            ],
-          );
-        });
+              shape: RoundedRectangleBorder(
+                borderRadius:
+                BorderRadius.circular(10.0), // Set the border radius
+              ),
+              title: Text(
+                title,
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              content: Text(
+                message,
+                style: const TextStyle(
+                    color: Colors.black87, fontWeight: FontWeight.w400),
+              ),
+              actionsAlignment: MainAxisAlignment.center,
+              actions: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    actionButton(fromNo: true),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * .025,
+                    ),
+                    actionButton()
+                  ],
+                )
+              ],
+            );
+          });
+    }catch(e){
+        print(e);
+    }
+
   }
 
   // Global Mpin Dialog

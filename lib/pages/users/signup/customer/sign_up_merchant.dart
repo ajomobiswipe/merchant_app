@@ -64,6 +64,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
   AlertService alertWidget = AlertService();
   CustomAlert customAlert = CustomAlert();
   UserServices userServices = UserServices();
+
   // MerchantRequestModel requestModel = MerchantRequestModel();
   // MerchantRegPersonalReqModel merchantPersonalReq =
   //     MerchantRegPersonalReqModel();
@@ -305,7 +306,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
       TextEditingController();
   int? selectedBankId;
 
-  String _selectedOption = "Current";
+  int _selectedOption = 0;
 
 // merchant Aggrement
   dynamic mdrType;
@@ -616,8 +617,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
   }
 
   _onWillPop(BuildContext context) {
-    customAlert.displayDialogConfirm(context, 'Please confirm',
-        'Do you want to quit your registration?', onTapConfirm);
+    try {
+      customAlert.displayDialogConfirm(context, 'Please confirm',
+          'Do you want to quit your registration?', onTapConfirm);
+    } catch (_) {}
+
     // return null;
     // return exitResult ?? false;
   }
@@ -1430,8 +1434,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
               onChanged: (newValue) {
                 setState(() {
                   selectedBussinesTurnOver = newValue;
+
                   companyDetailsInforeq.annualTurnOver =
                       newValue['turnoverAmount'];
+                  companyDetailsInforeq.gstApplicable =
+                      newValue['gstApplicable'];
 
                   mdrType = null;
                   mdrSummaryList = [];
@@ -2619,11 +2626,12 @@ class _MerchantSignupState extends State<MerchantSignup> {
                         // Spacer(),
                         Radio(
                           activeColor: AppColors.kPrimaryColor,
-                          value: 'Current',
+                          value: 0,
                           groupValue: _selectedOption,
                           onChanged: (value) {
                             setState(() {
                               _selectedOption = value!;
+                              merchantBankInfoReq.accountType = value;
                             });
                           },
                         ),
@@ -2634,11 +2642,12 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
                         Radio(
                           activeColor: AppColors.kPrimaryColor,
-                          value: 'Savings',
+                          value: 1,
                           groupValue: _selectedOption,
                           onChanged: (value) {
                             setState(() {
                               _selectedOption = value!;
+                              merchantBankInfoReq.accountType = value;
                             });
                           },
                         ),
@@ -3027,7 +3036,10 @@ class _MerchantSignupState extends State<MerchantSignup> {
             ),
 
             Container(
-              color: AppColors.kTileColor,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                color: AppColors.kTileColor,
+              ),
               child: Padding(
                 padding:
                     EdgeInsets.all(MediaQuery.of(context).size.width * .025),
@@ -4268,7 +4280,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
             Container(
               height: MediaQuery.of(context).size.height * .05,
               padding: const EdgeInsets.symmetric(horizontal: 15),
-              color: AppColors.kTileColor,
+              decoration: BoxDecoration(
+                  color: AppColors.kTileColor,
+                  borderRadius: BorderRadius.circular(5)),
               child: Row(
                 children: <Widget>[
                   Expanded(
@@ -4348,7 +4362,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
             Container(
               height: MediaQuery.of(context).size.height * .05,
-              color: AppColors.kTileColor,
+              decoration: BoxDecoration(
+                  color: AppColors.kTileColor,
+                  borderRadius: BorderRadius.circular(5)),
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Row(
                 children: <Widget>[
@@ -4610,17 +4626,17 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
       for (var mccGroup in mccGroups) {
         String mccGroupId = mccGroup['mccGroupId'].toString();
-        if (kDebugMode) print('mccGroupId : $mccGroupId');
+        // if (kDebugMode) print('mccGroupId : $mccGroupId');
       }
 
       for (var mccType in mccTypes) {
         String acquirerName = mccType['mccTypeDesc'];
-        if (kDebugMode) print('mccTypeDesc: $acquirerName');
+        // if (kDebugMode) print('mccTypeDesc: $acquirerName');
       }
 
       for (var products in tmsProductMaster) {
         String acquirerName = products['productName'];
-        if (kDebugMode) print('productName: $acquirerName');
+        // if (kDebugMode) print('productName: $acquirerName');
       }
       if (kDebugMode) print("length" + "${tmsProductMaster.length}");
     });

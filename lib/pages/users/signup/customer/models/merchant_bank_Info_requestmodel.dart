@@ -16,14 +16,15 @@ class MerchantBankInfoRequestmodel {
   String? bankNameId;
   String? beneficiaryName;
   bool? merchantBankVerifyStatus;
+  int? accountType;
 
-  MerchantBankInfoRequestmodel({
-    this.bankAccountNo,
-    this.bankIfscCode,
-    this.bankNameId,
-    this.beneficiaryName,
-    this.merchantBankVerifyStatus,
-  });
+  MerchantBankInfoRequestmodel(
+      {this.bankAccountNo,
+      this.bankIfscCode,
+      this.bankNameId,
+      this.beneficiaryName,
+      this.merchantBankVerifyStatus,
+      this.accountType = 0});
 
   factory MerchantBankInfoRequestmodel.fromJson(Map<String, dynamic> json) =>
       MerchantBankInfoRequestmodel(
@@ -40,5 +41,6 @@ class MerchantBankInfoRequestmodel {
         "bankNameId": bankNameId,
         "beneficiaryName": beneficiaryName,
         "merchantBankVerifyStatus": merchantBankVerifyStatus,
+        "accountType": accountType
       };
 }

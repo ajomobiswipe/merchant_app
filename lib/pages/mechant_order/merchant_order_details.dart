@@ -79,7 +79,7 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
           ),
           Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(5),
               color: AppColors.kSelectedBackgroundColor,
             ),
             child: Row(
@@ -440,7 +440,7 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                 // Display Selected Items
                 defaultHeight(20),
                 const CustomTextWidget(
-                  text: 'Product Summary:',
+                  text: 'Product Summary',
                   fontWeight: FontWeight.bold,
                 ),
                 defaultHeight(10),
@@ -485,7 +485,7 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
                 Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(
-                      10,
+                      5,
                     ),
                     color: AppColors.kTileColor,
                   ),

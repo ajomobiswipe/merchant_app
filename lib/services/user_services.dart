@@ -584,6 +584,11 @@ class UserServices {
     Connection connection = Connection();
     var url =
         '${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/GetMerchantOnboardingValues';
+
+    if (kDebugMode) {
+      print("url$url");
+    }
+
     var response = await connection.get(url);
     if (kDebugMode)
       print("Defaultvalues Api response code" + response.statusCode.toString());
@@ -890,8 +895,9 @@ class UserServices {
     request.files.add(cancelledCheqImg);
     request.fields["userId"] = "softposadmin";
     request.fields['merchantProductInfo'] = jsonEncode(merchantProductInfoReq);
-    request.fields['companyDetailsInfo'] =
-        jsonEncode(companyDetailsInforeq.toJson());
+
+    request.fields['companyDetailsInfo'] = jsonEncode(companyDetailsInforeq.toJson());
+
     request.fields['merchantIdProof'] = jsonEncode(merchantIdProofReq.toJson());
     request.fields['businessIDProof'] = jsonEncode(businessIdProofReq.toJson());
     request.fields['merchantLocation'] =
@@ -899,6 +905,11 @@ class UserServices {
     request.fields['bankInfo'] = jsonEncode(merchantBankInfoReq.toJson());
     request.fields['merchantAgreeMentInfo'] =
         jsonEncode(merchantAgreeMentReq.toJson());
+
+
+
+
+
     final streamedResponse = await request.send();
     final response = await http.Response.fromStream(streamedResponse);
     return response;
