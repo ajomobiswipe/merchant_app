@@ -166,9 +166,6 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              const SizedBox(
-                height: 20.0,
-              ),
               const Row(
                 children: [
                   CustomTextWidget(
@@ -178,48 +175,24 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                   ),
                 ],
               ),
+              const SizedBox(
+                height: 20.0,
+              ),
               appTabbar(
                 screenHeight: screenHeight,
                 currTabPosition: currTabPosition,
               ),
-
-              // CustomTextWidget(
-              //     text:
-              //         'lat ${_currentPosition?.latitude ?? ""} long ${_currentPosition?.longitude ?? ""}'),
-              // Center(
-              //   child: Text(
-              //       "Uploading your store's inside image, outside image, and store Address.",
-              //       textAlign: TextAlign.center,
-              //       style: Theme.of(context)
-              //           .textTheme
-              //           .bodySmall
-              //           ?.copyWith(color: Colors.grey)),
-              // ),
-
               Padding(
                 padding: const EdgeInsets.all(6.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: RichText(
-                        text: TextSpan(
-                            text: 'Merchant Store Image',
-                            style:
-                                Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      color: Colors.black.withOpacity(0.7),
-                                      fontWeight: FontWeight.bold,
-                                      // decoration: TextDecoration.underline,
-                                    ),
-                            children: const [
-                              TextSpan(
-                                  text: ' *',
-                                  style: TextStyle(
-                                      color: Colors.grey,
-                                      decoration: TextDecoration.none))
-                            ]),
-                      ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    CustomTextWidget(text: 'Merchant Store Image'),
+                    SizedBox(
+                      height: 20,
                     ),
                     widget.storeFrontImage.text != ''
                         ? GestureDetector(
@@ -242,24 +215,20 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                                   color: AppColors.kTileColor,
                                 ),
                                 width: double.maxFinite,
-                                height: 100,
+                                height: screenHeight * .2,
                                 child: const Padding(
                                   padding: EdgeInsets.all(8.0),
                                   child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
                                     children: [
-                                      Row(
-                                        children: [
-                                          CustomTextWidget(
-                                              text:
-                                                  "Click the front image of the store",
-                                              color: Colors.grey),
-                                        ],
-                                      ),
+                                      CustomTextWidget(
+                                          text:
+                                              "Click the front image of the store",
+                                          color: Colors.grey),
                                       SizedBox(
-                                        height: 10,
+                                        height: 20,
                                       ),
                                       Icon(
                                         Icons.camera_sharp,
@@ -293,24 +262,20 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
                                   color: AppColors.kTileColor,
                                 ),
                                 width: double.maxFinite,
-                                height: 100,
+                                height: screenHeight * .2,
                                 child: const Padding(
                                   padding: EdgeInsets.all(8.0),
                                   child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
                                     children: [
-                                      Row(
-                                        children: [
-                                          CustomTextWidget(
-                                              text:
-                                                  "Click the inside image of the store",
-                                              color: Colors.grey),
-                                        ],
-                                      ),
+                                      CustomTextWidget(
+                                          text:
+                                              "Click the inside image of the store",
+                                          color: Colors.grey),
                                       SizedBox(
-                                        height: 10,
+                                        height: 20,
                                       ),
                                       Icon(
                                         Icons.camera_sharp,
@@ -689,28 +654,33 @@ class _MerchantStoreImagesFormState extends State<MerchantStoreImagesForm> {
   }
 
   Widget afterSelect(path) {
+    var screenHeight = MediaQuery.of(context).size.height;
+
     return badge.Badge(
-      position: badge.BadgePosition.topEnd(top: -5, end: 10),
+      position: badge.BadgePosition.topEnd(top: -5, end: -10),
       showBadge: true,
       ignorePointer: false,
       //elevation: 5,
       badgeStyle: const badge.BadgeStyle(elevation: 5),
-      badgeContent: const Icon(Icons.close, color: Colors.white, size: 20),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: Card(
-          elevation: 10,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-          child: SizedBox(
-            width: double.maxFinite,
-            height: 120,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Image.file(
-                File(path),
-                fit: BoxFit.fitWidth,
-              ),
+      badgeContent: Row(
+        children: [
+          const Icon(Icons.close, color: Colors.white, size: 20),
+          const Icon(Icons.close, color: Colors.white, size: 20),
+        ],
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: AppColors.kTileColor),
+        width: double.maxFinite,
+        height: screenHeight * .2,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Image.file(
+              File(path),
+              fit: BoxFit.fitWidth,
             ),
           ),
         ),

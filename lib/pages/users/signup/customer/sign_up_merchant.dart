@@ -305,6 +305,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
   TextEditingController merchantBeneficiaryNamrCodeCtrl =
       TextEditingController();
 
+  String _selectedOption = "Current";
+
 // merchant Aggrement
   dynamic mdrType;
 
@@ -613,9 +615,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
     );
   }
 
-   _onWillPop(BuildContext context)  {
-
-     customAlert.displayDialogConfirm(context, 'Please confirm',
+  _onWillPop(BuildContext context) {
+    customAlert.displayDialogConfirm(context, 'Please confirm',
         'Do you want to quit your registration?', onTapConfirm);
     // return null;
     // return exitResult ?? false;
@@ -2590,12 +2591,74 @@ class _MerchantSignupState extends State<MerchantSignup> {
               ),
               const FormTitleWidget(subWord: 'Merchant Bank Details'),
               const SizedBox(height: 10),
+              const SizedBox(height: 20.0),
+              CustomTextWidget(
+                  text: "Merchant Bank Account Details*",
+                  fontWeight: FontWeight.w200,
+                  size: 14),
+              const SizedBox(height: 20.0),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: AppColors.kTileColor,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Padding(
+                    //   padding: const EdgeInsets.only(top: 10, left: 15),
+                    //   child: CustomTextWidget(
+                    //       text: "Please choose account type.",
+                    //       fontWeight: FontWeight.w200,
+                    //       color: Colors.grey,
+                    //       size: 14),
+                    // ),
+                    Row(
+                      children: <Widget>[
+                        // CustomTextWidget(text: "Account Type"),
+                        // Spacer(),
+                        Radio(
+                          activeColor: AppColors.kPrimaryColor,
+                          value: 'Current',
+                          groupValue: _selectedOption,
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedOption = value!;
+                            });
+                          },
+                        ),
+                        CustomTextWidget(
+                            text: 'Current',
+                            color: Colors.black,
+                            isBold: false),
+
+                        Radio(
+                          activeColor: AppColors.kPrimaryColor,
+                          value: 'Savings',
+                          groupValue: _selectedOption,
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedOption = value!;
+                            });
+                          },
+                        ),
+                        CustomTextWidget(
+                            text: 'Savings',
+                            color: Colors.black,
+                            isBold: false),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+
               CustomTextFormField(
+                titleEneabled: false,
                 controller: merchantAccountNumberCtrl,
                 title: 'Merchant Bank Account Details',
                 hintText: "Enter merchant account number",
                 required: true,
-                prefixIcon: Icons.person,
+                prefixIcon: Icons.numbers,
 
                 suffixIcon: isAccountInfoverifying
                     ? const CircularProgressIndicator(
@@ -2754,7 +2817,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 maxLength: 24,
                 keyboardType: TextInputType.visiblePassword,
                 textCapitalization: TextCapitalization.words,
-                prefixIcon: LineAwesome.store_alt_solid,
+                prefixIcon: Icons.person,
                 inputFormatters: <TextInputFormatter>[
                   FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\d\s]'))
                 ],
@@ -2768,8 +2831,37 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   return null;
                 },
               ),
+              // const SizedBox(height: 20.0),
+              // Row(
+              //   children: <Widget>[
+              //     CustomTextWidget(text: "Account Type"),
+              //     Spacer(),
+              //     Radio(
+              //       value: 'Current',
+              //       groupValue: _selectedOption,
+              //       onChanged: (value) {
+              //         setState(() {
+              //           _selectedOption = value!;
+              //         });
+              //       },
+              //     ),
+              //     Text('Current'),
+              //     Spacer(),
+              //     Radio(
+              //       value: 'Savings',
+              //       groupValue: _selectedOption,
+              //       onChanged: (value) {
+              //         setState(() {
+              //           _selectedOption = value!;
+              //         });
+              //       },
+              //     ),
+              //     Text('Savings'),
+              //   ],
+              // ),
               const SizedBox(height: 20.0),
               const CustomTextWidget(text: "Cheque Image"),
+              const SizedBox(height: 10.0),
               cancelledChequeImg != ''
                   ? GestureDetector(
                       onTap: () {
@@ -2787,11 +2879,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
                         },
                         child: Container(
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
+                            borderRadius: BorderRadius.circular(10),
                             color: AppColors.kTileColor,
                           ),
                           width: double.maxFinite,
-                          height: 100,
+                          height: screenHeight / 6,
                           child: const Padding(
                             padding: EdgeInsets.all(8.0),
                             child: Column(
@@ -4581,25 +4673,28 @@ class _MerchantSignupState extends State<MerchantSignup> {
   }
 
   Widget afterSelect(path) {
+    var screenHeight = MediaQuery.of(context).size.height;
+
     return badge.Badge(
-      position: badge.BadgePosition.topEnd(top: -5, end: 10),
+      position: badge.BadgePosition.topEnd(top: -5, end: -10),
       showBadge: true,
       ignorePointer: false,
       //elevation: 5,
       badgeStyle: const badge.BadgeStyle(elevation: 5),
       badgeContent: const Icon(Icons.close, color: Colors.white, size: 20),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: Card(
-          child: SizedBox(
-            width: double.maxFinite,
-            height: 150,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Image.file(
-                File(path),
-                fit: BoxFit.contain,
-              ),
+      child: Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: AppColors.kTileColor),
+        width: double.maxFinite,
+        height: screenHeight * .2,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Image.file(
+              File(path),
+              fit: BoxFit.fitWidth,
             ),
           ),
         ),

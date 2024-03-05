@@ -106,7 +106,9 @@ class UserServices {
       var verifyAccountUel = Uri.parse(
           "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/validateBankAccountVerifications");
 
-      if (kDebugMode) print("verifyAccountUel${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/validateBankAccountVerifications");
+      if (kDebugMode)
+        print(
+            "verifyAccountUel${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/validateBankAccountVerifications");
 
       final newreqbody = {
         "task": "bankTransferLite",
@@ -261,7 +263,9 @@ class UserServices {
     var addhaarverify = Uri.parse(
         "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/getEkycOtp");
 
-    if (kDebugMode) print("addhaarverify${'${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/getEkycOtp'}");
+    if (kDebugMode)
+      print(
+          "addhaarverify${'${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/getEkycOtp'}");
 
     final newreqbody = {
       "requestType": "AADHAAR",
@@ -290,7 +294,9 @@ class UserServices {
     var addhaarverify = Uri.parse(
         "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/verifyEkycData");
 
-    if (kDebugMode) print("addhaarverify${"${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/verifyEkycData"}");
+    if (kDebugMode)
+      print(
+          "addhaarverify${"${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/verifyEkycData"}");
 
     final newreqbody = {
       "requestType": "VERIFYAADHAROTP",
@@ -643,6 +649,7 @@ class UserServices {
 
   Future<dynamic> getMerchantApplication(
       {required int stage, required String merchantname}) async {
+    try {} catch (e) {}
     Connection connection = Connection();
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -663,30 +670,6 @@ class UserServices {
     if (kDebugMode)
       print("Defaultvalues Api response code" + response.statusCode.toString());
     return response;
-
-    // old merchant onboarding implimentation
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
-    // String? barrertoken = prefs.getString('bearerToken');
-    //if(kDebugMode)print(barrertoken);
-    // http.Response resonr = await http.get(
-    //   Uri.parse(
-    //       'http://omasoftposqc.omaemirates.com:9508/NanoPay/Middleware/UiApi/GetMerchantDefaultValues'),
-    //   headers: {
-    //     'Content-Type': 'application/json; charset=UTF-8',
-    //     'Authorization': 'Bearer $barrertoken',
-    //   },
-    // );
-
-    // con
-    //if(kDebugMode)print(resonr.body);
-    // //if(kDebugMode)print(prefs.getString('bearerToken') ?? 'error in reciving token');
-
-    // //if(kDebugMode)print('length  : ${acquirerDetails.length}');
-    // // for (var acquirer in acquirerDetails) {
-    // //   String acquirerName = acquirer['acquirerName'];
-    // //  if(kDebugMode)print('Acquirer Name: $acquirerName');
-    // // }
-    // return resonr;
   }
 
   Future<dynamic> getMerchantApplicationStatus(merchantInd) async {
@@ -698,30 +681,6 @@ class UserServices {
     var response = await connection.post(url, requestBody);
 
     return response;
-
-    // old merchant onboarding implimentation
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
-    // String? barrertoken = prefs.getString('bearerToken');
-    //if(kDebugMode)print(barrertoken);
-    // http.Response resonr = await http.get(
-    //   Uri.parse(
-    //       'http://omasoftposqc.omaemirates.com:9508/NanoPay/Middleware/UiApi/GetMerchantDefaultValues'),
-    //   headers: {
-    //     'Content-Type': 'application/json; charset=UTF-8',
-    //     'Authorization': 'Bearer $barrertoken',
-    //   },
-    // );
-
-    // con
-    //if(kDebugMode)print(resonr.body);
-    // //if(kDebugMode)print(prefs.getString('bearerToken') ?? 'error in reciving token');
-
-    // //if(kDebugMode)print('length  : ${acquirerDetails.length}');
-    // // for (var acquirer in acquirerDetails) {
-    // //   String acquirerName = acquirer['acquirerName'];
-    // //  if(kDebugMode)print('Acquirer Name: $acquirerName');
-    // // }
-    // return resonr;
   }
 
   Future<dynamic> postMerchantOnBoarding(merchantInd) async {
@@ -732,30 +691,6 @@ class UserServices {
     var response = await connection.get(url);
 
     return response;
-
-    // old merchant onboarding implimentation
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
-    // String? barrertoken = prefs.getString('bearerToken');
-    //if(kDebugMode)print(barrertoken);
-    // http.Response resonr = await http.get(
-    //   Uri.parse(
-    //       'http://omasoftposqc.omaemirates.com:9508/NanoPay/Middleware/UiApi/GetMerchantDefaultValues'),
-    //   headers: {
-    //     'Content-Type': 'application/json; charset=UTF-8',
-    //     'Authorization': 'Bearer $barrertoken',
-    //   },
-    // );
-
-    // con
-    //if(kDebugMode)print(resonr.body);
-    // //if(kDebugMode)print(prefs.getString('bearerToken') ?? 'error in reciving token');
-
-    // //if(kDebugMode)print('length  : ${acquirerDetails.length}');
-    // // for (var acquirer in acquirerDetails) {
-    // //   String acquirerName = acquirer['acquirerName'];
-    // //  if(kDebugMode)print('Acquirer Name: $acquirerName');
-    // // }
-    // return resonr;
   }
 
   getAcqApplicationid(String guid) async {
