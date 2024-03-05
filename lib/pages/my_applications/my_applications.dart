@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sifr_latest/services/services.dart';
@@ -30,6 +32,8 @@ class _MyApplicationsState extends State<MyApplications> {
   int selectesStage = 0;
   dynamic selectedValue;
 
+  bool onboardedBool = false;
+
   bool loader = true;
   List<ApplicationStatus> ststusdata = [
     // ApplicationStatus(
@@ -42,6 +46,7 @@ class _MyApplicationsState extends State<MyApplications> {
     //   errorMessage: '5456455',
     //   live: true,
     //   statusCode: 200,
+    //   map: "null",
     //   map: "null",
     //   devices: [
     //     Device(
@@ -439,7 +444,8 @@ class _MyApplicationsState extends State<MyApplications> {
                 // registerRequestModel.lastName = value.trim();
               },
               onFieldSubmitted: (value) {
-                // _lastNameController.text = value.trim();
+                allOnboardingApplications.clear();
+                getAllMerchantApplications();
               },
               suffixIcon: const Icon(Icons.search),
               suffixIconTrue: true,
@@ -457,171 +463,175 @@ class _MyApplicationsState extends State<MyApplications> {
             // if (selectedValue != null)
             //   Text(selectedValue["statusInfoId"].toString()),
 
-
-            loader?Container(
-              margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*.1),
-              color: AppColors.white,
-              child: const Center(
-                child: CircularProgressIndicator(
-                  strokeWidth: 3,
-                ),
-              ),
-            ):
-            allOnboardingApplications.isNotEmpty
-                ? ListView(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    children: List.generate(allOnboardingApplications.length,
-                        (index) {
-                      return ListTile(
-                        leading: Text((index + 1).toString()),
-                        title: Row(
-                          children: [
-                            const CustomTextWidget(
-                                size: 14,
-                                fontWeight: FontWeight.w800,
-                                color: Colors.black87,
-                                text: "Name : "),
-                            Expanded(
-                              child: CustomTextWidget(
-                                  size: 14,
-                                  fontWeight: FontWeight.w800,
-                                  color: AppColors.kLightGreen,
-                                  text: allOnboardingApplications[index]
-                                      ["merchantName"]),
-                            ),
-                          ],
-                        ),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
+            loader
+                ? Container(
+                    margin: EdgeInsets.only(
+                        top: MediaQuery.of(context).size.height * .1),
+                    color: AppColors.white,
+                    child: const Center(
+                      child: CircularProgressIndicator(
+                        strokeWidth: 3,
+                      ),
+                    ),
+                  )
+                : allOnboardingApplications.isNotEmpty
+                    ? ListView(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        children: List.generate(
+                            allOnboardingApplications.length, (index) {
+                          return ListTile(
+                            leading: Text((index + 1).toString()),
+                            title: Row(
                               children: [
                                 const CustomTextWidget(
-                                    size: 12, text: "Number : "),
-                                CustomTextWidget(
-                                    size: 12,
-                                    text: allOnboardingApplications[index]
-                                            ["mobileNo"] ??
-                                        ''),
+                                    size: 14,
+                                    fontWeight: FontWeight.w800,
+                                    color: Colors.black87,
+                                    text: "Name : "),
+                                Expanded(
+                                  child: CustomTextWidget(
+                                      size: 14,
+                                      fontWeight: FontWeight.w800,
+                                      color: AppColors.kLightGreen,
+                                      text: allOnboardingApplications[index]
+                                          ["merchantName"]),
+                                ),
                               ],
                             ),
-                            // CustomTextWidget(
-                            //     size: 12,
-                            //     text: allOnboardingApplications[index]
-                            //             ["insertDatetime"]
-                            //         .toString())
-                          ],
-                        ),
-                        trailing: SizedBox(
-                          width: 100,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                allOnboardingApplications[index]
-                                            ["statusInfoId"] ==
-                                        null
-                                    ? "Unknown"
-                                    : "${allOnboardingApplications[index]["statusInfoId"]["statusName"]}",
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              InkWell(
-                                child: const CustomTextWidget(
-                                    text: "Check Status",
-                                    color: AppColors.kPrimaryColor,
-                                    size: 12),
-                                onTap: () async {
-                                  var response;
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    const CustomTextWidget(
+                                        size: 12, text: "Number : "),
+                                    CustomTextWidget(
+                                        size: 12,
+                                        text: allOnboardingApplications[index]
+                                                ["mobileNo"] ??
+                                            ''),
+                                  ],
+                                ),
+                                // CustomTextWidget(
+                                //     size: 12,
+                                //     text: allOnboardingApplications[index]
+                                //             ["insertDatetime"]
+                                //         .toString())
+                              ],
+                            ),
+                            trailing: SizedBox(
+                              width: 100,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    allOnboardingApplications[index]
+                                                ["statusInfoId"] ==
+                                            null
+                                        ? "Unknown"
+                                        : "${allOnboardingApplications[index]["statusInfoId"]["statusName"]}",
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  InkWell(
+                                    child: const CustomTextWidget(
+                                        text: "Check Status",
+                                        color: AppColors.kPrimaryColor,
+                                        size: 12),
+                                    onTap: () async {
+                                      var response;
 
-                                  response = await _getApplicationStatus(
-                                      allOnboardingApplications[index]
-                                          ['merchantId']);
-
-                                  if (response == null) return;
-                                  if (response['data'].length == 0) return;
-
-                                  // response ??= await _getApplicationStatus(
-                                  //     "ADIBM0000000375");
-
-                                  List<Device> _devices = [];
-
-                                  if (response['data'][0]
-                                              ['merchantProductDetailsResponse']
-                                          ['merchantProductDetails'] !=
-                                      null) {
-                                    for (var item in response['data'][0]
-                                            ['merchantProductDetailsResponse']
-                                        ['merchantProductDetails']) {
-                                      if (kDebugMode) print(item);
-
-                                      _devices.add(Device(
-                                        productId: item['productId'],
-                                        productName: item['productName'],
-                                        deploymentStatus:
-                                            item['deploymentStatus'],
-                                        package: item['packageId'],
-                                        packageId: item['packageId'],
-                                        quantity: item['qty'],
-                                        price: item['unitPrice'],
-                                        merchantId: item['merchantId'],
-                                        guid: item['guid'],
-                                      ));
-                                    }
-                                  }
-
-                                  ApplicationStatus dataResponse =
-                                      ApplicationStatus(
-                                    errorMessage: response['errorMessage'],
-                                    statusCode: response['statusCode'],
-                                    amountToPay: 200,
-                                    kycApproved: response['data'][0]
-                                            ['appStatus'] ??
-                                        false,
-                                    // payment: response['data'][0]
-                                    //     ['paymentStatus'],
-                                    payment: false,
-                                    eNach: response['data'][0]
-                                            ['paymentStatus'] ??
-                                        false,
-                                    midtidGenerated: response['data'][0]
-                                            ['onboardingStatus'] ??
-                                        false,
-                                    allDevicesOnboarded: true,
-                                    live: response['data'][0]['liveStatus'] ??
-                                        true,
-                                    devices: _devices,
-                                    map: response['map'],
-                                    merchantProductDetailsResponse:
-                                        response['data'][0]
-                                            ['merchantProductDetailsResponse'],
-                                  );
-
-                                  _showMyDialog(
-                                      data: dataResponse,
-                                      phoneNumber:
-                                          allOnboardingApplications[index]
-                                              ["mobileNo"],
-                                      name: allOnboardingApplications[index]
-                                          ["merchantName"],
-                                      merchantId:
+                                      response = await _getApplicationStatus(
                                           allOnboardingApplications[index]
                                               ['merchantId']);
-                                },
+
+                                      if (response == null) return;
+                                      if (response['data'].length == 0) return;
+
+                                      // response ??= await _getApplicationStatus(
+                                      //     "ADIBM0000000375");
+
+                                      List<Device> _devices = [];
+
+                                      if (response['data'][0][
+                                                  'merchantProductDetailsResponse']
+                                              ['merchantProductDetails'] !=
+                                          null) {
+                                        for (var item in response['data'][0][
+                                                'merchantProductDetailsResponse']
+                                            ['merchantProductDetails']) {
+                                          if (kDebugMode) print(item);
+
+                                          _devices.add(Device(
+                                            productId: item['productId'],
+                                            productName: item['productName'],
+                                            deploymentStatus:
+                                                item['deploymentStatus'],
+                                            package: item['packageId'],
+                                            packageId: item['packageId'],
+                                            quantity: item['qty'],
+                                            price: item['unitPrice'],
+                                            merchantId: item['merchantId'],
+                                            guid: item['guid'],
+                                          ));
+                                        }
+                                      }
+
+                                      ApplicationStatus dataResponse =
+                                          ApplicationStatus(
+                                        errorMessage: response['errorMessage'],
+                                        statusCode: response['statusCode'],
+                                        amountToPay: 200,
+                                        kycApproved: response['data'][0]
+                                                ['appStatus'] ??
+                                            false,
+                                        // payment: response['data'][0]
+                                        //     ['paymentStatus'],
+                                        payment: false,
+                                        eNach: response['data'][0]
+                                                ['paymentStatus'] ??
+                                            false,
+                                        midtidGenerated: response['data'][0]
+                                                ['onboardingStatus'] ??
+                                            false,
+                                        allDevicesOnboarded: true,
+                                        live: response['data'][0]
+                                                ['liveStatus'] ??
+                                            true,
+                                        devices: _devices,
+                                        map: response['map'],
+                                        merchantProductDetailsResponse: response[
+                                                'data'][0]
+                                            ['merchantProductDetailsResponse'],
+                                      );
+
+                                      onboardedBool = false;
+
+                                      _showMyDialog(
+                                          data: dataResponse,
+                                          phoneNumber:
+                                              allOnboardingApplications[index]
+                                                  ["mobileNo"],
+                                          name: allOnboardingApplications[index]
+                                              ["merchantName"],
+                                          merchantId:
+                                              allOnboardingApplications[index]
+                                                  ['merchantId']);
+                                    },
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                        ),
-                      );
-                    }),
-                  )
-                : Center(
-                    child: Container(
-                        margin: EdgeInsets.only(
-                            top: MediaQuery.of(context).size.height * .1),
-                        child: const SizedBox(
-                            child: Text("No Application Found")))),
+                            ),
+                          );
+                        }),
+                      )
+                    : Center(
+                        child: Container(
+                            margin: EdgeInsets.only(
+                                top: MediaQuery.of(context).size.height * .1),
+                            child: const SizedBox(
+                                child: Text("No Application Found")))),
           ],
         ));
   }
@@ -783,13 +793,16 @@ class _MyApplicationsState extends State<MyApplications> {
     var response = await userServices.postMerchantOnBoarding(merchantId);
     final Map<String, dynamic> data = json.decode(response.body);
 
-    Navigator.pop(context);
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Onboarded Successfully'),
-        duration: Duration(seconds: 3),
-      ),
-    );
+    // Navigator.pop(context);
+
+    // if (context.mounted) {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     const SnackBar(
+    //       content: Text('Onboarded Successfully'),
+    //       duration: Duration(seconds: 3),
+    //     ),
+    //   );
+    // }
 
     return data;
   }
@@ -805,118 +818,202 @@ class _MyApplicationsState extends State<MyApplications> {
       context: context,
       // barrierDismissible: false,
       builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          shadowColor: Colors.white,
-          surfaceTintColor: Colors.white,
-          title: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      phoneNumber,
-                      style: const TextStyle(fontSize: 16, fontFamily: 'Mont'),
-                    ),
-                    Text(
-                      name,
-                      style: const TextStyle(fontSize: 20, fontFamily: 'Mont'),
-                    ),
-                  ],
-                ),
-              ),
-              const Spacer(),
-              IconButton(
-                icon:
-                    const Icon(Icons.cancel_outlined, color: Color(0xFF97098D)),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              )
-            ],
-          ),
-          content: SizedBox(
-            height: 600,
-            width: MediaQuery.of(context).size.width * .8,
-            child: ListView(
-              shrinkWrap: true,
-              //crossAxisAlignment: CrossAxisAlignment.start,
+        return StatefulBuilder(
+            builder: (BuildContext context, StateSetter setStateForAlert) {
+          return AlertDialog(
+            backgroundColor: Colors.white,
+            shadowColor: Colors.white,
+            surfaceTintColor: Colors.white,
+            title: Row(
               children: [
-                TimelineTile(
-                  afterLineStyle: LineStyle(
-                      color:
-                          data.kycApproved == true ? Colors.blue : Colors.grey),
-                  alignment: TimelineAlign.manual,
-                  lineXY: 0.1,
-                  isFirst: true,
-                  isLast: false,
-                  hasIndicator: true,
-                  indicatorStyle: IndicatorStyle(
-                    width: 20,
-                    color: Colors.white,
-                    iconStyle: IconStyle(
-                      color:
-                          data.kycApproved == true ? Colors.blue : Colors.grey,
-                      fontSize: 26,
-                      iconData: Icons.radio_button_checked,
-                    ),
-                  ),
-                  endChild: Row(
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * .5,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        "Application",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontFamily: 'Mont'),
+                      Text(
+                        phoneNumber,
+                        style:
+                            const TextStyle(fontSize: 16, fontFamily: 'Mont'),
                       ),
-                      const Expanded(child: SizedBox()),
-                      statusTextWidget(
-                          title: "Kyc", status: data.kycApproved ?? false),
+                      Text(
+                        name,
+                        style:
+                            const TextStyle(fontSize: 20, fontFamily: 'Mont'),
+                      ),
                     ],
                   ),
                 ),
-                TimelineTile(
-                  beforeLineStyle: LineStyle(
-                      color:
-                          data.kycApproved == true ? Colors.blue : Colors.grey),
-                  afterLineStyle: LineStyle(
-                      color: data.payment! ? Colors.blue : Colors.grey),
-                  alignment: TimelineAlign.manual,
-                  lineXY: 0.1,
-                  indicatorStyle: IndicatorStyle(
-                    width: 20,
-                    color: Colors.white,
-                    iconStyle: IconStyle(
-                      color: data.payment == true ? Colors.blue : Colors.grey,
-                      fontSize: 26,
-                      iconData: Icons.radio_button_checked,
+                const Spacer(),
+                IconButton(
+                  color: Colors.red,
+                  icon: const Icon(Icons.cancel_outlined,
+                      color: Color(0xFF97098D)),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+            content: SizedBox(
+              height: 600,
+              width: MediaQuery.of(context).size.width * .8,
+              child: Column(
+                // shrinkWrap: true,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TimelineTile(
+                    afterLineStyle: LineStyle(
+                        color: data.kycApproved == true
+                            ? Colors.blue
+                            : Colors.grey),
+                    alignment: TimelineAlign.manual,
+                    lineXY: 0.1,
+                    isFirst: true,
+                    isLast: false,
+                    hasIndicator: true,
+                    indicatorStyle: IndicatorStyle(
+                      width: 20,
+                      color: Colors.white,
+                      iconStyle: IconStyle(
+                        color: data.kycApproved == true
+                            ? Colors.blue
+                            : Colors.grey,
+                        fontSize: 26,
+                        iconData: Icons.radio_button_checked,
+                      ),
+                    ),
+                    endChild: Row(
+                      children: [
+                        const Text(
+                          " Application",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontFamily: 'Mont'),
+                        ),
+                        const Expanded(child: SizedBox()),
+                        statusTextWidget(
+                            title: "Kyc", status: data.kycApproved ?? false),
+                      ],
                     ),
                   ),
-                  endChild: Row(
-                    children: [
-                      const Text(
-                        " payment",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontFamily: 'Mont'),
+                  TimelineTile(
+                    beforeLineStyle: LineStyle(
+                        color: data.kycApproved == true
+                            ? Colors.blue
+                            : Colors.grey),
+                    afterLineStyle: LineStyle(
+                        color: data.payment! ? Colors.blue : Colors.grey),
+                    alignment: TimelineAlign.manual,
+                    lineXY: 0.1,
+                    indicatorStyle: IndicatorStyle(
+                      width: 20,
+                      color: Colors.white,
+                      iconStyle: IconStyle(
+                        color: data.payment == true ? Colors.blue : Colors.grey,
+                        fontSize: 26,
+                        iconData: Icons.radio_button_checked,
                       ),
-                      const Expanded(child: SizedBox()),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          data.payment!
-                              ? statusTextWidget(
-                                  title: "Received", status: data.payment!)
-                              : ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.pushNamed(context, "PaymentPage",
-                                        arguments: {
-                                          "merchantId": merchantId,
-                                          "merchantProductDetailsResponse": data
-                                              .merchantProductDetailsResponse,
-                                          "mobile": phoneNumber,
-                                          "name": name
-                                        });
+                    ),
+                    endChild: Row(
+                      children: [
+                        const Text(
+                          " payment",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontFamily: 'Mont'),
+                        ),
+                        const Expanded(child: SizedBox()),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            data.payment!
+                                ? statusTextWidget(
+                                    title: "Received", status: data.payment!)
+                                : ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.pushNamed(
+                                          context, "PaymentPage",
+                                          arguments: {
+                                            "merchantId": merchantId,
+                                            "merchantProductDetailsResponse": data
+                                                .merchantProductDetailsResponse,
+                                            "mobile": phoneNumber,
+                                            "name": name
+                                          });
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.red,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                      ),
+                                      minimumSize: const Size(60.0, 30.0),
+                                    ),
+                                    child: const Text(
+                                      "Collect",
+                                      style: TextStyle(color: Colors.white),
+                                    )),
+                            statusTextWidget(
+                                title: "eNACH", status: data.eNach!),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  TimelineTile(
+                    beforeLineStyle: LineStyle(
+                      color: data.eNach! ? Colors.blue : Colors.grey,
+                    ),
+                    afterLineStyle: LineStyle(
+                      color: data.midtidGenerated! ? Colors.blue : Colors.grey,
+                    ),
+                    alignment: TimelineAlign.manual,
+                    lineXY: 0.1,
+                    indicatorStyle: IndicatorStyle(
+                      width: 20,
+                      color: Colors.white,
+                      iconStyle: IconStyle(
+                        color:
+                            data.midtidGenerated! ? Colors.blue : Colors.grey,
+                        fontSize: 26,
+                        iconData: Icons.radio_button_checked,
+                      ),
+                    ),
+                    endChild: Row(
+                      children: [
+                        const Text(
+                          " Onboarding",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontFamily: 'Mont'),
+                        ),
+                        const Expanded(child: SizedBox()),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            if (!data.midtidGenerated!)
+                              ElevatedButton(
+                                  onPressed: () async {
+                                    var response = await postMerchantOnBoarding(
+                                        merchantId);
+
+                                    if (response == null) return;
+
+                                    setStateForAlert(() {
+                                      onboardedBool = true;
+                                      data.midtidGenerated = true;
+                                    });
+
+                                    Future.delayed(const Duration(seconds: 3),
+                                        () {
+                                      if (mounted) {
+                                        try {
+                                          setStateForAlert(() {
+                                            onboardedBool = false;
+                                          });
+                                        } catch (_) {}
+                                      }
+                                    });
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.red,
@@ -926,214 +1023,183 @@ class _MyApplicationsState extends State<MyApplications> {
                                     minimumSize: const Size(60.0, 30.0),
                                   ),
                                   child: const Text(
-                                    "Collect",
-                                    style: TextStyle(color: Colors.white),
-                                  )),
-                          statusTextWidget(title: "eNACH", status: data.eNach!),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                TimelineTile(
-                  beforeLineStyle: LineStyle(
-                    color: data.eNach! ? Colors.blue : Colors.grey,
-                  ),
-                  afterLineStyle: LineStyle(
-                    color: data.midtidGenerated! ? Colors.blue : Colors.grey,
-                  ),
-                  alignment: TimelineAlign.manual,
-                  lineXY: 0.1,
-                  indicatorStyle: IndicatorStyle(
-                    width: 20,
-                    color: Colors.white,
-                    iconStyle: IconStyle(
-                      color: data.midtidGenerated! ? Colors.blue : Colors.grey,
-                      fontSize: 26,
-                      iconData: Icons.radio_button_checked,
-                    ),
-                  ),
-                  endChild: Row(
-                    children: [
-                      const Text(
-                        " Onboarding",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontFamily: 'Mont'),
-                      ),
-                      const Expanded(child: SizedBox()),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          if (!data.midtidGenerated!)
-                            ElevatedButton(
-                                onPressed: () {
-                                  postMerchantOnBoarding(merchantId);
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.red,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  ),
-                                  minimumSize: const Size(60.0, 30.0),
-                                ),
-                                child: const Text(
-                                  'Onbaord',
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 13),
-                                )),
-                          statusTextWidget(
-                              title: "MID/TID", status: data.midtidGenerated!),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                TimelineTile(
-                  beforeLineStyle: LineStyle(
-                    color: data.midtidGenerated! ? Colors.blue : Colors.grey,
-                  ),
-                  alignment: TimelineAlign.manual,
-                  lineXY: 0.1,
-                  isFirst: false,
-                  isLast: true,
-                  indicatorStyle: IndicatorStyle(
-                    width: 20,
-                    color: Colors.white,
-                    iconStyle: IconStyle(
-                      color:
-                          data.allDevicesOnboarded! ? Colors.blue : Colors.grey,
-                      fontSize: 26,
-                      iconData: Icons.radio_button_checked,
-                    ),
-                  ),
-                  endChild: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        " Deployment",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontFamily: 'Mont'),
-                      ),
-                      const Expanded(child: SizedBox()),
-                      // if (data.midtidGenerated!)
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(
-                          data.devices!.length,
-                          (index) => data.devices![index].deploymentStatus!
-                              ? statusTextWidget(
-                                  title: data.devices![index].productName!,
-                                  status:
-                                      data.devices![index].deploymentStatus!)
-                              : ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.pushNamed(
-                                        context, "DeviceDeploymentScreen",
-                                        arguments: {
-                                          "productId":
-                                              data.devices![index].productId,
-                                          "packageId":
-                                              data.devices![index].packageId,
-                                          "merchantId":
-                                              data.devices![index].merchantId,
-                                          "guid": data.devices![index].guid,
-                                          "productName":
-                                              data.devices![index].productName,
-                                          "deploymentStatus": data
-                                              .devices![index].deploymentStatus,
-                                          "MerchantName": name,
-                                          "phoneNumber": phoneNumber,
-                                        });
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.red,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    minimumSize: const Size(60.0, 30.0),
-                                  ),
-                                  child: Text(
-                                    data.devices![index].productName!,
-                                    style: const TextStyle(
+                                    'Onboard',
+                                    style: TextStyle(
                                         color: Colors.white, fontSize: 13),
                                   )),
+                            statusTextWidget(
+                                title: "MID/TID",
+                                status: data.midtidGenerated!),
+                          ],
                         ),
-                      ),
-                      // Container(
-                      //   height: 100,
-                      //   width: 250,
-                      //   child: Column(
-                      //     children: [
-                      //       ListView.builder(
-                      //         shrinkWrap: true,
-                      //         itemCount: data.devices!.length,
-                      //         itemBuilder: (context, index) {
-                      //           // Build a ListTile for each user
-                      //           return Text(data.devices![index].productName!);
-                      //         },
-                      //       ),
-                      //     ],
-                      //   ),
-                      // )
-                      // Column(
-                      //   crossAxisAlignment: CrossAxisAlignment.end,
-                      //   mainAxisAlignment: MainAxisAlignment.end,
-                      //   children: [
-                      //     Expanded(
-                      //       child: ListView.builder(
-                      //         shrinkWrap: true,
-                      //         itemCount: data.devices!.length,
-                      //         itemBuilder: (context, index) {
-                      //           // Build a ListTile for each user
-                      //           return Text(data.devices![index].productName!);
-                      //         },
-                      //       ),
-                      //     ),
-                      //     statusTextWidget(title: "Sound Box"),
-                      //     statusTextWidget(title: "Android Pos"),
-                      //   ],
-                      // ),
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 40,
-                ),
-                const Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Status",
-                      style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF000000),
-                          fontFamily: 'Mont'),
+                      ],
                     ),
-                    Text(
-                      "Live",
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF97098D),
-                          fontFamily: 'Mont'),
+                  ),
+                  TimelineTile(
+                    beforeLineStyle: LineStyle(
+                      color: data.midtidGenerated! ? Colors.blue : Colors.grey,
+                    ),
+                    alignment: TimelineAlign.manual,
+                    lineXY: 0.1,
+                    isFirst: false,
+                    isLast: true,
+                    indicatorStyle: IndicatorStyle(
+                      width: 20,
+                      color: Colors.white,
+                      iconStyle: IconStyle(
+                        color: data.allDevicesOnboarded!
+                            ? Colors.blue
+                            : Colors.grey,
+                        fontSize: 26,
+                        iconData: Icons.radio_button_checked,
+                      ),
+                    ),
+                    endChild: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          " Deployment",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontFamily: 'Mont'),
+                        ),
+                        const Expanded(child: SizedBox()),
+                        // if (data.midtidGenerated!)
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: List.generate(
+                            data.devices!.length,
+                            (index) => data.devices![index].deploymentStatus!
+                                ? statusTextWidget(
+                                    title: data.devices![index].productName!,
+                                    status:
+                                        data.devices![index].deploymentStatus!)
+                                : ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.pushNamed(
+                                          context, "DeviceDeploymentScreen",
+                                          arguments: {
+                                            "productId":
+                                                data.devices![index].productId,
+                                            "packageId":
+                                                data.devices![index].packageId,
+                                            "merchantId":
+                                                data.devices![index].merchantId,
+                                            "guid": data.devices![index].guid,
+                                            "productName": data
+                                                .devices![index].productName,
+                                            "deploymentStatus": data
+                                                .devices![index]
+                                                .deploymentStatus,
+                                            "MerchantName": name,
+                                            "phoneNumber": phoneNumber,
+                                          });
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.red,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                      ),
+                                      minimumSize: const Size(60.0, 30.0),
+                                    ),
+                                    child: Text(
+                                      data.devices![index].productName!,
+                                      style: const TextStyle(
+                                          color: Colors.white, fontSize: 13),
+                                    )),
+                          ),
+                        ),
+                        // Container(
+                        //   height: 100,
+                        //   width: 250,
+                        //   child: Column(
+                        //     children: [
+                        //       ListView.builder(
+                        //         shrinkWrap: true,
+                        //         itemCount: data.devices!.length,
+                        //         itemBuilder: (context, index) {
+                        //           // Build a ListTile for each user
+                        //           return Text(data.devices![index].productName!);
+                        //         },
+                        //       ),
+                        //     ],
+                        //   ),
+                        // )
+                        // Column(
+                        //   crossAxisAlignment: CrossAxisAlignment.end,
+                        //   mainAxisAlignment: MainAxisAlignment.end,
+                        //   children: [
+                        //     Expanded(
+                        //       child: ListView.builder(
+                        //         shrinkWrap: true,
+                        //         itemCount: data.devices!.length,
+                        //         itemBuilder: (context, index) {
+                        //           // Build a ListTile for each user
+                        //           return Text(data.devices![index].productName!);
+                        //         },
+                        //       ),
+                        //     ),
+                        //     statusTextWidget(title: "Sound Box"),
+                        //     statusTextWidget(title: "Android Pos"),
+                        //   ],
+                        // ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  const Center(
+                    child: Column(
+                      children: [
+                        Text(
+                          "Status",
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF000000),
+                              fontFamily: 'Mont'),
+                        ),
+                        Text(
+                          "Live",
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF97098D),
+                              fontFamily: 'Mont'),
+                        )
+                      ],
+                    ),
+                  ),
+                  const Spacer(),
+                  if (onboardedBool)
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: MediaQuery.of(context).size.width * .025,
+                          vertical: MediaQuery.of(context).size.height * .01),
+                      decoration: BoxDecoration(
+                          color: Colors.black54.withOpacity(.7),
+                          borderRadius: BorderRadius.circular(5)),
+                      width: double.infinity,
+                      child: const Text(
+                        'Onboarded Successfully',
+                        style: TextStyle(color: Colors.white, fontSize: 13),
+                      ),
                     )
-                  ],
-                )
-              ],
+                ],
+              ),
             ),
-          ),
-          // actions: <Widget>[
-          //   TextButton(
-          //     child: const Text('Approve'),
-          //     onPressed: () {
-          //       Navigator.of(context).pop();
-          //     },
-          //   ),
-          // ],
-        );
+            // actions: <Widget>[
+            //   TextButton(
+            //     child: const Text('Approve'),
+            //     onPressed: () {
+            //       Navigator.of(context).pop();
+            //     },
+            //   ),
+            // ],
+          );
+        });
       },
     );
   }
