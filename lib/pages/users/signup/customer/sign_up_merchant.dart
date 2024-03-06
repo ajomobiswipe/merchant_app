@@ -1398,8 +1398,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   companyDetailsInforeq.annualTurnOverId =
                       newValue['turnoverId'];
 
-                  companyDetailsInforeq.gstApplicable =
-                      newValue['gstApplicable'];
+                  companyDetailsInforeq.gstApplicable = newValue['gstApplicable']??false;
 
                   mdrType = null;
                   mdrSummaryList = [];
