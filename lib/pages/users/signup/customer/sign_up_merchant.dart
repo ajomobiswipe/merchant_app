@@ -1914,6 +1914,10 @@ class _MerchantSignupState extends State<MerchantSignup> {
       print(
           'companyDetailsInforeq.gstApplicable${selectedBussinesTurnOver['gstApplicable']}');
 
+    if(selectedBussinesTurnOver['gstApplicable']==null){
+      selectedBussinesTurnOver['gstApplicable']=false;
+    }
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -5097,9 +5101,13 @@ class _MerchantSignupState extends State<MerchantSignup> {
       userServices.sendAddhaarOtp(addhaarNumber).then((response) async {
         if (kDebugMode) print("response in");
         if (kDebugMode) print(response);
-        if (response.toString() == "true") {
+
+        var responseBody=json.decode(response);
+
+        if (responseBody['statusCode'] == 200) {
           aadhaarOtpWidget(
               context: context,
+              requestId: responseBody['data']['requestId'],
               aadhaarNumber: addhaarNumber,
               onSubmit: (isSvalidated, message) {
                 setState(() {
@@ -5121,7 +5129,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
             isAadhaarotpSending = false;
             isaddhaarOTPsent = false;
           });
-          alertWidget.error("addarotp sent failed");
+          alertWidget.error("aadhaarOtp sent failed");
           if (kDebugMode) print("body is false");
         }
       });

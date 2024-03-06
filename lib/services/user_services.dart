@@ -125,6 +125,9 @@ class UserServices {
 
       var responseapi = await http.post(verifyAccountUel,
           headers: newheader, body: jsonEncode(newreqbody));
+
+      if (kDebugMode) print("$verifyAccountUel");
+
       //if(kDebugMode)print(newheader);
       //if(kDebugMode)print(userId);
       //if(kDebugMode)print("second api reponseStatus code ${responseapi.statusCode}");
@@ -280,7 +283,7 @@ class UserServices {
     return responseapi.body;
   }
 
-  validateAddhaarOtp(String addhaarNumber, String addhaarOtp) async {
+  validateAddhaarOtp(String addhaarNumber, String addhaarOtp,String requestId) async {
     String token = boxStorage.getToken();
 
     var newheader = {
@@ -300,7 +303,7 @@ class UserServices {
 
     final newreqbody = {
       "requestType": "VERIFYAADHAROTP",
-      "requestId": "aadhaar_v2_uBztmfFDSUsJWtDnYxwO",
+      "requestId": requestId,
       "otp": addhaarOtp,
       "aadharNumber": addhaarNumber
     };
@@ -896,23 +899,22 @@ class UserServices {
     request.fields["userId"] = "softposadmin";
     request.fields['merchantProductInfo'] = jsonEncode(merchantProductInfoReq);
 
-    request.fields['companyDetailsInfo'] = jsonEncode(companyDetailsInforeq.toJson());
-    if (kDebugMode) print("companyDetailsInfo" + request.fields['companyDetailsInfo']!);
+    request.fields['companyDetailsInfo'] =
+        jsonEncode(companyDetailsInforeq.toJson());
+    if (kDebugMode)
+      print("companyDetailsInfo" + request.fields['companyDetailsInfo']!);
 
     request.fields['merchantIdProof'] = jsonEncode(merchantIdProofReq.toJson());
     request.fields['businessIDProof'] = jsonEncode(businessIdProofReq.toJson());
     request.fields['merchantLocation'] =
         jsonEncode(merchantStoreInfoReq.toJson());
 
-    if (kDebugMode) print("merchantLocation" + request.fields['merchantLocation']!);
+    if (kDebugMode)
+      print("merchantLocation" + request.fields['merchantLocation']!);
     request.fields['bankInfo'] = jsonEncode(merchantBankInfoReq.toJson());
     if (kDebugMode) print("bankInfo" + request.fields['bankInfo']!);
     request.fields['merchantAgreeMentInfo'] =
         jsonEncode(merchantAgreeMentReq.toJson());
-
-
-
-
 
     final streamedResponse = await request.send();
     final response = await http.Response.fromStream(streamedResponse);

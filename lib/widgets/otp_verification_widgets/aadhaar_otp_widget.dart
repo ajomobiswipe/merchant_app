@@ -10,6 +10,7 @@ import 'package:sifr_latest/widgets/custom_text_widget.dart';
 Future<void> aadhaarOtpWidget(
     {required BuildContext context,
     required String aadhaarNumber,
+    required String requestId,
     required Function(bool validated, String addharHelpertext)
         onSubmit}) async {
   UserServices userServices = UserServices();
@@ -45,7 +46,7 @@ Future<void> aadhaarOtpWidget(
         shadowColor: Colors.white,
         surfaceTintColor: Colors.white,
         content: StatefulBuilder(
-          builder: (BuildContext context, StateSetter setState) {
+          builder: (BuildContext context, StateSetter setState1) {
             return Stack(
               children: [
                 Form(
@@ -162,42 +163,47 @@ Future<void> aadhaarOtpWidget(
                             )
                           : AppButton(
                               backgroundColor: AppColors.kPrimaryColor,
-                              onPressed: () {
+                              onPressed: () async {
                                 if (formKey.currentState!.validate()) {
-                                  setState(
-                                    () {
+                                  setState1(() {
                                       isOtpVerifying = true;
-                                    },
-                                  );
+                                    });
                                   focusNode.unfocus();
-                                  userServices
-                                      .validateAddhaarOtp(
-                                          aadhaarNumber, _otpCtrl.text)
-                                      .then((response) async {
-                                    if (response.statusCode == 200 ||
-                                        response.statusCode == 201) {
-                                      setState() {
-                                        isOtpVerifying = false;
-                                      }
 
-                                      if (response.body.toString() == "true") {
-                                        onSubmit(true, "Verified");
-                                        Navigator.of(context).pop();
-                                      } else {
-                                        alertService
-                                            .error("Verification failed");
-                                      }
+                                  var responseBody =
+                                      await userServices.validateAddhaarOtp(
+                                          aadhaarNumber,
+                                          _otpCtrl.text,
+                                          requestId);
+
+                                  print('response123$responseBody');
+
+
+
+                                  if (responseBody.statusCode == 200 ||
+                                      responseBody.statusCode == 201) {
+                                    if (responseBody.body.toString() ==
+                                        "true") {
+                                      onSubmit(true, "Verified");
+                                      Navigator.of(context).pop();
                                     } else {
-                                      setState() {
-                                        errorMessage = "Invalid otp";
+                                      setState1(() {
+                                        errorMessage = "Verification failed";
                                         isOtpVerifying = false;
                                         _otpCtrl.clear();
-                                      }
-
-                                      onSubmit(false, "Failed try Again");
-                                      alertService.error("Invalid otp");
+                                      });
+                                      // alertService.error("Verification failed");
                                     }
-                                  });
+                                  } else {
+                                    setState1(() {
+                                      errorMessage = "Invalid otp";
+                                      isOtpVerifying = false;
+                                      _otpCtrl.clear();
+                                    });
+
+                                    onSubmit(false, "Failed try Again");
+                                    alertService.error("Invalid otp");
+                                  }
                                 }
                               },
                               title: "Submit",

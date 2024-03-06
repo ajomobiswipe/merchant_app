@@ -9,7 +9,8 @@ import 'config.dart';
 
 class EndPoints {
   //for merchant onboarding
-  static const baseApiPublic = 'http://213.42.225.250:9508';
+  // static const baseApiPublic = 'http://213.42.225.250:9508';
+  static const baseApiPublic = 'http://10.0.38.61:9508';
   // static const baseApiPublic = 'http://10.0.38.89:9508';
   /*
     * This End Points URL are based of development and production
