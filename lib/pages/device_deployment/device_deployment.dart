@@ -17,6 +17,7 @@ import '../../widgets/app/camera_image_picker.dart';
 
 import 'package:badges/badges.dart' as badge;
 
+import '../../widgets/image_button/verifivation_success_button.dart';
 import '../../widgets/widget.dart';
 import 'model/product_deployment_requestmodel.dart';
 
@@ -238,15 +239,12 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
                             height: 15,
                           ),
                           testTransactionChargeSlipImage.text != ''
-                              ? GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      testTransactionChargeSlipImage.text = '';
-                                    });
-                                  },
-                                  child: afterSelect(
-                                      testTransactionChargeSlipImage.text),
-                                )
+                              ? afterSelect(testTransactionChargeSlipImage.text,
+                                  () {
+                                  setState(() {
+                                    testTransactionChargeSlipImage.text = '';
+                                  });
+                                })
                               : Padding(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 10),
@@ -261,7 +259,7 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
                                         color: AppColors.kTileColor,
                                       ),
                                       width: double.maxFinite,
-                                      height: 100,
+                                      height: screenHeight * .2,
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: Column(
@@ -270,7 +268,13 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.center,
                                           children: [
-                                            const SizedBox(
+                                            CustomTextWidget(
+                                              text:
+                                                  "Click the image of test transaction chargeslip",
+                                              color: Colors.grey,
+                                              size: 12,
+                                            ),
+                                            SizedBox(
                                               height: 10,
                                             ),
                                             const Icon(
@@ -328,14 +332,11 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
                             height: 15,
                           ),
                           deviceAtStoreImage.text != ''
-                              ? GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      deviceAtStoreImage.text = '';
-                                    });
-                                  },
-                                  child: afterSelect(deviceAtStoreImage.text),
-                                )
+                              ? afterSelect(deviceAtStoreImage.text, () {
+                                  setState(() {
+                                    deviceAtStoreImage.text = '';
+                                  });
+                                })
                               : Padding(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 10),
@@ -350,7 +351,7 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
                                         color: AppColors.kTileColor,
                                       ),
                                       width: double.maxFinite,
-                                      height: 100,
+                                      height: screenHeight * .2,
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: Column(
@@ -359,7 +360,11 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.center,
                                           children: [
-                                            const SizedBox(
+                                            CustomTextWidget(
+                                                text:
+                                                    "Click the Image Of Device At Store",
+                                                color: Colors.grey),
+                                            SizedBox(
                                               height: 10,
                                             ),
                                             const Icon(
@@ -500,33 +505,60 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
     }
   }
 
-  Widget afterSelect(path) {
-    return badge.Badge(
-      position: badge.BadgePosition.topEnd(top: -5, end: 10),
-      showBadge: true,
-      ignorePointer: false,
-      //elevation: 5,
-      badgeStyle: const badge.BadgeStyle(elevation: 5),
-      badgeContent: const Icon(Icons.close, color: Colors.white, size: 20),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: Card(
-          elevation: 10,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-          child: SizedBox(
+  Widget afterSelect(path, Function()? onTap) {
+    var screenHeight = MediaQuery.of(context).size.height;
+
+    return Stack(
+      children: [
+        badge.Badge(
+          badgeStyle: const badge.BadgeStyle(
+            badgeColor: Colors.white,
+          ),
+          badgeContent: const CircleAvatar(
+            backgroundColor: Colors.white,
+            child: VerificationSuccessButton(iconSize: 30),
+          ),
+          child: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: AppColors.kTileColor),
             width: double.maxFinite,
-            height: 120,
+            height: screenHeight * .2,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Image.file(
-                File(path),
-                fit: BoxFit.fitWidth,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.file(
+                  File(path),
+                  fit: BoxFit.fitWidth,
+                ),
               ),
             ),
           ),
         ),
-      ),
+        Positioned(
+          right: 20,
+          bottom: 20,
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 10,
+              ),
+              InkWell(
+                onTap: onTap,
+                child: CircleAvatar(
+                  backgroundColor: Colors.grey.shade400,
+                  child: const Icon(
+                    Icons.delete_outline,
+                    color: Colors.black,
+                    size: 25,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

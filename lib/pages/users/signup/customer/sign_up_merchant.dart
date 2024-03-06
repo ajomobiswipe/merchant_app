@@ -1991,18 +1991,12 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 onFieldSubmitted: (name) {
                   // getUser();
                 },
-                onChanged: (String value) {
-                  setState(() {
-                    // if (value.isEmpty ||
-                    //     !userVerify ||
-                    //     userCheck.toString() == "true" ||
-                    //     !RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
-                    //         .hasMatch(value)) {
-                    //   enabledPassword = false;
-                    // } else {
-                    //   enabledPassword = true;
-                    // }
-                  });
+                onChanged: (text) {
+                  print(text);
+                  _gstController.value = _gstController.value.copyWith(
+                    text: text.toUpperCase(),
+                    selection: TextSelection.collapsed(offset: text.length),
+                  );
                 },
                 suffixIcon: isgstverifying
                     ? const CircularProgressIndicator(
@@ -2031,13 +2025,19 @@ class _MerchantSignupState extends State<MerchantSignup> {
                         : AppColors.kPrimaryColor),
                 helperText: gstHelperText,
                 validator: (value) {
-                  if (companyDetailsInforeq.gstApplicable == true) {
+                  if (companyDetailsInforeq.gstApplicable) {
                     if (value == null || value.isEmpty) {
                       return 'Gst Number is Mandatory!';
                     }
                     if (!RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
                         .hasMatch(value)) {
                       return 'Invalid Gst Number!';
+                    }
+                  } else {
+                    if (value.length != 0) {
+                      if (value.length != 15) {
+                        return "Enter Valid Gst Number!";
+                      }
                     }
                   }
 
@@ -2712,18 +2712,12 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 required: true,
                 prefixIcon: Icons.numbers,
                 onFieldSubmitted: (name) {},
-                onChanged: (String value) {
-                  setState(() {
-                    // if (value.isEmpty ||
-                    //     !userVerify ||
-                    //     userCheck.toString() == "true" ||
-                    //     !RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
-                    //         .hasMatch(value)) {
-                    //   enabledPassword = false;
-                    // } else {
-                    //   enabledPassword = true;
-                    // }
-                  });
+                onChanged: (text) {
+                  merchantIfscCodeCtrl.value =
+                      merchantIfscCodeCtrl.value.copyWith(
+                    text: text.toUpperCase(),
+                    selection: TextSelection.collapsed(offset: text.length),
+                  );
                 },
                 suffixIconTrue: true,
                 suffixIcon: isAccountInfoverifying
