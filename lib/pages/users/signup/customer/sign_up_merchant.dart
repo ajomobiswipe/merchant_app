@@ -3,10 +3,7 @@ import 'dart:convert';
 
 import 'dart:io';
 import 'package:badges/badges.dart' as badge;
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/foundation.dart';
-
-// import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -65,12 +62,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
   CustomAlert customAlert = CustomAlert();
   UserServices userServices = UserServices();
 
-  // MerchantRequestModel requestModel = MerchantRequestModel();
-  // MerchantRegPersonalReqModel merchantPersonalReq =
-  //     MerchantRegPersonalReqModel();
-  // MerchantCompanyDetailsReqModel merchantCompanyDetailsReq =
-  //     MerchantCompanyDetailsReqModel();
-
   CompanyDetailsInfoRequestmodel companyDetailsInforeq =
       CompanyDetailsInfoRequestmodel();
   MerchantIdProofRequestmodel merchantIdProofReq =
@@ -95,7 +86,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
   final GlobalKey<FormState> documentFormkey = GlobalKey<FormState>();
 
   // Merchant order Detials
-  TextEditingController canceledChequeControler = TextEditingController();
   List<SelectedProduct> selectedItems = [];
   List<MechantKycDocument> selectedBusinessProofItems = [];
 
@@ -148,7 +138,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
   // merchant id proof  stage 4
 
   final TextEditingController _merchantPanController = TextEditingController();
-  final TextEditingController _otpController = TextEditingController();
   final TextEditingController _merchantAddharController =
       TextEditingController();
 
@@ -165,7 +154,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
       TextEditingController();
   final TextEditingController businessProofDocumentCtrl =
       TextEditingController();
-  var tradeSelectedDate;
+  var documentExpirySelectedDate;
 
   String businessDocumentType = '';
 
@@ -186,19 +175,19 @@ class _MerchantSignupState extends State<MerchantSignup> {
   var accountInfoHelperText = "Click verify";
 
   String cancelledChequeImg = '';
-  bool enabledLast = false;
-  bool enabledNick = false;
-  bool enabledMobile = false;
-  bool enabledEmail = false;
+  // bool enabledLast = false;
+  // bool enabledNick = false;
+  // bool enabledMobile = false;
+  // bool enabledEmail = false;
 
-  bool mobile = false;
-  bool enabledCountry = false;
-  bool enabledState = false;
-  bool enabledcity = false;
-  bool email = false;
-  String emailCheck = '';
-  String mobileNoCheck = '';
-  String? mobileNoCheckMessage;
+  // bool mobile = false;
+  // bool enabledCountry = false;
+  // bool enabledState = false;
+  // bool enabledcity = false;
+  // bool email = false;
+  // String emailCheck = '';
+  // String mobileNoCheck = '';
+  // String? mobileNoCheckMessage;
   TextStyle? style;
   String countryCode = 'IN';
   String merchantPanHelperText = "Click verify";
@@ -207,8 +196,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
   List merchantBankList = [];
   List merchantProofDocumentList = [];
 
-  List countryList = [];
-  List acquirerList = [];
+  // List countryList = [];
+  // List acquirerList = [];
 
   List merchantBusinessTypeList = [];
 
@@ -226,76 +215,69 @@ class _MerchantSignupState extends State<MerchantSignup> {
   final TextEditingController _gstController = TextEditingController();
   final TextEditingController _firmPanController = TextEditingController();
 
-  /// LOGIN INFORMATION
-  final TextEditingController _userNameController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _cnfPasswordCtrl = TextEditingController();
-  final TextEditingController _pinController = TextEditingController();
-  final TextEditingController _confirmPinController = TextEditingController();
+  // String panOwnerName = '';
 
-  String panOwnerName = '';
-
-  String accountCheck = '';
+  // String accountCheck = '';
 
   bool isFirmPanVerified = false;
   bool isFirmPanVerifying = false;
   bool isgstverified = false;
   bool isgstverifying = false;
 
-  bool showVerify1 = true;
+  // bool showVerify1 = true;
   bool isaddhaarOTPsent = false;
   bool isOtpVerifird = false;
   bool emailVerify = false;
 
-  bool hidePassword = true;
-  bool hideCnfPassword = true;
-  bool hidePin = true;
-  bool hideCnfPin = true;
-  bool enabledUsername = false;
-  bool enabledPassword = false;
-  bool enabledConfirmPass = false;
-  bool enabledPin = false;
-  bool enabledConfirmPin = false;
-  late String userCheckMessage = '';
-  bool userVerify = false;
+  // bool hidePassword = true;
+  // bool hideCnfPassword = true;
+  // bool hidePin = true;
+  // bool hideCnfPin = true;
+  // bool enabledUsername = false;
+  // bool enabledPassword = false;
+  // bool enabledConfirmPass = false;
+  // bool enabledPin = false;
+  // bool enabledConfirmPin = false;
+  //late String userCheckMessage = '';
+  // bool userVerify = false;
   bool isAccountInfoverified = false;
   bool isAccountInfoverifying = false;
 
-  List securityQuestionList = [];
-  final TextEditingController selectedItem1 = TextEditingController();
-  final TextEditingController selectedItem2 = TextEditingController();
-  final TextEditingController selectedItem3 = TextEditingController();
-  String nationality = '';
+  // List securityQuestionList = [];
+  // final TextEditingController selectedItem1 = TextEditingController();
+  // final TextEditingController selectedItem2 = TextEditingController();
+  // final TextEditingController selectedItem3 = TextEditingController();
+  // String nationality = '';
 
-  String selectedCountries = '';
+  // String selectedCountries = '';
 
-  String selectedPermenentState = '';
+  // String selectedPermenentState = '';
 
   String selectedBusinessState = '';
 
   String selectedPermenentCountry = '';
-  final TextEditingController selectedMcc = TextEditingController();
-  final TextEditingController selectedBusinessType = TextEditingController();
-  final TextEditingController selectedBusinessTurnOverCtrl =
-      TextEditingController();
+  // final TextEditingController selectedMcc = TextEditingController();
+  //final TextEditingController selectedBusinessType = TextEditingController();
+  // final TextEditingController selectedBusinessTurnOverCtrl =
+  //     TextEditingController();
 
-  List list = [];
-  bool enabledSecurity2 = false;
-  bool enabledSecurity3 = false;
-  bool enabledAnswer1 = false;
-  bool enabledAnswer2 = false;
-  bool enabledAnswer3 = false;
-  final Uri _url = Uri.parse('https://sifr.ae/contact.php');
+  // List list = [];
+  // bool enabledSecurity2 = false;
+  // bool enabledSecurity3 = false;
+  // bool enabledAnswer1 = false;
+  // bool enabledAnswer2 = false;
+  // bool enabledAnswer3 = false;
+  // final Uri _url = Uri.parse('https://sifr.ae/contact.php');
 
   /// DOCUMENTS INFO
-  final TextEditingController tradeLicense = TextEditingController();
-  final TextEditingController nationalIdFront = TextEditingController();
-  final TextEditingController nationalIdBack = TextEditingController();
-  final TextEditingController cancelCheque = TextEditingController();
+  // final TextEditingController tradeLicense = TextEditingController();
+  // final TextEditingController nationalIdFront = TextEditingController();
+  // final TextEditingController nationalIdBack = TextEditingController();
+  // final TextEditingController cancelCheque = TextEditingController();
 
   /// KYC INFORMATION
-  final TextEditingController kycFront = TextEditingController();
-  final TextEditingController kycBack = TextEditingController();
+  // final TextEditingController kycFront = TextEditingController();
+  // final TextEditingController kycBack = TextEditingController();
 
   /// Bank detials
 
@@ -727,16 +709,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
     });
   }
 
-  securityPrevious() {
-    setState(() {
-      _passwordController.clear();
-      _cnfPasswordCtrl.clear();
-      _pinController.clear();
-      _confirmPinController.clear();
-      position = 1;
-    });
-  }
-
   Widget mainControl(Widget child) {
     return _isLoading
         ? const LoadingWidget()
@@ -817,17 +789,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   return 'The minimum length 3 characters';
                 }
                 return null;
-              },
-              onChanged: (String value) {
-                if (value.isEmpty || value.length < 3) {
-                  setState(() {
-                    enabledLast = false;
-                  });
-                } else {
-                  setState(() {
-                    enabledLast = true;
-                  });
-                }
               },
               onSaved: (value) {
                 companyDetailsInforeq.merchantName = value;
@@ -949,7 +910,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
               ],
               required: true,
-              helperText: mobileNoCheckMessage,
+
               helperStyle: style,
               prefixIcon: FontAwesome.mobile_solid,
               // suffixIcon: const Icon(
@@ -984,7 +945,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
               keyboardType: TextInputType.number,
               title: 'WhatsApp Number',
               required: true,
-              helperText: mobileNoCheckMessage,
               helperStyle: style,
               maxLength: 10,
               inputFormatters: <TextInputFormatter>[
@@ -1433,7 +1393,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
               }).toList(),
               onChanged: (newValue) {
                 setState(() {
-
                   selectedBussinesTurnOver = newValue;
 
                   companyDetailsInforeq.annualTurnOverId =
@@ -1446,7 +1405,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   mdrSummaryList = [];
 
                   if (kDebugMode) print(companyDetailsInforeq.annualTurnOverId);
-
                 });
               },
               validator: (value) {
@@ -1952,7 +1910,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
     var screenHeight = MediaQuery.of(context).size.height;
 
     if (kDebugMode) print('currTabPosition$currTabPosition');
-    if (kDebugMode) print('companyDetailsInforeq.gstApplicable${selectedBussinesTurnOver['gstApplicable']}');
+    if (kDebugMode)
+      print(
+          'companyDetailsInforeq.gstApplicable${selectedBussinesTurnOver['gstApplicable']}');
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -1978,7 +1938,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
               const SizedBox(height: 30.0),
               const FormTitleWidget(subWord: 'Merchant Business Proofs'),
               CustomTextFormField(
-                starEnabled: selectedBussinesTurnOver['gstApplicable'] ? true : false,
+                starEnabled:
+                    selectedBussinesTurnOver['gstApplicable'] ? true : false,
                 keyboardType: TextInputType.text,
                 controller: _gstController,
                 title: selectedBussinesTurnOver['gstApplicable']
@@ -2266,7 +2227,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                     initialDatePickerMode: DatePickerMode.day,
                     initialEntryMode: DatePickerEntryMode.calendarOnly,
                     context: context,
-                    initialDate: tradeSelectedDate,
+                    initialDate: documentExpirySelectedDate,
                     firstDate: DateTime.now().add(const Duration(days: 1)),
                     lastDate: DateTime(DateTime.now().year + 10),
                   );
@@ -2274,7 +2235,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                     String formattedDateUI =
                         DateFormat('dd/MM/yyyy').format(pickedDate);
                     setState(() {
-                      tradeSelectedDate = pickedDate;
+                      documentExpirySelectedDate = pickedDate;
 
                       documentExpiryController.text = formattedDateUI;
                     });
@@ -2889,7 +2850,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
               CustomAppButton(
                 title: 'Next',
                 onPressed: () {
-
                   if (loginFormKey.currentState!.validate()) {
                     loginFormKey.currentState!.save();
 
@@ -4621,21 +4581,21 @@ class _MerchantSignupState extends State<MerchantSignup> {
       //  if(kDebugMode)print('Acquirer Name: $acquirerName');
       // }
 
-      for (var mccGroup in mccGroups) {
-        String mccGroupId = mccGroup['mccGroupId'].toString();
-        // if (kDebugMode) print('mccGroupId : $mccGroupId');
-      }
+      // for (var mccGroup in mccGroups) {
+      //   String mccGroupId = mccGroup['mccGroupId'].toString();
+      //   // if (kDebugMode) print('mccGroupId : $mccGroupId');
+      // }
 
-      for (var mccType in mccTypes) {
-        String acquirerName = mccType['mccTypeDesc'];
-        // if (kDebugMode) print('mccTypeDesc: $acquirerName');
-      }
+      // for (var mccType in mccTypes) {
+      //   String acquirerName = mccType['mccTypeDesc'];
+      //   // if (kDebugMode) print('mccTypeDesc: $acquirerName');
+      // }
 
-      for (var products in tmsProductMaster) {
-        String acquirerName = products['productName'];
-        // if (kDebugMode) print('productName: $acquirerName');
-      }
-      if (kDebugMode) print("length" + "${tmsProductMaster.length}");
+      // for (var products in tmsProductMaster) {
+      //   String acquirerName = products['productName'];
+      //   // if (kDebugMode) print('productName: $acquirerName');
+      // }
+      // if (kDebugMode) print("length" + "${tmsProductMaster.length}");
     });
   }
 
@@ -4851,13 +4811,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
   submitUserRegistration() async {
     setState(() {
       _isLoading = true;
-      // requestModel.role = "MERCHANT";
-      // requestModel.currencyId = '784';
-      // requestModel.latitude = _lat;
-      // requestModel.longitude = _lng;
-      // requestModel.deviceType = Constants.deviceType;
-      // requestModel.instId = Constants.instId;
-      // requestModel.kycType = 'E-KYC';
     });
     // requestModel.password =
     //     await Validators.encrypt(requestModel.password.toString());
@@ -4903,10 +4856,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
     if (kDebugMode) print("Image kyc  ${_merchantStoreFrontImageCtrl.text}");
     if (kDebugMode)
       print("Image kycBack  ${_merchantStoreInsideImageCtrl.text}");
-    if (kDebugMode) print("Image tradeLicense  ${tradeLicense.text}");
-    if (kDebugMode) print("Image nationalIdFront  ${nationalIdFront.text}");
-    if (kDebugMode) print("Image nationalIdBack  ${nationalIdBack.text}");
-    if (kDebugMode) print("Image cancelCheque  ${cancelCheque.text}");
+
     userServices
         .newMerchantSignup(
       merchantProductInfoReq,
@@ -4943,19 +4893,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
         setState(() {
           _isLoading = false;
         });
-        if (decodeData['message']
-            .toString()
-            .contains('User is already Onborded')) {
-          _passwordController.clear();
-          _cnfPasswordCtrl.clear();
-          _pinController.clear();
-          _confirmPinController.clear();
-          setState(() {
-            position = 1;
-          });
-        }
+
         alertWidget.failure(context, 'Failure',
-            decodeData['message'] ?? Constants.somethingWrong);
+            decodeData['errorMessage'] ?? Constants.somethingWrong);
       }
     });
   }
@@ -5216,128 +5156,123 @@ class _MerchantSignupState extends State<MerchantSignup> {
   //   }
   // }
 
-  emailWidget() {
-    return CustomTextFormField(
-      controller: _emailController,
-      required: true,
-      textInputAction: TextInputAction.done,
-      inputFormatters: <TextInputFormatter>[
-        FilteringTextInputFormatter.allow(RegExp(r'[a-z_A-Z\d.@]'))
-      ],
-      keyboardType: TextInputType.emailAddress,
-      enabled: enabledMobile &&
-              mobile &&
-              mobileNoCheck == 'false' &&
-              _mobileNoController.text.isNotEmpty
-          ? enabledEmail = true
-          : enabledEmail = false,
-      prefixIcon: Icons.alternate_email,
-      helperText: emailHelper(),
-      helperStyle: Theme.of(context)
-          .textTheme
-          .bodySmall
-          ?.copyWith(color: Theme.of(context).primaryColor),
-      title: 'Email ID',
-      suffixText: showVerify1 ? 'Verify' : 'Change',
-      suffixIconOnPressed: () {
-        if (kDebugMode) print('Button Pressed');
-        setState(() {
-          if (!showVerify1 && emailVerify) {
-            emailVerify = false;
-            email = false;
-          } else {
-            emailVerify = true;
-          }
-        });
-        showVerify1 = true;
-        if (emailVerify) {
-          if (EmailValidator.validate(_emailController.text)) {
-            getEmailIdOrMobileNo('emailId', _emailController.text);
-          } else {
-            email = false;
-            enabledCountry = false;
-          }
-        }
-      },
-      readOnly: !showVerify1,
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Email ID is Mandatory! ';
-        } else {
-          final bool isValid = EmailValidator.validate(value);
-          if (!isValid) {
-            return Constants.emailError;
-          }
-          if (emailCheck == 'true') {
-            return Constants.emailIdFailureMessage;
-          }
-        }
+  // emailWidget() {
+  //   return CustomTextFormField(
+  //     controller: _emailController,
+  //     required: true,
+  //     textInputAction: TextInputAction.done,
+  //     inputFormatters: <TextInputFormatter>[
+  //       FilteringTextInputFormatter.allow(RegExp(r'[a-z_A-Z\d.@]'))
+  //     ],
+  //     keyboardType: TextInputType.emailAddress,
 
-        return null;
-      },
-      onSaved: (value) {
-        // requestModel.emailId = value;
-      },
-    );
-  }
+  //     prefixIcon: Icons.alternate_email,
+  //    // helperText: emailHelper(),
+  //     helperStyle: Theme.of(context)
+  //         .textTheme
+  //         .bodySmall
+  //         ?.copyWith(color: Theme.of(context).primaryColor),
+  //     title: 'Email ID',
+  //     suffixText: showVerify1 ? 'Verify' : 'Change',
+  //     suffixIconOnPressed: () {
+  //       if (kDebugMode) print('Button Pressed');
+  //       setState(() {
+  //         if (!showVerify1 && emailVerify) {
+  //           emailVerify = false;
+  //          // email = false;
+  //         } else {
+  //           emailVerify = true;
+  //         }
+  //       });
+  //       showVerify1 = true;
+  //       if (emailVerify) {
+  //         if (EmailValidator.validate(_emailController.text)) {
+  //          // getEmailIdOrMobileNo('emailId', _emailController.text);
+  //         } else {
+  //           // email = false;
+  //           // enabledCountry = false;
+  //         }
+  //       }
+  //     },
+  //     readOnly: !showVerify1,
+  //     validator: (value) {
+  //       if (value == null || value.isEmpty) {
+  //         return 'Email ID is Mandatory! ';
+  //       } else {
+  //         final bool isValid = EmailValidator.validate(value);
+  //         if (!isValid) {
+  //           return Constants.emailError;
+  //         }
+  //         // if (emailCheck == 'true') {
+  //         //   return Constants.emailIdFailureMessage;
+  //         // }
+  //       }
 
-  emailHelper() {
-    if (emailVerify == false) {
-      return "Click 'Verify' to check if Email is available";
-    }
-    if (emailCheck.toString() == "false") {
-      return Constants.emailIdSuccessMessage;
-    }
-    if (emailCheck == "Loading...") {
-      return "Please wait...";
-    }
-  }
+  //       return null;
+  //     },
+  //     onSaved: (value) {
+  //       // requestModel.emailId = value;
+  //     },
+  //   );
+  // }
 
-  getEmailIdOrMobileNo(String type, String request) async {
-    if (kDebugMode) print("Calling API");
-    setState(() {
-      emailCheck = "Loading...";
-    });
-    request = await Validators.encrypt(request);
-    userServices.emailMobileCheck(type, request).then((response) async {
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        if (type == 'emailId') {
-          setState(() {
-            emailCheck = response.body;
-            if (emailCheck == 'true') {
-              email = false;
-              enabledCountry = false;
-            } else {
-              showVerify1 = false;
-              email = true;
-              enabledCountry = enabledEmail;
-            }
-          });
-        } else {
-          setState(() {
-            mobileNoCheck = response.body;
-            if (mobileNoCheck == 'true') {
-              mobile = false;
-              enabledEmail = false;
-              mobileNoCheckMessage = Constants.mobileNoFailureMessage;
-              style = Theme.of(context)
-                  .textTheme
-                  .bodySmall
-                  ?.copyWith(color: Colors.red);
-            } else {
-              mobile = true;
-              enabledEmail = enabledMobile;
-              mobileNoCheckMessage = Constants.mobileNoSuccessMessage;
-              style = Theme.of(context)
-                  .textTheme
-                  .bodySmall
-                  ?.copyWith(color: Theme.of(context).primaryColor);
-            }
-          });
-        }
-      }
-    });
-  }
+  // emailHelper() {
+  //   if (emailVerify == false) {
+  //     return "Click 'Verify' to check if Email is available";
+  //   }
+  //   if (emailCheck.toString() == "false") {
+  //     return Constants.emailIdSuccessMessage;
+  //   }
+  //   if (emailCheck == "Loading...") {
+  //     return "Please wait...";
+  //   }
+  // }
+
+  // getEmailIdOrMobileNo(String type, String request) async {
+  //   if (kDebugMode) print("Calling API");
+  //   setState(() {
+  //   //  emailCheck = "Loading...";
+  //   });
+  //   request = await Validators.encrypt(request);
+  //   userServices.emailMobileCheck(type, request).then((response) async {
+  //     if (response.statusCode == 200 || response.statusCode == 201) {
+  //       if (type == 'emailId') {
+  //         setState(() {
+  //           emailCheck = response.body;
+  //           if (emailCheck == 'true') {
+  //             email = false;
+  //             enabledCountry = false;
+  //           } else {
+  //             showVerify1 = false;
+  //             email = true;
+  //             enabledCountry = enabledEmail;
+  //           }
+  //         });
+  //       } else {
+  //         setState(() {
+  //           mobileNoCheck = response.body;
+  //           if (mobileNoCheck == 'true') {
+  //             mobile = false;
+  //             enabledEmail = false;
+  //             mobileNoCheckMessage = Constants.mobileNoFailureMessage;
+  //             style = Theme.of(context)
+  //                 .textTheme
+  //                 .bodySmall
+  //                 ?.copyWith(color: Colors.red);
+  //           } else {
+  //             mobile = true;
+  //             enabledEmail = enabledMobile;
+  //             mobileNoCheckMessage = Constants.mobileNoSuccessMessage;
+  //             style = Theme.of(context)
+  //                 .textTheme
+  //                 .bodySmall
+  //                 ?.copyWith(color: Theme.of(context).primaryColor);
+  //           }
+  //         });
+  //       }
+  //     }
+  //   });
+  // }
 
   changeVerifiedEmail() {
     setState(() {
