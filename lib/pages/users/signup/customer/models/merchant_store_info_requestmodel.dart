@@ -51,5 +51,6 @@ class MerchantStoreInfoRequestmodel {
         "currentAddress": currentAddress,
         "latitude": latitude,
         "longitude": longitude,
+        "isAddressSame": isBusinessAddSameAsStore,
       };
 }
