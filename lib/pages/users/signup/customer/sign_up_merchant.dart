@@ -1433,17 +1433,20 @@ class _MerchantSignupState extends State<MerchantSignup> {
               }).toList(),
               onChanged: (newValue) {
                 setState(() {
+
                   selectedBussinesTurnOver = newValue;
 
-                  companyDetailsInforeq.annualTurnOver =
-                      newValue['turnoverAmount'];
+                  companyDetailsInforeq.annualTurnOverId =
+                      newValue['turnoverId'];
+
                   companyDetailsInforeq.gstApplicable =
                       newValue['gstApplicable'];
 
                   mdrType = null;
                   mdrSummaryList = [];
 
-                  if (kDebugMode) print(companyDetailsInforeq.annualTurnOver);
+                  if (kDebugMode) print(companyDetailsInforeq.annualTurnOverId);
+
                 });
               },
               validator: (value) {
@@ -1949,6 +1952,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
     var screenHeight = MediaQuery.of(context).size.height;
 
     if (kDebugMode) print('currTabPosition$currTabPosition');
+    if (kDebugMode) print('companyDetailsInforeq.gstApplicable${selectedBussinesTurnOver['gstApplicable']}');
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -1974,10 +1978,10 @@ class _MerchantSignupState extends State<MerchantSignup> {
               const SizedBox(height: 30.0),
               const FormTitleWidget(subWord: 'Merchant Business Proofs'),
               CustomTextFormField(
-                starEnabled: companyDetailsInforeq.gstApplicable ? true : false,
+                starEnabled: selectedBussinesTurnOver['gstApplicable'] ? true : false,
                 keyboardType: TextInputType.text,
                 controller: _gstController,
-                title: companyDetailsInforeq.gstApplicable
+                title: selectedBussinesTurnOver['gstApplicable']
                     ? 'Merchant GST Number'
                     : 'Merchant GST Number (Optional)',
                 hintText: "Enter merchant GST number",
@@ -2025,7 +2029,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                         : AppColors.kPrimaryColor),
                 helperText: gstHelperText,
                 validator: (value) {
-                  if (companyDetailsInforeq.gstApplicable) {
+                  if (selectedBussinesTurnOver['gstApplicable']) {
                     if (value == null || value.isEmpty) {
                       return 'Gst Number is Mandatory!';
                     }
@@ -2885,9 +2889,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
               CustomAppButton(
                 title: 'Next',
                 onPressed: () {
-                  if (kDebugMode) print(merchantBankInfoReq.toJson());
+
                   if (loginFormKey.currentState!.validate()) {
                     loginFormKey.currentState!.save();
+
+                    if (kDebugMode) print(merchantBankInfoReq.toJson());
 
                     if (cancelledChequeImg == '') {
                       alertWidget.error("Please Upload the check image");

@@ -21,7 +21,7 @@ class CompanyDetailsInfoRequestmodel {
   String? zipCode;
   int? mccTypeCode;
   String? commercialName;
-  String? annualTurnOver;
+  int? annualTurnOverId;
   String? contactPerson;
   int? stateId;
   int? cityCode;
@@ -37,7 +37,7 @@ class CompanyDetailsInfoRequestmodel {
       this.zipCode,
       this.mccTypeCode,
       this.commercialName,
-      this.annualTurnOver,
+      this.annualTurnOverId,
       this.contactPerson,
       this.stateId,
       this.cityCode,
@@ -54,7 +54,7 @@ class CompanyDetailsInfoRequestmodel {
         zipCode: json["zipCode"],
         mccTypeCode: json["mccTypeCode"],
         commercialName: json["commercialName"],
-        annualTurnOver: json["annualTurnOver"],
+        annualTurnOverId: json["annualTurnOver"],
         contactPerson: json["contactPerson"],
         stateId: json["stateId"],
         cityCode: json["cityCode"],
@@ -70,7 +70,7 @@ class CompanyDetailsInfoRequestmodel {
         "zipCode": zipCode,
         "mccTypeCode": mccTypeCode,
         "commercialName": commercialName,
-        "annualTurnOver": annualTurnOver,
+        "annualTurnOver": annualTurnOverId,
         "contactPerson": contactPerson,
         "stateId": stateId,
         "cityCode": cityCode,

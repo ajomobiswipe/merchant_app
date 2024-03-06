@@ -897,12 +897,16 @@ class UserServices {
     request.fields['merchantProductInfo'] = jsonEncode(merchantProductInfoReq);
 
     request.fields['companyDetailsInfo'] = jsonEncode(companyDetailsInforeq.toJson());
+    if (kDebugMode) print("companyDetailsInfo" + request.fields['companyDetailsInfo']!);
 
     request.fields['merchantIdProof'] = jsonEncode(merchantIdProofReq.toJson());
     request.fields['businessIDProof'] = jsonEncode(businessIdProofReq.toJson());
     request.fields['merchantLocation'] =
         jsonEncode(merchantStoreInfoReq.toJson());
+
+    if (kDebugMode) print("merchantLocation" + request.fields['merchantLocation']!);
     request.fields['bankInfo'] = jsonEncode(merchantBankInfoReq.toJson());
+    if (kDebugMode) print("bankInfo" + request.fields['bankInfo']!);
     request.fields['merchantAgreeMentInfo'] =
         jsonEncode(merchantAgreeMentReq.toJson());
 
