@@ -1913,7 +1913,10 @@ class _MerchantSignupState extends State<MerchantSignup> {
       print(
           'companyDetailsInforeq.gstApplicable${selectedBussinesTurnOver['gstApplicable']}');
 
-    selectedBussinesTurnOver['gstApplicable']=selectedBussinesTurnOver['gstApplicable']??false;
+    if(selectedBussinesTurnOver['gstApplicable']==null){
+      selectedBussinesTurnOver['gstApplicable']=false;
+    }
+
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
