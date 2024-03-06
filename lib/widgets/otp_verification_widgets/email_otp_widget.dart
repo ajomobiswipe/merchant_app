@@ -42,6 +42,7 @@ Future<void> emailOtpWidget(
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
+        // shape:ShapeBorder.lerp(a, b, t) ,
         backgroundColor: Colors.white,
         shadowColor: Colors.white,
         surfaceTintColor: Colors.white,
@@ -49,128 +50,115 @@ Future<void> emailOtpWidget(
           builder: (BuildContext context, StateSetter setState) {
             return Stack(
               children: [
-                isOtpVerifying
-                    ? Container(
-                        color: AppColors.white,
-                        child: const Center(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
+                Form(
+                  key: formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const CustomTextWidget(
+                        text: "Verify email",
+                        size: 20,
+                        fontWeight: FontWeight.w900,
+                        color: AppColors.kPrimaryColor,
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      CustomTextWidget(
+                        text: title,
+                        size: 12,
+                        color: Colors.black,
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Directionality(
+                        // Specify direction if desired
+                        textDirection: TextDirection.ltr,
+                        child: Pinput(
+                          controller: _otpCtrl,
+                          focusNode: focusNode,
+                          androidSmsAutofillMethod:
+                              AndroidSmsAutofillMethod.smsUserConsentApi,
+                          listenForMultipleSmsOnAndroid: true,
+                          obscureText: true,
+                          obscuringCharacter: "*",
+                          defaultPinTheme: defaultPinTheme,
+                          separatorBuilder: (index) => const SizedBox(width: 8),
+                          validator: (value) {
+                            if (value!.isEmpty || value.length < 4) {
+                              return '4 digits required';
+                            } else {
+                              null;
+                            }
+                            return null;
+                          },
+                          // onClipboardFound: (value) {
+                          //  if(kDebugMode)print('onClipboardFound: $value');
+                          //   pinController.setText(value);
+                          // },
+                          hapticFeedbackType: HapticFeedbackType.lightImpact,
+                          onCompleted: (pin) {
+                            if (kDebugMode) print('onCompleted: $pin');
+                          },
+                          onChanged: (value) {
+                            if (kDebugMode) print('onChanged: $value');
+                          },
+                          cursor: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              CustomTextWidget(
-                                  text: "Verifying Otp",
-                                  color: AppColors.kPrimaryColor,
-                                  size: 26),
-                              CustomTextWidget(text: "Please wait..."),
-                              CircularProgressIndicator(
-                                strokeWidth: 3,
+                              Container(
+                                margin: const EdgeInsets.only(bottom: 9),
+                                width: 22,
+                                height: 1,
+                                color: focusedBorderColor,
                               ),
                             ],
                           ),
+                          focusedPinTheme: defaultPinTheme.copyWith(
+                            decoration: defaultPinTheme.decoration!.copyWith(
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: focusedBorderColor),
+                            ),
+                          ),
+                          submittedPinTheme: defaultPinTheme.copyWith(
+                            decoration: defaultPinTheme.decoration!.copyWith(
+                              color: fillColor,
+                              borderRadius: BorderRadius.circular(19),
+                              border: Border.all(color: focusedBorderColor),
+                            ),
+                          ),
+                          errorPinTheme: defaultPinTheme.copyBorderWith(
+                            border: Border.all(color: Colors.redAccent),
+                          ),
                         ),
-                      )
-                    : Form(
-                        key: formKey,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const CustomTextWidget(
-                              text: "Verify email",
-                              size: 20,
-                              fontWeight: FontWeight.w900,
-                              color: AppColors.kPrimaryColor,
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            CustomTextWidget(
-                              text: title,
-                              size: 12,
-                              color: Colors.black,
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Directionality(
-                              // Specify direction if desired
-                              textDirection: TextDirection.ltr,
-                              child: Pinput(
-                                controller: _otpCtrl,
-                                focusNode: focusNode,
-                                androidSmsAutofillMethod:
-                                    AndroidSmsAutofillMethod.smsUserConsentApi,
-                                listenForMultipleSmsOnAndroid: true,
-                                obscureText: true,
-                                obscuringCharacter: "*",
-                                defaultPinTheme: defaultPinTheme,
-                                separatorBuilder: (index) =>
-                                    const SizedBox(width: 8),
-                                validator: (value) {
-                                  if (value!.isEmpty || value.length < 4) {
-                                    return '4 digits required';
-                                  } else {
-                                    null;
-                                  }
-                                  return null;
-                                },
-                                // onClipboardFound: (value) {
-                                //  if(kDebugMode)print('onClipboardFound: $value');
-                                //   pinController.setText(value);
-                                // },
-                                hapticFeedbackType:
-                                    HapticFeedbackType.lightImpact,
-                                onCompleted: (pin) {
-                                  if (kDebugMode) print('onCompleted: $pin');
-                                },
-                                onChanged: (value) {
-                                  if (kDebugMode) print('onChanged: $value');
-                                },
-                                cursor: Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Container(
-                                      margin: const EdgeInsets.only(bottom: 9),
-                                      width: 22,
-                                      height: 1,
-                                      color: focusedBorderColor,
-                                    ),
-                                  ],
-                                ),
-                                focusedPinTheme: defaultPinTheme.copyWith(
-                                  decoration:
-                                      defaultPinTheme.decoration!.copyWith(
-                                    borderRadius: BorderRadius.circular(8),
-                                    border:
-                                        Border.all(color: focusedBorderColor),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      if (errorMessage != "")
+                        CustomTextWidget(
+                          text: errorMessage,
+                          color: Colors.red,
+                        ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      isOtpVerifying
+                          ? Container(
+                              color: AppColors.white,
+                              child: const Column(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  CircularProgressIndicator(
+                                    strokeWidth: 3,
                                   ),
-                                ),
-                                submittedPinTheme: defaultPinTheme.copyWith(
-                                  decoration:
-                                      defaultPinTheme.decoration!.copyWith(
-                                    color: fillColor,
-                                    borderRadius: BorderRadius.circular(19),
-                                    border:
-                                        Border.all(color: focusedBorderColor),
-                                  ),
-                                ),
-                                errorPinTheme: defaultPinTheme.copyBorderWith(
-                                  border: Border.all(color: Colors.redAccent),
-                                ),
+                                ],
                               ),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            if (errorMessage != "")
-                              CustomTextWidget(
-                                text: errorMessage,
-                                color: Colors.red,
-                              ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            AppButton(
+                            )
+                          : AppButton(
                               backgroundColor: AppColors.kPrimaryColor,
                               onPressed: () {
                                 setState(
@@ -209,18 +197,18 @@ Future<void> emailOtpWidget(
                               title: "Submit",
                               // child: const Text('Validate'),
                             ),
-                          ],
-                        ),
-                      ),
+                    ],
+                  ),
+                ),
                 Positioned(
                   right: 0,
                   top: 0,
-                  child: IconButton(
-                    icon: const Icon(
+                  child: InkWell(
+                    child: const Icon(
                       Icons.close,
                       color: AppColors.kRedColor,
                     ),
-                    onPressed: () {
+                    onTap: () {
                       onSubmit(false, "Verification Canceled By User");
                       Navigator.pop(context);
                     },

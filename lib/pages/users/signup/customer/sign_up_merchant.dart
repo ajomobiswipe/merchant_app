@@ -1398,7 +1398,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                   companyDetailsInforeq.annualTurnOverId =
                       newValue['turnoverId'];
 
-                  companyDetailsInforeq.gstApplicable = newValue['gstApplicable']??false;
+                  companyDetailsInforeq.gstApplicable =
+                      newValue['gstApplicable'] ?? false;
 
                   mdrType = null;
                   mdrSummaryList = [];
@@ -1912,11 +1913,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
     if (kDebugMode)
       print(
           'companyDetailsInforeq.gstApplicable${selectedBussinesTurnOver['gstApplicable']}');
-
-    if(selectedBussinesTurnOver['gstApplicable']==null){
-      selectedBussinesTurnOver['gstApplicable']=false;
-    }
-
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -2746,8 +2742,10 @@ class _MerchantSignupState extends State<MerchantSignup> {
                     color: Colors.black,
                     fontFamily: 'Mont-regular'),
                 value: selectedBankId,
-                icon: const Icon(Icons.keyboard_arrow_down,
-                    color: AppColors.kPrimaryColor),
+                icon: const Icon(
+                  Icons.keyboard_arrow_down,
+                  color: AppColors.kPrimaryColor,
+                ),
                 hint: const Text(
                   'Select Bank',
                   style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
@@ -4699,7 +4697,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
           elevation: 0,
           backgroundColor: Colors.transparent,
           child: Container(
-            height: MediaQuery.of(context).size.height / 8,
+            //height: MediaQuery.of(context).size.height / 8,
             padding:
                 const EdgeInsets.only(left: 20, top: 20, right: 20, bottom: 20),
             margin: const EdgeInsets.only(top: 45),
@@ -4720,6 +4718,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 _openFilePicker();
               },
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Icon(
