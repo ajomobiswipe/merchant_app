@@ -26,23 +26,23 @@ class CompanyDetailsInfoRequestmodel {
   int? stateId;
   int? cityCode;
   int? businessTypeId;
-  bool? gstApplicable;
+  bool gstApplicable;
 
-  CompanyDetailsInfoRequestmodel({
-    this.merchantName,
-    this.merchantAddress,
-    this.mobileNo,
-    this.emailId,
-    this.landlineNo,
-    this.zipCode,
-    this.mccTypeCode,
-    this.commercialName,
-    this.annualTurnOver,
-    this.contactPerson,
-    this.stateId,
-    this.cityCode,
-    this.businessTypeId,this.gstApplicable
-  });
+  CompanyDetailsInfoRequestmodel(
+      {this.merchantName,
+      this.merchantAddress,
+      this.mobileNo,
+      this.emailId,
+      this.landlineNo,
+      this.zipCode,
+      this.mccTypeCode,
+      this.commercialName,
+      this.annualTurnOver,
+      this.contactPerson,
+      this.stateId,
+      this.cityCode,
+      this.businessTypeId,
+      this.gstApplicable = false});
 
   factory CompanyDetailsInfoRequestmodel.fromJson(Map<String, dynamic> json) =>
       CompanyDetailsInfoRequestmodel(
@@ -75,6 +75,6 @@ class CompanyDetailsInfoRequestmodel {
         "stateId": stateId,
         "cityCode": cityCode,
         "businessTypeId": businessTypeId,
-        "gstApplicable":gstApplicable
+        "gstApplicable": gstApplicable
       };
 }

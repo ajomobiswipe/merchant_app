@@ -1974,9 +1974,12 @@ class _MerchantSignupState extends State<MerchantSignup> {
               const SizedBox(height: 30.0),
               const FormTitleWidget(subWord: 'Merchant Business Proofs'),
               CustomTextFormField(
+                starEnabled: companyDetailsInforeq.gstApplicable ? true : false,
                 keyboardType: TextInputType.text,
                 controller: _gstController,
-                title: 'Merchant GST Number',
+                title: companyDetailsInforeq.gstApplicable
+                    ? 'Merchant GST Number'
+                    : 'Merchant GST Number (Optional)',
                 hintText: "Enter merchant GST number",
                 required: true,
                 maxLength: 15,
@@ -2021,29 +2024,23 @@ class _MerchantSignupState extends State<MerchantSignup> {
                               color: AppColors.kRedColor,
                               size: 12,
                             )),
-
                 suffixIconTrue: true,
-
                 helperStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: isgstverified
                         ? AppColors.kLightGreen
                         : AppColors.kPrimaryColor),
-                //inputFormatters: <TextInputFormatter>[AadhaarNumberFormatter()],
-                // suffixText:gstHelperText,
-                // readOnly: !isgstVerify,
                 helperText: gstHelperText,
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Gst Number is Mandatory!';
+                  if (companyDetailsInforeq.gstApplicable == true) {
+                    if (value == null || value.isEmpty) {
+                      return 'Gst Number is Mandatory!';
+                    }
+                    if (!RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
+                        .hasMatch(value)) {
+                      return 'Invalid Gst Number!';
+                    }
                   }
 
-                  // if (userVerify && userCheck == "true") {
-                  //   return Constants.userNameFailureMessage;
-                  // }
-                  if (!RegExp(r'^[a-zA-Z\d][a-zA-Z\d_.]+[a-zA-Z\d]$')
-                      .hasMatch(value)) {
-                    return 'Invalid Gst Number!';
-                  }
                   return null;
                 },
                 onSaved: (value) {

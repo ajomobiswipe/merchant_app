@@ -32,6 +32,7 @@ class CustomTextFormField extends StatelessWidget {
   final GestureTapCallback? onTap;
   final List<TextInputFormatter>? inputFormatters;
   final bool suffixIconTrue;
+  final bool starEnabled;
   final Widget? suffixIcon;
   final String? suffixText;
   final VoidCallback? suffixIconOnPressed;
@@ -92,6 +93,7 @@ class CustomTextFormField extends StatelessWidget {
       this.iconColor = Colors.black,
       this.prefixWidget,
       this.titleEneabled = true,
+      this.starEnabled = true,
       this.fromDocument = false})
       : super(key: key);
 
@@ -107,7 +109,9 @@ class CustomTextFormField extends StatelessWidget {
             ),
           if (titleEneabled)
             CustomTextWidget(
-                text: "$title *", fontWeight: FontWeight.w200, size: 14),
+                text: "$title ${starEnabled ? '*' : ""}",
+                fontWeight: FontWeight.w200,
+                size: 14),
           Padding(
             padding: const EdgeInsets.only(top: 10),
             child: TextFormField(
