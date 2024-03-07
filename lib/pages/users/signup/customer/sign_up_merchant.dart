@@ -1065,7 +1065,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               onPressed: () async {
                 personalFormKey.currentState!.save();
                 if (personalFormKey.currentState!.validate()) {
-                   if (!isEmailVerified) {
+                  if (!isEmailVerified) {
                     alertWidget.error("please verify your Email ");
                   } else {
                     setState(() {
@@ -1694,7 +1694,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
   Widget merchantIdproof() {
     var screenHeight = MediaQuery.of(context).size.height;
-
 
     return Form(
       key: loginFormKey,

@@ -63,6 +63,10 @@ class _MerchantOrderDetailsState extends State<MerchantOrderDetails> {
     var screenHeight = MediaQuery.of(context).size.height;
     return AppScafofld(
       canPop: false,
+      onPressed: () {
+        widget.customAlert.displayDialogConfirm(context, 'Quit',
+            'Do you want to quit your registration?', onTapConfirm);
+      },
       closePressed: () {
         widget.customAlert.displayDialogConfirm(context, 'Quit',
             'Do you want to quit your registration?', onTapConfirm);
