@@ -898,8 +898,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
             CustomTextFormField(
               hintText: "Enter Your Mobile Number",
               prefixWidget: TextButton(
-                  child: CustomTextWidget(
-                      text: "+91", color: Colors.black.withOpacity(0.7)),
+                  child: const CustomTextWidget(
+                      text: "+91", color: AppColors.kPrimaryColor),
                   onPressed: () {}),
               controller: _mobileNoController,
               keyboardType: TextInputType.number,
@@ -938,8 +938,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
             CustomTextFormField(
               hintText: "Enter Your WhatsApp number",
               prefixWidget: TextButton(
-                  child: CustomTextWidget(
-                      text: "+91", color: Colors.black.withOpacity(0.7)),
+                  child: const CustomTextWidget(
+                      text: "+91", color: AppColors.kPrimaryColor),
                   onPressed: () {}),
               controller: _whatsAppNumberController,
               keyboardType: TextInputType.number,
@@ -1914,8 +1914,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
       print(
           'companyDetailsInforeq.gstApplicable${selectedBussinesTurnOver['gstApplicable']}');
 
-    if(selectedBussinesTurnOver['gstApplicable']==null){
-      selectedBussinesTurnOver['gstApplicable']=false;
+    if (selectedBussinesTurnOver['gstApplicable'] == null) {
+      selectedBussinesTurnOver['gstApplicable'] = false;
     }
 
     return Column(
@@ -5102,7 +5102,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
         if (kDebugMode) print("response in");
         if (kDebugMode) print(response);
 
-        var responseBody=json.decode(response);
+        var responseBody = json.decode(response);
 
         if (responseBody['statusCode'] == 200) {
           aadhaarOtpWidget(

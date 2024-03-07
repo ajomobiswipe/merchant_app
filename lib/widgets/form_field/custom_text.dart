@@ -90,7 +90,7 @@ class CustomTextFormField extends StatelessWidget {
       this.toolbarOptions,
       this.minLines,
       this.maxLines,
-      this.iconColor = Colors.black,
+      this.iconColor = AppColors.kPrimaryColor,
       this.prefixWidget,
       this.titleEneabled = true,
       this.starEnabled = true,
@@ -169,8 +169,7 @@ class CustomTextFormField extends StatelessWidget {
                     borderSide: BorderSide(color: Colors.transparent)),
                 contentPadding:
                     const EdgeInsets.symmetric(horizontal: 4, vertical: 10),
-                prefixIcon: prefixWidget ??
-                    Icon(prefixIcon, color: iconColor!.withOpacity(0.7)),
+                prefixIcon: prefixWidget ?? Icon(prefixIcon, color: iconColor),
                 suffixIcon: (suffixIconTrue && suffixText == null)
                     ? IconButton(
                         onPressed: suffixIconOnPressed,

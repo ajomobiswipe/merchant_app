@@ -249,6 +249,10 @@ class _MyApplicationsState extends State<MyApplications> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    print(screenWidth);
+    bool isSmallScreen = screenWidth < 360;
+    print(isSmallScreen);
     double kycPendingCount = 30;
     double paymentPendingCount = 40;
     double deploymentPendingCount = 10;
@@ -484,11 +488,12 @@ class _MyApplicationsState extends State<MyApplications> {
                             leading: Text((index + 1).toString()),
                             title: Row(
                               children: [
-                                const CustomTextWidget(
-                                    size: 14,
-                                    fontWeight: FontWeight.w800,
-                                    color: Colors.black87,
-                                    text: "Name : "),
+                                if (!isSmallScreen)
+                                  const CustomTextWidget(
+                                      size: 14,
+                                      fontWeight: FontWeight.w800,
+                                      color: Colors.black87,
+                                      text: "Name : "),
                                 Expanded(
                                   child: CustomTextWidget(
                                       size: 14,
@@ -504,8 +509,9 @@ class _MyApplicationsState extends State<MyApplications> {
                               children: [
                                 Row(
                                   children: [
-                                    const CustomTextWidget(
-                                        size: 12, text: "Number : "),
+                                    if (!isSmallScreen)
+                                      const CustomTextWidget(
+                                          size: 12, text: "Number : "),
                                     CustomTextWidget(
                                         size: 12,
                                         text: allOnboardingApplications[index]
@@ -813,55 +819,65 @@ class _MyApplicationsState extends State<MyApplications> {
     required String phoneNumber,
     required String merchantId,
   }) async {
-    //if(data.devices!.isNotEmpty)
     return showDialog<void>(
       context: context,
-      // barrierDismissible: false,
       builder: (BuildContext context) {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setStateForAlert) {
-          return AlertDialog(
+          return Dialog(
+            insetPadding: const EdgeInsets.symmetric(horizontal: 10),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(12.0),
+              ),
+            ),
+
             backgroundColor: Colors.white,
             shadowColor: Colors.white,
             surfaceTintColor: Colors.white,
-            title: Row(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * .5,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+              width: MediaQuery.of(context).size.width,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
                     children: [
-                      Text(
-                        phoneNumber,
-                        style:
-                            const TextStyle(fontSize: 16, fontFamily: 'Mont'),
-                      ),
-                      Text(
-                        name,
-                        style:
-                            const TextStyle(fontSize: 20, fontFamily: 'Mont'),
+                      const Spacer(),
+                      InkWell(
+                        child: const Icon(Icons.cancel_outlined,
+                            size: 30, color: AppColors.kPrimaryColor),
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
                       ),
                     ],
                   ),
-                ),
-                const Spacer(),
-                IconButton(
-                  color: Colors.red,
-                  icon: const Icon(Icons.cancel_outlined,
-                      color: Color(0xFF97098D)),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            ),
-            content: SizedBox(
-              height: 600,
-              width: MediaQuery.of(context).size.width * .8,
-              child: Column(
-                // shrinkWrap: true,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+                  Row(
+                    children: [
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            phoneNumber,
+                            style: const TextStyle(
+                                fontSize: 16, fontFamily: 'Mont'),
+                          ),
+                          Text(
+                            name,
+                            style: const TextStyle(
+                                fontSize: 20, fontFamily: 'Mont'),
+                          ),
+                        ],
+                      ),
+                      const Spacer(),
+                    ],
+                  ),
                   TimelineTile(
                     afterLineStyle: LineStyle(
                         color: data.kycApproved == true
@@ -1147,9 +1163,6 @@ class _MyApplicationsState extends State<MyApplications> {
                       ],
                     ),
                   ),
-                  const SizedBox(
-                    height: 40,
-                  ),
                   const Center(
                     child: Column(
                       children: [
@@ -1172,7 +1185,9 @@ class _MyApplicationsState extends State<MyApplications> {
                       ],
                     ),
                   ),
-                  const Spacer(),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   if (onboardedBool)
                     Container(
                       padding: EdgeInsets.symmetric(
