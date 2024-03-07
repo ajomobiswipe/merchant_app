@@ -1065,7 +1065,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               onPressed: () async {
                 personalFormKey.currentState!.save();
                 if (personalFormKey.currentState!.validate()) {
-                  if (kDebugMode) if (!isEmailVerified) {
+                   if (!isEmailVerified) {
                     alertWidget.error("please verify your Email ");
                   } else {
                     setState(() {
@@ -1911,9 +1911,10 @@ class _MerchantSignupState extends State<MerchantSignup> {
     var screenHeight = MediaQuery.of(context).size.height;
 
     if (kDebugMode) print('currTabPosition$currTabPosition');
-    if (kDebugMode)
+    if (kDebugMode) {
       print(
           'companyDetailsInforeq.gstApplicable${selectedBussinesTurnOver['gstApplicable']}');
+    }
 
     if (selectedBussinesTurnOver['gstApplicable'] == null) {
       selectedBussinesTurnOver['gstApplicable'] = false;
@@ -4047,11 +4048,12 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                                                       });
                                                                     }
 
-                                                                    if (kDebugMode)
+                                                                    if (kDebugMode) {
                                                                       print(mdrSummaryList[
                                                                               0]
                                                                           [
                                                                           'amount']);
+                                                                    }
                                                                   },
                                                                   inputFormatters: [
                                                                     FilteringTextInputFormatter
@@ -4862,8 +4864,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
     if (kDebugMode) print(jsonString);
 
     if (kDebugMode) print("Image kyc  ${_merchantStoreFrontImageCtrl.text}");
-    if (kDebugMode)
+    if (kDebugMode) {
       print("Image kycBack  ${_merchantStoreInsideImageCtrl.text}");
+    }
 
     userServices
         .newMerchantSignup(
