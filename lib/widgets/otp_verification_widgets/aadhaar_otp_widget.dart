@@ -187,22 +187,35 @@ Future<void> aadhaarOtpWidget(
                                       onSubmit(true, "Verified");
                                       Navigator.of(context).pop();
                                     } else {
-                                      setState1(() {
-                                        errorMessage = "Verification failed";
-                                        isOtpVerifying = false;
-                                        _otpCtrl.clear();
-                                      });
+
+                                      Navigator.of(context).pop();
+                                      onSubmit(false, "Verification failed.Try after some time");
+                                      alertService.error("Verification failed.Try after some time");
+
+
+                                      // setState1(() {
+                                      //   errorMessage = "Verification failed";
+                                      //   isOtpVerifying = false;
+                                      //   _otpCtrl.clear();
+                                      // });
                                       // alertService.error("Verification failed");
                                     }
                                   } else {
-                                    setState1(() {
-                                      errorMessage = "Invalid otp";
-                                      isOtpVerifying = false;
-                                      _otpCtrl.clear();
-                                    });
+
+                                    Navigator.of(context).pop();
 
                                     onSubmit(false, "Failed try Again");
-                                    alertService.error("Invalid otp");
+
+                                    alertService.error("Verification failed");
+
+                                    // setState1(() {
+                                    //   errorMessage = "Invalid otp";
+                                    //   isOtpVerifying = false;
+                                    //   _otpCtrl.clear();
+                                    // });
+
+                                    // onSubmit(false, "Failed try Again");
+                                    // alertService.error("Invalid otp");
                                   }
                                 }
                               },

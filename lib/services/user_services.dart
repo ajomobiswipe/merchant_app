@@ -305,7 +305,7 @@ class UserServices {
       "requestType": "VERIFYAADHAROTP",
       "requestId": requestId,
       "otp": addhaarOtp,
-      "aadharNumber": addhaarNumber
+      // "aadharNumber": addhaarNumber
     };
 
     if (kDebugMode) print("newreqbody$newreqbody");
@@ -324,6 +324,9 @@ class UserServices {
     Connection connection = Connection();
     var url =
         "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/sendOtpToEmail/$emailId";
+
+    print('urlurl$url');
+
     var response = await connection.get(url);
     return response;
   }

@@ -1695,6 +1695,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
   Widget merchantIdproof() {
     var screenHeight = MediaQuery.of(context).size.height;
 
+
     return Form(
       key: loginFormKey,
       child: Column(
@@ -1843,7 +1844,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                       ? const VerificationSuccessButton()
                       : TextButton(
                           onPressed: () {
-                            if (_merchantAddharController.text.length >= 12) {
+                            if (_merchantAddharController.text.length == 12) {
                               sendAddhaarOtp();
                             } else {
                               alertWidget
@@ -5128,6 +5129,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
           setState(() {
             isAadhaarotpSending = false;
             isaddhaarOTPsent = false;
+            aadhaarHelperText = "OTP Generation Failed.Try after some time";
           });
           alertWidget.error("aadhaarOtp sent failed");
           if (kDebugMode) print("body is false");
