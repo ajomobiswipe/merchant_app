@@ -20,6 +20,7 @@ class ApplicationStatus {
   bool? midtidGenerated;
   bool? allDevicesOnboarded;
   bool? live;
+
   List<Device>? devices;
   dynamic map;
   dynamic merchantProductDetailsResponse;
@@ -81,6 +82,7 @@ class Device {
   String? package;
   int? guid;
   int? quantity;
+  int? pendingQty;
   int? price;
   bool? deploymentStatus;
 
@@ -90,6 +92,7 @@ class Device {
     this.packageId,
     this.package,
     this.quantity,
+    this.pendingQty,
     this.price,
     this.merchantId,
     this.guid,

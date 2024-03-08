@@ -46,9 +46,18 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
   final AlertService alertWidget = AlertService();
   CustomAlert customAlert = CustomAlert();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  late int quantity;
+  late int pendingQty;
+
   @override
   void initState() {
     super.initState();
+    setDeviceValues();
+  }
+
+  setDeviceValues() {
+    quantity = widget.deviceInfo!["quantity"];
+    pendingQty = widget.deviceInfo!["pendingQty"];
   }
 
   deviceDeployment() {
@@ -73,9 +82,20 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
             'Success',
             decodeData['errorMessage'],
           );
-          setState(() {});
-          Navigator.pushNamedAndRemoveUntil(
-              context, 'myApplications', (route) => false);
+          pendingQty--;
+          if (pendingQty == 0) {
+            Navigator.pushNamedAndRemoveUntil(
+                context, 'myApplications', (route) => false);
+            alertWidget.success(context, "Success", "All devices Deployed");
+          } else {
+            setState(() {
+              isdevicedeploying = false;
+
+              testTransactionChargeSlipImage.text = "";
+              deviceAtStoreImage.text = "";
+              deviceSerialNumberCntrl.clear();
+            });
+          }
         } else {
           alertWidget.failure(
             context,
@@ -96,6 +116,7 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print("index" + widget.deviceInfo!["index"].toString());
     var screenHeight = MediaQuery.of(context).size.height;
 
     //Global Background Pattern Widget
@@ -120,7 +141,7 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     CustomTextWidget(
-                        text: "Deplpying Device",
+                        text: "Deploying Device",
                         color: AppColors.kPrimaryColor,
                         size: 26),
                     CustomTextWidget(text: "Please wait...."),
@@ -142,22 +163,49 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
                     const SizedBox(
                       height: 20.0,
                     ),
-                    CustomTextWidget(text: "Deployment Details", size: 20),
+                    const CustomTextWidget(
+                        text: "Deployment Details", size: 20),
                     const SizedBox(
                       height: 40.0,
                     ),
-                    Text(widget.deviceInfo!["MerchantName"],
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyLarge
-                            ?.copyWith(color: Colors.black)),
-                    Text(widget.deviceInfo!["phoneNumber"],
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyLarge
-                            ?.copyWith(color: Colors.black)),
+                    Row(
+                      children: [
+                        Column(
+                          children: [
+                            Text(widget.deviceInfo!["MerchantName"],
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge
+                                    ?.copyWith(color: Colors.black)),
+                            Text(widget.deviceInfo!["phoneNumber"],
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge
+                                    ?.copyWith(color: Colors.black)),
+                          ],
+                        ),
+                        Spacer(),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text("Total " + quantity.toString(),
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge
+                                    ?.copyWith(color: Colors.black)),
+                            Text("Pending " + pendingQty.toString(),
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge
+                                    ?.copyWith(color: Colors.black)),
+                          ],
+                        ),
+                      ],
+                    ),
                     const SizedBox(
                       height: 20.0,
                     ),
@@ -235,7 +283,7 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
                               ),
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 15,
                           ),
                           testTransactionChargeSlipImage.text != ''
@@ -260,8 +308,8 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
                                       ),
                                       width: double.maxFinite,
                                       height: screenHeight * .2,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
+                                      child: const Padding(
+                                        padding: EdgeInsets.all(8.0),
                                         child: Column(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
@@ -270,14 +318,14 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
                                           children: [
                                             CustomTextWidget(
                                               text:
-                                                  "Click the image of test transaction chargeslip",
+                                                  "Click the image of test transaction charge slip",
                                               color: Colors.grey,
                                               size: 12,
                                             ),
                                             SizedBox(
                                               height: 10,
                                             ),
-                                            const Icon(
+                                            Icon(
                                               Icons.camera_sharp,
                                               size: 40,
                                               color: AppColors.kPrimaryColor,
@@ -352,8 +400,8 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
                                       ),
                                       width: double.maxFinite,
                                       height: screenHeight * .2,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
+                                      child: const Padding(
+                                        padding: EdgeInsets.all(8.0),
                                         child: Column(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
@@ -367,7 +415,7 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
                                             SizedBox(
                                               height: 10,
                                             ),
-                                            const Icon(
+                                            Icon(
                                               Icons.camera_sharp,
                                               size: 40,
                                               color: AppColors.kPrimaryColor,

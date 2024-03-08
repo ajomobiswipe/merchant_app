@@ -572,8 +572,12 @@ class _MyApplicationsState extends State<MyApplications> {
                                           _devices.add(Device(
                                             productId: item['productId'],
                                             productName: item['productName'],
+                                            pendingQty: item['pendingQty'],
+                                            // deploymentStatus:
+                                            //     item['deploymentStatus'],
+
                                             deploymentStatus:
-                                                item['deploymentStatus'],
+                                                item['pendingQty'] == 0,
                                             package: item['packageId'],
                                             packageId: item['packageId'],
                                             quantity: item['qty'],
@@ -592,6 +596,7 @@ class _MyApplicationsState extends State<MyApplications> {
                                         kycApproved: response['data'][0]
                                                 ['appStatus'] ??
                                             false,
+
                                         // payment: response['data'][0]
                                         //     ['paymentStatus'],
                                         payment: false,
@@ -615,15 +620,16 @@ class _MyApplicationsState extends State<MyApplications> {
                                       onboardedBool = false;
 
                                       _showMyDialog(
-                                          data: dataResponse,
-                                          phoneNumber:
-                                              allOnboardingApplications[index]
-                                                  ["mobileNo"],
-                                          name: allOnboardingApplications[index]
-                                              ["merchantName"],
-                                          merchantId:
-                                              allOnboardingApplications[index]
-                                                  ['merchantId']);
+                                        data: dataResponse,
+                                        phoneNumber:
+                                            allOnboardingApplications[index]
+                                                ["mobileNo"],
+                                        name: allOnboardingApplications[index]
+                                            ["merchantName"],
+                                        merchantId:
+                                            allOnboardingApplications[index]
+                                                ['merchantId'],
+                                      );
                                     },
                                   ),
                                 ],
@@ -669,68 +675,23 @@ class _MyApplicationsState extends State<MyApplications> {
     if (kDebugMode) print("----default value called----");
     await userServices.GetMerchantOnboardingValues().then((response) async {
       final Map<String, dynamic> data = json.decode(response.body);
-      // List<dynamic> acquirerDetails =
-      //     data['data'][0]['acquirerAcquirerDetails'];
-      // List<dynamic> mccGroups = data['data'][0]['tmsMasterMccGroup'];
-      // List<dynamic> mccTypes = data['data'][0]['tmsMasterMccTypes'];
-      // List<dynamic> tmsMasterCountries = data['data'][0]['tmsMasterCountries'];
-      // List<dynamic> tmsMasterCities = data['data'][0]['tmsMasterCities'];
-      // List<dynamic> tmsMasterCurrencies =
-      //     data['data'][0]['tmsMasterCurrencies'];
+
       List<dynamic> applicationStatusFromJson =
           data['data'][0]['merchantOnboardStatus'];
 
-      //       var countries = List<String>.from(data['data'][0]['tmsMasterCountries']
-      //     .map((item) => item['countryName']));
-      // cities = List<String>.from(
-      //     data['data'][0]['tmsMasterCities'].map((item) => item['cityName']));
-      // currencies = List<String>.from(data['data'][0]['tmsMasterCurrencies']
-      //     .map((item) => item['currencyDesc']));
-
       setState(() {
         applicationStatus = applicationStatusFromJson;
-        // mmcGroupList = mccGroups;
-        // mmcTypeList = mccTypes;
-        // tmsMasterCountriesList = tmsMasterCountries;
-        // tmsMasterCitiesList = tmsMasterCities;
-        // tmsMasterCurrenciesList = tmsMasterCurrencies;
-        // tmsProductMasterlist = tmsProductMaster;
-
-        // countryList = decodeData['responseValue']['list'];
-        // if (countryList.isNotEmpty) {
-        //   selectedCountries = countryList[0]['ctyName'].toString();
-        //   requestModel.country = selectedCountries;
-        //   requestModel.currencyId =
-        //       countryList[0]['currencyCode'].toString();
-        //   getState(countryList[0]['id'].toString());
-        // }
-        //userServices.getAcqApplicationid('1');
       });
 
       for (var applications in applicationStatus) {
         String applicationStatusis = applications['statusInfoId'].toString();
         if (kDebugMode) print('Application Status id: $applicationStatusis');
-        if (kDebugMode)
+        if (kDebugMode) {
           print('Application Name: ${applications['statusDesc']}');
+        }
       }
 
       if (kDebugMode) print("Total Items${applicationStatus.length}");
-
-      // for (var mccGroup in mccGroups) {
-      //   String mccGroupId = mccGroup['mccGroupId'].toString();
-      //  if(kDebugMode)print('mccGroupId : $mccGroupId');
-      // }
-
-      // for (var mccType in mccTypes) {
-      //   String acquirerName = mccType['mccTypeDesc'];
-      //  if(kDebugMode)print('mccTypeDesc: $acquirerName');
-      // }
-
-      // for (var products in tmsProductMaster) {
-      //   String acquirerName = products['productName'];
-      //  if(kDebugMode)print('productName: $acquirerName');
-      // }
-      //if(kDebugMode)print("length" + "${tmsProductMaster.length}");
     });
   }
 
@@ -760,12 +721,14 @@ class _MyApplicationsState extends State<MyApplications> {
       for (var applications in applicationsFromJson) {
         String applicationStatusis = applications['merchantName'].toString();
         if (kDebugMode) print('merchant Name: $applicationStatusis');
-        if (kDebugMode)
+        if (kDebugMode) {
           print('Merchant Mobile number : ${applications['mobileNo']}');
+        }
       }
 
-      if (kDebugMode)
+      if (kDebugMode) {
         print("Total Irems" "${allOnboardingApplications.length}");
+      }
 
       // for (var mccGroup in mccGroups) {
       //   String mccGroupId = mccGroup['mccGroupId'].toString();
@@ -786,7 +749,7 @@ class _MyApplicationsState extends State<MyApplications> {
   }
 
   _getApplicationStatus(merchantId) async {
-    if (kDebugMode) print("----AllMerchantApplications called$merchantId");
+    if (kDebugMode) print("----getApplicationStatus called   $merchantId");
     var response = await userServices.getMerchantApplicationStatus(merchantId);
     final Map<String, dynamic> data = json.decode(response.body);
     List<dynamic> applicationsFromJson = data['data'] ?? [];
@@ -819,6 +782,8 @@ class _MyApplicationsState extends State<MyApplications> {
     required String phoneNumber,
     required String merchantId,
   }) async {
+    setValues() {}
+
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -839,9 +804,10 @@ class _MyApplicationsState extends State<MyApplications> {
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
               width: MediaQuery.of(context).size.width,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
+              height: 600,
+              child: ListView(
+                // mainAxisSize: MainAxisSize.min,
+                // crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
@@ -850,6 +816,7 @@ class _MyApplicationsState extends State<MyApplications> {
                         child: const Icon(Icons.cancel_outlined,
                             size: 30, color: AppColors.kPrimaryColor),
                         onTap: () {
+                          setValues();
                           Navigator.of(context).pop();
                         },
                       ),
@@ -1090,76 +1057,70 @@ class _MyApplicationsState extends State<MyApplications> {
                                     title: data.devices![index].productName!,
                                     status:
                                         data.devices![index].deploymentStatus!)
-                                : ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.pushNamed(
-                                          context, "DeviceDeploymentScreen",
-                                          arguments: {
-                                            "productId":
-                                                data.devices![index].productId,
-                                            "packageId":
-                                                data.devices![index].packageId,
-                                            "merchantId":
-                                                data.devices![index].merchantId,
-                                            "guid": data.devices![index].guid,
-                                            "productName": data
-                                                .devices![index].productName,
-                                            "deploymentStatus": data
-                                                .devices![index]
-                                                .deploymentStatus,
-                                            "MerchantName": name,
-                                            "phoneNumber": phoneNumber,
-                                          });
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.red,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                      ),
-                                      minimumSize: const Size(60.0, 30.0),
+                                : Padding(
+                                    padding: const EdgeInsets.only(bottom: 10),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.pushNamed(context,
+                                                  "DeviceDeploymentScreen",
+                                                  arguments: {
+                                                    "productId": data
+                                                        .devices![index]
+                                                        .productId,
+                                                    "packageId": data
+                                                        .devices![index]
+                                                        .packageId,
+                                                    "merchantId": data
+                                                        .devices![index]
+                                                        .merchantId,
+                                                    "guid": data
+                                                        .devices![index].guid,
+                                                    "productName": data
+                                                        .devices![index]
+                                                        .productName,
+                                                    "deploymentStatus": data
+                                                        .devices![index]
+                                                        .deploymentStatus,
+                                                    "MerchantName": name,
+                                                    "phoneNumber": phoneNumber,
+                                                    "index": index,
+                                                    "pendingQty": data
+                                                        .devices![index]
+                                                        .pendingQty!,
+                                                    "quantity": data
+                                                        .devices![index]
+                                                        .quantity!
+                                                  });
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.red,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10.0),
+                                              ),
+                                              minimumSize:
+                                                  const Size(60.0, 30.0),
+                                            ),
+                                            child: Text(
+                                              data.devices![index].productName!,
+                                              style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 13),
+                                            )),
+                                        CustomTextWidget(
+                                          text:
+                                              "Deployed ${data.devices![index].quantity! - data.devices![index].pendingQty!}/${data.devices![index].quantity!}",
+                                          size: 10,
+                                        )
+                                      ],
                                     ),
-                                    child: Text(
-                                      data.devices![index].productName!,
-                                      style: const TextStyle(
-                                          color: Colors.white, fontSize: 13),
-                                    )),
+                                  ),
                           ),
                         ),
-                        // Container(
-                        //   height: 100,
-                        //   width: 250,
-                        //   child: Column(
-                        //     children: [
-                        //       ListView.builder(
-                        //         shrinkWrap: true,
-                        //         itemCount: data.devices!.length,
-                        //         itemBuilder: (context, index) {
-                        //           // Build a ListTile for each user
-                        //           return Text(data.devices![index].productName!);
-                        //         },
-                        //       ),
-                        //     ],
-                        //   ),
-                        // )
-                        // Column(
-                        //   crossAxisAlignment: CrossAxisAlignment.end,
-                        //   mainAxisAlignment: MainAxisAlignment.end,
-                        //   children: [
-                        //     Expanded(
-                        //       child: ListView.builder(
-                        //         shrinkWrap: true,
-                        //         itemCount: data.devices!.length,
-                        //         itemBuilder: (context, index) {
-                        //           // Build a ListTile for each user
-                        //           return Text(data.devices![index].productName!);
-                        //         },
-                        //       ),
-                        //     ),
-                        //     statusTextWidget(title: "Sound Box"),
-                        //     statusTextWidget(title: "Android Pos"),
-                        //   ],
-                        // ),
                       ],
                     ),
                   ),
@@ -1245,6 +1206,43 @@ class _MyApplicationsState extends State<MyApplications> {
                   Icons.cancel_outlined,
                   color: Colors.red,
                 ),
+        ],
+      );
+
+  Column deviceListWidget({
+    required String title,
+    required int quantity,
+    required int pendingQty,
+    bool status = true,
+  }) =>
+      Column(
+        children: [
+          Row(
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF97098D),
+                ),
+              ),
+              const SizedBox(
+                width: 5,
+              ),
+              status
+                  ? Icon(
+                      Icons.check_circle_outline,
+                      color: Colors.green.shade800,
+                    )
+                  : const Icon(
+                      Icons.cancel_outlined,
+                      color: Colors.red,
+                    ),
+            ],
+          ),
+          CustomTextWidget(
+              text: "Deployment Status${quantity - pendingQty}/$quantity")
         ],
       );
 }
