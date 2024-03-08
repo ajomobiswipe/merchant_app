@@ -11,7 +11,7 @@ Future<void> aadhaarOtpWidget(
     {required BuildContext context,
     required String aadhaarNumber,
     required String requestId,
-    required Function(bool validated, String addharHelpertext)
+    required Function(bool validated, String addharHelpertext,{int? statusCode})
         onSubmit}) async {
   UserServices userServices = UserServices();
   final _otpCtrl = TextEditingController();
@@ -189,7 +189,7 @@ Future<void> aadhaarOtpWidget(
                                     } else {
 
                                       Navigator.of(context).pop();
-                                      onSubmit(false, "Verification failed.Try after some time");
+                                      onSubmit(false, "Verification failed.",statusCode:100);
                                       alertService.error("Verification failed.Try after some time");
 
 
@@ -204,7 +204,7 @@ Future<void> aadhaarOtpWidget(
 
                                     Navigator.of(context).pop();
 
-                                    onSubmit(false, "Failed try Again");
+                                    onSubmit(false, "Failed try Again",statusCode:100);
 
                                     alertService.error("Verification failed");
 

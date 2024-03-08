@@ -85,6 +85,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
   final GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
   final GlobalKey<FormState> documentFormkey = GlobalKey<FormState>();
 
+  late StreamController<int> _numberStreamController;
+
   // Merchant order Detials
   List<SelectedProduct> selectedItems = [];
   List<MechantKycDocument> selectedBusinessProofItems = [];
@@ -175,6 +177,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
   var accountInfoHelperText = "Click verify";
 
   String cancelledChequeImg = '';
+
   // bool enabledLast = false;
   // bool enabledNick = false;
   // bool enabledMobile = false;
@@ -256,6 +259,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
   String selectedBusinessState = '';
 
   String selectedPermenentCountry = '';
+
   // final TextEditingController selectedMcc = TextEditingController();
   //final TextEditingController selectedBusinessType = TextEditingController();
   // final TextEditingController selectedBusinessTurnOverCtrl =
@@ -308,6 +312,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
     super.initState();
 
     _mobileNoController.text = widget.verifiednumber.text;
+
+    _numberStreamController = StreamController<int>();
+
     DevicePermission().checkPermission();
     getCurrentPosition();
     getDefaultMerchantValues();
@@ -1695,6 +1702,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
   Widget merchantIdproof() {
     var screenHeight = MediaQuery.of(context).size.height;
 
+
+
     return Form(
       key: loginFormKey,
       child: Column(
@@ -1834,27 +1843,46 @@ class _MerchantSignupState extends State<MerchantSignup> {
               //         },
               //         child: Text("Verify"))
               //     : VerificationSuccessButton(),
-              suffixIcon: isAadhaarotpSending
-                  ? const CircularProgressIndicator(
-                      color: AppColors.kLightGreen,
-                      strokeWidth: 3,
-                    )
-                  : isAadhaarverified
-                      ? const VerificationSuccessButton()
-                      : TextButton(
-                          onPressed: () {
-                            if (_merchantAddharController.text.length == 12) {
-                              sendAddhaarOtp();
-                            } else {
-                              alertWidget
-                                  .error("Enter 12 digit aadhaar number");
-                            }
-                          },
-                          child: const CustomTextWidget(
-                            text: "Send OTP",
-                            color: AppColors.kPrimaryColor,
-                            size: 12,
-                          )),
+
+              suffixIcon: StreamBuilder<int>(
+                stream: _numberStreamController.stream,
+                builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+
+                  print(snapshot.hasData);
+
+                  if (snapshot.hasData&&snapshot.data!=0) {
+                    return  CustomTextWidget(
+                      text: "wait for ${snapshot.data}",
+                      color: AppColors.kPrimaryColor,
+                      size: 12,
+                    );
+                  }
+
+                  return isAadhaarotpSending
+                      ? const CircularProgressIndicator(
+                          color: AppColors.kLightGreen,
+                          strokeWidth: 3,
+                        )
+                      : isAadhaarverified
+                          ? const VerificationSuccessButton()
+                          : TextButton(
+                              onPressed: () {
+                                if (_merchantAddharController.text.length ==
+                                    12) {
+                                  sendAddhaarOtp();
+                                } else {
+                                  alertWidget
+                                      .error("Enter 12 digit aadhaar number");
+                                }
+                              },
+                              child: const CustomTextWidget(
+                                text: "Send OTP",
+                                color: AppColors.kPrimaryColor,
+                                size: 12,
+                              ));
+                },
+              ),
+
               suffixIconTrue: true,
               helperStyle: TextStyle(
                   color: isAadhaarverified
@@ -5089,6 +5117,29 @@ class _MerchantSignupState extends State<MerchantSignup> {
     }
   }
 
+  _counterMethod(int number) {
+
+    int count=number-1;
+
+    print('count$count');
+
+    _numberStreamController.sink.add(count);
+
+    print('anas$count');
+
+    if (count == 1) {
+      Future.delayed(const Duration(seconds: 1), () {
+        _numberStreamController.sink.add(0);
+      });
+      return;
+    }
+
+    Future.delayed(const Duration(seconds: 1), () {
+      _counterMethod(count);
+    });
+
+  }
+
   sendAddhaarOtp() async {
     if (_merchantAddharController.text.length >= 12) {
       if (kDebugMode) print("Calling AddhaarOtp API");
@@ -5112,7 +5163,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
               context: context,
               requestId: responseBody['data']['requestId'],
               aadhaarNumber: addhaarNumber,
-              onSubmit: (isSvalidated, message) {
+              onSubmit: (isSvalidated, message, {int? statusCode}) {
+                if (statusCode != null) {
+                  _counterMethod(60);
+                }
+
                 setState(() {
                   isAadhaarotpSending = false;
                   isAadhaarverified = isSvalidated;
