@@ -24,6 +24,7 @@ import 'model/product_deployment_requestmodel.dart';
 // STATEFUL WIDGET
 class DeviceDeploymentScreen extends StatefulWidget {
   final Map<String, dynamic>? deviceInfo;
+
   const DeviceDeploymentScreen({
     Key? key,
     this.deviceInfo,
@@ -60,14 +61,14 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
     pendingQty = widget.deviceInfo!["pendingQty"];
   }
 
-  deviceDeployment() {
+  Future deviceDeployment() async {
     productDeploymentReq.guid = widget.deviceInfo!["guid"];
     productDeploymentReq.merchantId = widget.deviceInfo!["merchantId"];
     productDeploymentReq.productId = widget.deviceInfo!["productId"];
     productDeploymentReq.packageId = widget.deviceInfo!["packageId"];
     productDeploymentReq.productSerialNo = deviceSerialNumberCntrl.text;
     //if(kDebugMode)print(productDeploymentReq.toJson());
-    userServices
+    await userServices
         .deviceDeployment(productDeploymentReq, deviceAtStoreImage.text,
             testTransactionChargeSlipImage.text)
         .then((response) async {
@@ -83,14 +84,19 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
             decodeData['errorMessage'],
           );
           pendingQty--;
+
+          widget.deviceInfo!['changeFunction'](
+              widget.deviceInfo!['index'], pendingQty);
+
           if (pendingQty == 0) {
-            Navigator.pushNamedAndRemoveUntil(
-                context, 'myApplications', (route) => false);
+            // Navigator.pushNamedAndRemoveUntil(
+            //     context, 'myApplications', (route) => false);
             alertWidget.success(context, "Success", "All devices Deployed");
+
+            Navigator.pop(context);
           } else {
             setState(() {
               isdevicedeploying = false;
-
               testTransactionChargeSlipImage.text = "";
               deviceAtStoreImage.text = "";
               deviceSerialNumberCntrl.clear();
@@ -163,52 +169,90 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
                     const SizedBox(
                       height: 20.0,
                     ),
-                    const CustomTextWidget(
-                        text: "Deployment Details", size: 20),
-                    const SizedBox(
-                      height: 40.0,
-                    ),
-                    Row(
+
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Column(
-                          children: [
-                            Text(widget.deviceInfo!["MerchantName"],
-                                textAlign: TextAlign.center,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyLarge
-                                    ?.copyWith(color: Colors.black)),
-                            Text(widget.deviceInfo!["phoneNumber"],
-                                textAlign: TextAlign.center,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyLarge
-                                    ?.copyWith(color: Colors.black)),
-                          ],
-                        ),
-                        Spacer(),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text("Total " + quantity.toString(),
-                                textAlign: TextAlign.center,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyLarge
-                                    ?.copyWith(color: Colors.black)),
-                            Text("Pending " + pendingQty.toString(),
-                                textAlign: TextAlign.center,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyLarge
-                                    ?.copyWith(color: Colors.black)),
-                          ],
-                        ),
+                        Text(widget.deviceInfo!["MerchantName"],
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyLarge
+                                ?.copyWith(
+                                    color: Colors.black, fontFamily: 'Mont')),
+                        Text(widget.deviceInfo!["phoneNumber"],
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyLarge
+                                ?.copyWith(color: Colors.black)),
                       ],
                     ),
+
+                    const SizedBox(
+                      height: 30.0,
+                    ),
+                    const CustomTextWidget(
+                        text: "Deployment Details", size: 20, isBold: false),
+
+                    const SizedBox(
+                      height: 10.0,
+                    ),
+
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(
+                          horizontal: MediaQuery.of(context).size.width * .02,
+                          vertical: screenHeight * .005),
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                              color: AppColors.kTileColor, width: 3)),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text("Total Quantity",
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(
+                                        color: Colors.black,
+                                      )),
+                              const Spacer(),
+                              Text(
+                                "$quantity",
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              )
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 5.0,
+                          ),
+                          Row(
+                            children: [
+                              Text("Pending for deployment",
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(color: Colors.black)),
+                              const Spacer(),
+                              Text(
+                                "$pendingQty",
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+
                     const SizedBox(
                       height: 20.0,
                     ),
+
                     // CustomTextWidget(
                     //     text:
                     //         'lat ${_currentPosition?.latitude ?? ""} long ${_currentPosition?.longitude ?? ""}'),
@@ -451,7 +495,7 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
                     Center(
                       child: CustomAppButton(
                         title: "Deploy",
-                        onPressed: () {
+                        onPressed: () async {
                           if (kDebugMode) print(widget.deviceInfo);
                           if (_formKey.currentState!.validate()) {
                             if (testTransactionChargeSlipImage.text != '' &&
@@ -459,7 +503,8 @@ class _DeviceDeploymentScreenState extends State<DeviceDeploymentScreen> {
                               setState(() {
                                 isdevicedeploying = true;
                               });
-                              deviceDeployment();
+
+                              await deviceDeployment();
                             } else {
                               alertWidget.failure(
                                   context, '', 'Please upload All images!');

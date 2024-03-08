@@ -789,6 +789,17 @@ class _MyApplicationsState extends State<MyApplications> {
       builder: (BuildContext context) {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setStateForAlert) {
+
+          void setRemainingQuantities(index, pendingQuantity) {
+            setStateForAlert((){
+              data.devices![index].pendingQty = pendingQuantity;
+
+              if(pendingQuantity==0){
+                data.devices![index].deploymentStatus = true;
+              }
+
+            });
+          }
           return Dialog(
             insetPadding: const EdgeInsets.symmetric(horizontal: 10),
             shape: const RoundedRectangleBorder(
@@ -1093,7 +1104,8 @@ class _MyApplicationsState extends State<MyApplications> {
                                                         .pendingQty!,
                                                     "quantity": data
                                                         .devices![index]
-                                                        .quantity!
+                                                        .quantity!,
+                                                    "changeFunction":setRemainingQuantities
                                                   });
                                             },
                                             style: ElevatedButton.styleFrom(

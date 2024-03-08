@@ -44,12 +44,18 @@ Future<void> emailOtpWidget(
       return StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
           return Dialog(
+            insetPadding: EdgeInsets.zero,
             backgroundColor: Colors.white,
             shadowColor: Colors.white,
             surfaceTintColor: Colors.white,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(10.0),
+              ),
+            ),
             child: Container(
+              width: MediaQuery.of(context).size.width*.9,
               padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-              width: double.infinity,
               child: Stack(
                 children: [
                   Form(
@@ -196,6 +202,11 @@ Future<void> emailOtpWidget(
                                         );
                                       }
                                     });
+                                  }else{
+                                    setState(
+                                            () {
+                                          isOtpVerifying = false;
+                                        });
                                   }
                                 },
                                 title: "Submit",
@@ -213,7 +224,7 @@ Future<void> emailOtpWidget(
                         color: AppColors.kRedColor,
                       ),
                       onTap: () {
-                        onSubmit(false, "Verification Canceled By User");
+                        onSubmit(false, "Verification Canceled By User",);
                         Navigator.pop(context);
                       },
                     ),

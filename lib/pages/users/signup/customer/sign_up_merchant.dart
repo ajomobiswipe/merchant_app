@@ -313,7 +313,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
     _mobileNoController.text = widget.verifiednumber.text;
 
-    _numberStreamController = StreamController<int>();
+    _numberStreamController = StreamController<int>.broadcast();
 
     DevicePermission().checkPermission();
     getCurrentPosition();
@@ -1848,7 +1848,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 stream: _numberStreamController.stream,
                 builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
 
-                  print(snapshot.hasData);
+
 
                   if (snapshot.hasData&&snapshot.data!=0) {
                     return  CustomTextWidget(
@@ -5121,11 +5121,11 @@ class _MerchantSignupState extends State<MerchantSignup> {
 
     int count=number-1;
 
-    print('count$count');
+
 
     _numberStreamController.sink.add(count);
 
-    print('anas$count');
+
 
     if (count == 1) {
       Future.delayed(const Duration(seconds: 1), () {
@@ -5165,6 +5165,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
               aadhaarNumber: addhaarNumber,
               onSubmit: (isSvalidated, message, {int? statusCode}) {
                 if (statusCode != null) {
+                  _numberStreamController = StreamController<int>.broadcast();
                   _counterMethod(60);
                 }
 
