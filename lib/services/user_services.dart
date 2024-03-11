@@ -658,22 +658,9 @@ class UserServices {
   //   // return resonr;
   // }
 
-  Future<dynamic> getMerchantApplication(
-      {required int stage, required String merchantname}) async {
+  Future<dynamic> getMerchantApplication(requestBody) async {
     try {} catch (e) {}
     Connection connection = Connection();
-
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    String? userName = prefs.getString('userName');
-
-    if (kDebugMode) print(userName);
-
-    final requestBody = {
-      "stage": stage,
-      "merchantName": merchantname,
-      "userId": userName
-    };
 
     var url =
         '${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/MerchantOnboardList';

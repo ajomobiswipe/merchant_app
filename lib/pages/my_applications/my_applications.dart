@@ -4,7 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sifr_latest/services/services.dart';
 import 'package:sifr_latest/utilities/screen_size.dart';
 import 'package:sifr_latest/widgets/app_scafold.dart';
@@ -33,6 +35,8 @@ class _MyApplicationsState extends State<MyApplications> {
   dynamic selectedValue;
 
   bool onboardedBool = false;
+
+  int _searchFilterId = 0;
 
   bool loader = true;
   List<ApplicationStatus> ststusdata = [
@@ -247,6 +251,9 @@ class _MyApplicationsState extends State<MyApplications> {
     });
   }
 
+
+
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -367,7 +374,7 @@ class _MyApplicationsState extends State<MyApplications> {
                   selectesStage =
                       value == 0 ? 0 : selectedValue["statusInfoId"];
 
-                  getAllMerchantApplications();
+                  getList();
 
                   // packagelist = selectedValue["tmsPackage"];
                   //if(kDebugMode)print(value);
@@ -420,13 +427,50 @@ class _MyApplicationsState extends State<MyApplications> {
             ),
 
             const SizedBox(
-              height: 20,
+              height: 40,
             ),
+
+            const CustomTextWidget(
+              text: 'Search Merchants by',
+            ),
+
+            Row(
+              children: [
+                RadioMenuButton(
+                    value: 0,
+                    groupValue: _searchFilterId,
+                    onChanged: (value) {
+                      _searchFilterId = value!;
+                      getList();
+                      setState(() {});
+                    },
+                    child: const Text('Name')),
+                RadioMenuButton(
+                    value: 1,
+                    groupValue: _searchFilterId,
+                    onChanged: (value) {
+                      _searchFilterId = value!;
+                      getList();
+                      setState(() {});
+                    },
+                    child: const Text('phone Number')),
+              ],
+            ),
+
             CustomTextFormField(
-              title: 'Search with Merchant Name',
+              title:
+                  'Search (min. 4 characters)',
+              titleEneabled: false,
               controller: _merchantNameController,
               required: true,
               textCapitalization: TextCapitalization.words,
+              keyboardType: _searchFilterId == 1
+                  ? TextInputType.number
+                  : TextInputType.text,
+
+              inputFormatters: _searchFilterId == 1
+                  ? [FilteringTextInputFormatter.digitsOnly]
+                  : null,
               // enabled: _firstNameController.text.isEmpty ||
               //         _firstNameController.text.length < 3
               //     ? enabledLast = false
@@ -443,13 +487,16 @@ class _MyApplicationsState extends State<MyApplications> {
               // },
               onChanged: (String value) {
                 value = value.trim();
+                if(value==''){
+                  getList();
+                }
               },
               onSaved: (value) {
                 // registerRequestModel.lastName = value.trim();
               },
               onFieldSubmitted: (value) {
-                allOnboardingApplications.clear();
-                getAllMerchantApplications();
+                if(value=='')return;
+              getList();
               },
               suffixIcon: const Icon(Icons.search),
               suffixIconTrue: true,
@@ -459,11 +506,11 @@ class _MyApplicationsState extends State<MyApplications> {
                   if (kDebugMode) print(_merchantNameController.text);
                   if (kDebugMode) print(selectesStage.toString());
                   // getAllMerchantApplications();
-                  allOnboardingApplications.clear();
-                  getAllMerchantApplications();
+                  getList();
                 });
               },
             ),
+
             // if (selectedValue != null)
             //   Text(selectedValue["statusInfoId"].toString()),
 
@@ -697,15 +744,34 @@ class _MyApplicationsState extends State<MyApplications> {
 
   Map<String, dynamic>? getChartCount;
 
+  void getList(){
+    if(_merchantNameController.text.length<4&&_merchantNameController.text.isNotEmpty)return;
+    allOnboardingApplications.clear();
+    getAllMerchantApplications();
+  }
+
   getAllMerchantApplications() async {
+
     setState(() {
       loader = true;
     });
 
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String? userName = prefs.getString('userName');
+
+    if (kDebugMode) print(userName);
+
+    final requestBody = {
+      "stage": selectesStage,
+      "merchantName": _searchFilterId == 0 ? _merchantNameController.text : '',
+      "userId": userName,
+      "mobileNo": _searchFilterId == 1 ? _merchantNameController.text : '',
+    };
+
     if (kDebugMode) print("----AllMerchantApplications called----");
     await userServices
-        .getMerchantApplication(
-            stage: selectesStage, merchantname: _merchantNameController.text)
+        .getMerchantApplication(requestBody)
         .then((response) async {
       final Map<String, dynamic> data = json.decode(response.body);
 
@@ -789,17 +855,16 @@ class _MyApplicationsState extends State<MyApplications> {
       builder: (BuildContext context) {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setStateForAlert) {
-
           void setRemainingQuantities(index, pendingQuantity) {
-            setStateForAlert((){
+            setStateForAlert(() {
               data.devices![index].pendingQty = pendingQuantity;
 
-              if(pendingQuantity==0){
+              if (pendingQuantity == 0) {
                 data.devices![index].deploymentStatus = true;
               }
-
             });
           }
+
           return Dialog(
             insetPadding: const EdgeInsets.symmetric(horizontal: 10),
             shape: const RoundedRectangleBorder(
@@ -1105,7 +1170,8 @@ class _MyApplicationsState extends State<MyApplications> {
                                                     "quantity": data
                                                         .devices![index]
                                                         .quantity!,
-                                                    "changeFunction":setRemainingQuantities
+                                                    "changeFunction":
+                                                        setRemainingQuantities
                                                   });
                                             },
                                             style: ElevatedButton.styleFrom(

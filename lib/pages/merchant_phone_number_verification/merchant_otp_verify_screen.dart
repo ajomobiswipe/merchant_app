@@ -175,19 +175,19 @@ class _MerchantOTPVerifyScreenState extends State<MerchantOTPVerifyScreen> {
         child: ListView(
           children: [
             const SizedBox(
-              height: 20,
+              height: 40,
             ),
-            const AppTextFormField(
-              title: 'Search with merchant mobile number',
-              required: false,
-              suffixIcon: Icons.search,
-              iconColor: AppColors.black,
-              eneablrTitle: false,
-              suffixIconTrue: true,
-            ),
-            const SizedBox(
-              height: 20,
-            ),
+            // const AppTextFormField(
+            //   title: 'Search with merchant mobile number',
+            //   required: false,
+            //   suffixIcon: Icons.search,
+            //   iconColor: AppColors.black,
+            //   eneablrTitle: false,
+            //   suffixIconTrue: true,
+            // ),
+            // const SizedBox(
+            //   height: 20,
+            // ),
             const Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
