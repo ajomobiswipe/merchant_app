@@ -283,7 +283,8 @@ class UserServices {
     return responseapi.body;
   }
 
-  validateAddhaarOtp(String addhaarNumber, String addhaarOtp,String requestId) async {
+  validateAddhaarOtp(
+      String addhaarNumber, String addhaarOtp, String requestId) async {
     String token = boxStorage.getToken();
 
     var newheader = {

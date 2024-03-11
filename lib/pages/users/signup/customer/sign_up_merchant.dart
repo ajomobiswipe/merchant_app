@@ -1024,6 +1024,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                           ? int.parse(newValue['businessType'])
                           : newValue['businessType'];
                   // companyDetailsInforeq.businessTypeId = 1;
+                  selectedBusinessProofItems.clear();
                 });
               },
               validator: (value) {
@@ -1702,8 +1703,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
   Widget merchantIdproof() {
     var screenHeight = MediaQuery.of(context).size.height;
 
-
-
     return Form(
       key: loginFormKey,
       child: Column(
@@ -1847,11 +1846,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
               suffixIcon: StreamBuilder<int>(
                 stream: _numberStreamController.stream,
                 builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
-
-
-
-                  if (snapshot.hasData&&snapshot.data!=0) {
-                    return  CustomTextWidget(
+                  if (snapshot.hasData && snapshot.data != 0) {
+                    return CustomTextWidget(
                       text: "wait for ${snapshot.data}",
                       color: AppColors.kPrimaryColor,
                       size: 12,
@@ -2187,8 +2183,18 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 value: businessProofType,
                 icon: const Icon(Icons.keyboard_arrow_down,
                     color: AppColors.kPrimaryColor),
-                items: merchantProofDocumentList
-                    .map<DropdownMenuItem>((dynamic value) {
+                items: merchantProofDocumentList.where((value) {
+                  List<String> stringDocumentTypeIdList =
+                      selectedBusinessProofItems
+                          .map((doc) => doc.documentTypeId!.toString())
+                          .toList();
+
+                  return !stringDocumentTypeIdList
+                          .contains(value['businessDocId'])
+                      // && value['businessType'] == companyDetailsInforeq.businessTypeId
+                      //for business type based filteringS
+                      ;
+                }).map<DropdownMenuItem>((dynamic value) {
                   return DropdownMenuItem(
                     value: value,
                     child: Text(
@@ -2205,22 +2211,16 @@ class _MerchantSignupState extends State<MerchantSignup> {
                     businessDocumentTypeId = newValue["businessDocId"];
                     if (kDebugMode) print(newValue["businessType"]);
                     if (kDebugMode) print(newValue["businessDocId"]);
-                    // businessType = newValue;
-                    // companyDetailsInforeq.businessTypeId =
-                    //     newValue['businessType'].runtimeType == String
-                    //         ? int.parse(newValue['businessType'])
-                    //         : newValue['businessType'];
-                    // // companyDetailsInforeq.businessTypeId = 1;
                   });
                 },
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Select Business Type!';
                   }
-
                   return null;
                 },
               ),
+
               CustomTextFormField(
                 // onTap: _openFilePicker,
                 onTap: () {
@@ -5118,14 +5118,9 @@ class _MerchantSignupState extends State<MerchantSignup> {
   }
 
   _counterMethod(int number) {
-
-    int count=number-1;
-
-
+    int count = number - 1;
 
     _numberStreamController.sink.add(count);
-
-
 
     if (count == 1) {
       Future.delayed(const Duration(seconds: 1), () {
@@ -5137,7 +5132,6 @@ class _MerchantSignupState extends State<MerchantSignup> {
     Future.delayed(const Duration(seconds: 1), () {
       _counterMethod(count);
     });
-
   }
 
   sendAddhaarOtp() async {
