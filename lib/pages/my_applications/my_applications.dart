@@ -276,15 +276,14 @@ class _MyApplicationsState extends State<MyApplications> {
               //     ? enabledLast = false
               //     : enabledLast = true,
               // prefixIcon: LineAwesome.user_circle,
-              // validator: (value) {
-              //   if (value.trim() == null || value.trim().isEmpty) {
-              //     return 'Last Name is Mandatory!';
-              //   }
-              //   if (value.trim().length < 3) {
-              //     return 'Minimum 3 characters';
-              //   }
-              //   return null;
-              // },
+
+              validator: (value) {
+                if (value.trim().length < 4) {
+                  return 'Minimum 4 characters';
+                }
+                return null;
+              },
+
               onChanged: (String value) {
                 value = value.trim();
                 if(value==''){
@@ -328,24 +327,29 @@ class _MyApplicationsState extends State<MyApplications> {
                 : allOnboardingApplications.isNotEmpty
                     ? ListView(
                         shrinkWrap: true,
+
+                        
                         physics: const NeverScrollableScrollPhysics(),
                         children: List.generate(
                             allOnboardingApplications.length, (index) {
                           return ListTile(
-                            leading: Text((index + 1).toString()),
+                            contentPadding:EdgeInsets.zero,
+                              minLeadingWidth:screenWidth*.02,
+                            leading: Text((index + 1).toString(),style: const TextStyle(fontWeight: FontWeight.w900),),
                             title: Row(
                               children: [
-                                if (!isSmallScreen)
-                                  const CustomTextWidget(
-                                      size: 14,
-                                      fontWeight: FontWeight.w800,
-                                      color: Colors.black87,
-                                      text: "Name : "),
+                                // if (!isSmallScreen)
+                                //   const CustomTextWidget(
+                                //       size: 13,
+                                //       fontWeight: FontWeight.w800,
+                                //       color: Colors.black87,
+                                //       text: "Name : "),
                                 Expanded(
                                   child: CustomTextWidget(
-                                      size: 14,
-                                      fontWeight: FontWeight.w800,
-                                      color: AppColors.kLightGreen,
+                                      size: 12,
+
+                                      // fontWeight: FontWeight.w800,
+                                      // color: AppColors.kLightGreen,
                                       text: allOnboardingApplications[index]
                                           ["merchantName"]),
                                 ),
@@ -356,11 +360,12 @@ class _MyApplicationsState extends State<MyApplications> {
                               children: [
                                 Row(
                                   children: [
-                                    if (!isSmallScreen)
-                                      const CustomTextWidget(
-                                          size: 12, text: "Number : "),
+                                    // if (!isSmallScreen)
+                                    //   const CustomTextWidget(
+                                    //       size: 12, text: "Number : "),
                                     CustomTextWidget(
-                                        size: 12,
+
+                                        size: 11,
                                         text: allOnboardingApplications[index]
                                                 ["mobileNo"] ??
                                             ''),
@@ -374,9 +379,10 @@ class _MyApplicationsState extends State<MyApplications> {
                               ],
                             ),
                             trailing: SizedBox(
-                              width: 100,
+                              width: screenWidth*.4,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.end,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
                                     allOnboardingApplications[index]
@@ -384,7 +390,7 @@ class _MyApplicationsState extends State<MyApplications> {
                                             null
                                         ? "Unknown"
                                         : "${allOnboardingApplications[index]["statusInfoId"]["statusName"]}",
-                                    maxLines: 1,
+                                    maxLines: 1,style: const TextStyle(fontWeight: FontWeight.w900),
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                   InkWell(
