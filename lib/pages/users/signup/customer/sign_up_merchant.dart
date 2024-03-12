@@ -1025,6 +1025,8 @@ class _MerchantSignupState extends State<MerchantSignup> {
                           : newValue['businessType'];
                   // companyDetailsInforeq.businessTypeId = 1;
                   selectedBusinessProofItems.clear();
+
+                  businessProofType = null;
                 });
               },
               validator: (value) {
@@ -2190,9 +2192,10 @@ class _MerchantSignupState extends State<MerchantSignup> {
                           .toList();
 
                   return !stringDocumentTypeIdList
-                          .contains(value['businessDocId'])
-                      // && value['businessType'] == companyDetailsInforeq.businessTypeId
-                      //for business type based filteringS
+                              .contains(value['businessDocId']) &&
+                          value['businessTypeId'] ==
+                              companyDetailsInforeq.businessTypeId.toString()
+                      // for business type based filteringS
                       ;
                 }).map<DropdownMenuItem>((dynamic value) {
                   return DropdownMenuItem(
@@ -2391,7 +2394,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                 // ),
                 // defaultHeight(15),
                 Container(
-                  color: AppColors.kTileColor,
+                  color: AppColors.kSelectedBackgroundColor,
                   child: Theme(
                     data: ThemeData().copyWith(
                         dividerColor: Colors.transparent,
