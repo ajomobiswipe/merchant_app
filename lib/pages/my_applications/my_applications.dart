@@ -328,7 +328,7 @@ class _MyApplicationsState extends State<MyApplications> {
                     ? ListView(
                         shrinkWrap: true,
 
-                        
+
                         physics: const NeverScrollableScrollPhysics(),
                         children: List.generate(
                             allOnboardingApplications.length, (index) {
