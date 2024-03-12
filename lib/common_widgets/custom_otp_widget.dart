@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -5,8 +7,11 @@ import 'package:flutter/services.dart';
 import 'package:pinput/pinput.dart';
 import 'package:sifr_latest/common_widgets/custom_app_button.dart';
 import 'package:sifr_latest/pages/users/signup/customer/customer.dart';
+import 'package:sifr_latest/services/services.dart';
 
 import '../config/app_color.dart';
+import '../main.dart';
+import '../widgets/app/customAlert.dart';
 import '../widgets/custom_text_widget.dart';
 import '../widgets/form_field/custom_text.dart';
 
@@ -31,6 +36,8 @@ class _CustomOtpWidgetState extends State<CustomOtpWidget> {
   final focusNode = FocusNode();
   final formKey = GlobalKey<FormState>();
 
+  UserServices userServices = UserServices();
+
   @override
   void dispose() {
     pinController.dispose();
@@ -39,6 +46,23 @@ class _CustomOtpWidgetState extends State<CustomOtpWidget> {
   }
 
   bool isOtpVisible = false;
+
+  Future checkForExistingMerchant(String number) async {
+    var response = await userServices.checkForExistingMerchant(number);
+    if (response.statusCode != 200) return;
+    var jsonResponse = jsonDecode(response.body);
+    return jsonResponse;
+  }
+
+  void onTapConfirm() {
+    Navigator.push<void>(
+      context,
+      CupertinoPageRoute<void>(
+        builder: (BuildContext context) =>
+            MerchantSignup(verifiednumber: widget.phonemumbercontroller),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,49 +105,66 @@ class _CustomOtpWidgetState extends State<CustomOtpWidget> {
             prefixIcon: Icons.phone,
 
             onChanged: (phone) {
-             setState(() {
-
-             });
+              setState(() {});
             },
-            suffixIcon: widget.phonemumbercontroller.text.length ==10?GestureDetector(
+            suffixIcon: widget.phonemumbercontroller.text.length == 10
+                ? GestureDetector(
+                    onTap: () async {
+                      if (widget.phonemumbercontroller.text.isEmpty) {
+                        return;
+                      }
+                      if (widget.phonemumbercontroller.text.length < 10) {
+                        return;
+                      }
 
-              onTap: () {
-                if (widget.phonemumbercontroller.text.isEmpty) {
-                  return;
-                }
-                if (widget.phonemumbercontroller.text.length < 10) {
-                  return;
-                }
-                setState(() {
-                  FocusManager.instance.primaryFocus?.unfocus();
+                      FocusManager.instance.primaryFocus?.unfocus();
 
-                  Future.delayed(const Duration(milliseconds: 500), () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('OTP has been sent successfully'),
-                        duration: Duration(seconds: 3), // Optional duration
-                      ),
-                    );
-                  });
+                      var response = await checkForExistingMerchant(
+                          widget.phonemumbercontroller.text);
 
-                  isOtpVisible = true;
-                });
-              },
+                      if (kDebugMode) print(response);
 
-              child: const Column(
-                children: [
-                  Icon(
-                    Icons.send,
-                    color: AppColors.kLightGreen,
-                  ),
-                  CustomTextWidget(
-                    text: "Send",
-                    size: 10,
-                    color: AppColors.kLightGreen,
+                      if (response['statusCode'] == 208) {
+                        print('hello');
+                        if (mounted) {
+
+                          CustomAlert().displayDialogConfirm(
+                              context,
+                              'Continue',
+                              '${response['errorMessage']}',
+                              onTapConfirm);
+                        }
+                      } else {
+                        Future.delayed(const Duration(milliseconds: 500), () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('OTP has been sent successfully'),
+                              duration:
+                                  Duration(seconds: 3), // Optional duration
+                            ),
+                          );
+                        });
+
+                        setState(() {
+                          isOtpVisible = true;
+                        });
+                      }
+                    },
+                    child: const Column(
+                      children: [
+                        Icon(
+                          Icons.send,
+                          color: AppColors.kLightGreen,
+                        ),
+                        CustomTextWidget(
+                          text: "Send",
+                          size: 10,
+                          color: AppColors.kLightGreen,
+                        )
+                      ],
+                    ),
                   )
-                ],
-              ),
-            ):Container(width: 0),
+                : Container(width: 0),
 
             suffixIconTrue: true,
 

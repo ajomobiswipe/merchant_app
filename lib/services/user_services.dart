@@ -549,6 +549,16 @@ class UserServices {
     // return resonr;
   }
 
+  Future<dynamic> checkForExistingMerchant(
+      String number) async {
+
+    Connection connection = Connection();
+    var url = '${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/getMerchantOnboardingInfo/$number';
+    var response = await connection.get(url);
+    return response;
+
+  }
+
   Future sendTermsAndConditions(String? mailId, String requestType) async {
     Connection connection = Connection();
 
