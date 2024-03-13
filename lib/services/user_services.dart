@@ -69,10 +69,8 @@ class UserServices {
     return response;
   }
 
-  accountValidation(
-    String accno,
-    String ifsc,
-  ) async {
+  accountValidation(String accno,
+      String ifsc,) async {
     String token = boxStorage.getToken();
 
 // Ensure token is not null or empty
@@ -104,11 +102,13 @@ class UserServices {
       if (kDebugMode) print("newheader$newheader");
 
       var verifyAccountUel = Uri.parse(
-          "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/validateBankAccountVerifications");
+          "${EndPoints
+              .baseApiPublic}/NanoPay/Middleware/UiApi/validateBankAccountVerifications");
 
       if (kDebugMode)
         print(
-            "verifyAccountUel${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/validateBankAccountVerifications");
+            "verifyAccountUel${EndPoints
+                .baseApiPublic}/NanoPay/Middleware/UiApi/validateBankAccountVerifications");
 
       final newreqbody = {
         "task": "bankTransferLite",
@@ -139,9 +139,7 @@ class UserServices {
     return false;
   }
 
-  gstValidation(
-    String gstNo,
-  ) async {
+  gstValidation(String gstNo,) async {
     String token = boxStorage.getToken();
 
 // Ensure token is not null or empty
@@ -190,9 +188,7 @@ class UserServices {
     return false;
   }
 
-  panValidation(
-    String panNumber,
-  ) async {
+  panValidation(String panNumber,) async {
     try {
       String token = boxStorage.getToken();
 
@@ -203,7 +199,8 @@ class UserServices {
       };
       // final headers = {'Authorization': 'Bearer $token'};
       var urlnew = Uri.parse(
-          '${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/addOrUpdateLogin');
+          '${EndPoints
+              .baseApiPublic}/NanoPay/Middleware/UiApi/addOrUpdateLogin');
       var body = jsonEncode(
           {"username": "omaEmirates_preprod_v2", "password": "doXpr3KeKT"});
 
@@ -227,7 +224,8 @@ class UserServices {
         };
 
         var gstVerify = Uri.parse(
-            "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/validatePanAadhar");
+            "${EndPoints
+                .baseApiPublic}/NanoPay/Middleware/UiApi/validatePanAadhar");
 
         final newreqbody = {
           "requestType": "PAN",
@@ -268,7 +266,8 @@ class UserServices {
 
     if (kDebugMode)
       print(
-          "addhaarverify${'${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/getEkycOtp'}");
+          "addhaarverify${'${EndPoints
+              .baseApiPublic}/NanoPay/Middleware/UiApi/getEkycOtp'}");
 
     final newreqbody = {
       "requestType": "AADHAAR",
@@ -283,8 +282,8 @@ class UserServices {
     return responseapi.body;
   }
 
-  validateAddhaarOtp(
-      String addhaarNumber, String addhaarOtp, String requestId) async {
+  validateAddhaarOtp(String addhaarNumber, String addhaarOtp,
+      String requestId) async {
     String token = boxStorage.getToken();
 
     var newheader = {
@@ -300,7 +299,8 @@ class UserServices {
 
     if (kDebugMode)
       print(
-          "addhaarverify${"${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/verifyEkycData"}");
+          "addhaarverify${"${EndPoints
+              .baseApiPublic}/NanoPay/Middleware/UiApi/verifyEkycData"}");
 
     final newreqbody = {
       "requestType": "VERIFYAADHAROTP",
@@ -316,7 +316,8 @@ class UserServices {
 
     if (kDebugMode)
       print(
-          "Addhaar Validation Api reponseStatus code ${responseapi.statusCode}");
+          "Addhaar Validation Api reponseStatus code ${responseapi
+              .statusCode}");
     if (kDebugMode) print(responseapi.body);
     return responseapi;
   }
@@ -324,7 +325,8 @@ class UserServices {
   sendEmailOtp({required String emailId}) async {
     Connection connection = Connection();
     var url =
-        "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/sendOtpToEmail/$emailId";
+        "${EndPoints
+        .baseApiPublic}/NanoPay/Middleware/UiApi/sendOtpToEmail/$emailId";
 
     print('urlurl$url');
 
@@ -437,7 +439,8 @@ class UserServices {
   securityQuestion(String userName) async {
     Connection connection = Connection();
     var url =
-        '${EndPoints.baseApi9502}${EndPoints.securityQuestionAPI}${Constants.instId}/$userName';
+        '${EndPoints.baseApi9502}${EndPoints.securityQuestionAPI}${Constants
+        .instId}/$userName';
     var response = await connection.getWithOutToken(url);
     return response;
   }
@@ -464,7 +467,8 @@ class UserServices {
   forgetUserName(String email) async {
     Connection connection = Connection();
     var url =
-        '${EndPoints.baseApi9502}${EndPoints.forgetUserNameAPI}${Constants.instId}/$email';
+        '${EndPoints.baseApi9502}${EndPoints.forgetUserNameAPI}${Constants
+        .instId}/$email';
     var response = await connection.getWithOutToken(url);
     return response;
   }
@@ -508,8 +512,8 @@ class UserServices {
     return response;
   }
 
-  Future<dynamic> getMdrSummary(
-      String mdrType, String turnOver, int mccGroupId) async {
+  Future<dynamic> getMdrSummary(String mdrType, String turnOver,
+      int mccGroupId) async {
     Connection connection = Connection();
 
     final requestBody = {
@@ -549,14 +553,16 @@ class UserServices {
     // return resonr;
   }
 
-  Future<dynamic> checkForExistingMerchant(
-      String number) async {
-
+  Future<dynamic> checkForExistingMerchant(String number) async {
     Connection connection = Connection();
+
     var url = '${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/getMerchantOnboardingInfo/$number';
+    // var url = '${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/MerchantOnboardList';
+
+    print(url);
+
     var response = await connection.get(url);
     return response;
-
   }
 
   Future sendTermsAndConditions(String? mailId, String requestType) async {
@@ -577,7 +583,8 @@ class UserServices {
     // var url =
     //     'http://10.0.38.83:9508/NanoPay/Middleware/UiApi/sendTermsAndConditions';
     var url =
-        '${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/sendTermsAndConditions';
+        '${EndPoints
+        .baseApiPublic}/NanoPay/Middleware/UiApi/sendTermsAndConditions';
     var response = await connection.post(url, requestBody, timeOutSeconds: 20);
 
     return response;
@@ -589,7 +596,8 @@ class UserServices {
     // var url =
     //     'http://10.0.38.83:9508/NanoPay/Middleware/UiApi/getTcAndAgreementStatus/$mailId';
     var url =
-        '${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/getTcAndAgreementStatus/$mailId';
+        '${EndPoints
+        .baseApiPublic}/NanoPay/Middleware/UiApi/getTcAndAgreementStatus/$mailId';
     var response = await connection.get(
       url,
     );
@@ -600,7 +608,8 @@ class UserServices {
   Future<dynamic> GetMerchantOnboardingValues() async {
     Connection connection = Connection();
     var url =
-        '${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/GetMerchantOnboardingValues';
+        '${EndPoints
+        .baseApiPublic}/NanoPay/Middleware/UiApi/GetMerchantOnboardingValues';
 
     if (kDebugMode) {
       print("url$url");
@@ -674,7 +683,8 @@ class UserServices {
     Connection connection = Connection();
 
     var url =
-        '${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/MerchantOnboardList';
+        '${EndPoints
+        .baseApiPublic}/NanoPay/Middleware/UiApi/MerchantOnboardList';
     var response = await connection.post(url, requestBody);
     if (kDebugMode)
       print("Defaultvalues Api response code" + response.statusCode.toString());
@@ -686,7 +696,8 @@ class UserServices {
     final requestBody = {"merchantId": "$merchantInd"};
 
     var url =
-        '${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/MerchantOnboardingStatus';
+        '${EndPoints
+        .baseApiPublic}/NanoPay/Middleware/UiApi/MerchantOnboardingStatus';
     var response = await connection.post(url, requestBody);
 
     return response;
@@ -696,7 +707,8 @@ class UserServices {
     Connection connection = Connection();
 
     var url =
-        '${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/onboardByHitachiOrAuBank/$merchantInd';
+        '${EndPoints
+        .baseApiPublic}/NanoPay/Middleware/UiApi/onboardByHitachiOrAuBank/$merchantInd';
     var response = await connection.get(url);
 
     return response;
@@ -819,32 +831,32 @@ class UserServices {
   * METHOD: POST
   * Params: RegisterRequestModel,newProfilePicture,kycFrontImage,kycBackImage,tradeLicense,nationalIdFront,nationalIdBack and cancelCheque
   */
-  newMerchantSignup(
-    merchantProductInfoReq,
-    companyDetailsInforeq,
-    merchantIdProofReq,
-    businessIdProofReq,
-    merchantStoreInfoReq,
-    merchantAgreeMentReq,
-    merchantBankInfoReq,
-    merchantStoreFrontImage,
-    merchantStoreInsideImage,
-    cancelledChequeImg,
-    // merchantPersonalReq,
-    // merchantCompanyDetailsReq,
-    // kycFront,
-    // kycBack,
-    // tradeLicense,
-    // nationalIdFront,
-    // nationalIdBack,
-  ) async {
+  newMerchantSignup(merchantProductInfoReq,
+      companyDetailsInforeq,
+      merchantIdProofReq,
+      businessIdProofReq,
+      merchantStoreInfoReq,
+      merchantAgreeMentReq,
+      merchantBankInfoReq,
+      merchantStoreFrontImage,
+      merchantStoreInsideImage,
+      cancelledChequeImg,
+      // merchantPersonalReq,
+      // merchantCompanyDetailsReq,
+      // kycFront,
+      // kycBack,
+      // tradeLicense,
+      // nationalIdFront,
+      // nationalIdBack,
+      ) async {
     //var url = EndPoints.baseApi9502 + EndPoints.registerAPI;
     BoxStorage boxStorage = BoxStorage();
     String barrertoken = boxStorage.getToken();
 
     var url =
-        // '${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/merchantMobileOnboarding';
-        '${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/merchantMobileOnboarding';
+    // '${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/merchantMobileOnboarding';
+        '${EndPoints
+        .baseApiPublic}/NanoPay/Middleware/UiApi/merchantMobileOnboarding';
     // Set up the headers
     Map<String, String> headers = {
       'Content-Type': 'multipart/form-data',
@@ -922,11 +934,9 @@ class UserServices {
     return response;
   }
 
-  deviceDeployment(
-    productDeploymentReq,
-    deviceAtStoreCtrl,
-    transactionSlipImageCtrl,
-  ) async {
+  deviceDeployment(productDeploymentReq,
+      deviceAtStoreCtrl,
+      transactionSlipImageCtrl,) async {
     //if(kDebugMode)print(deviceAtStoreCtrl);
     //if(kDebugMode)print(transactionSlipImageCtrl);
     //var url = EndPoints.baseApi9502 + EndPoints.registerAPI;
@@ -990,7 +1000,8 @@ class UserServices {
   getUserDetails(customerId) async {
     Connection connection = Connection();
     var url =
-        '${EndPoints.baseApi9502}${EndPoints.getCustomerDetails}${Constants.instId}/$customerId';
+        '${EndPoints.baseApi9502}${EndPoints.getCustomerDetails}${Constants
+        .instId}/$customerId';
     var response = await connection.get(url);
     return response;
   }
@@ -1009,7 +1020,8 @@ class UserServices {
     var custId = prefs.get('custId');
     Connection connection = Connection();
     var url =
-        '${EndPoints.baseApi9502}${EndPoints.updateDetailsAPI}${Constants.instId}/$custId';
+        '${EndPoints.baseApi9502}${EndPoints.updateDetailsAPI}${Constants
+        .instId}/$custId';
     var response = await connection.post(url, updateDetails);
     return response;
   }
@@ -1062,7 +1074,7 @@ class UserServices {
   */
   changePassword(ChangePasswordModel changePasswordModel, String type) async {
     String types =
-        type == 'MPIN' ? EndPoints.changeMpinAPI : EndPoints.changePasswordAPI;
+    type == 'MPIN' ? EndPoints.changeMpinAPI : EndPoints.changePasswordAPI;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     user = {
       'custId': prefs.get('custId'),
@@ -1086,8 +1098,8 @@ class UserServices {
   * Params: EmailOrMobileChangeModel
   * to pass token in Headers
   */
-  changeEmailOrMobile(
-      EmailOrMobileChangeModel emailOrMobileChangeModel, String? type) async {
+  changeEmailOrMobile(EmailOrMobileChangeModel emailOrMobileChangeModel,
+      String? type) async {
     String types = type == 'Email ID' ? 'emailChange' : 'mobileChange';
     SharedPreferences prefs = await SharedPreferences.getInstance();
     user = {
@@ -1142,13 +1154,13 @@ class UserServices {
     };
     Connection connection = Connection();
     OtpVerificationEmailModel otpVerificationEmailModel =
-        OtpVerificationEmailModel();
+    OtpVerificationEmailModel();
     var url = EndPoints.baseApi9502 + EndPoints.mobileOtpAPI;
     otpVerificationEmailModel.userName = user['userName'];
     otpVerificationEmailModel.instId = Constants.instId;
     otpVerificationEmailModel.requestType = type;
     var response =
-        await connection.postWithOutToken(url, otpVerificationEmailModel);
+    await connection.postWithOutToken(url, otpVerificationEmailModel);
     return response;
   }
 

@@ -2499,16 +2499,16 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                           ),
                                         ],
                                       ),
-                                      child: const Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 6, vertical: 2),
-                                        child: Center(
-                                          child: CustomTextWidget(
-                                            text: "View",
-                                            size: 12,
-                                            color: AppColors.white,
-                                          ),
-                                        ),
+                                 ),
+
+                                  // const Spacer(),
+
+                                  SizedBox(width: MediaQuery.of(context).size.width * .02),
+
+                                  GestureDetector(
+                                      child: const Icon(
+                                        Icons.cancel_outlined,
+                                        color: Colors.red,
                                       ),
                                     ),
                                   ),
