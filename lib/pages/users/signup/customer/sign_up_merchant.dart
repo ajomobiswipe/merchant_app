@@ -2499,7 +2499,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                           ),
                                         ],
                                       ),
-                                 ),
+                                 ),),
 
                                   // const Spacer(),
 
@@ -2511,7 +2511,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                         color: Colors.red,
                                       ),
                                     ),
-                                  ),
+
 
                                   SizedBox(
                                       width: MediaQuery.of(context).size.width *
