@@ -8,7 +8,6 @@ Future<void> pdfViewer({
   required BuildContext context,
   required String filePath,
 }) async {
-
   return showDialog<void>(
     context: context,
     barrierDismissible: true,
@@ -29,7 +28,9 @@ Future<void> pdfViewer({
           builder: (BuildContext context, StateSetter setState1) {
             return Stack(
               children: [
-                SfPdfViewer.file(File(filePath),pageSpacing:4),
+                SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.5,
+                    child: SfPdfViewer.file(File(filePath), pageSpacing: 4)),
                 Positioned(
                   right: 0,
                   top: 0,

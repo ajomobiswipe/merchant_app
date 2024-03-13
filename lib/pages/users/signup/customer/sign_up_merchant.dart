@@ -2470,39 +2470,63 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                     ),
                                   ),
 
-
-                                 SizedBox(
-                                   width: MediaQuery.of(context).size.width * .2,
-                                   child: ElevatedButton(
-                                        onPressed: () {
-                                          pdfViewer(
-                                              filePath:
-                                                  item.fileFullPath.toString(),
-                                              context: context);
-                                          // item.fileFullPath.toString();
-                                          // _pdfViewerKey.currentState
-                                          //     ?.openBookmarkView();
-                                        },
-                                        child: const Text("View"),
+                                  InkWell(
+                                    onTap: () {
+                                      pdfViewer(
+                                          filePath:
+                                              item.fileFullPath.toString(),
+                                          context: context);
+                                      // item.fileFullPath.toString();
+                                      // _pdfViewerKey.currentState
+                                      //     ?.openBookmarkView();
+                                    },
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width *
+                                          .15,
+                                      // padding: const EdgeInsets.symmetric(
+                                      //     vertical: 10.0, horizontal: 10.0),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.kLightGreen,
+                                        borderRadius:
+                                            BorderRadius.circular(8.0),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey.withOpacity(0.5),
+                                            spreadRadius: 2,
+                                            blurRadius: 5,
+                                            offset: const Offset(0,
+                                                3), // changes position of shadow
+                                          ),
+                                        ],
                                       ),
-                                 ),
-
-                                  // const Spacer(),
-
-                                  SizedBox(width: MediaQuery.of(context).size.width * .02),
-                               GestureDetector(
-                                      child: const Icon(
-                                        Icons.cancel_outlined,
-                                        color: Colors.red,
+                                      child: const Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 6, vertical: 2),
+                                        child: Center(
+                                          child: CustomTextWidget(
+                                            text: "View",
+                                            size: 12,
+                                            color: AppColors.white,
+                                          ),
+                                        ),
                                       ),
-                                      onTap: () {
-                                        setState(() {
-                                          selectedBusinessProofItems
-                                              .remove(item);
-                                        });
-                                      },
                                     ),
+                                  ),
 
+                                  SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          .02),
+                                  GestureDetector(
+                                    child: const Icon(
+                                      Icons.cancel_outlined,
+                                      color: Colors.red,
+                                    ),
+                                    onTap: () {
+                                      setState(() {
+                                        selectedBusinessProofItems.remove(item);
+                                      });
+                                    },
+                                  ),
                                 ])
                             ],
                           ),
