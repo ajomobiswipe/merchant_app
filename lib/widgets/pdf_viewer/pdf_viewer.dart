@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:sifr_latest/config/app_color.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
@@ -6,14 +8,15 @@ Future<void> pdfViewer({
   required BuildContext context,
   required String filePath,
 }) async {
+
   return showDialog<void>(
     context: context,
-    barrierDismissible: false,
+    barrierDismissible: true,
     builder: (BuildContext context) {
-      final GlobalKey<SfPdfViewerState> _pdfViewerKey = GlobalKey();
+      final GlobalKey<SfPdfViewerState> pdfViewerKey = GlobalKey();
       return AlertDialog(
         insetPadding: EdgeInsets.symmetric(
-            horizontal: MediaQuery.of(context).size.width * .05),
+            horizontal: MediaQuery.of(context).size.width * .02),
         backgroundColor: Colors.white,
         shadowColor: Colors.white,
         surfaceTintColor: Colors.white,
@@ -26,10 +29,7 @@ Future<void> pdfViewer({
           builder: (BuildContext context, StateSetter setState1) {
             return Stack(
               children: [
-                SfPdfViewer.asset(
-                  filePath,
-                  key: _pdfViewerKey,
-                ),
+                SfPdfViewer.file(File(filePath),pageSpacing:4),
                 Positioned(
                   right: 0,
                   top: 0,

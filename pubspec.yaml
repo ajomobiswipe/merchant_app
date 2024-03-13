@@ -38,7 +38,7 @@ dependencies:
   geocoding:
   geolocator:
   get_it:
-  google_fonts:
+  google_fonts: ^6.2.1
   google_maps_flutter:
   grouped_list:
   hive_flutter:
@@ -89,7 +89,7 @@ dependencies:
   file_picker: ^6.1.1
   flutter_launcher_icons:
   flutter_svg: ^2.0.10+1
-  syncfusion_flutter_pdfviewer: ^24.2.9
+  syncfusion_flutter_pdfviewer:
 #  modal_bottom_sheet: ^2.1.2
 
 

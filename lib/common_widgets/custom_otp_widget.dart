@@ -17,10 +17,10 @@ import '../widgets/form_field/custom_text.dart';
 
 class CustomOtpWidget extends StatefulWidget {
   final Function(String)? onCompleted;
-  String? Function(String?)? validator;
+  final String? Function(String?)? validator;
   final TextEditingController phonemumbercontroller;
 
-  CustomOtpWidget({
+  const CustomOtpWidget({
     Key? key,
     this.onCompleted,
     this.validator,
@@ -125,7 +125,6 @@ class _CustomOtpWidgetState extends State<CustomOtpWidget> {
                       if (kDebugMode) print(response);
 
                       if (response['statusCode'] == 208) {
-                        print('hello');
                         if (mounted) {
                           CustomAlert().displayDialogConfirm(
                               context,

@@ -1,10 +1,12 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:icons_plus/icons_plus.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sifr_latest/services/services.dart';
@@ -258,6 +260,7 @@ class _MyApplicationsState extends State<MyApplications> {
             ),
 
             CustomTextFormField(
+              prefixIcon:  _searchFilterId == 0?LineAwesome.user_circle:Icons.phone,
               title:
                   'Search (min. 4 characters)',
               titleEneabled: false,
@@ -496,7 +499,7 @@ class _MyApplicationsState extends State<MyApplications> {
                             margin: EdgeInsets.only(
                                 top: MediaQuery.of(context).size.height * .1),
                             child: const SizedBox(
-                                child: Text("No Application Found")))),
+                                child: Text("No applications found")))),
           ],
         ));
   }
@@ -683,372 +686,383 @@ class _MyApplicationsState extends State<MyApplications> {
             shadowColor: Colors.white,
             surfaceTintColor: Colors.white,
 
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-              width: MediaQuery.of(context).size.width,
-              height: 600,
-              child: ListView(
-                // mainAxisSize: MainAxisSize.min,
-                // crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      const Spacer(),
-                      InkWell(
-                        child: const Icon(Icons.cancel_outlined,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+
+                Row(
+                  children: [
+                    const Spacer(),
+                    InkWell(
+                      child: const Padding(
+                        padding: EdgeInsets.only(top:10.0),
+                        child: Icon(Icons.cancel_outlined,
                             size: 30, color: AppColors.kPrimaryColor),
-                        onTap: () {
-                          setValues();
-                          Navigator.of(context).pop();
-                        },
                       ),
-                    ],
-                  ),
-                  Row(
+                      onTap: () {
+                        setValues();
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    const SizedBox(width: 10)
+                  ],
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal:10,vertical: 10),
+                  width: MediaQuery.of(context).size.width,
+                  height: 600,
+                  child: ListView(
+                    // mainAxisSize: MainAxisSize.min,
+                    // crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(
-                        width: 20,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+
+                      Row(
                         children: [
-                          Text(
-                            phoneNumber,
-                            style: const TextStyle(
-                                fontSize: 16, fontFamily: 'Mont'),
+                          const SizedBox(
+                            width: 20,
                           ),
-                          Text(
-                            name,
-                            style: const TextStyle(
-                                fontSize: 20, fontFamily: 'Mont'),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                phoneNumber,
+                                style: const TextStyle(
+                                    fontSize: 16, fontFamily: 'Mont'),
+                              ),
+                              Text(
+                                name,
+                                style: const TextStyle(
+                                    fontSize: 20, fontFamily: 'Mont'),
+                              ),
+                            ],
                           ),
+                          const Spacer(),
                         ],
                       ),
-                      const Spacer(),
-                    ],
-                  ),
-                  TimelineTile(
-                    afterLineStyle: LineStyle(
-                        color: data.kycApproved == true
-                            ? Colors.blue
-                            : Colors.grey),
-                    alignment: TimelineAlign.manual,
-                    lineXY: 0.1,
-                    isFirst: true,
-                    isLast: false,
-                    hasIndicator: true,
-                    indicatorStyle: IndicatorStyle(
-                      width: 20,
-                      color: Colors.white,
-                      iconStyle: IconStyle(
-                        color: data.kycApproved == true
-                            ? Colors.blue
-                            : Colors.grey,
-                        fontSize: 26,
-                        iconData: Icons.radio_button_checked,
-                      ),
-                    ),
-                    endChild: Row(
-                      children: [
-                        const Text(
-                          " Application",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontFamily: 'Mont'),
-                        ),
-                        const Expanded(child: SizedBox()),
-                        statusTextWidget(
-                            title: "Kyc", status: data.kycApproved ?? false),
-                      ],
-                    ),
-                  ),
-                  TimelineTile(
-                    beforeLineStyle: LineStyle(
-                        color: data.kycApproved == true
-                            ? Colors.blue
-                            : Colors.grey),
-                    afterLineStyle: LineStyle(
-                        color: data.payment! ? Colors.blue : Colors.grey),
-                    alignment: TimelineAlign.manual,
-                    lineXY: 0.1,
-                    indicatorStyle: IndicatorStyle(
-                      width: 20,
-                      color: Colors.white,
-                      iconStyle: IconStyle(
-                        color: data.payment == true ? Colors.blue : Colors.grey,
-                        fontSize: 26,
-                        iconData: Icons.radio_button_checked,
-                      ),
-                    ),
-                    endChild: Row(
-                      children: [
-                        const Text(
-                          " payment",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontFamily: 'Mont'),
-                        ),
-                        const Expanded(child: SizedBox()),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            data.payment!
-                                ? statusTextWidget(
-                                    title: "Received", status: data.payment!)
-                                : ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.pushNamed(
-                                          context, "PaymentPage",
-                                          arguments: {
-                                            "merchantId": merchantId,
-                                            "merchantProductDetailsResponse": data
-                                                .merchantProductDetailsResponse,
-                                            "mobile": phoneNumber,
-                                            "name": name
-                                          });
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.red,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                      ),
-                                      minimumSize: const Size(60.0, 30.0),
-                                    ),
-                                    child: const Text(
-                                      "Collect",
-                                      style: TextStyle(color: Colors.white),
-                                    )),
-                            statusTextWidget(
-                                title: "eNACH", status: data.eNach!),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  TimelineTile(
-                    beforeLineStyle: LineStyle(
-                      color: data.eNach! ? Colors.blue : Colors.grey,
-                    ),
-                    afterLineStyle: LineStyle(
-                      color: data.midtidGenerated! ? Colors.blue : Colors.grey,
-                    ),
-                    alignment: TimelineAlign.manual,
-                    lineXY: 0.1,
-                    indicatorStyle: IndicatorStyle(
-                      width: 20,
-                      color: Colors.white,
-                      iconStyle: IconStyle(
-                        color:
-                            data.midtidGenerated! ? Colors.blue : Colors.grey,
-                        fontSize: 26,
-                        iconData: Icons.radio_button_checked,
-                      ),
-                    ),
-                    endChild: Row(
-                      children: [
-                        const Text(
-                          " Onboarding",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontFamily: 'Mont'),
-                        ),
-                        const Expanded(child: SizedBox()),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            if (!data.midtidGenerated!)
-                              ElevatedButton(
-                                  onPressed: () async {
-                                    var response = await postMerchantOnBoarding(
-                                        merchantId);
-
-                                    if (response == null) return;
-
-                                    setStateForAlert(() {
-                                      onboardedBool = true;
-                                      data.midtidGenerated = true;
-                                    });
-
-                                    Future.delayed(const Duration(seconds: 3),
-                                        () {
-                                      if (mounted) {
-                                        try {
-                                          setStateForAlert(() {
-                                            onboardedBool = false;
-                                          });
-                                        } catch (_) {}
-                                      }
-                                    });
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.red,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    minimumSize: const Size(60.0, 30.0),
-                                  ),
-                                  child: const Text(
-                                    'Onboard',
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 13),
-                                  )),
-                            statusTextWidget(
-                                title: "MID/TID",
-                                status: data.midtidGenerated!),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  TimelineTile(
-                    beforeLineStyle: LineStyle(
-                      color: data.midtidGenerated! ? Colors.blue : Colors.grey,
-                    ),
-                    alignment: TimelineAlign.manual,
-                    lineXY: 0.1,
-                    isFirst: false,
-                    isLast: true,
-                    indicatorStyle: IndicatorStyle(
-                      width: 20,
-                      color: Colors.white,
-                      iconStyle: IconStyle(
-                        color: data.allDevicesOnboarded!
-                            ? Colors.blue
-                            : Colors.grey,
-                        fontSize: 26,
-                        iconData: Icons.radio_button_checked,
-                      ),
-                    ),
-                    endChild: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          " Deployment",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontFamily: 'Mont'),
-                        ),
-                        const Expanded(child: SizedBox()),
-                        // if (data.midtidGenerated!)
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: List.generate(
-                            data.devices!.length,
-                            (index) => data.devices![index].deploymentStatus!
-                                ? statusTextWidget(
-                                    title: data.devices![index].productName!,
-                                    status:
-                                        data.devices![index].deploymentStatus!)
-                                : Padding(
-                                    padding: const EdgeInsets.only(bottom: 10),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      children: [
-                                        ElevatedButton(
-                                            onPressed: () {
-                                              Navigator.pushNamed(context,
-                                                  "DeviceDeploymentScreen",
-                                                  arguments: {
-                                                    "productId": data
-                                                        .devices![index]
-                                                        .productId,
-                                                    "packageId": data
-                                                        .devices![index]
-                                                        .packageId,
-                                                    "merchantId": data
-                                                        .devices![index]
-                                                        .merchantId,
-                                                    "guid": data
-                                                        .devices![index].guid,
-                                                    "productName": data
-                                                        .devices![index]
-                                                        .productName,
-                                                    "deploymentStatus": data
-                                                        .devices![index]
-                                                        .deploymentStatus,
-                                                    "MerchantName": name,
-                                                    "phoneNumber": phoneNumber,
-                                                    "index": index,
-                                                    "pendingQty": data
-                                                        .devices![index]
-                                                        .pendingQty!,
-                                                    "quantity": data
-                                                        .devices![index]
-                                                        .quantity!,
-                                                    "changeFunction":
-                                                        setRemainingQuantities
-                                                  });
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.red,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10.0),
-                                              ),
-                                              minimumSize:
-                                                  const Size(60.0, 30.0),
-                                            ),
-                                            child: Text(
-                                              data.devices![index].productName!,
-                                              style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 13),
-                                            )),
-                                        CustomTextWidget(
-                                          text:
-                                              "Deployed ${data.devices![index].quantity! - data.devices![index].pendingQty!}/${data.devices![index].quantity!}",
-                                          size: 10,
-                                        )
-                                      ],
-                                    ),
-                                  ),
+                      TimelineTile(
+                        afterLineStyle: LineStyle(
+                            color: data.kycApproved == true
+                                ? Colors.blue
+                                : Colors.grey),
+                        alignment: TimelineAlign.manual,
+                        lineXY: 0.1,
+                        isFirst: true,
+                        isLast: false,
+                        hasIndicator: true,
+                        indicatorStyle: IndicatorStyle(
+                          width: 20,
+                          color: Colors.white,
+                          iconStyle: IconStyle(
+                            color: data.kycApproved == true
+                                ? Colors.blue
+                                : Colors.grey,
+                            fontSize: 26,
+                            iconData: Icons.radio_button_checked,
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                  const Center(
-                    child: Column(
-                      children: [
-                        Text(
-                          "Status",
-                          style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w700,
-                              color: Color(0xFF000000),
-                              fontFamily: 'Mont'),
+                        endChild: Row(
+                          children: [
+                            const Text(
+                              " Application",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontFamily: 'Mont'),
+                            ),
+                            const Expanded(child: SizedBox()),
+                            statusTextWidget(
+                                title: "Kyc", status: data.kycApproved ?? false),
+                          ],
                         ),
-                        Text(
-                          "Live",
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                              color: Color(0xFF97098D),
-                              fontFamily: 'Mont'),
-                        )
-                      ],
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  if (onboardedBool)
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: MediaQuery.of(context).size.width * .025,
-                          vertical: MediaQuery.of(context).size.height * .01),
-                      decoration: BoxDecoration(
-                          color: Colors.black54.withOpacity(.7),
-                          borderRadius: BorderRadius.circular(5)),
-                      width: double.infinity,
-                      child: const Text(
-                        'Onboarded Successfully',
-                        style: TextStyle(color: Colors.white, fontSize: 13),
                       ),
-                    )
-                ],
-              ),
+                      TimelineTile(
+                        beforeLineStyle: LineStyle(
+                            color: data.kycApproved == true
+                                ? Colors.blue
+                                : Colors.grey),
+                        afterLineStyle: LineStyle(
+                            color: data.payment! ? Colors.blue : Colors.grey),
+                        alignment: TimelineAlign.manual,
+                        lineXY: 0.1,
+                        indicatorStyle: IndicatorStyle(
+                          width: 20,
+                          color: Colors.white,
+                          iconStyle: IconStyle(
+                            color: data.payment == true ? Colors.blue : Colors.grey,
+                            fontSize: 26,
+                            iconData: Icons.radio_button_checked,
+                          ),
+                        ),
+                        endChild: Row(
+                          children: [
+                            const Text(
+                              " payment",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontFamily: 'Mont'),
+                            ),
+                            const Expanded(child: SizedBox()),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                data.payment!
+                                    ? statusTextWidget(
+                                        title: "Received", status: data.payment!)
+                                    : ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.pushNamed(
+                                              context, "PaymentPage",
+                                              arguments: {
+                                                "merchantId": merchantId,
+                                                "merchantProductDetailsResponse": data
+                                                    .merchantProductDetailsResponse,
+                                                "mobile": phoneNumber,
+                                                "name": name
+                                              });
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.red,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10.0),
+                                          ),
+                                          minimumSize: const Size(60.0, 30.0),
+                                        ),
+                                        child: const Text(
+                                          "Collect",
+                                          style: TextStyle(color: Colors.white),
+                                        )),
+                                statusTextWidget(
+                                    title: "eNACH", status: data.eNach!),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      TimelineTile(
+                        beforeLineStyle: LineStyle(
+                          color: data.eNach! ? Colors.blue : Colors.grey,
+                        ),
+                        afterLineStyle: LineStyle(
+                          color: data.midtidGenerated! ? Colors.blue : Colors.grey,
+                        ),
+                        alignment: TimelineAlign.manual,
+                        lineXY: 0.1,
+                        indicatorStyle: IndicatorStyle(
+                          width: 20,
+                          color: Colors.white,
+                          iconStyle: IconStyle(
+                            color:
+                                data.midtidGenerated! ? Colors.blue : Colors.grey,
+                            fontSize: 26,
+                            iconData: Icons.radio_button_checked,
+                          ),
+                        ),
+                        endChild: Row(
+                          children: [
+                            const Text(
+                              " Onboarding",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontFamily: 'Mont'),
+                            ),
+                            const Expanded(child: SizedBox()),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                if (!data.midtidGenerated!)
+                                  ElevatedButton(
+                                      onPressed: () async {
+                                        var response = await postMerchantOnBoarding(
+                                            merchantId);
+
+                                        if (response == null) return;
+
+                                        setStateForAlert(() {
+                                          onboardedBool = true;
+                                          data.midtidGenerated = true;
+                                        });
+
+                                        Future.delayed(const Duration(seconds: 3),
+                                            () {
+                                          if (mounted) {
+                                            try {
+                                              setStateForAlert(() {
+                                                onboardedBool = false;
+                                              });
+                                            } catch (_) {}
+                                          }
+                                        });
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.red,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                        ),
+                                        minimumSize: const Size(60.0, 30.0),
+                                      ),
+                                      child: const Text(
+                                        'Onboard',
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 13),
+                                      )),
+                                statusTextWidget(
+                                    title: "MID/TID",
+                                    status: data.midtidGenerated!),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      TimelineTile(
+                        beforeLineStyle: LineStyle(
+                          color: data.midtidGenerated! ? Colors.blue : Colors.grey,
+                        ),
+                        alignment: TimelineAlign.manual,
+                        lineXY: 0.1,
+                        isFirst: false,
+                        isLast: true,
+                        indicatorStyle: IndicatorStyle(
+                          width: 20,
+                          color: Colors.white,
+                          iconStyle: IconStyle(
+                            color: data.allDevicesOnboarded!
+                                ? Colors.blue
+                                : Colors.grey,
+                            fontSize: 26,
+                            iconData: Icons.radio_button_checked,
+                          ),
+                        ),
+                        endChild: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              " Deployment",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontFamily: 'Mont'),
+                            ),
+                            const Expanded(child: SizedBox()),
+                            // if (data.midtidGenerated!)
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: List.generate(
+                                data.devices!.length,
+                                (index) => data.devices![index].deploymentStatus!
+                                    ? statusTextWidget(
+                                        title: data.devices![index].productName!,
+                                        status:
+                                            data.devices![index].deploymentStatus!)
+                                    : Padding(
+                                        padding: const EdgeInsets.only(bottom: 10),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            ElevatedButton(
+                                                onPressed: () {
+                                                  Navigator.pushNamed(context,
+                                                      "DeviceDeploymentScreen",
+                                                      arguments: {
+                                                        "productId": data
+                                                            .devices![index]
+                                                            .productId,
+                                                        "packageId": data
+                                                            .devices![index]
+                                                            .packageId,
+                                                        "merchantId": data
+                                                            .devices![index]
+                                                            .merchantId,
+                                                        "guid": data
+                                                            .devices![index].guid,
+                                                        "productName": data
+                                                            .devices![index]
+                                                            .productName,
+                                                        "deploymentStatus": data
+                                                            .devices![index]
+                                                            .deploymentStatus,
+                                                        "MerchantName": name,
+                                                        "phoneNumber": phoneNumber,
+                                                        "index": index,
+                                                        "pendingQty": data
+                                                            .devices![index]
+                                                            .pendingQty!,
+                                                        "quantity": data
+                                                            .devices![index]
+                                                            .quantity!,
+                                                        "changeFunction":
+                                                            setRemainingQuantities
+                                                      });
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: Colors.red,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(10.0),
+                                                  ),
+                                                  minimumSize:
+                                                      const Size(60.0, 30.0),
+                                                ),
+                                                child: Text(
+                                                  data.devices![index].productName!,
+                                                  style: const TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 13),
+                                                )),
+                                            CustomTextWidget(
+                                              text:
+                                                  "Deployed ${data.devices![index].quantity! - data.devices![index].pendingQty!}/${data.devices![index].quantity!}",
+                                              size: 10,
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Center(
+                        child: Column(
+                          children: [
+                            Text(
+                              "Status",
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color(0xFF000000),
+                                  fontFamily: 'Mont'),
+                            ),
+                            Text(
+                              "Live",
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color(0xFF97098D),
+                                  fontFamily: 'Mont'),
+                            )
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      if (onboardedBool)
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: MediaQuery.of(context).size.width * .025,
+                              vertical: MediaQuery.of(context).size.height * .01),
+                          decoration: BoxDecoration(
+                              color: Colors.black54.withOpacity(.7),
+                              borderRadius: BorderRadius.circular(5)),
+                          width: double.infinity,
+                          child: const Text(
+                            'Onboarded Successfully',
+                            style: TextStyle(color: Colors.white, fontSize: 13),
+                          ),
+                        )
+                    ],
+                  ),
+                ),
+              ],
             ),
             // actions: <Widget>[
             //   TextButton(

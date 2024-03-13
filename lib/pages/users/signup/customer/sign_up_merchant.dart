@@ -3,10 +3,12 @@ import 'dart:convert';
 
 import 'dart:io';
 import 'package:badges/badges.dart' as badge;
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:icons_plus/icons_plus.dart';
@@ -2443,13 +2445,13 @@ class _MerchantSignupState extends State<MerchantSignup> {
                               const Divider(),
                               for (var item in selectedBusinessProofItems)
                                 Row(children: [
-                                  SizedBox(
-                                    width:
-                                        MediaQuery.of(context).size.width * .3,
-                                    child: CustomTextWidget(
-                                      text: item.documentTypeName.toString(),
-                                      size: 11,
-                                      isBold: false,
+                                  Expanded(
+                                    child: SizedBox(
+                                      child: CustomTextWidget(
+                                        text: item.documentTypeName.toString(),
+                                        size: 11,
+                                        isBold: false,
+                                      ),
                                     ),
                                   ),
                                   // DataCell(CustomTextWidget(
@@ -2457,6 +2459,7 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                   //   size: 11,
                                   //   fontWeight: FontWeight.w900,
                                   // )),
+
                                   SizedBox(
                                     width:
                                         MediaQuery.of(context).size.width * .3,
@@ -2466,40 +2469,40 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                       size: 12,
                                     ),
                                   ),
-                                  const Spacer(),
 
-                                  SizedBox(
-                                    width:
-                                        MediaQuery.of(context).size.width * .2,
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        pdfViewer(
-                                            filePath:
-                                                item.fileFullPath.toString(),
-                                            context: context);
-                                        // item.fileFullPath.toString();
-                                        // _pdfViewerKey.currentState
-                                        //     ?.openBookmarkView();
-                                      },
-                                      child: Text("View"),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width:
-                                        MediaQuery.of(context).size.width * .1,
-                                    child: IconButton(
-                                      icon: const Icon(
+
+                                 SizedBox(
+                                   width: MediaQuery.of(context).size.width * .2,
+                                   child: ElevatedButton(
+                                        onPressed: () {
+                                          pdfViewer(
+                                              filePath:
+                                                  item.fileFullPath.toString(),
+                                              context: context);
+                                          // item.fileFullPath.toString();
+                                          // _pdfViewerKey.currentState
+                                          //     ?.openBookmarkView();
+                                        },
+                                        child: const Text("View"),
+                                      ),
+                                 ),
+
+                                  // const Spacer(),
+
+                                  SizedBox(width: MediaQuery.of(context).size.width * .02),
+                               GestureDetector(
+                                      child: const Icon(
                                         Icons.cancel_outlined,
                                         color: Colors.red,
                                       ),
-                                      onPressed: () {
+                                      onTap: () {
                                         setState(() {
                                           selectedBusinessProofItems
                                               .remove(item);
                                         });
                                       },
                                     ),
-                                  ),
+
                                 ])
                             ],
                           ),

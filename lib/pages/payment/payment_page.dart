@@ -67,11 +67,7 @@ class _PaymentPageState extends State<PaymentPage> {
 
     return AppScafofld(
         closePressed: () {
-          customAlert.displayDialogConfirm(
-              context, "", "Do you want to quit Deployment ?", () {
-            Navigator.of(context).pop();
-            Navigator.of(context).pop();
-          });
+
         },
         onPressed: () {
           Navigator.of(context).pop();
