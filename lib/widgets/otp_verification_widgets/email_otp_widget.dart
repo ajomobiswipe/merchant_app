@@ -54,7 +54,7 @@ Future<void> emailOtpWidget(
               ),
             ),
             child: Container(
-              width: MediaQuery.of(context).size.width*.9,
+              width: MediaQuery.of(context).size.width * .9,
               padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
               child: Stack(
                 children: [
@@ -87,9 +87,9 @@ Future<void> emailOtpWidget(
                           child: Pinput(
                             controller: _otpCtrl,
                             focusNode: focusNode,
-                            androidSmsAutofillMethod:
-                                AndroidSmsAutofillMethod.smsUserConsentApi,
-                            listenForMultipleSmsOnAndroid: true,
+                            // androidSmsAutofillMethod:
+                            //     AndroidSmsAutofillMethod.smsUserConsentApi,
+                            // listenForMultipleSmsOnAndroid: true,
                             obscureText: true,
                             obscuringCharacter: "*",
                             defaultPinTheme: defaultPinTheme,
@@ -202,11 +202,10 @@ Future<void> emailOtpWidget(
                                         );
                                       }
                                     });
-                                  }else{
-                                    setState(
-                                            () {
-                                          isOtpVerifying = false;
-                                        });
+                                  } else {
+                                    setState(() {
+                                      isOtpVerifying = false;
+                                    });
                                   }
                                 },
                                 title: "Submit",
@@ -224,7 +223,10 @@ Future<void> emailOtpWidget(
                         color: AppColors.kRedColor,
                       ),
                       onTap: () {
-                        onSubmit(false, "Verification Canceled By User",);
+                        onSubmit(
+                          false,
+                          "Verification Canceled By User",
+                        );
                         Navigator.pop(context);
                       },
                     ),

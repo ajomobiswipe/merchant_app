@@ -89,6 +89,7 @@ dependencies:
   file_picker: ^6.1.1
   flutter_launcher_icons:
   flutter_svg: ^2.0.10+1
+  syncfusion_flutter_pdfviewer: ^24.2.9
 #  modal_bottom_sheet: ^2.1.2
 
 

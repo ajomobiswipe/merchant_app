@@ -31,6 +31,7 @@ import '../../../../providers/providers.dart';
 import '../../../../services/services.dart';
 import '../../../../widgets/image_button/verifivation_success_button.dart';
 import '../../../../widgets/otp_verification_widgets/email_otp_widget.dart';
+import '../../../../widgets/pdf_viewer/pdf_viewer.dart';
 import '../../../../widgets/tabbar/tabbar.dart';
 import '../../../../widgets/widget.dart';
 import 'models/business_id_proof_requestmodel.dart';
@@ -2466,6 +2467,23 @@ class _MerchantSignupState extends State<MerchantSignup> {
                                     ),
                                   ),
                                   const Spacer(),
+
+                                  SizedBox(
+                                    width:
+                                        MediaQuery.of(context).size.width * .2,
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        pdfViewer(
+                                            filePath:
+                                                item.fileFullPath.toString(),
+                                            context: context);
+                                        // item.fileFullPath.toString();
+                                        // _pdfViewerKey.currentState
+                                        //     ?.openBookmarkView();
+                                      },
+                                      child: Text("View"),
+                                    ),
+                                  ),
                                   SizedBox(
                                     width:
                                         MediaQuery.of(context).size.width * .1,

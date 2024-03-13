@@ -127,7 +127,6 @@ class _CustomOtpWidgetState extends State<CustomOtpWidget> {
                       if (response['statusCode'] == 208) {
                         print('hello');
                         if (mounted) {
-
                           CustomAlert().displayDialogConfirm(
                               context,
                               'Continue',
@@ -229,9 +228,9 @@ class _CustomOtpWidgetState extends State<CustomOtpWidget> {
                   obscureText: true,
                   controller: pinController,
                   focusNode: focusNode,
-                  androidSmsAutofillMethod:
-                      AndroidSmsAutofillMethod.smsUserConsentApi,
-                  listenForMultipleSmsOnAndroid: true,
+                  // androidSmsAutofillMethod:
+                  //     AndroidSmsAutofillMethod.smsUserConsentApi,
+                  // listenForMultipleSmsOnAndroid: true,
                   defaultPinTheme: defaultPinTheme,
                   separatorBuilder: (index) => const SizedBox(width: 8),
                   validator: widget.validator,

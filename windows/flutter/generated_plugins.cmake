@@ -12,6 +12,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   permission_handler_windows
   secure_application
   smart_auth
+  syncfusion_pdfviewer_windows
   url_launcher_windows
 )
 
