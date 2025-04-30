@@ -1,20 +1,20 @@
 /* ===============================================================
-| Project : SIFR
+| Project : MERCHANT ONBOARDING
 | Page    : FORGOT.DART
-| Date    : 21-MAR-2023
+| Date    : 04-OCT-2024
 |
 *  ===============================================================*/
 
 // Dependencies or Plugins - Models - Services - Global Functions
 import 'package:flutter/material.dart';
-import 'package:sifr_latest/widgets/app_widget/app_button.dart';
+import 'package:anet_merchant_app/widgets/app_widget/app_button.dart';
 
 import '../../config/config.dart';
 import '../../widgets/loading.dart';
 
 // STATEFUL WIDGET
 class Forgot extends StatefulWidget {
-  const Forgot({Key? key, this.type}) : super(key: key);
+  const Forgot({super.key, this.type});
   final String? type;
 
   @override

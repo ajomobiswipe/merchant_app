@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sifr_latest/config/config.dart';
+import 'package:anet_merchant_app/config/config.dart';
 
 class CustomAppButton extends StatelessWidget {
   // LOCAL VARIABLE DECLARATION
@@ -9,19 +9,18 @@ class CustomAppButton extends StatelessWidget {
   final double width;
   final double height;
 
-  bool fromOtpScreen;
-  bool isOtpVisible;
+  final bool fromOtpScreen;
+  final bool isOtpVisible;
 
-  CustomAppButton(
-      {Key? key,
+  const CustomAppButton(
+      {super.key,
       required this.title,
       this.onPressed,
       this.backgroundColor,
       this.width = 1,
       this.height = 50,
       this.fromOtpScreen = false,
-      this.isOtpVisible = false})
-      : super(key: key);
+      this.isOtpVisible = false});
 
   @override
   Widget build(BuildContext context) {
@@ -39,11 +38,12 @@ class CustomAppButton extends StatelessWidget {
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 color: fromOtpScreen
                     ? !isOtpVisible
-                        ? Colors.white.withOpacity(.5)
+                        ? Colors.white.withValues(alpha: .5)
                         : Colors.white
                     : Colors.white,
                 fontSize: 20,
-                fontWeight: FontWeight.bold,fontFamily: 'Mont')),
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Mont')),
       ),
     );
   }

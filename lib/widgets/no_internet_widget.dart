@@ -1,7 +1,7 @@
 /* ===============================================================
-| Project : SIFR
+| Project : MERCHANT ONBOARDING
 | Page    : NO_INTERNET_PAGE.DART
-| Date    : 22-MAR-2023
+| Date    : 04-OCT-2024
 |
 *  ===============================================================*/
 
@@ -13,20 +13,18 @@ import '../config/config.dart';
 // No Internet Page
 class NoInternetPage extends StatelessWidget {
   static const String routeName = 'noInternet';
-  const NoInternetPage({Key? key}) : super(key: key);
+  const NoInternetPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-        onWillPop: () async {
+    return PopScope(
+        onPopInvokedWithResult: (didPop, result) {
           SystemNavigator.pop();
-          return true;
         },
         child: Scaffold(
           backgroundColor: Colors.white,
           body: SafeArea(
-            child: Center(
-                child: Column(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset(Constants.noInternetImage,
@@ -40,6 +38,10 @@ class NoInternetPage extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                       letterSpacing: 1.2),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(
+                  height: 20,
                 ),
                 Text(
                   "This network is not connected to the Internet",
@@ -49,7 +51,7 @@ class NoInternetPage extends StatelessWidget {
                       ),
                 ),
               ],
-            )),
+            ),
           ),
         ));
   }

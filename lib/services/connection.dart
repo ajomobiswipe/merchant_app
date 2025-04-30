@@ -1,7 +1,7 @@
 /* ===============================================================
-| Project : SIFR
+| Project : MERCHANT ONBOARDING
 | Page    : CONNECTION.DART
-| Date    : 23-MAR-2023
+| Date    : 04-OCT-2024
 |
 *  ===============================================================*/
 
@@ -12,9 +12,9 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:http/io_client.dart';
-import 'package:sifr_latest/config/config.dart';
-import 'package:sifr_latest/storage/secure_storage.dart';
-import 'package:sifr_latest/widgets/app/alert_service.dart';
+import 'package:anet_merchant_app/config/config.dart';
+import 'package:anet_merchant_app/storage/secure_storage.dart';
+import 'package:anet_merchant_app/widgets/app/alert_service.dart';
 
 import '../main.dart';
 
@@ -45,25 +45,29 @@ class Connection {
     // var response = await http.post(Uri.parse(url),
     //     body: jsonEncode(requestData), headers: header);
     // return response;
-
-    try{
-
+    if (kDebugMode) {
+      print(url);
+      print(jsonEncode(requestData));
+    }
+    try {
       HttpClient client = HttpClient(context: await globalContext);
       client.badCertificateCallback =
           (X509Certificate cert, String host, int port) => false;
       IOClient ioClient = IOClient(client);
-      var response = await ioClient.post(Uri.parse(url),
-          body: jsonEncode(requestData), headers: header).timeout(const Duration(seconds: 20));
-
-
+      var response = await ioClient
+          .post(Uri.parse(url), body: jsonEncode(requestData), headers: header)
+          .timeout(const Duration(seconds: 20));
+      if (kDebugMode) {
+        print(response.statusCode);
+        print(response.body);
+      }
 
       return response;
-
-    }catch(_){
-
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
     }
-
-
   }
 
   /*
@@ -88,7 +92,7 @@ class Connection {
   * METHOD: GET
   * Params: url
   */
-  get(String url) async {
+  get(String url, {int count = 0, bool fromRefreshTokenAPI = false}) async {
     String token = boxStorage.getToken();
     final headers = {
       'Authorization': 'Bearer $token',
@@ -96,20 +100,33 @@ class Connection {
       'Content-Type': 'application/json'
     };
 
+    if (kDebugMode) print('url $url');
+
     // var res = await http.get(Uri.parse(url), headers: headers);
     HttpClient client = HttpClient(context: await globalContext);
     client.badCertificateCallback =
         (X509Certificate cert, String host, int port) => false;
     IOClient ioClient = IOClient(client);
-    var res = await ioClient.get(Uri.parse(url), headers: headers);
+    var res = await ioClient
+        .get(Uri.parse(url), headers: headers)
+        .timeout(const Duration(seconds: 200));
 
-    if (res.statusCode == 401) {
-      alertService.errorToast(Constants.unauthorized);
-      navigatorKey.currentState?.pushReplacementNamed('login');
-      clearStorage();
+    if (res.statusCode == 401 && !fromRefreshTokenAPI) {
+      if (kDebugMode) print('statusCode 401$count$url${res.statusCode}');
+
+      if (count == 1) {
+        NavigationService.navigatorKey.currentState
+            ?.pushReplacementNamed('login');
+        alertService.errorToast(Constants.unauthorized);
+        clearStorage();
+      } else {
+        // await UserServices().refreshToken();
+        await get(url, count: 1);
+      }
     } else {
-      if (kDebugMode)
-        print("connection get response code" + res.statusCode.toString());
+      if (kDebugMode) {
+        print("connection get response code${res.statusCode}");
+      }
       return res;
     }
   }
@@ -131,8 +148,9 @@ class Connection {
     var res = await ioClient.delete(Uri.parse(url), headers: headers);
 
     if (res.statusCode == 401) {
+      NavigationService.navigatorKey.currentState
+          ?.pushReplacementNamed('login');
       alertService.errorToast(Constants.unauthorized);
-      navigatorKey.currentState?.pushReplacementNamed('login');
       clearStorage();
     } else {
       return res;
@@ -145,13 +163,21 @@ class Connection {
   * METHOD: POST
   * Params: url and requestData
   */
-  post(url, requestData, {int? timeOutSeconds}) async {
+  post(
+    url,
+    requestData, {
+    int? timeOutSeconds,
+    int count = 0,
+  }) async {
     String token = boxStorage.getToken();
     final header = {
       'Authorization': 'Bearer $token',
       'Bearer': token,
       'Content-Type': 'application/json'
     };
+
+    if (kDebugMode) print('requestData $requestData');
+    if (kDebugMode) print('url $url');
 
     //if(kDebugMode)print(token);
     // var res = await http.post(Uri.parse(url),
@@ -164,12 +190,21 @@ class Connection {
     var res = await ioClient
         .post(Uri.parse(url), body: jsonEncode(requestData), headers: header)
         .timeout(Duration(seconds: timeOutSeconds ?? 10));
-    //if(kDebugMode)print(res.body);
-
+    if (kDebugMode) {
+      print(res.body);
+    }
     if (res.statusCode == 401) {
-      alertService.errorToast(Constants.unauthorized);
-      navigatorKey.currentState?.pushReplacementNamed('login');
-      clearStorage();
+      if (kDebugMode) print('statusCode 401$count$url${res.statusCode}');
+
+      if (count == 1) {
+        NavigationService.navigatorKey.currentState
+            ?.pushReplacementNamed('login');
+        alertService.errorToast(Constants.unauthorized);
+        clearStorage();
+      } else {
+        // await UserServices().refreshToken();
+        await post(url, requestData, timeOutSeconds: timeOutSeconds, count: 1);
+      }
     } else {
       return res;
     }
@@ -195,8 +230,9 @@ class Connection {
     IOClient ioClient = IOClient(client);
     var res = await ioClient.put(Uri.parse(url), headers: header);
     if (res.statusCode == 401) {
+      NavigationService.navigatorKey.currentState
+          ?.pushReplacementNamed('login');
       alertService.errorToast(Constants.unauthorized);
-      navigatorKey.currentState?.pushReplacementNamed('login');
       clearStorage();
     } else {
       return res;
@@ -218,8 +254,9 @@ class Connection {
     var res = await ioClient.put(Uri.parse(url),
         body: jsonEncode(requestData), headers: header);
     if (res.statusCode == 401) {
+      NavigationService.navigatorKey.currentState
+          ?.pushReplacementNamed('login');
       alertService.errorToast(Constants.unauthorized);
-      navigatorKey.currentState?.pushReplacementNamed('login');
       clearStorage();
     } else {
       return res;

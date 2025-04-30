@@ -1,16 +1,17 @@
 /* ===============================================================
-| Project : SIFR
+| Project : MERCHANT ONBOARDING
 | Page    : BOX_STORAGE.DART
-| Date    : 22-MAR-2023
+| Date    : 04-OCT-2024
 |
 *  ===============================================================*/
 
 // Dependencies
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:anet_merchant_app/config/constants.dart';
 
 // Box Storage Class to Store User Details
 class BoxStorage {
-  var box = Hive.box('SIFR_USER_CONTROLS');
+  var box = Hive.box(Constants.hiveName);
 
   save(key, value) {
     box.put(key, value);
@@ -22,16 +23,18 @@ class BoxStorage {
   }
 
   //Save User Details
-  saveUserDetails(user) {
-
-
+  saveUserDetails(user, {String? userName}) {
     box.put('user', user);
-
+    if (userName != null) box.put('userName', userName);
   }
 
   //Get User Details
   getUserDetails() {
     return box.get('user');
+  }
+
+  getUserName() {
+    return box.get('userName');
   }
 
   //Get User Name
@@ -86,5 +89,11 @@ class BoxStorage {
   setNotificationToken(token) {
     var user = getUserDetails();
     box.put(user['notificationToken'], token);
+  }
+
+  getFirstNameAndLastName() {
+    var user = getUserName();
+    if (user == null) return 'Vinay';
+    return user;
   }
 }

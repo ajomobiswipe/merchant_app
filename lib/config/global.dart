@@ -1,7 +1,7 @@
 /* ===============================================================
-| Project : SIFR
+| Project : MERCHANT ONBOARDING
 | Page    : GLOBAL.DART
-| Date    : 21-MAR-2023
+| Date    : 04-OCT-2024
 |
 *  ===============================================================*/
 // Dependencies or Plugins - Models - Services - Global Functions
@@ -13,42 +13,8 @@ import 'package:flutter/services.dart';
 import 'package:local_auth/error_codes.dart' as auth_error;
 import 'package:local_auth/local_auth.dart';
 
-import 'config.dart';
-
 // Global Class
 class Global {
-  // Global list to store business type
-  static List businessTypeList = [
-    {"value": 'Public Limited Company', "label": 'Public Limited Company'},
-    {"value": 'Private Limited Company', "label": 'Private Limited Company'},
-    {"value": 'Joint-Venture Company', "label": 'Joint-Venture Company'},
-    {"value": 'Partnership Firm', "label": 'Partnership Firm'},
-    {"value": 'One Person Company', "label": 'One Person Company'},
-    {"value": 'Sole Proprietorship', "label": 'Sole Proprietorship'},
-    {"value": 'Branch Office', "label": 'Branch Office'},
-    {
-      "value": 'Non-Government Organization (NGO)',
-      "label": 'Non-Government Organization (NGO)'
-    },
-  ];
-
-  // No data found widget
-  static noDataFound(String title) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Image.asset(
-            Constants.noDataFoundImage,
-            height: 250,
-          ),
-          Text("No $title found!"),
-        ],
-      ),
-    );
-  }
-
   // Global function to get unique device id
   static getUniqueId() async {
     var deviceInfo = DeviceInfoPlugin();

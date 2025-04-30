@@ -1,7 +1,7 @@
 /* ===============================================================
-| Project : SIFR
+| Project : MERCHANT ONBOARDING
 | Page    : VALIDATORS.DART
-| Date    : 22-MAR-2023
+| Date    : 04-OCT-2024
 |
 *  ===============================================================*/
 
@@ -65,47 +65,5 @@ class Validators {
   /* Global FormField Validation */
   static bool isValidField(String name) {
     return RegExp(r'^[-a-zA-Z\d]+(\s[-a-zA-Z\d]+)*$').hasMatch(name);
-  }
-
-  /* Global Pin/Mpin Consequence Validators */
-  static int isConsecutive(str) {
-    int start;
-    int length = str.length;
-    for (int i = 0; i < length / 2; i++) {
-      var newStr = str.substring(0, i + 1);
-      int num = int.parse(newStr);
-      start = num;
-      while (newStr.length < length) {
-        num++;
-        newStr = newStr + (num).toString();
-      }
-      if (newStr == (str)) return start;
-    }
-    for (int i = 0; i < length / 2; i++) {
-      str = str.split('').reversed.join();
-      var newStr = str.substring(0, i + 1);
-      int num = int.parse(newStr);
-      start = num;
-      while (newStr.length < length) {
-        num++;
-        newStr = newStr + (num).toString();
-      }
-      if (newStr == (str)) return start;
-    }
-    for (int i = 0; i < length / 2; i++) {
-      str = str.split('').reversed.join();
-      var newStr = str.substring(0, i + 1);
-      int num = int.parse(newStr);
-      start = num;
-      while (newStr.length < length) {
-        newStr = newStr + (num).toString();
-      }
-      if (newStr == (str)) {
-        return 1;
-      } else {
-        return -1;
-      }
-    }
-    return -1;
   }
 }

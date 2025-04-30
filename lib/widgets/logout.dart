@@ -1,147 +1,138 @@
 /* ===============================================================
-| Project : SIFR
+| Project : MERCHANT ONBOARDING
 | Page    : LOGOUT.DART
-| Date    : 22-MAR-2023
+| Date    : 04-OCT-2024
 |
 *  ===============================================================*/
 
 // Dependencies or Plugins - Models - Services - Global Functions
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:anet_merchant_app/config/app_color.dart';
+import 'package:anet_merchant_app/config/constants.dart';
+import 'package:anet_merchant_app/main.dart';
+import 'package:anet_merchant_app/widgets/alert_popup.dart';
+import 'package:anet_merchant_app/widgets/custom_text_widget.dart';
 
 // Global Logout Class
 class Logout {
   // Logout widget
-  bottomSheet(context) {
-    showModalBottomSheet(
-      backgroundColor: const Color(0xFFeff1fe),
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topRight: Radius.circular(10),
-          topLeft: Radius.circular(10),
-        ),
-      ),
-      elevation: 5,
+
+  Future<void> logoutWarningDialog({
+    required BuildContext context,
+    required String title,
+  }) async {
+    return showDialog<void>(
       context: context,
-      builder: (context) {
+      barrierDismissible: true,
+      builder: (BuildContext context) {
         return StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
-          return SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                width: double.infinity,
-                height: MediaQuery.of(context).size.height * 0.45,
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Form(
-                  child: Padding(
-                    padding: MediaQuery.of(context).viewInsets,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const SizedBox(height: 10),
-                        ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            shape: const CircleBorder(),
-                            padding: const EdgeInsets.all(20),
-                            backgroundColor: Theme.of(context).primaryColor,
-                            foregroundColor: Colors.red,
-                          ),
-                          child: const Icon(Icons.priority_high_outlined,
-                              color: Colors.white),
-                        ),
-                        const SizedBox(height: 20),
-                        Text(
-                          "Sign out",
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(
-                                  fontWeight: FontWeight.bold, fontSize: 18),
-                        ),
-                        const SizedBox(height: 20),
-                        Text(
-                          "Do you want to logout?",
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(
-                                  fontWeight: FontWeight.w400, fontSize: 18),
-                        ),
-                        Expanded(
-                            child: Align(
-                                alignment: Alignment.bottomCenter,
-                                child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: <Widget>[
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                            backgroundColor:
-                                                Theme.of(context).primaryColor,
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 30),
-                                            textStyle: const TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold)),
-                                        child: const Text('No',style: TextStyle(color: Colors.white),),
-                                      ),
-                                      ElevatedButton(
-                                        onPressed: () async {
-
-                                          Navigator.pushNamedAndRemoveUntil(
-                                              context,
-                                              'login',
-                                              (route) => false);
-                                          SharedPreferences prefs =
-                                              await SharedPreferences
-                                                  .getInstance();
-
-
-                                          prefs.remove('isLogged');
-                                          prefs.remove('lastLogin');
-
-                                          if(prefs.getBool('rememberMe')==null){
-                                            prefs.clear();
-                                          }else{
-                                            if(!(prefs.getBool('rememberMe')!)){
-                                              prefs.clear();
-                                            }
-                                          }
-
-                                          // prefs.clear();
-
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                            backgroundColor: Theme.of(context)
-                                                .primaryColor
-                                                .withOpacity(0.7),
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 30),
-                                            textStyle: const TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold,color: Colors.white)),
-                                        child: const Text('Yes',style: TextStyle(color: Colors.white)),
-                                      ),
-                                    ]))),
-                        const SizedBox(height: 30),
-                      ],
-                    ),
-                  ),
+          builder: (BuildContext context, StateSetter setState) {
+            var screenWidth = MediaQuery.of(context).size.width;
+            return Dialog(
+              insetPadding: EdgeInsets.zero,
+              backgroundColor: Colors.white,
+              shadowColor: Colors.white,
+              surfaceTintColor: Colors.white,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(10.0),
                 ),
               ),
-            ),
-          );
-        });
+              child: Container(
+                width: screenWidth * 0.9,
+                padding:
+                    const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CustomTextWidget(
+                      text: title,
+                      size: 18,
+                      fontWeight: FontWeight.w900,
+                      color: AppColors.kPrimaryColor,
+                    ),
+                    const SizedBox(height: 20),
+                    const Text(
+                      "Are you sure you want to logout?\n\n"
+                      "Logging out will require you to sign in again to access your account. "
+                      "Make sure you’ve saved any important changes.",
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    const SizedBox(height: 30),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        PopupButton(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          title: "Cancel",
+                          width: screenWidth * 0.35,
+                          color: AppColors.kLightGreen,
+                        ),
+                        PopupButton(
+                          title: "Logout",
+                          width: screenWidth * 0.35,
+                          color: AppColors.kPrimaryColor,
+                          onTap: () {
+                            logOutUser(context);
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
       },
     );
+  }
+
+  Future<void> logOutUser(BuildContext context) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? userName = prefs.getString('userName');
+
+      await Future.wait(
+          [navigateToUserType(context), Hive.box(Constants.hiveName).clear()]);
+    } catch (e) {
+      clearSharedPref();
+      await Hive.box(Constants.hiveName).clear();
+    }
+  }
+
+  Future<void> clearSharedPref() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool rememberMe = prefs.getBool('rememberMe') ?? false;
+
+    if (!rememberMe) {
+      await prefs.clear();
+    } else {
+      await prefs.remove('isLogged');
+      await prefs.remove('lastLogin');
+      await prefs.remove('loggedUserType');
+      await prefs.remove('merchantOnboardingValues');
+      await prefs.remove('OnboardingValuesRefreshedtime');
+    }
+  }
+
+  void handleLogoutError(response) {
+    var res = jsonDecode(response.body);
+    alertService.error(res["description"]);
+  }
+
+  Future<void> navigateToUserType(BuildContext context) async {
+    clearSharedPref();
+    Navigator.pushNamedAndRemoveUntil(
+        context, 'merchantLogin', (route) => false);
   }
 }

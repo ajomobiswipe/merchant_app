@@ -1,30 +1,29 @@
 /* ===============================================================
-| Project : SIFR
+| Project : MERCHANT ONBOARDING
 | Page    : CUSTOM_DIALOG.DART
-| Date    : 22-MAR-2023
+| Date    : 04-OCT-2024
 |
 *  ===============================================================*/
 
 // Dependencies or Plugins - Models - Services - Global Functions
 import 'package:flutter/material.dart';
-import 'package:icons_plus/icons_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 // STATEFUL WIDGET
 class CameraImagePicker extends StatefulWidget {
-  Function onCameraBTNPressed, onGalleryBTNPressed;
+  final Function onCameraBTNPressed;
 
-  CameraImagePicker(
-      {super.key,
-      required this.onCameraBTNPressed,
-      required this.onGalleryBTNPressed});
+  const CameraImagePicker({
+    super.key,
+    required this.onCameraBTNPressed,
+  });
 
   @override
-  _CameraImagePickerState createState() => _CameraImagePickerState();
+  CameraImagePickerState createState() => CameraImagePickerState();
 }
 
 // Custom Dialogue Class
-class _CameraImagePickerState extends State<CameraImagePicker> {
+class CameraImagePickerState extends State<CameraImagePicker> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -72,14 +71,15 @@ class _CameraImagePickerState extends State<CameraImagePicker> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Icon(
-                          FontAwesome.camera_solid,
+                          Icons.camera_alt_outlined,
                           color: Theme.of(context).primaryColor,
                           size: 30,
                         ),
                         const SizedBox(
                           height: 5,
                         ),
-                        const Text("Camera"), // <-- Text
+                        const Text("Camera"),
+                        // <-- Text
                       ],
                     ),
                   ),

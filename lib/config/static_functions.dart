@@ -1,19 +1,27 @@
 /* ===============================================================
-| Project : SIFR
+| Project : MERCHANT ONBOARDING
 | Page    : STATIC_FUNCTIONS.DART
-| Date    : 21-MAR-2023
+| Date    : 04-OCT-2024
 |
 *  ===============================================================*/
 
 // Dependencies
 import 'package:hive_flutter/adapters.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:anet_merchant_app/config/config.dart';
 
 // Global function to clear shared preferences
 clearStorage() async {
-  await Hive.box('SIFR_THEME_CONTROLS').clear();
+  await Hive.box(Constants.hiveName).clear();
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.remove('isLogged');
+  prefs.remove('lastLogin');
 
-  await Hive.box('SIFR_USER_CONTROLS').clear();
-  final SharedPreferences pref = await SharedPreferences.getInstance();
-  pref.clear();
+  if (prefs.getBool('rememberMe') == null) {
+    prefs.clear();
+  } else {
+    if (!(prefs.getBool('rememberMe')!)) {
+      prefs.clear();
+    }
+  }
 }

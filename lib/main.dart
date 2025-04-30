@@ -1,7 +1,7 @@
 /* ===============================================================
-| Project : SIFR
+| Project : MERCHANT ONBOARDING
 | Page    : MAIN.DART
-| Date    : 21-MAR-2023
+| Date    : 04-OCT-2024
 *  ===============================================================*/
 
 // Dependencies or Plugins - Models - Services - Global Functions
@@ -12,34 +12,38 @@ import 'dart:io';
 // import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-// import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:sifr_latest/theme/hive_storage_services.dart';
-import 'package:sifr_latest/theme/theme_provider.dart';
+import 'package:anet_merchant_app/pages/users/merchant/providers/merchant_home_screen_provider.dart';
+import 'package:anet_merchant_app/pages/users/merchant/providers/merchant_transaction_filter_provider.dart';
+import 'package:anet_merchant_app/pages/users/merchant/providers/settlement_provider.dart';
+import 'package:anet_merchant_app/providers/connectivity_provider.dart';
 
 import 'config/config.dart';
 import 'config/state_key.dart';
-import 'providers/providers.dart';
+import 'pages/users/merchant/providers/authProvider.dart';
+import 'services/merchant_service.dart';
 import 'widgets/widget.dart';
 
 // Global Key - unauthorized login
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 CustomAlert customAlert = CustomAlert();
 AlertService alertService = AlertService();
+
+bool isDevWithoutOtp = false;
+
+///setting true for demo purpose or else set to false
 
 // main function - flutter startup function
 void main() {
   runZonedGuarded<Future<void>>(() async {
-    setUpServiceLocator();
-    final StorageService storageService = getIt<StorageService>();
-    await storageService.init();
+    // setUpServiceLocator();
+    // final StorageService storageService = getIt<StorageService>();
+    // await storageService.init();
+    await dotenv.load();
     await Hive.initFlutter(); // THIS IS FOR THEME STORAGE
-    await Hive.openBox('SIFR_USER_CONTROLS'); // THIS IS FOR USER STORAGE
-
-    // await getDataFromScanData("00020101021226080004345652049995303978540415.05802IT5907Druidia6005MILAN62250121AZ115WL#UB776WH#z4E0k#10001");
-
+    await Hive.openBox(Constants.hiveName); // THIS IS FOR USER STORAGE
     ByteData data = await PlatformAssetBundle()
         .load('assets/ca/omaemirates_root_certificate.cer');
     SecurityContext.defaultContext
@@ -51,9 +55,7 @@ void main() {
     // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-    runApp(MainPage(
-      storageService: storageService,
-    ));
+    runApp(MainPage());
   }, (e, _) => throw e);
 }
 
@@ -65,9 +67,11 @@ void main() {
 // Stateless Widget for main page
 class MainPage extends StatelessWidget {
   // local variable declaration
-  final StorageService storageService;
+  // final StorageService storageService;
 
-  MainPage({Key? key, required this.storageService}) : super(key: key);
+  const MainPage({
+    super.key,
+  });
 
   /*
   * This is the main page of project. we are using multiple provider.
@@ -76,27 +80,89 @@ class MainPage extends StatelessWidget {
   */
   @override
   Widget build(BuildContext context) {
+    bool isUAT = EndPoints.baseApiPublic.contains("omasoftposqc");
     return MultiProvider(
-        providers: [
-          ChangeNotifierProvider(
-            create: (_) => ThemeProvider(storageService),
-          ),
-          ChangeNotifierProvider(
-            create: (context) => ConnectivityProvider(),
-          ),
-        ],
-        child: Consumer<ThemeProvider>(
-            builder: (c, themeProvider, home) => MaterialApp(
-                debugShowCheckedModeBanner: false,
-                scaffoldMessengerKey: StateKey.snackBarKey,
-                initialRoute: 'splash',
-                onGenerateRoute: CustomRoute.allRoutes,
-                navigatorKey: navigatorKey,
-                locale: Locale(themeProvider.currentLanguage),
-                // localizationsDelegates: AppLocalizations.localizationsDelegates,
-                // supportedLocales: AppLocalizations.supportedLocales,
-                theme: ThemeData(
-                  fontFamily: "Mont-regular",
-                ))));
+      providers: [
+        ChangeNotifierProvider(create: (context) => ConnectivityProvider()),
+        ChangeNotifierProvider(create: (_) => MerchantProvider()),
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => SettlementProvider()),
+        ChangeNotifierProvider(
+            create: (_) => MerchantTransactionFilterProvider()),
+      ],
+      child: isUAT
+          ? Directionality(
+              textDirection: TextDirection.ltr, // Left-to-right direction
+              child: Banner(
+                message: "UAT",
+                location: BannerLocation.topEnd,
+                color: Colors.red,
+                child: _buildMaterialApp(),
+              ),
+            )
+          : _buildMaterialApp(),
+    );
+  }
+
+  Widget _buildMaterialApp() {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      scaffoldMessengerKey: StateKey.snackBarKey,
+      initialRoute: 'splash',
+      onGenerateRoute: CustomRoute.allRoutes,
+      navigatorKey: NavigationService.navigatorKey,
+      theme: ThemeData(
+        scaffoldBackgroundColor: Colors.white,
+        fontFamily: "Mont-regular",
+      ),
+    );
+  }
+}
+
+class NavigationService {
+  NavigationService._();
+
+  static final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey<NavigatorState>();
+
+  static Future<dynamic> navigateTo(String routeName, {Object? arguments}) {
+    return navigatorKey.currentState!
+        .pushNamed(routeName, arguments: arguments);
+  }
+
+  static void goBack() {
+    navigatorKey.currentState!.pop();
+  }
+}
+
+class TokenManager {
+  static final TokenManager _instance = TokenManager._internal();
+
+  factory TokenManager() {
+    return _instance;
+  }
+
+  TokenManager._internal(); // private constructor
+
+  Timer? _timer;
+  MerchantServices merchantServices = MerchantServices();
+  void start(BuildContext context) {
+    _timer ??= Timer.periodic(Duration(seconds: 90), (_) {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      if (authProvider.isLoggedIn) {
+        _refreshToken();
+      }
+    });
+  }
+
+  void stop() {
+    _timer?.cancel();
+    _timer = null;
+  }
+
+  void _refreshToken() {
+    merchantServices.refreshToken();
+    print("Token refreshed at ${DateTime.now()}");
+    // Add actual logic here
   }
 }

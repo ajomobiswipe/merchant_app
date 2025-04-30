@@ -1,7 +1,7 @@
 /* ===============================================================
-| Project : SIFR
+| Project : MERCHANT ONBOARDING
 | Page    : APP_BUTTON.DART
-| Date    : 22-MAR-2023
+| Date    : 04-OCT-2024
 |
 *  ===============================================================*/
 
@@ -18,13 +18,12 @@ class AppButton extends StatelessWidget {
   final double? width;
 
   const AppButton(
-      {Key? key,
+      {super.key,
       required this.title,
       this.onPressed,
       this.backgroundColor,
       this.width,
-      this.titleColor = Colors.white})
-      : super(key: key);
+      this.titleColor = Colors.white});
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +40,7 @@ class AppButton extends StatelessWidget {
             style: Theme.of(context)
                 .textTheme
                 .titleMedium
-                ?.copyWith(color: titleColor,fontFamily: 'Mont')),
+                ?.copyWith(color: titleColor, fontFamily: 'Mont')),
       ),
     );
   }
