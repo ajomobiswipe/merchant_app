@@ -1,2 +1,0 @@
-C:/Users/ajosebastian/Documents/Ane-merchant-app/cash-at-pos/android/app/.cxx/Debug/1o68c6j5/x86/CMakeFiles/edit_cache.dir
-C:/Users/ajosebastian/Documents/Ane-merchant-app/cash-at-pos/android/app/.cxx/Debug/1o68c6j5/x86/CMakeFiles/rebuild_cache.dir
