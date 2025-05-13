@@ -6,7 +6,6 @@ class EndPoints {
   static final Environment environment = Environment.UAT; // Change as needed
 
   static String get baseApiPublic {
-
     switch (environment) {
       case Environment.UAT:
         return dotenv.env['BASE_API_PUBLIC_UAT']!;
@@ -18,7 +17,6 @@ class EndPoints {
   }
 
   static String get baseApiPublicNanoUMS {
- 
     switch (environment) {
       case Environment.UAT:
         return dotenv.env['BASE_API_PUBLIC_UAT_UMS']!;

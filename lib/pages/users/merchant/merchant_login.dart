@@ -7,7 +7,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:anet_merchant_app/common_widgets/custom_app_button.dart';
 
 import 'package:anet_merchant_app/config/config.dart';
-import 'package:anet_merchant_app/pages/users/enums/user_type_enums.dart';
 import 'package:anet_merchant_app/pages/users/merchant/providers/authProvider.dart';
 import 'package:anet_merchant_app/providers/permission.dart';
 import 'package:anet_merchant_app/widgets/custom_text_widget.dart';
@@ -58,10 +57,8 @@ class _MerchantLoginState extends State<MerchantLogin> {
   Future _checkRememberMe() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     bool? rememberMe = pref.getBool('rememberMe');
-    String? loggedUserType = pref.getString('loggedUserType');
 
-    if (rememberMe == null ||
-        loggedUserType != UserTypes.merchantSelf.toString().split('.').last) {
+    if (rememberMe == null) {
       isRemember = false;
       return;
     }

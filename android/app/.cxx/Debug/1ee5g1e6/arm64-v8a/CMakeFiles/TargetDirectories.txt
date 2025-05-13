@@ -1,2 +1,0 @@
-C:/Users/ajosebastian/Documents/GitHub/merchant_app/android/app/.cxx/Debug/1ee5g1e6/arm64-v8a/CMakeFiles/edit_cache.dir
-C:/Users/ajosebastian/Documents/GitHub/merchant_app/android/app/.cxx/Debug/1ee5g1e6/arm64-v8a/CMakeFiles/rebuild_cache.dir

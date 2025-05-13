@@ -81,6 +81,7 @@ class Logout {
                           width: screenWidth * 0.35,
                           color: AppColors.kPrimaryColor,
                           onTap: () {
+                            TokenManager().stop();
                             logOutUser(context);
                             Navigator.pop(context);
                           },

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:anet_merchant_app/main.dart';
-import 'package:anet_merchant_app/pages/users/enums/user_type_enums.dart';
 import 'package:anet_merchant_app/pages/users/merchant/merchant_home_page/merchant_info_model.dart';
 import 'package:anet_merchant_app/pages/users/merchant/models/merchant_self_login_model.dart';
 import 'package:anet_merchant_app/services/merchant_service.dart';
@@ -148,7 +147,6 @@ class AuthProvider with ChangeNotifier {
           NavigationService.navigatorKey.currentState
               ?.pushNamedAndRemoveUntil('merchantHomeScreen', (route) => false);
           StorageServices.saveSecureStorage(response,
-              userTypes: UserTypes.merchantSelf,
               userName: _merchantIdController.text,
               password: _passwordController.text);
         } else {

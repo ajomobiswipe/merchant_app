@@ -8,6 +8,7 @@
 // Dependencies or Plugins - Models - Services - Global Functions
 import 'dart:async';
 
+import 'package:anet_merchant_app/services/merchant_service.dart';
 import 'package:easy_splash_screen/easy_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -48,7 +49,7 @@ class _SplashScreenState extends State<SplashScreen> {
     final bool isLogged = sharedPreferences.getBool('isLogged') ?? false;
 
     if (isLogged) {
-      var tokenResponse = await UserServices().refreshToken();
+      var tokenResponse = await MerchantServices().refreshToken();
 
       if (tokenResponse == null) return;
 

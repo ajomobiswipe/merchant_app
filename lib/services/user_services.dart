@@ -671,32 +671,32 @@ class UserServices {
   }
 
   BoxStorage boxStorage = BoxStorage();
-  Future refreshToken() async {
-    Connection connection = Connection();
-    String token = boxStorage.getToken();
-    var url = '${EndPoints.baseApiPublicNanoUMS}refreshToken/$token';
+  // Future refreshToken() async {
+  //   Connection connection = Connection();
+  //   String token = boxStorage.getToken();
+  //   var url = '${EndPoints.baseApiPublicNanoUMS}refreshToken/$token';
 
-    var response = await connection.get(url, fromRefreshTokenAPI: true);
+  //   var response = await connection.get(url, fromRefreshTokenAPI: true);
 
-    if (kDebugMode) print('url ${response.body}');
+  //   if (kDebugMode) print('url ${response.body}');
 
-    var decodedData = jsonDecode(response.body);
+  //   var decodedData = jsonDecode(response.body);
 
-    if (response.statusCode == 401) {
-      NavigationService.navigatorKey.currentState
-          ?.pushReplacementNamed('login');
-      alertService.errorToast(Constants.unauthorized);
-      clearStorage();
-      return;
-    }
+  //   if (response.statusCode == 401) {
+  //     NavigationService.navigatorKey.currentState
+  //         ?.pushReplacementNamed('login');
+  //     alertService.errorToast(Constants.unauthorized);
+  //     clearStorage();
+  //     return;
+  //   }
 
-    BoxStorage secureStorage = BoxStorage();
-    await secureStorage.saveUserDetails(decodedData);
+  //   BoxStorage secureStorage = BoxStorage();
+  //   await secureStorage.saveUserDetails(decodedData);
 
-    if (response.statusCode == 200) {
-      return decodedData;
-    }
-  }
+  //   if (response.statusCode == 200) {
+  //     return decodedData;
+  //   }
+  // }
 
   encryptMethod(data) {
     final key = encrypt.Key.fromUtf8('kycDocsEncrypKey');

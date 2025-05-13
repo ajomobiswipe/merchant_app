@@ -51,8 +51,6 @@ void main() {
 
     // --- Root
     WidgetsFlutterBinding.ensureInitialized();
-    // await Firebase.initializeApp();
-    // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     runApp(MainPage());
@@ -83,9 +81,9 @@ class MainPage extends StatelessWidget {
     bool isUAT = EndPoints.baseApiPublic.contains("omasoftposqc");
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (context) => ConnectivityProvider()),
         ChangeNotifierProvider(create: (_) => MerchantProvider()),
-        ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => SettlementProvider()),
         ChangeNotifierProvider(
             create: (_) => MerchantTransactionFilterProvider()),
@@ -105,15 +103,17 @@ class MainPage extends StatelessWidget {
   }
 
   Widget _buildMaterialApp() {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      scaffoldMessengerKey: StateKey.snackBarKey,
-      initialRoute: 'splash',
-      onGenerateRoute: CustomRoute.allRoutes,
-      navigatorKey: NavigationService.navigatorKey,
-      theme: ThemeData(
-        scaffoldBackgroundColor: Colors.white,
-        fontFamily: "Mont-regular",
+    return SafeArea(
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        scaffoldMessengerKey: StateKey.snackBarKey,
+        initialRoute: 'splash',
+        onGenerateRoute: CustomRoute.allRoutes,
+        navigatorKey: NavigationService.navigatorKey,
+        theme: ThemeData(
+          scaffoldBackgroundColor: Colors.white,
+          fontFamily: "Mont-regular",
+        ),
       ),
     );
   }
@@ -147,7 +147,7 @@ class TokenManager {
   Timer? _timer;
   MerchantServices merchantServices = MerchantServices();
   void start(BuildContext context) {
-    _timer ??= Timer.periodic(Duration(seconds: 90), (_) {
+    _timer ??= Timer.periodic(Duration(seconds: 10), (_) {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       if (authProvider.isLoggedIn) {
         _refreshToken();
@@ -156,6 +156,7 @@ class TokenManager {
   }
 
   void stop() {
+    // authProvider.isLoggedIn = false;
     _timer?.cancel();
     _timer = null;
   }
