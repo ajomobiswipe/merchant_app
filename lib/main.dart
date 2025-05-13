@@ -60,6 +60,7 @@ void main() {
       ChangeNotifierProvider(create: (_) => SettlementProvider()),
       ChangeNotifierProvider(
           create: (_) => MerchantTransactionFilterProvider()),
+    // ], child: MainPage()));
     ], child: MainPage()));
   }, (e, _) => throw e);
 }
@@ -104,7 +105,8 @@ class MainPage extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         scaffoldMessengerKey: StateKey.snackBarKey,
-        initialRoute: 'splash',
+        // initialRoute: 'splash',
+        initialRoute: 'merchantHomeScreen',
         onGenerateRoute: CustomRoute.allRoutes,
         navigatorKey: NavigationService.navigatorKey,
         theme: ThemeData(
