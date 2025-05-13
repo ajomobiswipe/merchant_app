@@ -53,7 +53,14 @@ void main() {
     WidgetsFlutterBinding.ensureInitialized();
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-    runApp(MainPage());
+    runApp(MultiProvider(providers: [
+      ChangeNotifierProvider(create: (_) => AuthProvider()),
+      ChangeNotifierProvider(create: (context) => ConnectivityProvider()),
+      ChangeNotifierProvider(create: (_) => MerchantProvider()),
+      ChangeNotifierProvider(create: (_) => SettlementProvider()),
+      ChangeNotifierProvider(
+          create: (_) => MerchantTransactionFilterProvider()),
+    ], child: MainPage()));
   }, (e, _) => throw e);
 }
 
@@ -79,27 +86,17 @@ class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isUAT = EndPoints.baseApiPublic.contains("omasoftposqc");
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(create: (context) => ConnectivityProvider()),
-        ChangeNotifierProvider(create: (_) => MerchantProvider()),
-        ChangeNotifierProvider(create: (_) => SettlementProvider()),
-        ChangeNotifierProvider(
-            create: (_) => MerchantTransactionFilterProvider()),
-      ],
-      child: isUAT
-          ? Directionality(
-              textDirection: TextDirection.ltr, // Left-to-right direction
-              child: Banner(
-                message: "UAT",
-                location: BannerLocation.topEnd,
-                color: Colors.red,
-                child: _buildMaterialApp(),
-              ),
-            )
-          : _buildMaterialApp(),
-    );
+    return isUAT
+        ? Directionality(
+            textDirection: TextDirection.ltr, // Left-to-right direction
+            child: Banner(
+              message: "UAT",
+              location: BannerLocation.topEnd,
+              color: Colors.red,
+              child: _buildMaterialApp(),
+            ),
+          )
+        : _buildMaterialApp();
   }
 
   Widget _buildMaterialApp() {
