@@ -14,126 +14,131 @@ class MerchantHomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double screenHeight = MediaQuery.of(context).size.height;
-    double screenWidth = MediaQuery.of(context).size.width;
-
-    return MerchantScaffold(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CustomTextWidget(
-              text: context.read<MerchantProvider>().storeName, size: 18),
-          defaultHeight(15),
-          CustomTextWidget(text: "Total transactions today", size: 12),
-          defaultHeight(10),
-          Selector<MerchantProvider, HomeScreenTabItem>(
-            selector: (context, provider) =>
-                provider.selectedTab, // Listen only to selectedTab
-            builder: (context, selectedTab, child) {
-              switch (selectedTab) {
-                case HomeScreenTabItem.TransactionHistory:
-                  return CustomContainer(
-                    height: screenHeight * 0.06,
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        CustomTextWidget(
-                            color: Colors.white,
-                            text: context
-                                .read<MerchantProvider>()
-                                .totalTransactions
-                                .toString(),
-                            size: 18),
-                        CustomTextWidget(
-                            text: "₹ 2578744", size: 18, color: Colors.white),
-                      ],
-                    ),
+    return LayoutBuilder(
+      builder: (_, constraints) {
+        double screenHeight = MediaQuery.of(context).size.height;
+        double screenWidth = MediaQuery.of(context).size.width;
+        return MerchantScaffold(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CustomTextWidget(
+                  text: context.read<MerchantProvider>().storeName, size: 18),
+              defaultHeight(screenHeight*.015),
+              CustomTextWidget(text: "Total transactions today", size: 12),
+               defaultHeight(screenHeight*.015),
+              Selector<MerchantProvider, HomeScreenTabItem>(
+                selector: (context, provider) =>
+                    provider.selectedTab, // Listen only to selectedTab
+                builder: (context, selectedTab, child) {
+                  switch (selectedTab) {
+                    case HomeScreenTabItem.TransactionHistory:
+                      return CustomContainer(
+                        height: screenHeight * 0.06,
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            CustomTextWidget(
+                                color: Colors.white,
+                                text: context
+                                    .read<MerchantProvider>()
+                                    .totalTransactions
+                                    .toString(),
+                                size: 18),
+                            CustomTextWidget(
+                                text: "₹ 2578744",
+                                size: 18,
+                                color: Colors.white),
+                          ],
+                        ),
+                      );
+                    case HomeScreenTabItem.Settlements:
+                      return CustomContainer(
+                        height: screenHeight * 0.06,
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            CustomTextWidget(
+                                text:
+                                    "₹ ${context.read<MerchantProvider>().totalSettlementAmount}",
+                                size: 18,
+                                color: Colors.white), //totalSettlementAmount
+                          ],
+                        ),
+                      );
+                    case HomeScreenTabItem.Mpr:
+                      return Container();
+                  }
+                },
+              ),
+               defaultHeight(screenHeight*.015),
+              Consumer<MerchantProvider>(
+                builder: (context, provider, child) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      homeScreenTab(
+                        screenHeight,
+                        width: screenWidth * 0.25,
+                        homeScreenTabItem: HomeScreenTabItem.TransactionHistory,
+                        selectedTabItem: provider.selectedTab,
+                        onTap: () => provider.updateSelectedTab(
+                            HomeScreenTabItem.TransactionHistory),
+                        title: "Transaction\nHistory",
+                      ),
+                      homeScreenTab(
+                        screenHeight,
+                        width: screenWidth * 0.25,
+                        homeScreenTabItem: HomeScreenTabItem.Settlements,
+                        selectedTabItem: provider.selectedTab,
+                        onTap: () => provider
+                            .updateSelectedTab(HomeScreenTabItem.Settlements),
+                        title: "Settlements",
+                      ),
+                      homeScreenTab(
+                        screenHeight,
+                        width: screenWidth * 0.25,
+                        homeScreenTabItem: HomeScreenTabItem.Mpr,
+                        selectedTabItem: provider.selectedTab,
+                        onTap: () =>
+                            provider.updateSelectedTab(HomeScreenTabItem.Mpr),
+                        title: "MPR",
+                      ),
+                    ],
                   );
-                case HomeScreenTabItem.Settlements:
-                  return CustomContainer(
-                    height: screenHeight * 0.06,
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        CustomTextWidget(
-                            text:
-                                "₹ ${context.read<MerchantProvider>().totalSettlementAmount}",
-                            size: 18,
-                            color: Colors.white), //totalSettlementAmount
-                      ],
-                    ),
-                  );
-                case HomeScreenTabItem.Mpr:
-                  return Container();
-              }
-            },
-          ),
-          defaultHeight(15),
-          Consumer<MerchantProvider>(
-            builder: (context, provider, child) {
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  homeScreenTab(
-                    screenHeight,
-                    width: screenWidth * 0.25,
-                    homeScreenTabItem: HomeScreenTabItem.TransactionHistory,
-                    selectedTabItem: provider.selectedTab,
-                    onTap: () => provider.updateSelectedTab(
-                        HomeScreenTabItem.TransactionHistory),
-                    title: "Transaction\nHistory",
-                  ),
-                  homeScreenTab(
-                    screenHeight,
-                    width: screenWidth * 0.25,
-                    homeScreenTabItem: HomeScreenTabItem.Settlements,
-                    selectedTabItem: provider.selectedTab,
-                    onTap: () => provider
-                        .updateSelectedTab(HomeScreenTabItem.Settlements),
-                    title: "Settlements",
-                  ),
-                  homeScreenTab(
-                    screenHeight,
-                    width: screenWidth * 0.25,
-                    homeScreenTabItem: HomeScreenTabItem.Mpr,
-                    selectedTabItem: provider.selectedTab,
-                    onTap: () =>
-                        provider.updateSelectedTab(HomeScreenTabItem.Mpr),
-                    title: "MPR",
-                  ),
-                ],
-              );
-            },
-          ),
+                },
+              ),
 
-          defaultHeight(20),
+              defaultHeight(screenHeight*.015),
 
-          // **Dynamic Content Based on Selected Tab**
-          Expanded(
-            child: Consumer<MerchantProvider>(
-              builder: (context, provider, child) {
-                return getTabContent(
-                    merchantProvider: provider,
-                    screenWidth: screenWidth,
-                    screenHeight: screenHeight);
-              },
-            ),
+              // **Dynamic Content Based on Selected Tab**
+              Expanded(
+                child: Consumer<MerchantProvider>(
+                  builder: (context, provider, child) {
+                    return getTabContent(
+                        merchantProvider: provider,
+                        screenWidth: screenWidth,
+                        screenHeight: screenHeight);
+                  },
+                ),
+              ),
+              Selector<MerchantProvider, HomeScreenTabItem>(
+                  selector: (context, provider) =>
+                      provider.selectedTab, // Listen only to selectedTab
+                  builder: (context, selectedTab, child) {
+                    return getBottomButton(
+                        selectedTab: selectedTab,
+                        screenHeight: screenHeight,
+                        context: context);
+                  })
+            ],
           ),
-          Selector<MerchantProvider, HomeScreenTabItem>(
-              selector: (context, provider) =>
-                  provider.selectedTab, // Listen only to selectedTab
-              builder: (context, selectedTab, child) {
-                return getBottomButton(
-                    selectedTab: selectedTab,
-                    screenHeight: screenHeight,
-                    context: context);
-              })
-        ],
-      ),
-      onTapSupport: () {
-        Navigator.pushNamed(context, "merchantHelpScreen");
+          onTapSupport: () {
+            Navigator.pushNamed(context, "merchantHelpScreen");
+          },
+        );
       },
     );
   }
