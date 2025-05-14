@@ -10,21 +10,24 @@ import 'dart:io';
 
 // import 'package:firebase_core/firebase_core.dart';
 // import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:anet_merchant_app/core/constants/constants.dart';
+import 'package:anet_merchant_app/core/endpoints.dart';
+import 'package:anet_merchant_app/core/routes.dart';
+import 'package:anet_merchant_app/core/state_key.dart';
+import 'package:anet_merchant_app/data/services/merchant_service.dart';
+import 'package:anet_merchant_app/presentation/providers/authProvider.dart';
+import 'package:anet_merchant_app/presentation/providers/connectivity_provider.dart';
+import 'package:anet_merchant_app/presentation/providers/merchant_home_screen_provider.dart';
+import 'package:anet_merchant_app/presentation/providers/merchant_transaction_filter_provider.dart';
+import 'package:anet_merchant_app/presentation/providers/settlement_provider.dart';
+import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
+import 'package:anet_merchant_app/presentation/widgets/app/custom_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:anet_merchant_app/pages/users/merchant/providers/merchant_home_screen_provider.dart';
-import 'package:anet_merchant_app/pages/users/merchant/providers/merchant_transaction_filter_provider.dart';
-import 'package:anet_merchant_app/pages/users/merchant/providers/settlement_provider.dart';
-import 'package:anet_merchant_app/providers/connectivity_provider.dart';
 
-import 'config/config.dart';
-import 'config/state_key.dart';
-import 'pages/users/merchant/providers/authProvider.dart';
-import 'services/merchant_service.dart';
-import 'widgets/widget.dart';
 
 // Global Key - unauthorized login
 
