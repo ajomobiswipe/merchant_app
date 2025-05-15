@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
-
 class SettlementDashboard extends StatelessWidget {
   const SettlementDashboard({super.key});
 
@@ -128,7 +127,7 @@ class SettlementDashboard extends StatelessWidget {
                     final settlement =
                         settlementProvider.utrWiseSettlements[index];
                     return settlementTile(
-                        screenWidth, screenHeight, settlement);
+                        screenWidth, screenHeight, settlement, context);
                   },
                 ),
         ],
@@ -137,8 +136,15 @@ class SettlementDashboard extends StatelessWidget {
   }
 
   CustomContainer settlementTile(double screenWidth, double screenHeight,
-      Map<String, dynamic> settlement) {
+      Map<String, dynamic> settlement, BuildContext context) {
     return CustomContainer(
+      onTap: () {
+        Navigator.pushNamed(
+          context,
+          "viewSettlementInfo",
+          arguments: settlement,
+        );
+      },
       padding: EdgeInsets.symmetric(
           horizontal: screenWidth * 0.05, vertical: screenHeight * 0.02),
       child: Row(

@@ -14,14 +14,12 @@ import 'package:anet_merchant_app/presentation/pages/users/merchant/merchant_tra
 import 'package:anet_merchant_app/presentation/pages/users/merchant/merchat_statement_filter_screen.dart';
 import 'package:anet_merchant_app/presentation/pages/users/merchant/settlement_dashboard.dart';
 import 'package:anet_merchant_app/presentation/pages/users/merchant/view_all_transaction_screen.dart';
+import 'package:anet_merchant_app/presentation/pages/users/merchant/view_settlement_info.dart';
 import 'package:anet_merchant_app/presentation/providers/connectivity_provider.dart';
 import 'package:anet_merchant_app/presentation/widgets/no_internet_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-
-
 
 // Custom route Class
 class CustomRoute {
@@ -79,6 +77,8 @@ class CustomRoute {
           return ViewAllTransactionScreen();
         case "settlementDashboard":
           return SettlementDashboard();
+        case "viewSettlementInfo":
+          return ViewSettlementInfo();
       }
       return const Scaffold(
         body: Center(
