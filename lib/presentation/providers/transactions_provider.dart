@@ -14,9 +14,19 @@ enum HomeScreenTabItem {
 class TransactionProvider with ChangeNotifier {
   HomeScreenTabItem _selectedTab = HomeScreenTabItem.TransactionHistory;
   MerchantServices _merchantServices = MerchantServices();
+  final ScrollController _recentTransScrollCtrl = ScrollController();
+  ScrollController get recentTransScrollCtrl => _recentTransScrollCtrl;
   TransactionHistoryRequestModel _recentTranReqModel =
       TransactionHistoryRequestModel();
+  bool _isTransactionsLoading = false;
+  bool get isTransactionsLoading => _isTransactionsLoading;
+
+  int currentPage = 0;
+  final int pageSize = 10;
+  final int totalItems = 50; // simulate total from API
   List<TransactionElement> recentTransactions = [];
+  bool get hasMoreTransactions => recentTransactions.length < totalItems;
+
   double _totalTransactions = 0;
   double _totalSettlementAmount = 0;
   double get totalTransactions => _totalTransactions;
@@ -24,6 +34,27 @@ class TransactionProvider with ChangeNotifier {
 
   List<TransactionElement> get transactions => recentTransactions;
   HomeScreenTabItem get selectedTab => _selectedTab;
+
+  Future<void> fetchItems() async {
+    print("Current Page: $currentPage");
+    print("Page Size: $pageSize");
+    print("Total Items: $totalItems");
+    print("Recent Transactions Length: ${recentTransactions.length}");
+    if (recentTransactions.length >= totalItems) return;
+    print("Inside fetchItems");
+    _isTransactionsLoading = true;
+    notifyListeners();
+
+    await Future.delayed(Duration(seconds: 2));
+
+    var newItems = transactionHistoryFromJson(transaction).content ?? [];
+
+    currentPage++;
+    recentTransactions.addAll(newItems);
+    _isTransactionsLoading = false;
+    notifyListeners();
+  }
+
   geRecentTransactions() async {
     _recentTranReqModel.acquirerId = "OMAIND";
     _recentTranReqModel.merchantId = "65OMA0000000002";

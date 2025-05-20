@@ -18,16 +18,34 @@ class MerchantHomeScreen extends StatefulWidget {
 }
 
 class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
-  @override
+  late TransactionProvider transactionProvider;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final transactionProvider =
+      transactionProvider =
           Provider.of<TransactionProvider>(context, listen: false);
       transactionProvider.refreshRecentTransactions();
       transactionProvider.fetchDailySettlementTxnSummary();
+      transactionProvider.recentTransScrollCtrl.addListener(_onScroll);
     });
+  }
+
+  @override
+  void dispose() {
+    transactionProvider.recentTransScrollCtrl.removeListener(_onScroll);
+    transactionProvider.recentTransScrollCtrl.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (transactionProvider.recentTransScrollCtrl.position.pixels >=
+            transactionProvider.recentTransScrollCtrl.position.maxScrollExtent -
+                200 &&
+        !transactionProvider.isTransactionsLoading) {
+      transactionProvider.fetchItems();
+    }
   }
 
   @override
@@ -45,8 +63,7 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
               CustomTextWidget(text: "Total transactions today", size: 12),
               defaultHeight(screenHeight * .015),
               Selector<TransactionProvider, HomeScreenTabItem>(
-                selector: (context, provider) =>
-                    provider.selectedTab, // Listen only to selectedTab
+                selector: (context, provider) => provider.selectedTab,
                 builder: (context, selectedTab, child) {
                   switch (selectedTab) {
                     case HomeScreenTabItem.TransactionHistory:
@@ -217,11 +234,24 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
       defaultHeight(10),
       Expanded(
         child: ListView.builder(
-          itemCount: transactionElement.length,
-          itemBuilder: (context, index) => TransactionTile(
-            transaction: transactionElement[index],
-            width: screenWidth,
-          ),
+          controller: transactionProvider.recentTransScrollCtrl,
+          itemCount: transactionElement.length + 1,
+          // (transactionProvider.hasMoreTransactions ? 1 : 0),
+          itemBuilder: (context, index) {
+            if (index < transactionElement.length) {
+              return TransactionTile(
+                transaction: transactionElement[index],
+                width: screenWidth,
+              );
+            } else if (transactionProvider.hasMoreTransactions) {
+              return Padding(
+                padding: EdgeInsets.symmetric(vertical: 16),
+                child: Center(child: CircularProgressIndicator()),
+              );
+            } else {
+              return Center(child: Text("-----   END OF LIST  ------"));
+            }
+          },
         ),
       ),
     ]);
