@@ -27,6 +27,7 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
       transactionProvider =
           Provider.of<TransactionProvider>(context, listen: false);
       transactionProvider.refreshRecentTransactions();
+      transactionProvider.geRecentTransactions();
       transactionProvider.fetchDailySettlementTxnSummary();
       transactionProvider.recentTransScrollCtrl.addListener(_onScroll);
     });

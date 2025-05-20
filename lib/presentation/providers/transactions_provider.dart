@@ -27,9 +27,9 @@ class TransactionProvider with ChangeNotifier {
   List<TransactionElement> recentTransactions = [];
   bool get hasMoreTransactions => recentTransactions.length < totalItems;
 
-  double _totalTransactions = 0;
+  int _totalTransactions = 0;
   double _totalSettlementAmount = 0;
-  double get totalTransactions => _totalTransactions;
+  int get totalTransactions => _totalTransactions;
   double get totalSettlementAmount => _totalSettlementAmount;
 
   List<TransactionElement> get transactions => recentTransactions;
@@ -67,7 +67,7 @@ class TransactionProvider with ChangeNotifier {
         pageNumber: 0,
         pageSize: 10);
     if (response.statusCode == 200) {
-      recentTransactions = transactionHistoryFromJson(response).content ?? [];
+      recentTransactions = transactionHistoryFromJson(response.body).content ?? [];
       notifyListeners();
     }
   }
@@ -101,7 +101,7 @@ class TransactionProvider with ChangeNotifier {
           0.0,
           (sum, transaction) =>
               sum + double.parse((transaction.amount ?? '0.0').toString()));
-      _totalTransactions = recentTransactions.length.toDouble();
+      _totalTransactions = recentTransactions.length;
       notifyListeners();
     });
   }
