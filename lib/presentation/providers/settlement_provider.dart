@@ -15,9 +15,23 @@ class SettlementProvider with ChangeNotifier {
   int get totalSettlements => _totalSettlements;
 
   List<TransactionElement> get transactions =>
-      transactionFromJson(transaction).transactions ?? [];
+      transactionHistoryFromJson(transaction).content ?? [];
 
   List<Map<String, dynamic>> _utrWiseSettlements = [
+    {
+      "amount": 3455265,
+      "settlements": 20,
+      "transactions": 500,
+      "utr": "1234567890",
+      "settledOn": "12/12/2023"
+    },
+    {
+      "amount": 3455265,
+      "settlements": 20,
+      "transactions": 500,
+      "utr": "1234567890",
+      "settledOn": "12/12/2023"
+    },
     {
       "amount": 3455265,
       "settlements": 20,
