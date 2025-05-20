@@ -1,356 +1,320 @@
 // To parse this JSON data, do
 //
-//     final transaction = transactionFromJson(jsonString);
+//     final transactionHistory = transactionHistoryFromJson(jsonString);
 
 import 'dart:convert';
 
-Transaction transactionFromJson(String str) =>
-    Transaction.fromJson(json.decode(str));
+TransactionHistory transactionHistoryFromJson(String str) =>
+    TransactionHistory.fromJson(json.decode(str));
 
-String transactionToJson(Transaction data) => json.encode(data.toJson());
+String transactionHistoryToJson(TransactionHistory data) =>
+    json.encode(data.toJson());
 
-class Transaction {
-  final List<TransactionElement>? transactions;
+class TransactionHistory {
+  List<TransactionElement>? content;
+  Pageable? pageable;
+  int? totalElements;
+  int? totalPages;
+  bool? last;
+  int? size;
+  int? number;
+  Sort? sort;
+  bool? first;
+  int? numberOfElements;
+  bool? empty;
 
-  Transaction({
-    this.transactions,
+  TransactionHistory({
+    this.content,
+    this.pageable,
+    this.totalElements,
+    this.totalPages,
+    this.last,
+    this.size,
+    this.number,
+    this.sort,
+    this.first,
+    this.numberOfElements,
+    this.empty,
   });
 
-  factory Transaction.fromJson(Map<String, dynamic> json) => Transaction(
-        transactions: json["transactions"] == null
+  factory TransactionHistory.fromJson(Map<String, dynamic> json) =>
+      TransactionHistory(
+        content: json["content"] == null
             ? []
-            : List<TransactionElement>.from(json["transactions"]!
-                .map((x) => TransactionElement.fromJson(x))),
+            : List<TransactionElement>.from(
+                json["content"]!.map((x) => TransactionElement.fromJson(x))),
+        pageable: json["pageable"] == null
+            ? null
+            : Pageable.fromJson(json["pageable"]),
+        totalElements: json["totalElements"],
+        totalPages: json["totalPages"],
+        last: json["last"],
+        size: json["size"],
+        number: json["number"],
+        sort: json["sort"] == null ? null : Sort.fromJson(json["sort"]),
+        first: json["first"],
+        numberOfElements: json["numberOfElements"],
+        empty: json["empty"],
       );
 
   Map<String, dynamic> toJson() => {
-        "transactions": transactions == null
+        "content": content == null
             ? []
-            : List<dynamic>.from(transactions!.map((x) => x.toJson())),
+            : List<dynamic>.from(content!.map((x) => x.toJson())),
+        "pageable": pageable?.toJson(),
+        "totalElements": totalElements,
+        "totalPages": totalPages,
+        "last": last,
+        "size": size,
+        "number": number,
+        "sort": sort?.toJson(),
+        "first": first,
+        "numberOfElements": numberOfElements,
+        "empty": empty,
       };
 }
 
 class TransactionElement {
-  final String? transactionId;
-  final String? merchantId;
-  final String? terminalId;
-  final String? batchNumber;
-  final String? invoiceNumber;
-  final DateTime? timestamp;
-  final String? status;
-  final String? transactionType;
-  final String? entryMode;
-  final String? settlementStatus;
-  final Amount? amount;
-  final PaymentMethod? paymentMethod;
-  final Authorization? authorization;
-  final Fees? fees;
-  final Total? total;
-  final Settlement? settlement;
-  final String? failureReason;
-  final String? originalTransactionId;
-  final String? reason;
+  String? merchantId;
+  String? acquirerId;
+  String? terminalId;
+  String? transactionDate;
+  String? transactionTime;
+  String? stan;
+  String? rrn;
+  String? amount;
+  String? authCode;
+  String? responseCode;
+  dynamic responseDesc;
+  String? transactionType;
+  dynamic mcc;
+  String? cardNo;
+  dynamic merReceiptLink;
+  dynamic custReceiptLink;
+  dynamic acquirerName;
+  String? mti;
+  String? currency;
+  int? terminalGuid;
+  int? txnGuid;
+  String? insertDateTime;
+  bool? isReverse;
+  String? batchNo;
+  String? traceNumber;
+  String? terminalLocation;
+  String? de7;
+  String? acquiringBin;
+  dynamic schemeName;
+  String? processCode;
+  dynamic p2PRequestId;
+  String? posEntryMode;
+  dynamic deviceType;
+  dynamic txnSource;
+  dynamic nameOnCard;
+  dynamic batchClosedOn;
+  dynamic settledOn;
+  bool? processAck;
+  dynamic txnResponse;
+  dynamic txnAckResponse;
+  bool? batchClosed;
+  bool? settled;
+  bool? voided;
 
   TransactionElement({
-    this.transactionId,
     this.merchantId,
+    this.acquirerId,
     this.terminalId,
-    this.batchNumber,
-    this.invoiceNumber,
-    this.timestamp,
-    this.status,
-    this.transactionType,
-    this.entryMode,
-    this.settlementStatus,
+    this.transactionDate,
+    this.transactionTime,
+    this.stan,
+    this.rrn,
     this.amount,
-    this.paymentMethod,
-    this.authorization,
-    this.fees,
-    this.total,
-    this.settlement,
-    this.failureReason,
-    this.originalTransactionId,
-    this.reason,
+    this.authCode,
+    this.responseCode,
+    this.responseDesc,
+    this.transactionType,
+    this.mcc,
+    this.cardNo,
+    this.merReceiptLink,
+    this.custReceiptLink,
+    this.acquirerName,
+    this.mti,
+    this.currency,
+    this.terminalGuid,
+    this.txnGuid,
+    this.insertDateTime,
+    this.isReverse,
+    this.batchNo,
+    this.traceNumber,
+    this.terminalLocation,
+    this.de7,
+    this.acquiringBin,
+    this.schemeName,
+    this.processCode,
+    this.p2PRequestId,
+    this.posEntryMode,
+    this.deviceType,
+    this.txnSource,
+    this.nameOnCard,
+    this.batchClosedOn,
+    this.settledOn,
+    this.processAck,
+    this.txnResponse,
+    this.txnAckResponse,
+    this.batchClosed,
+    this.settled,
+    this.voided,
   });
 
   factory TransactionElement.fromJson(Map<String, dynamic> json) =>
       TransactionElement(
-        transactionId: json["transactionId"],
         merchantId: json["merchantId"],
+        acquirerId: json["acquirerId"],
         terminalId: json["terminalId"],
-        batchNumber: json["batchNumber"],
-        invoiceNumber: json["invoiceNumber"],
-        timestamp: json["timestamp"] == null
-            ? null
-            : DateTime.parse(json["timestamp"]),
-        status: json["status"],
-        transactionType: json["transactionType"],
-        entryMode: json["entryMode"],
-        settlementStatus: json["settlementStatus"],
-        amount: json["amount"] == null ? null : Amount.fromJson(json["amount"]),
-        paymentMethod: json["paymentMethod"] == null
-            ? null
-            : PaymentMethod.fromJson(json["paymentMethod"]),
-        authorization: json["authorization"] == null
-            ? null
-            : Authorization.fromJson(json["authorization"]),
-        fees: json["fees"] == null ? null : Fees.fromJson(json["fees"]),
-        total: json["total"] == null ? null : Total.fromJson(json["total"]),
-        settlement: json["settlement"] == null
-            ? null
-            : Settlement.fromJson(json["settlement"]),
-        failureReason: json["failureReason"],
-        originalTransactionId: json["originalTransactionId"],
-        reason: json["reason"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "transactionId": transactionId,
-        "merchantId": merchantId,
-        "terminalId": terminalId,
-        "batchNumber": batchNumber,
-        "invoiceNumber": invoiceNumber,
-        "timestamp": timestamp?.toIso8601String(),
-        "status": status,
-        "transactionType": transactionType,
-        "entryMode": entryMode,
-        "settlementStatus": settlementStatus,
-        "amount": amount?.toJson(),
-        "paymentMethod": paymentMethod?.toJson(),
-        "authorization": authorization?.toJson(),
-        "fees": fees?.toJson(),
-        "total": total?.toJson(),
-        "settlement": settlement?.toJson(),
-        "failureReason": failureReason,
-        "originalTransactionId": originalTransactionId,
-        "reason": reason,
-      };
-}
-
-class Amount {
-  final Currency? currency;
-  final double? value;
-
-  Amount({
-    this.currency,
-    this.value,
-  });
-
-  factory Amount.fromJson(Map<String, dynamic> json) => Amount(
-        currency: currencyValues.map[json["currency"]]!,
-        value: json["value"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "currency": currencyValues.reverse[currency],
-        "value": value,
-      };
-}
-
-enum Currency { INR }
-
-final currencyValues = EnumValues({"INR": Currency.INR});
-
-class Authorization {
-  final String? authCode;
-  final String? transactionReference;
-  final String? gateway;
-  final String? rrn;
-  final String? stan;
-  final String? mode;
-
-  Authorization({
-    this.authCode,
-    this.transactionReference,
-    this.gateway,
-    this.rrn,
-    this.stan,
-    this.mode,
-  });
-
-  factory Authorization.fromJson(Map<String, dynamic> json) => Authorization(
-        authCode: json["authCode"],
-        transactionReference: json["transactionReference"],
-        gateway: json["gateway"],
-        rrn: json["rrn"],
+        transactionDate: json["transactionDate"],
+        transactionTime: json["transactionTime"],
         stan: json["stan"],
-        mode: json["mode"],
+        rrn: json["rrn"],
+        amount: json["amount"],
+        authCode: json["authCode"],
+        responseCode: json["responseCode"],
+        responseDesc: json["responseDesc"],
+        transactionType: json["transactionType"],
+        mcc: json["mcc"],
+        cardNo: json["cardNo"],
+        merReceiptLink: json["merReceiptLink"],
+        custReceiptLink: json["custReceiptLink"],
+        acquirerName: json["acquirerName"],
+        mti: json["mti"],
+        currency: json["currency"],
+        terminalGuid: json["terminalGuid"],
+        txnGuid: json["txnGuid"],
+        insertDateTime: json["insertDateTime"],
+        isReverse: json["isReverse"],
+        batchNo: json["batchNo"],
+        traceNumber: json["traceNumber"],
+        terminalLocation: json["terminalLocation"],
+        de7: json["de_7"],
+        acquiringBin: json["acquiringBIN"],
+        schemeName: json["schemeName"],
+        processCode: json["processCode"],
+        p2PRequestId: json["p2pRequestId"],
+        posEntryMode: json["posEntryMode"],
+        deviceType: json["deviceType"],
+        txnSource: json["txnSource"],
+        nameOnCard: json["nameOnCard"],
+        batchClosedOn: json["batchClosedOn"],
+        settledOn: json["settledOn"],
+        processAck: json["processAck"],
+        txnResponse: json["txnResponse"],
+        txnAckResponse: json["txnAckResponse"],
+        batchClosed: json["batchClosed"],
+        settled: json["settled"],
+        voided: json["voided"],
       );
 
   Map<String, dynamic> toJson() => {
-        "authCode": authCode,
-        "transactionReference": transactionReference,
-        "gateway": gateway,
-        "rrn": rrn,
+        "merchantId": merchantId,
+        "acquirerId": acquirerId,
+        "terminalId": terminalId,
+        "transactionDate": transactionDate,
+        "transactionTime": transactionTime,
         "stan": stan,
-        "mode": mode,
+        "rrn": rrn,
+        "amount": amount,
+        "authCode": authCode,
+        "responseCode": responseCode,
+        "responseDesc": responseDesc,
+        "transactionType": transactionType,
+        "mcc": mcc,
+        "cardNo": cardNo,
+        "merReceiptLink": merReceiptLink,
+        "custReceiptLink": custReceiptLink,
+        "acquirerName": acquirerName,
+        "mti": mti,
+        "currency": currency,
+        "terminalGuid": terminalGuid,
+        "txnGuid": txnGuid,
+        "insertDateTime": insertDateTime,
+        "isReverse": isReverse,
+        "batchNo": batchNo,
+        "traceNumber": traceNumber,
+        "terminalLocation": terminalLocation,
+        "de_7": de7,
+        "acquiringBIN": acquiringBin,
+        "schemeName": schemeName,
+        "processCode": processCode,
+        "p2pRequestId": p2PRequestId,
+        "posEntryMode": posEntryMode,
+        "deviceType": deviceType,
+        "txnSource": txnSource,
+        "nameOnCard": nameOnCard,
+        "batchClosedOn": batchClosedOn,
+        "settledOn": settledOn,
+        "processAck": processAck,
+        "txnResponse": txnResponse,
+        "txnAckResponse": txnAckResponse,
+        "batchClosed": batchClosed,
+        "settled": settled,
+        "voided": voided,
       };
 }
 
-class Fees {
-  final Amount? serviceFee;
-  final Amount? processingFee;
-  final Amount? networkFee;
-  final Amount? chargebackFee;
+class Pageable {
+  Sort? sort;
+  int? offset;
+  int? pageSize;
+  int? pageNumber;
+  bool? paged;
+  bool? unpaged;
 
-  Fees({
-    this.serviceFee,
-    this.processingFee,
-    this.networkFee,
-    this.chargebackFee,
+  Pageable({
+    this.sort,
+    this.offset,
+    this.pageSize,
+    this.pageNumber,
+    this.paged,
+    this.unpaged,
   });
 
-  factory Fees.fromJson(Map<String, dynamic> json) => Fees(
-        serviceFee: json["serviceFee"] == null
-            ? null
-            : Amount.fromJson(json["serviceFee"]),
-        processingFee: json["processingFee"] == null
-            ? null
-            : Amount.fromJson(json["processingFee"]),
-        networkFee: json["networkFee"] == null
-            ? null
-            : Amount.fromJson(json["networkFee"]),
-        chargebackFee: json["chargebackFee"] == null
-            ? null
-            : Amount.fromJson(json["chargebackFee"]),
+  factory Pageable.fromJson(Map<String, dynamic> json) => Pageable(
+        sort: json["sort"] == null ? null : Sort.fromJson(json["sort"]),
+        offset: json["offset"],
+        pageSize: json["pageSize"],
+        pageNumber: json["pageNumber"],
+        paged: json["paged"],
+        unpaged: json["unpaged"],
       );
 
   Map<String, dynamic> toJson() => {
-        "serviceFee": serviceFee?.toJson(),
-        "processingFee": processingFee?.toJson(),
-        "networkFee": networkFee?.toJson(),
-        "chargebackFee": chargebackFee?.toJson(),
+        "sort": sort?.toJson(),
+        "offset": offset,
+        "pageSize": pageSize,
+        "pageNumber": pageNumber,
+        "paged": paged,
+        "unpaged": unpaged,
       };
 }
 
-class PaymentMethod {
-  final String? type;
-  final Card? card;
-  final String? upiId;
+class Sort {
+  bool? sorted;
+  bool? unsorted;
+  bool? empty;
 
-  PaymentMethod({
-    this.type,
-    this.card,
-    this.upiId,
+  Sort({
+    this.sorted,
+    this.unsorted,
+    this.empty,
   });
 
-  factory PaymentMethod.fromJson(Map<String, dynamic> json) => PaymentMethod(
-        type: json["type"],
-        card: json["card"] == null ? null : Card.fromJson(json["card"]),
-        upiId: json["upiId"],
+  factory Sort.fromJson(Map<String, dynamic> json) => Sort(
+        sorted: json["sorted"],
+        unsorted: json["unsorted"],
+        empty: json["empty"],
       );
 
   Map<String, dynamic> toJson() => {
-        "type": type,
-        "card": card?.toJson(),
-        "upiId": upiId,
+        "sorted": sorted,
+        "unsorted": unsorted,
+        "empty": empty,
       };
-}
-
-class Card {
-  final String? brand;
-  final String? last4;
-  final String? expiryDate;
-  final String? issuerBank;
-  final String? cardType;
-  final String? cardholderName;
-
-  Card({
-    this.brand,
-    this.last4,
-    this.expiryDate,
-    this.issuerBank,
-    this.cardType,
-    this.cardholderName,
-  });
-
-  factory Card.fromJson(Map<String, dynamic> json) => Card(
-        brand: json["brand"],
-        last4: json["last4"],
-        expiryDate: json["expiryDate"],
-        issuerBank: json["issuerBank"],
-        cardType: json["cardType"],
-        cardholderName: json["cardholderName"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "brand": brand,
-        "last4": last4,
-        "expiryDate": expiryDate,
-        "issuerBank": issuerBank,
-        "cardType": cardType,
-        "cardholderName": cardholderName,
-      };
-}
-
-class Settlement {
-  final String? batchId;
-  final DateTime? settlementDate;
-  final String? processedBy;
-  final Amount? settlementAmount;
-
-  Settlement({
-    this.batchId,
-    this.settlementDate,
-    this.processedBy,
-    this.settlementAmount,
-  });
-
-  factory Settlement.fromJson(Map<String, dynamic> json) => Settlement(
-        batchId: json["batchId"],
-        settlementDate: json["settlementDate"] == null
-            ? null
-            : DateTime.parse(json["settlementDate"]),
-        processedBy: json["processedBy"],
-        settlementAmount: json["settlementAmount"] == null
-            ? null
-            : Amount.fromJson(json["settlementAmount"]),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "batchId": batchId,
-        "settlementDate":
-            "${settlementDate!.year.toString().padLeft(4, '0')}-${settlementDate!.month.toString().padLeft(2, '0')}-${settlementDate!.day.toString().padLeft(2, '0')}",
-        "processedBy": processedBy,
-        "settlementAmount": settlementAmount?.toJson(),
-      };
-}
-
-class Total {
-  final Amount? subtotal;
-  final Amount? fees;
-  final Amount? grandTotal;
-
-  Total({
-    this.subtotal,
-    this.fees,
-    this.grandTotal,
-  });
-
-  factory Total.fromJson(Map<String, dynamic> json) => Total(
-        subtotal:
-            json["subtotal"] == null ? null : Amount.fromJson(json["subtotal"]),
-        fees: json["fees"] == null ? null : Amount.fromJson(json["fees"]),
-        grandTotal: json["grandTotal"] == null
-            ? null
-            : Amount.fromJson(json["grandTotal"]),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "subtotal": subtotal?.toJson(),
-        "fees": fees?.toJson(),
-        "grandTotal": grandTotal?.toJson(),
-      };
-}
-
-class EnumValues<T> {
-  Map<String, T> map;
-  late Map<T, String> reverseMap;
-
-  EnumValues(this.map);
-
-  Map<T, String> get reverse {
-    reverseMap = map.map((k, v) => MapEntry(v, k));
-    return reverseMap;
-  }
 }

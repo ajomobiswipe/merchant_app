@@ -18,7 +18,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:http/io_client.dart';
 
-
 class Connection {
   // Header type
   final header = {'Content-Type': 'application/json'};
@@ -190,7 +189,7 @@ class Connection {
     IOClient ioClient = IOClient(client);
     var res = await ioClient
         .post(Uri.parse(url), body: jsonEncode(requestData), headers: header)
-        .timeout(Duration(seconds: timeOutSeconds ?? 10));
+        .timeout(Duration(seconds: timeOutSeconds ?? 20));
     if (kDebugMode) {
       print(res.body);
     }

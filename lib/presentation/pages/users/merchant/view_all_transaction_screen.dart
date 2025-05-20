@@ -3,13 +3,12 @@ import 'package:anet_merchant_app/core/constants/constants.dart';
 import 'package:anet_merchant_app/core/utils/helpers/default_height.dart';
 import 'package:anet_merchant_app/data/models/transaction_model.dart';
 import 'package:anet_merchant_app/presentation/pages/users/merchant/merchant_scaffold.dart';
-import 'package:anet_merchant_app/presentation/providers/merchant_home_screen_provider.dart';
+import 'package:anet_merchant_app/presentation/providers/transactions_provider.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_container.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
 import 'package:anet_merchant_app/presentation/widgets/transaction_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 
 class ViewAllTransactionScreen extends StatelessWidget {
   const ViewAllTransactionScreen({super.key});
@@ -23,12 +22,11 @@ class ViewAllTransactionScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CustomTextWidget(
-              text: Constants.storeName, size: 18),
+          CustomTextWidget(text: Constants.storeName, size: 18),
           defaultHeight(15),
           CustomTextWidget(text: "Total transactions today", size: 12),
           defaultHeight(10),
-          Selector<MerchantProvider, HomeScreenTabItem>(
+          Selector<TransactionProvider, HomeScreenTabItem>(
             selector: (context, provider) =>
                 provider.selectedTab, // Listen only to selectedTab
             builder: (context, selectedTab, child) {
@@ -43,7 +41,7 @@ class ViewAllTransactionScreen extends StatelessWidget {
                         CustomTextWidget(
                             color: Colors.white,
                             text: context
-                                .read<MerchantProvider>()
+                                .read<TransactionProvider>()
                                 .totalTransactions
                                 .toString(),
                             size: 18),
@@ -61,14 +59,12 @@ class ViewAllTransactionScreen extends StatelessWidget {
                       children: [
                         CustomTextWidget(
                             text:
-                                "₹ ${context.read<MerchantProvider>().totalSettlementAmount}",
+                                "₹ ${context.read<TransactionProvider>().totalSettlementAmount}",
                             size: 18,
                             color: Colors.white), //totalSettlementAmount
                       ],
                     ),
                   );
-                case HomeScreenTabItem.Mpr:
-                  return Container();
               }
             },
           ),
@@ -77,7 +73,7 @@ class ViewAllTransactionScreen extends StatelessWidget {
 
           // **Dynamic Content Based on Selected Tab**
           Expanded(
-            child: Consumer<MerchantProvider>(
+            child: Consumer<TransactionProvider>(
               builder: (context, provider, child) {
                 return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

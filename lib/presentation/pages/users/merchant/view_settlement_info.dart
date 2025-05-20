@@ -3,7 +3,7 @@ import 'package:anet_merchant_app/core/constants/constants.dart';
 import 'package:anet_merchant_app/core/utils/helpers/default_height.dart';
 import 'package:anet_merchant_app/data/models/transaction_model.dart';
 import 'package:anet_merchant_app/presentation/pages/users/merchant/merchant_scaffold.dart';
-import 'package:anet_merchant_app/presentation/providers/merchant_home_screen_provider.dart';
+import 'package:anet_merchant_app/presentation/providers/transactions_provider.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_container.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
 import 'package:anet_merchant_app/presentation/widgets/transaction_tile.dart';
@@ -86,7 +86,7 @@ class ViewSettlementInfo extends StatelessWidget {
 
           // **Dynamic Content Based on Selected Tab**
           Expanded(
-            child: Consumer<MerchantProvider>(
+            child: Consumer<TransactionProvider>(
               builder: (context, provider, child) {
                 return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

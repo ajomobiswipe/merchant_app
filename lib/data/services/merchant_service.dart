@@ -14,21 +14,10 @@ import 'package:anet_merchant_app/domain/datasources/storage/secure_storage.dart
 import 'package:anet_merchant_app/main.dart';
 import 'package:flutter/foundation.dart';
 
-
 import 'connection.dart';
 
 class MerchantServices {
   late String token;
-
-  merchantSelfLogin(requestModel) async {
-    Connection connection = Connection();
-
-    var url = "${EndPoints.baseApiPublicNanoUMS}login";
-
-    var response = await connection.postWithOutToken(url, requestModel);
-
-    return response;
-  }
 
   BoxStorage boxStorage = BoxStorage();
   Future refreshToken() async {
@@ -56,5 +45,40 @@ class MerchantServices {
     if (response.statusCode == 200) {
       return decodedData;
     }
+  }
+
+  merchantSelfLogin(requestModel) async {
+    Connection connection = Connection();
+
+    var url = "${EndPoints.baseApiPublicNanoUMS}login";
+
+    var response = await connection.postWithOutToken(url, requestModel);
+
+    return response;
+  }
+
+  fetchTransactionHistory(requestModel,
+      {required int pageNumber, required int pageSize}) async {
+    Connection connection = Connection();
+
+    var url =
+        "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/getPosTxnHistoryReport?pageNumber=$pageNumber&size=$pageSize&sort=insertDateTime%2Cdesc";
+
+    var response = await connection.post(url, requestModel);
+
+    return response;
+  }
+
+  fetchDailySettlementTxnSummary(
+    requestModel,
+  ) async {
+    Connection connection = Connection();
+
+    var url =
+        "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/dailySettlementTxnSummary";
+
+    var response = await connection.post(url, requestModel);
+
+    return response;
   }
 }

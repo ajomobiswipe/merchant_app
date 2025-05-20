@@ -1,7 +1,9 @@
+import 'package:anet_merchant_app/data/services/merchant_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class MerchantTransactionFilterProvider extends ChangeNotifier {
+  MerchantServices merchantServices = MerchantServices();
   final TextEditingController searchController = TextEditingController();
   String _searchType = 'RRN';
   String? _selectedTid = "ALL";
@@ -32,6 +34,17 @@ class MerchantTransactionFilterProvider extends ChangeNotifier {
   void setSearchType(String? value) {
     _searchType = value!;
     notifyListeners();
+  }
+
+  fetchTransactionHistory() {
+    var res = merchantServices.fetchTransactionHistory({
+      "merchantId": "65OMA0000000002",
+      "recordFrom": "22-08-2024",
+      "recordTo": "22-08-2024",
+      "acquirerId": "OMAIND",
+      "rrn": "000017088748",
+      "terminalId": null
+    }, pageNumber: 0, pageSize: 10);
   }
 
   void setSelectedTid(String? value) {

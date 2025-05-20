@@ -3,16 +3,32 @@ import 'package:anet_merchant_app/core/constants/constants.dart';
 import 'package:anet_merchant_app/core/utils/helpers/default_height.dart';
 import 'package:anet_merchant_app/data/models/transaction_model.dart';
 import 'package:anet_merchant_app/presentation/pages/users/merchant/merchant_scaffold.dart';
-import 'package:anet_merchant_app/presentation/providers/merchant_home_screen_provider.dart';
+import 'package:anet_merchant_app/presentation/providers/transactions_provider.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_container.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
 import 'package:anet_merchant_app/presentation/widgets/transaction_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-
-class MerchantHomeScreen extends StatelessWidget {
+class MerchantHomeScreen extends StatefulWidget {
   const MerchantHomeScreen({super.key});
+
+  @override
+  State<MerchantHomeScreen> createState() => _MerchantHomeScreenState();
+}
+
+class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
+  @override
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final transactionProvider =
+          Provider.of<TransactionProvider>(context, listen: false);
+      transactionProvider.refreshRecentTransactions();
+      transactionProvider.fetchDailySettlementTxnSummary();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +44,7 @@ class MerchantHomeScreen extends StatelessWidget {
               defaultHeight(screenHeight * .015),
               CustomTextWidget(text: "Total transactions today", size: 12),
               defaultHeight(screenHeight * .015),
-              Selector<MerchantProvider, HomeScreenTabItem>(
+              Selector<TransactionProvider, HomeScreenTabItem>(
                 selector: (context, provider) =>
                     provider.selectedTab, // Listen only to selectedTab
                 builder: (context, selectedTab, child) {
@@ -37,22 +53,23 @@ class MerchantHomeScreen extends StatelessWidget {
                       return CustomContainer(
                         height: screenHeight * 0.06,
                         padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            CustomTextWidget(
-                                color: Colors.white,
-                                text: context
-                                    .read<MerchantProvider>()
-                                    .totalTransactions
-                                    .toString(),
-                                size: 18),
-                            CustomTextWidget(
-                                text: "₹ 2578744",
-                                size: 18,
-                                color: Colors.white),
-                          ],
-                        ),
+                        child: Consumer<TransactionProvider>(
+                            builder: (context, provider, child) {
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              CustomTextWidget(
+                                  color: Colors.white,
+                                  text: provider.totalTransactions.toString(),
+                                  size: 18),
+                              CustomTextWidget(
+                                  text:
+                                      provider.totalSettlementAmount.toString(),
+                                  size: 18,
+                                  color: Colors.white),
+                            ],
+                          );
+                        }),
                       );
                     case HomeScreenTabItem.Settlements:
                       return CustomContainer(
@@ -63,19 +80,17 @@ class MerchantHomeScreen extends StatelessWidget {
                           children: [
                             CustomTextWidget(
                                 text:
-                                    "₹ ${context.read<MerchantProvider>().totalSettlementAmount}",
+                                    "₹ ${context.read<TransactionProvider>().totalSettlementAmount}",
                                 size: 18,
                                 color: Colors.white), //totalSettlementAmount
                           ],
                         ),
                       );
-                    case HomeScreenTabItem.Mpr:
-                      return Container();
                   }
                 },
               ),
               defaultHeight(screenHeight * .015),
-              Consumer<MerchantProvider>(
+              Consumer<TransactionProvider>(
                 builder: (context, provider, child) {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -98,15 +113,6 @@ class MerchantHomeScreen extends StatelessWidget {
                             .updateSelectedTab(HomeScreenTabItem.Settlements),
                         title: "Settlements",
                       ),
-                      homeScreenTab(
-                        screenHeight,
-                        width: screenWidth * 0.25,
-                        homeScreenTabItem: HomeScreenTabItem.Mpr,
-                        selectedTabItem: provider.selectedTab,
-                        onTap: () =>
-                            provider.updateSelectedTab(HomeScreenTabItem.Mpr),
-                        title: "MPR",
-                      ),
                     ],
                   );
                 },
@@ -116,16 +122,16 @@ class MerchantHomeScreen extends StatelessWidget {
 
               // **Dynamic Content Based on Selected Tab**
               Expanded(
-                child: Consumer<MerchantProvider>(
+                child: Consumer<TransactionProvider>(
                   builder: (context, provider, child) {
                     return getTabContent(
-                        merchantProvider: provider,
+                        TransactionProvider: provider,
                         screenWidth: screenWidth,
                         screenHeight: screenHeight);
                   },
                 ),
               ),
-              Selector<MerchantProvider, HomeScreenTabItem>(
+              Selector<TransactionProvider, HomeScreenTabItem>(
                   selector: (context, provider) =>
                       provider.selectedTab, // Listen only to selectedTab
                   builder: (context, selectedTab, child) {
@@ -171,39 +177,42 @@ class MerchantHomeScreen extends StatelessWidget {
             color: AppColors.gray,
           ),
         );
-      case HomeScreenTabItem.Mpr:
-        return Container();
     }
   }
 
   /// **Function to Return Content Based on Selected Tab**
   Widget getTabContent(
-      {required MerchantProvider merchantProvider,
+      {required TransactionProvider TransactionProvider,
       required double screenWidth,
       required double screenHeight}) {
-    switch (merchantProvider.selectedTab) {
+    switch (TransactionProvider.selectedTab) {
       case HomeScreenTabItem.TransactionHistory:
         return transactionHistoryList(
-            transactionElement: merchantProvider.transactions ?? [],
-            screenWidth: screenWidth);
+            transactionElement: TransactionProvider.transactions ?? [],
+            screenWidth: screenWidth,
+            transactionProvider: TransactionProvider);
       case HomeScreenTabItem.Settlements:
         return settlementsList(
             screenWidth: screenWidth, screenHeight: screenHeight);
-      case HomeScreenTabItem.Mpr:
-        return mprList();
     }
   }
 
   /// **Transaction History List**
   Widget transactionHistoryList(
       {required List<TransactionElement> transactionElement,
+      required TransactionProvider transactionProvider,
       required double screenWidth}) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Row(
-        children: [
-          CustomTextWidget(text: "Recent transactions", size: 14),
-          Icon(Icons.sync, color: AppColors.kPrimaryColor, size: 20),
-        ],
+      InkWell(
+        child: Row(
+          children: [
+            CustomTextWidget(text: "Recent transactions", size: 14),
+            Icon(Icons.sync, color: AppColors.kPrimaryColor, size: 20),
+          ],
+        ),
+        onTap: () {
+          transactionProvider.refreshRecentTransactions();
+        },
       ),
       defaultHeight(10),
       Expanded(
@@ -288,19 +297,6 @@ class MerchantHomeScreen extends StatelessWidget {
           defaultHeight(screenWidth * 0.1),
         ],
       ),
-    );
-  }
-
-  /// **MPR List**
-  Widget mprList() {
-    return ListView(
-      children: [
-        Row(
-          children: [
-            CustomTextWidget(text: "MPR"),
-          ],
-        )
-      ],
     );
   }
 

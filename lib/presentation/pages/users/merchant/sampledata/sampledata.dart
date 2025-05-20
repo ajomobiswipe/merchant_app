@@ -1,378 +1,203 @@
 import 'dart:convert';
 
 var transaction = jsonEncode({
-  "transactions": [
+  "content": [
     {
-      "transactionId": "TXN9876543210",
-      "merchantId": "MID123456789",
-      "terminalId": "TID987654321",
-      "batchNumber": "BATCH20250325001",
-      "invoiceNumber": "INV202503250123",
-      "timestamp": "2025-03-25T14:30:00+05:30",
-      "status": "Completed",
-      "transactionType": "Sale",
-      "entryMode": "Chip",
-      "settlementStatus": "Settled",
-      "amount": {"currency": "INR", "value": 25000.00},
-      "paymentMethod": {
-        "type": "Credit Card",
-        "card": {
-          "brand": "RuPay",
-          "last4": "5678",
-          "expiryDate": "2027-09",
-          "issuerBank": "State Bank of India",
-          "cardType": "Debit",
-          "cardholderName": "Amit Sharma"
-        }
-      },
-      "authorization": {
-        "authCode": "AUTH456789",
-        "transactionReference": "REF123456789",
-        "gateway": "Razorpay",
-        "rrn": "123456789012",
-        "stan": "654321",
-        "mode": "Online"
-      },
-      "fees": {
-        "serviceFee": {"currency": "INR", "value": 50.00},
-        "processingFee": {"currency": "INR", "value": 25.00},
-        "networkFee": {"currency": "INR", "value": 15.00}
-      },
-      "total": {
-        "subtotal": {"currency": "INR", "value": 25000.00},
-        "fees": {"currency": "INR", "value": 90.00},
-        "grandTotal": {"currency": "INR", "value": 25090.00}
-      },
-      "settlement": {
-        "batchId": "SETTLE20250325001",
-        "settlementDate": "2025-03-26",
-        "processedBy": "HDFC Bank",
-        "settlementAmount": {"currency": "INR", "value": 24900.00}
-      }
+      "merchantId": "65OMA0000000002",
+      "acquirerId": "OMAIND",
+      "terminalId": "OM000002",
+      "transactionDate": "22/08/2024",
+      "transactionTime": "15:05:08",
+      "stan": "000023",
+      "rrn": "000017088748",
+      "amount": "50.00",
+      "authCode": "050755",
+      "responseCode": "00",
+      "responseDesc": null,
+      "transactionType": "OSAL001",
+      "mcc": null,
+      "cardNo": "679999*********4324",
+      "merReceiptLink": null,
+      "custReceiptLink": null,
+      "acquirerName": null,
+      "mti": "1210",
+      "currency": "356",
+      "terminalGuid": 0,
+      "txnGuid": 0,
+      "insertDateTime": "22/08/2024 15:05:09",
+      "isReverse": false,
+      "batchNo": "001",
+      "traceNumber": "000023",
+      "terminalLocation": "TEST MERCHANT         SHARJAH      SHJAE",
+      "de_7": "0822110506",
+      "acquiringBIN": "OMAIND",
+      "schemeName": null,
+      "processCode": "000000",
+      "p2pRequestId": null,
+      "posEntryMode": "071",
+      "deviceType": null,
+      "txnSource": null,
+      "nameOnCard": null,
+      "batchClosedOn": null,
+      "settledOn": null,
+      "processAck": false,
+      "txnResponse": null,
+      "txnAckResponse": null,
+      "batchClosed": false,
+      "settled": false,
+      "voided": false
     },
     {
-      "transactionId": "TXN9876543211",
-      "merchantId": "MID123456789",
-      "terminalId": "TID987654321",
-      "batchNumber": "BATCH20250325002",
-      "invoiceNumber": "INV202503250124",
-      "timestamp": "2025-03-25T15:00:00+05:30",
-      "status": "Failed",
-      "failureReason": "Insufficient Funds",
-      "transactionType": "Sale",
-      "entryMode": "Chip",
-      "settlementStatus": "Not Settled",
-      "amount": {"currency": "INR", "value": 5000.00},
-      "paymentMethod": {
-        "type": "Credit Card",
-        "card": {
-          "brand": "Visa",
-          "last4": "1234",
-          "expiryDate": "2025-06",
-          "issuerBank": "HDFC Bank",
-          "cardType": "Credit",
-          "cardholderName": "Rahul Verma"
-        }
-      },
-      "authorization": {
-        "authCode": null,
-        "transactionReference": "REF987654321",
-        "gateway": "Paytm",
-        "rrn": "987654321012",
-        "stan": "765432",
-        "mode": "Online"
-      }
+      "merchantId": "65OMA0000000002",
+      "acquirerId": "OMAIND",
+      "terminalId": "OM000002",
+      "transactionDate": "22/08/2024",
+      "transactionTime": "15:05:08",
+      "stan": "000023",
+      "rrn": "000017088748",
+      "amount": "50.00",
+      "authCode": "050755",
+      "responseCode": "00",
+      "responseDesc": null,
+      "transactionType": "OSAL001",
+      "mcc": null,
+      "cardNo": "679999*********4324",
+      "merReceiptLink": null,
+      "custReceiptLink": null,
+      "acquirerName": null,
+      "mti": "1210",
+      "currency": "356",
+      "terminalGuid": 0,
+      "txnGuid": 0,
+      "insertDateTime": "22/08/2024 15:05:09",
+      "isReverse": false,
+      "batchNo": "001",
+      "traceNumber": "000023",
+      "terminalLocation": "TEST MERCHANT         SHARJAH      SHJAE",
+      "de_7": "0822110506",
+      "acquiringBIN": "OMAIND",
+      "schemeName": null,
+      "processCode": "000000",
+      "p2pRequestId": null,
+      "posEntryMode": "071",
+      "deviceType": null,
+      "txnSource": null,
+      "nameOnCard": null,
+      "batchClosedOn": null,
+      "settledOn": null,
+      "processAck": false,
+      "txnResponse": null,
+      "txnAckResponse": null,
+      "batchClosed": false,
+      "settled": false,
+      "voided": false
     },
     {
-      "transactionId": "TXN9876543213",
-      "originalTransactionId": "TXN9876543210",
-      "merchantId": "MID123456789",
-      "terminalId": "TID987654321",
-      "batchNumber": "BATCH20250325004",
-      "invoiceNumber": "INV202503250126",
-      "timestamp": "2025-03-25T16:00:00+05:30",
-      "status": "Refunded",
-      "transactionType": "Refund",
-      "entryMode": "Online",
-      "amount": {"currency": "INR", "value": 5000.00},
-      "paymentMethod": {"type": "UPI", "upiId": "customer@upi"},
-      "authorization": {
-        "authCode": "AUTH987654",
-        "transactionReference": "REF987654323",
-        "gateway": "PhonePe",
-        "rrn": "987654321345",
-        "stan": "123456",
-        "mode": "Online"
-      },
-      "fees": {
-        "serviceFee": {"currency": "INR", "value": -50.00},
-        "processingFee": {"currency": "INR", "value": -25.00}
-      },
-      "total": {
-        "subtotal": {"currency": "INR", "value": -5000.00},
-        "fees": {"currency": "INR", "value": -75.00},
-        "grandTotal": {"currency": "INR", "value": -5075.00}
-      },
-      "settlement": {
-        "batchId": "SETTLE20250325002",
-        "settlementDate": "2025-03-26",
-        "processedBy": "ICICI Bank",
-        "settlementAmount": {"currency": "INR", "value": -5000.00}
-      }
+      "merchantId": "65OMA0000000002",
+      "acquirerId": "OMAIND",
+      "terminalId": "OM000002",
+      "transactionDate": "22/08/2024",
+      "transactionTime": "15:05:08",
+      "stan": "000023",
+      "rrn": "000017088748",
+      "amount": "50.00",
+      "authCode": "050755",
+      "responseCode": "00",
+      "responseDesc": null,
+      "transactionType": "OSAL001",
+      "mcc": null,
+      "cardNo": "679999*********4324",
+      "merReceiptLink": null,
+      "custReceiptLink": null,
+      "acquirerName": null,
+      "mti": "1210",
+      "currency": "356",
+      "terminalGuid": 0,
+      "txnGuid": 0,
+      "insertDateTime": "22/08/2024 15:05:09",
+      "isReverse": false,
+      "batchNo": "001",
+      "traceNumber": "000023",
+      "terminalLocation": "TEST MERCHANT         SHARJAH      SHJAE",
+      "de_7": "0822110506",
+      "acquiringBIN": "OMAIND",
+      "schemeName": null,
+      "processCode": "000000",
+      "p2pRequestId": null,
+      "posEntryMode": "071",
+      "deviceType": null,
+      "txnSource": null,
+      "nameOnCard": null,
+      "batchClosedOn": null,
+      "settledOn": null,
+      "processAck": false,
+      "txnResponse": null,
+      "txnAckResponse": null,
+      "batchClosed": false,
+      "settled": false,
+      "voided": false
     },
     {
-      "transactionId": "TXN9876543214",
-      "merchantId": "MID123456789",
-      "terminalId": "TID987654321",
-      "batchNumber": "BATCH20250325005",
-      "invoiceNumber": "INV202503250127",
-      "timestamp": "2025-03-25T16:30:00+05:30",
-      "status": "Voided",
-      "transactionType": "Void",
-      "entryMode": "Chip",
-      "amount": {"currency": "INR", "value": 12000.00},
-      "paymentMethod": {
-        "type": "Credit Card",
-        "card": {"brand": "Visa", "last4": "6789", "issuerBank": "Axis Bank"}
-      },
-      "authorization": {
-        "authCode": null,
-        "transactionReference": "REF987654324",
-        "gateway": "Paytm",
-        "rrn": "876543210999",
-        "stan": "987654",
-        "mode": "Online"
-      },
-      "settlement": {
-        "batchId": null,
-        "settlementDate": null,
-        "settlementAmount": {"currency": "INR", "value": 0.00}
-      }
-    },
-    {
-      "transactionId": "TXN9876543215",
-      "originalTransactionId": "TXN9876543210",
-      "merchantId": "MID123456789",
-      "terminalId": "TID987654321",
-      "batchNumber": "BATCH20250325006",
-      "invoiceNumber": "INV202503250128",
-      "timestamp": "2025-03-25T17:00:00+05:30",
-      "status": "Chargeback",
-      "transactionType": "Chargeback",
-      "reason": "Customer claims fraud",
-      "amount": {"currency": "INR", "value": 25000.00},
-      "paymentMethod": {
-        "type": "Credit Card",
-        "card": {"brand": "Visa", "last4": "5678", "issuerBank": "HDFC Bank"}
-      },
-      "authorization": {
-        "authCode": "AUTH876543",
-        "transactionReference": "REF987654325",
-        "gateway": "Razorpay",
-        "rrn": "123456789567",
-        "stan": "654321",
-        "mode": "Online"
-      },
-      "fees": {
-        "chargebackFee": {"currency": "INR", "value": 500.00}
-      },
-      "total": {
-        "subtotal": {"currency": "INR", "value": -25000.00},
-        "fees": {"currency": "INR", "value": -500.00},
-        "grandTotal": {"currency": "INR", "value": -25500.00}
-      },
-      "settlement": {
-        "batchId": "SETTLE20250325003",
-        "settlementDate": "2025-03-27",
-        "processedBy": "HDFC Bank",
-        "settlementAmount": {"currency": "INR", "value": -25000.00}
-      }
-    },
-    {
-      "transactionId": "TXN9876543210",
-      "merchantId": "MID123456789",
-      "terminalId": "TID987654321",
-      "batchNumber": "BATCH20250325001",
-      "invoiceNumber": "INV202503250123",
-      "timestamp": "2025-03-25T14:30:00+05:30",
-      "status": "Completed",
-      "transactionType": "Sale",
-      "entryMode": "Chip",
-      "settlementStatus": "Settled",
-      "amount": {"currency": "INR", "value": 25000.00},
-      "paymentMethod": {
-        "type": "Credit Card",
-        "card": {
-          "brand": "RuPay",
-          "last4": "5678",
-          "expiryDate": "2027-09",
-          "issuerBank": "State Bank of India",
-          "cardType": "Debit",
-          "cardholderName": "Amit Sharma"
-        }
-      },
-      "authorization": {
-        "authCode": "AUTH456789",
-        "transactionReference": "REF123456789",
-        "gateway": "Razorpay",
-        "rrn": "123456789012",
-        "stan": "654321",
-        "mode": "Online"
-      },
-      "fees": {
-        "serviceFee": {"currency": "INR", "value": 50.00},
-        "processingFee": {"currency": "INR", "value": 25.00},
-        "networkFee": {"currency": "INR", "value": 15.00}
-      },
-      "total": {
-        "subtotal": {"currency": "INR", "value": 25000.00},
-        "fees": {"currency": "INR", "value": 90.00},
-        "grandTotal": {"currency": "INR", "value": 25090.00}
-      },
-      "settlement": {
-        "batchId": "SETTLE20250325001",
-        "settlementDate": "2025-03-26",
-        "processedBy": "HDFC Bank",
-        "settlementAmount": {"currency": "INR", "value": 24900.00}
-      }
-    },
-    {
-      "transactionId": "TXN9876543211",
-      "merchantId": "MID123456789",
-      "terminalId": "TID987654321",
-      "batchNumber": "BATCH20250325002",
-      "invoiceNumber": "INV202503250124",
-      "timestamp": "2025-03-25T15:00:00+05:30",
-      "status": "Failed",
-      "failureReason": "Insufficient Funds",
-      "transactionType": "Sale",
-      "entryMode": "Chip",
-      "settlementStatus": "Not Settled",
-      "amount": {"currency": "INR", "value": 5000.00},
-      "paymentMethod": {
-        "type": "Credit Card",
-        "card": {
-          "brand": "Visa",
-          "last4": "1234",
-          "expiryDate": "2025-06",
-          "issuerBank": "HDFC Bank",
-          "cardType": "Credit",
-          "cardholderName": "Rahul Verma"
-        }
-      },
-      "authorization": {
-        "authCode": null,
-        "transactionReference": "REF987654321",
-        "gateway": "Paytm",
-        "rrn": "987654321012",
-        "stan": "765432",
-        "mode": "Online"
-      }
-    },
-    {
-      "transactionId": "TXN9876543213",
-      "originalTransactionId": "TXN9876543210",
-      "merchantId": "MID123456789",
-      "terminalId": "TID987654321",
-      "batchNumber": "BATCH20250325004",
-      "invoiceNumber": "INV202503250126",
-      "timestamp": "2025-03-25T16:00:00+05:30",
-      "status": "Refunded",
-      "transactionType": "Refund",
-      "entryMode": "Online",
-      "amount": {"currency": "INR", "value": 5000.00},
-      "paymentMethod": {"type": "UPI", "upiId": "customer@upi"},
-      "authorization": {
-        "authCode": "AUTH987654",
-        "transactionReference": "REF987654323",
-        "gateway": "PhonePe",
-        "rrn": "987654321345",
-        "stan": "123456",
-        "mode": "Online"
-      },
-      "fees": {
-        "serviceFee": {"currency": "INR", "value": -50.00},
-        "processingFee": {"currency": "INR", "value": -25.00}
-      },
-      "total": {
-        "subtotal": {"currency": "INR", "value": -5000.00},
-        "fees": {"currency": "INR", "value": -75.00},
-        "grandTotal": {"currency": "INR", "value": -5075.00}
-      },
-      "settlement": {
-        "batchId": "SETTLE20250325002",
-        "settlementDate": "2025-03-26",
-        "processedBy": "ICICI Bank",
-        "settlementAmount": {"currency": "INR", "value": -5000.00}
-      }
-    },
-    {
-      "transactionId": "TXN9876543214",
-      "merchantId": "MID123456789",
-      "terminalId": "TID987654321",
-      "batchNumber": "BATCH20250325005",
-      "invoiceNumber": "INV202503250127",
-      "timestamp": "2025-03-25T16:30:00+05:30",
-      "status": "Voided",
-      "transactionType": "Void",
-      "entryMode": "Chip",
-      "amount": {"currency": "INR", "value": 12000.00},
-      "paymentMethod": {
-        "type": "Credit Card",
-        "card": {"brand": "Visa", "last4": "6789", "issuerBank": "Axis Bank"}
-      },
-      "authorization": {
-        "authCode": null,
-        "transactionReference": "REF987654324",
-        "gateway": "Paytm",
-        "rrn": "876543210999",
-        "stan": "987654",
-        "mode": "Online"
-      },
-      "settlement": {
-        "batchId": null,
-        "settlementDate": null,
-        "settlementAmount": {"currency": "INR", "value": 0.00}
-      }
-    },
-    {
-      "transactionId": "TXN9876543215",
-      "originalTransactionId": "TXN9876543210",
-      "merchantId": "MID123456789",
-      "terminalId": "TID987654321",
-      "batchNumber": "BATCH20250325006",
-      "invoiceNumber": "INV202503250128",
-      "timestamp": "2025-03-25T17:00:00+05:30",
-      "status": "Chargeback",
-      "transactionType": "Chargeback",
-      "reason": "Customer claims fraud",
-      "amount": {"currency": "INR", "value": 25000.00},
-      "paymentMethod": {
-        "type": "Credit Card",
-        "card": {"brand": "Visa", "last4": "5678", "issuerBank": "HDFC Bank"}
-      },
-      "authorization": {
-        "authCode": "AUTH876543",
-        "transactionReference": "REF987654325",
-        "gateway": "Razorpay",
-        "rrn": "123456789567",
-        "stan": "654321",
-        "mode": "Online"
-      },
-      "fees": {
-        "chargebackFee": {"currency": "INR", "value": 500.00}
-      },
-      "total": {
-        "subtotal": {"currency": "INR", "value": -25000.00},
-        "fees": {"currency": "INR", "value": -500.00},
-        "grandTotal": {"currency": "INR", "value": -25500.00}
-      },
-      "settlement": {
-        "batchId": "SETTLE20250325003",
-        "settlementDate": "2025-03-27",
-        "processedBy": "HDFC Bank",
-        "settlementAmount": {"currency": "INR", "value": -25000.00}
-      }
+      "merchantId": "65OMA0000000002",
+      "acquirerId": "OMAIND",
+      "terminalId": "OM000002",
+      "transactionDate": "22/08/2024",
+      "transactionTime": "15:05:08",
+      "stan": "000023",
+      "rrn": "000017088748",
+      "amount": "50.00",
+      "authCode": "050755",
+      "responseCode": "00",
+      "responseDesc": null,
+      "transactionType": "OSAL001",
+      "mcc": null,
+      "cardNo": "679999*********4324",
+      "merReceiptLink": null,
+      "custReceiptLink": null,
+      "acquirerName": null,
+      "mti": "1210",
+      "currency": "356",
+      "terminalGuid": 0,
+      "txnGuid": 0,
+      "insertDateTime": "22/08/2024 15:05:09",
+      "isReverse": false,
+      "batchNo": "001",
+      "traceNumber": "000023",
+      "terminalLocation": "TEST MERCHANT         SHARJAH      SHJAE",
+      "de_7": "0822110506",
+      "acquiringBIN": "OMAIND",
+      "schemeName": null,
+      "processCode": "000000",
+      "p2pRequestId": null,
+      "posEntryMode": "071",
+      "deviceType": null,
+      "txnSource": null,
+      "nameOnCard": null,
+      "batchClosedOn": null,
+      "settledOn": null,
+      "processAck": false,
+      "txnResponse": null,
+      "txnAckResponse": null,
+      "batchClosed": false,
+      "settled": false,
+      "voided": false
     }
-  ]
+  ],
+  "pageable": {
+    "sort": {"sorted": true, "unsorted": false, "empty": false},
+    "offset": 0,
+    "pageSize": 10,
+    "pageNumber": 0,
+    "paged": true,
+    "unpaged": false
+  },
+  "totalElements": 1,
+  "totalPages": 1,
+  "last": true,
+  "size": 10,
+  "number": 0,
+  "sort": {"sorted": true, "unsorted": false, "empty": false},
+  "first": true,
+  "numberOfElements": 1,
+  "empty": false
 });

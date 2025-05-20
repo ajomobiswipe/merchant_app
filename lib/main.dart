@@ -17,7 +17,7 @@ import 'package:anet_merchant_app/core/state_key.dart';
 import 'package:anet_merchant_app/data/services/merchant_service.dart';
 import 'package:anet_merchant_app/presentation/providers/authProvider.dart';
 import 'package:anet_merchant_app/presentation/providers/connectivity_provider.dart';
-import 'package:anet_merchant_app/presentation/providers/merchant_home_screen_provider.dart';
+import 'package:anet_merchant_app/presentation/providers/transactions_provider.dart';
 import 'package:anet_merchant_app/presentation/providers/merchant_transaction_filter_provider.dart';
 import 'package:anet_merchant_app/presentation/providers/settlement_provider.dart';
 import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
@@ -27,7 +27,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
-
 
 // Global Key - unauthorized login
 
@@ -59,11 +58,11 @@ void main() {
     runApp(MultiProvider(providers: [
       ChangeNotifierProvider(create: (_) => AuthProvider()),
       ChangeNotifierProvider(create: (context) => ConnectivityProvider()),
-      ChangeNotifierProvider(create: (_) => MerchantProvider()),
+      ChangeNotifierProvider(create: (_) => TransactionProvider()),
       ChangeNotifierProvider(create: (_) => SettlementProvider()),
       ChangeNotifierProvider(
           create: (_) => MerchantTransactionFilterProvider()),
-    // ], child: MainPage()));
+      // ], child: MainPage()));
     ], child: MainPage()));
   }, (e, _) => throw e);
 }
