@@ -2,6 +2,7 @@ import 'package:anet_merchant_app/core/app_color.dart';
 import 'package:anet_merchant_app/core/constants/constants.dart';
 import 'package:anet_merchant_app/core/utils/helpers/default_height.dart';
 import 'package:anet_merchant_app/data/models/transaction_model.dart';
+import 'package:anet_merchant_app/presentation/pages/users/merchant/all_transactions_filter.dart';
 import 'package:anet_merchant_app/presentation/pages/users/merchant/merchant_scaffold.dart';
 import 'package:anet_merchant_app/presentation/providers/transactions_provider.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_container.dart';
@@ -26,8 +27,8 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       transactionProvider =
           Provider.of<TransactionProvider>(context, listen: false);
-      transactionProvider.refreshRecentTransactions();
-      transactionProvider.geRecentTransactions();
+      //transactionProvider.refreshRecentTransactions();
+      transactionProvider.getRecentTransactions();
       transactionProvider.fetchDailySettlementTxnSummary();
       transactionProvider.recentTransScrollCtrl.addListener(_onScroll);
     });
@@ -44,8 +45,8 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
     if (transactionProvider.recentTransScrollCtrl.position.pixels >=
             transactionProvider.recentTransScrollCtrl.position.maxScrollExtent -
                 200 &&
-        !transactionProvider.isTransactionsLoading) {
-      transactionProvider.fetchItems();
+        !transactionProvider.isDailyTransactionsLoading) {
+      transactionProvider.getRecentTransactions();
     }
   }
 
@@ -78,7 +79,7 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
                             children: [
                               CustomTextWidget(
                                   color: Colors.white,
-                                  text: provider.totalTransactions.toString(),
+                                  text: provider.todaysTnxCount.toString(),
                                   size: 18),
                               CustomTextWidget(
                                   text:
@@ -115,16 +116,16 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
                     children: [
                       homeScreenTab(
                         screenHeight,
-                        width: screenWidth * 0.25,
+                        width: screenWidth * 0.4,
                         homeScreenTabItem: HomeScreenTabItem.TransactionHistory,
                         selectedTabItem: provider.selectedTab,
                         onTap: () => provider.updateSelectedTab(
                             HomeScreenTabItem.TransactionHistory),
-                        title: "Transaction\nHistory",
+                        title: "Transaction History",
                       ),
                       homeScreenTab(
                         screenHeight,
-                        width: screenWidth * 0.25,
+                        width: screenWidth * 0.4,
                         homeScreenTabItem: HomeScreenTabItem.Settlements,
                         selectedTabItem: provider.selectedTab,
                         onTap: () => provider
@@ -176,7 +177,8 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
       case HomeScreenTabItem.TransactionHistory:
         return CustomContainer(
           onTap: () {
-            Navigator.pushNamed(context, "merchantTransactionFilterScreen");
+            MerchantTransactionFilterBottomSheet.show(context);
+            // Navigator.pushNamed(context, "merchantTransactionFilterScreen");
           },
           height: screenHeight * 0.06,
           child: CustomTextWidget(
@@ -192,6 +194,7 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
           height: screenHeight * 0.06,
           child: CustomTextWidget(
             text: "View All Settlements",
+            size: 12.0,
             color: AppColors.gray,
           ),
         );
@@ -220,42 +223,57 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
       {required List<TransactionElement> transactionElement,
       required TransactionProvider transactionProvider,
       required double screenWidth}) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      InkWell(
-        child: Row(
-          children: [
-            CustomTextWidget(text: "Recent transactions", size: 14),
-            Icon(Icons.sync, color: AppColors.kPrimaryColor, size: 20),
-          ],
-        ),
-        onTap: () {
-          transactionProvider.refreshRecentTransactions();
-        },
-      ),
-      defaultHeight(10),
-      Expanded(
-        child: ListView.builder(
-          controller: transactionProvider.recentTransScrollCtrl,
-          itemCount: transactionElement.length + 1,
-          // (transactionProvider.hasMoreTransactions ? 1 : 0),
-          itemBuilder: (context, index) {
-            if (index < transactionElement.length) {
-              return TransactionTile(
-                transaction: transactionElement[index],
-                width: screenWidth,
-              );
-            } else if (transactionProvider.hasMoreTransactions) {
-              return Padding(
-                padding: EdgeInsets.symmetric(vertical: 16),
-                child: Center(child: CircularProgressIndicator()),
-              );
-            } else {
-              return Center(child: Text("-----   END OF LIST  ------"));
-            }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        InkWell(
+          child: Row(
+            children: [
+              CustomTextWidget(text: "Recent transactions", size: 14),
+              Icon(Icons.sync, color: AppColors.kPrimaryColor, size: 20),
+            ],
+          ),
+          onTap: () {
+            transactionProvider.refreshRecentTransactions();
           },
         ),
-      ),
-    ]);
+        defaultHeight(10),
+        Expanded(
+          child: (transactionProvider.isDailyTransactionsLoading &&
+                  transactionProvider.recentTransactions.isEmpty)
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : transactionElement.isNotEmpty
+                  ? ListView.builder(
+                      controller: transactionProvider.recentTransScrollCtrl,
+                      itemCount: transactionElement.length + 1,
+                      itemBuilder: (context, index) {
+                        if (index < transactionElement.length) {
+                          return TransactionTile(
+                            transaction: transactionElement[index],
+                            width: screenWidth,
+                          );
+                        } else if (transactionProvider.hasMoreTransactions) {
+                          return Padding(
+                            padding: EdgeInsets.symmetric(vertical: 16),
+                            child: Center(child: CircularProgressIndicator()),
+                          );
+                        } else {
+                          return Center(
+                              child: Text("-----   END OF LIST  ------"));
+                        }
+                      },
+                    )
+                  : Center(
+                      child: Text(
+                        "No transactions available",
+                        style: TextStyle(fontSize: 16, color: Colors.grey),
+                      ),
+                    ),
+        ),
+      ],
+    );
   }
 
   /// **Settlements List**
@@ -341,13 +359,13 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
     return CustomContainer(
       onTap: onTap,
       width: width,
-      height: screenHeight * 0.07,
+      height: screenHeight * 0.05,
       color: homeScreenTabItem == selectedTabItem
           ? Colors.grey
           : AppColors.kPrimaryColor,
       child: CustomTextWidget(
         text: title,
-        size: 14,
+        size: 12,
         color: Colors.white,
       ),
     );

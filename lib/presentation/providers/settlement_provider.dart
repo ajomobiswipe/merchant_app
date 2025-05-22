@@ -15,7 +15,10 @@ class SettlementProvider with ChangeNotifier {
   int get totalSettlements => _totalSettlements;
 
   List<TransactionElement> get transactions =>
-      transactionHistoryFromJson(transaction).content ?? [];
+      transactionHistoryFromJson(
+              getDummyPosTxnHistoryReport(pageNumber: 0, pageSize: 20))
+          .content ??
+      [];
 
   List<Map<String, dynamic>> _utrWiseSettlements = [
     {

@@ -12,7 +12,9 @@ import 'package:anet_merchant_app/core/endpoints.dart';
 import 'package:anet_merchant_app/core/static_functions.dart';
 import 'package:anet_merchant_app/domain/datasources/storage/secure_storage.dart';
 import 'package:anet_merchant_app/main.dart';
+import 'package:anet_merchant_app/presentation/pages/users/merchant/sampledata/sampledata.dart';
 import 'package:flutter/foundation.dart';
+import 'package:http/http.dart';
 
 import 'connection.dart';
 
@@ -63,8 +65,12 @@ class MerchantServices {
 
     var url =
         "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/getPosTxnHistoryReport?pageNumber=$pageNumber&size=$pageSize&sort=insertDateTime%2Cdesc";
-
-    var response = await connection.post(url, requestModel);
+    Response response = Response(
+        getDummyPosTxnHistoryReport(pageNumber: pageNumber, pageSize: pageSize),
+        200);
+    print(jsonEncode(requestModel));
+    //var response = await connection.post(url, requestModel);
+    await Future.delayed(const Duration(seconds: 2));
 
     return response;
   }

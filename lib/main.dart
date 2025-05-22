@@ -18,7 +18,7 @@ import 'package:anet_merchant_app/data/services/merchant_service.dart';
 import 'package:anet_merchant_app/presentation/providers/authProvider.dart';
 import 'package:anet_merchant_app/presentation/providers/connectivity_provider.dart';
 import 'package:anet_merchant_app/presentation/providers/transactions_provider.dart';
-import 'package:anet_merchant_app/presentation/providers/merchant_transaction_filter_provider.dart';
+import 'package:anet_merchant_app/presentation/providers/merchant_filtered_transaction_provider.dart';
 import 'package:anet_merchant_app/presentation/providers/settlement_provider.dart';
 import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
 import 'package:anet_merchant_app/presentation/widgets/app/custom_alert.dart';
@@ -61,7 +61,7 @@ void main() {
       ChangeNotifierProvider(create: (_) => TransactionProvider()),
       ChangeNotifierProvider(create: (_) => SettlementProvider()),
       ChangeNotifierProvider(
-          create: (_) => MerchantTransactionFilterProvider()),
+          create: (_) => MerchantFilteredTransactionProvider()),
       // ], child: MainPage()));
     ], child: MainPage()));
   }, (e, _) => throw e);
