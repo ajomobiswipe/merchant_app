@@ -4,6 +4,7 @@ import 'package:anet_merchant_app/core/utils/helpers/default_height.dart';
 import 'package:anet_merchant_app/data/models/transaction_model.dart';
 import 'package:anet_merchant_app/presentation/pages/users/merchant/all_transactions_filter.dart';
 import 'package:anet_merchant_app/presentation/pages/users/merchant/merchant_scaffold.dart';
+import 'package:anet_merchant_app/presentation/providers/settlement_provider.dart';
 import 'package:anet_merchant_app/presentation/providers/transactions_provider.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_container.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
@@ -281,71 +282,73 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
       {required double screenWidth, required double screenHeight}) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
-      child: Column(
-        children: [
-          defaultHeight(screenWidth * 0.05),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CustomTextWidget(
-                text: "Today Settlements",
-                isBold: false,
-                size: 16,
-              ),
-              Icon(Icons.sync)
-            ],
-          ),
-          defaultHeight(screenWidth * 0.05),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CustomTextWidget(
-                text: "Settled Amount",
-                isBold: false,
-                size: 16,
-              ),
-              CustomTextWidget(
-                text: "₹ 30,000",
-                isBold: false,
-                size: 16,
-              ),
-            ],
-          ),
-          defaultHeight(screenWidth * 0.2),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CustomTextWidget(
-                text: "Deductions",
-                isBold: false,
-                size: 16,
-              ),
-              CustomTextWidget(
-                text: "₹ 100",
-                isBold: false,
-                size: 16,
-              ),
-            ],
-          ),
-          Spacer(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CustomTextWidget(
-                text: "Pending Settlements",
-                isBold: false,
-                size: 16,
-              ),
-              CustomTextWidget(
-                text: "₹ 300",
-                isBold: false,
-                size: 16,
-              ),
-            ],
-          ),
-          defaultHeight(screenWidth * 0.1),
-        ],
-      ),
+      child: Consumer<TransactionProvider>(builder: (context, provider, child) {
+        return Column(
+          children: [
+            defaultHeight(screenWidth * 0.05),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CustomTextWidget(
+                  text: "Today Settlements",
+                  isBold: false,
+                  size: 16,
+                ),
+                Icon(Icons.sync)
+              ],
+            ),
+            defaultHeight(screenWidth * 0.05),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CustomTextWidget(
+                  text: "Settled Amount",
+                  isBold: false,
+                  size: 16,
+                ),
+                CustomTextWidget(
+                  text: "₹ ${provider.totalSettlementAmount}",
+                  isBold: false,
+                  size: 16,
+                ),
+              ],
+            ),
+            defaultHeight(screenWidth * 0.2),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CustomTextWidget(
+                  text: "Deductions",
+                  isBold: false,
+                  size: 16,
+                ),
+                CustomTextWidget(
+                  text: "₹ ${provider.deductionsAmount}",
+                  isBold: false,
+                  size: 16,
+                ),
+              ],
+            ),
+            Spacer(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CustomTextWidget(
+                  text: "Pending Settlements",
+                  isBold: false,
+                  size: 16,
+                ),
+                CustomTextWidget(
+                  text: "₹ ${provider.pendingSettlementAmount}",
+                  isBold: false,
+                  size: 16,
+                ),
+              ],
+            ),
+            defaultHeight(screenWidth * 0.1),
+          ],
+        );
+      }),
     );
   }
 

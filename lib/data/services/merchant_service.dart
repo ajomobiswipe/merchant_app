@@ -83,8 +83,35 @@ class MerchantServices {
     var url =
         "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/dailySettlementTxnSummary";
 
-    var response = await connection.post(url, requestModel);
+    // var response = await connection.post(url, requestModel);
+    Response response = Response(getDummyDailySettlementTxnSummary(), 200);
+    await Future.delayed(const Duration(seconds: 2));
+    return response;
+  }
 
+  getSettlementDashboardReport(requestModel,
+      {required int pageNumber, required int pageSize}) async {
+    Connection connection = Connection();
+
+    var url =
+        "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/getSettlementHistoryReport?pageNumber=$pageNumber&size=$pageSize&sort=desc";
+
+    // var response = await connection.post(url, requestModel);
+    Response response = Response(getDummySettlementHistoryReport(), 200); //
+    await Future.delayed(const Duration(seconds: 2));
+    return response;
+  }
+
+  getSettlementHistoryReport(requestModel,
+      {required int pageNumber, required int pageSize}) async {
+    Connection connection = Connection();
+
+    var url =
+        "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/getSettlementHistoryReport?pageNumber=$pageNumber&size=$pageSize&sort=desc";
+
+    // var response = await connection.post(url, requestModel);
+    Response response = Response(getDummySettlementHistoryReport(), 200);
+    await Future.delayed(const Duration(seconds: 2));
     return response;
   }
 }

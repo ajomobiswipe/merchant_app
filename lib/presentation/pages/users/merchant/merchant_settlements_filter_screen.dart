@@ -1,6 +1,6 @@
 import 'package:anet_merchant_app/core/constants/constants.dart';
 import 'package:anet_merchant_app/presentation/pages/users/merchant/merchant_scaffold.dart';
-import 'package:anet_merchant_app/presentation/providers/merchant_filtered_transaction_provider.dart';
+import 'package:anet_merchant_app/presentation/providers/settlement_provider.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_container.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +14,7 @@ class MerchantStatementFilterScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
-    return Consumer<MerchantFilteredTransactionProvider>(
+    return Consumer<SettlementProvider>(
       builder: (context, provider, child) {
         return MerchantScaffold(
           child: Padding(
@@ -59,7 +59,7 @@ class MerchantStatementFilterScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDateRangeSelector(MerchantFilteredTransactionProvider provider) {
+  Widget _buildDateRangeSelector(SettlementProvider provider) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -81,7 +81,7 @@ class MerchantStatementFilterScreen extends StatelessWidget {
   }
 
   Widget _buildCustomDatePickers(
-      MerchantFilteredTransactionProvider provider, BuildContext context) {
+      SettlementProvider provider, BuildContext context) {
     return Row(
       children: [
         Expanded(
@@ -121,7 +121,7 @@ class MerchantStatementFilterScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildApplyButton(MerchantFilteredTransactionProvider provider,
+  Widget _buildApplyButton(SettlementProvider provider,
       {required BuildContext context}) {
     return CustomContainer(
       height: 70,

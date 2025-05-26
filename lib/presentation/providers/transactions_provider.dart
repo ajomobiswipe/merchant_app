@@ -38,17 +38,28 @@ class TransactionProvider with ChangeNotifier {
   // Transaction Data
   int _todaysTnxCount = 0; // Simulate total from API
   List<TransactionElement> recentTransactions = [];
-  double _totalSettlementAmount = 0;
 
   // Getters
 
   bool get hasMoreTransactions => recentTransactions.length < _todaysTnxCount;
   bool get isDailyTransactionsLoading => _isDailyTransactionsLoading;
   int get todaysTnxCount => _todaysTnxCount;
-  double get totalSettlementAmount => _totalSettlementAmount;
+
   List<TransactionElement> get transactions => recentTransactions;
   HomeScreenTabItem get selectedTab => _selectedTab;
+// Getters for settlement data
+  String get storeName => "Toy Store"; // Simulated store name
+  double _totalSettlementAmount = 3455265;
+  int _totalSettlements = 20;
+  int _totalTransactions = 20;
+  double _deductions = 0;
+  double _pendingSettlement = 0;
 
+  double get totalSettlementAmount => _totalSettlementAmount;
+  int get totalSettlements => _totalSettlements;
+  double get deductionsAmount => _deductions;
+  double get pendingSettlementAmount => _pendingSettlement;
+  int get totalTransactions => _totalTransactions;
   // Methods
 
   // Fetch recent transactions
@@ -124,6 +135,8 @@ class TransactionProvider with ChangeNotifier {
     if (response.statusCode == 200) {
       var decodedData = jsonDecode(response.body)['responseData'];
       _totalSettlementAmount = decodedData['txnAmount'] ?? 0.0;
+      _deductions = decodedData['deductionAmount'] ?? 0.0;
+      _pendingSettlement = decodedData['pendingSettlementAmount'] ?? 0.0;
       notifyListeners();
     }
   }
