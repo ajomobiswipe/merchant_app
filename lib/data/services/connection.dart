@@ -189,7 +189,7 @@ class Connection {
     IOClient ioClient = IOClient(client);
     var res = await ioClient
         .post(Uri.parse(url), body: jsonEncode(requestData), headers: header)
-        .timeout(Duration(seconds: timeOutSeconds ?? 20));
+        .timeout(Duration(seconds: timeOutSeconds ?? 90));
     if (kDebugMode) {
       print(res.body);
     }

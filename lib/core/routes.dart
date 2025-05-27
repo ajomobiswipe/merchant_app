@@ -11,7 +11,7 @@ import 'package:anet_merchant_app/presentation/pages/users/merchant/merchant_hel
 import 'package:anet_merchant_app/presentation/pages/users/merchant/merchant_home_page/merchant_home_screen.dart';
 import 'package:anet_merchant_app/presentation/pages/users/merchant/merchant_login.dart';
 import 'package:anet_merchant_app/presentation/pages/users/merchant/merchant_transcation_filter_screen.dart';
-import 'package:anet_merchant_app/presentation/pages/users/merchant/merchant_statement_filter_screen.dart';
+import 'package:anet_merchant_app/presentation/pages/users/merchant/merchant_settlements_filter_screen.dart';
 import 'package:anet_merchant_app/presentation/pages/users/merchant/settlement_dashboard.dart';
 import 'package:anet_merchant_app/presentation/pages/users/merchant/view_all_transaction_screen.dart';
 import 'package:anet_merchant_app/presentation/pages/users/merchant/view_settlement_info.dart';

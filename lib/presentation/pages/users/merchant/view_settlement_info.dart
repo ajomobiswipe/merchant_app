@@ -3,15 +3,34 @@ import 'package:anet_merchant_app/core/constants/constants.dart';
 import 'package:anet_merchant_app/core/utils/helpers/default_height.dart';
 import 'package:anet_merchant_app/data/models/transaction_model.dart';
 import 'package:anet_merchant_app/presentation/pages/users/merchant/merchant_scaffold.dart';
+import 'package:anet_merchant_app/presentation/providers/settlement_provider.dart';
 import 'package:anet_merchant_app/presentation/providers/transactions_provider.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_container.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
+import 'package:anet_merchant_app/presentation/widgets/settledTransactionTile.dart';
 import 'package:anet_merchant_app/presentation/widgets/transaction_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ViewSettlementInfo extends StatelessWidget {
+class ViewSettlementInfo extends StatefulWidget {
   const ViewSettlementInfo({super.key});
+
+  @override
+  State<ViewSettlementInfo> createState() => _ViewSettlementInfoState();
+}
+
+class _ViewSettlementInfoState extends State<ViewSettlementInfo> {
+  late SettlementProvider _settlementProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _settlementProvider =
+          Provider.of<SettlementProvider>(context, listen: false);
+      _settlementProvider.getTransactionsInSettlement();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,20 +105,62 @@ class ViewSettlementInfo extends StatelessWidget {
 
           // **Dynamic Content Based on Selected Tab**
           Expanded(
-            child: Consumer<TransactionProvider>(
-              builder: (context, provider, child) {
+            child: Consumer<SettlementProvider>(
+              builder: (context, settlementProvider, child) {
                 return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       defaultHeight(10),
                       Expanded(
-                        child: ListView.builder(
-                          itemCount: provider.transactions.length,
-                          itemBuilder: (context, index) => TransactionTile(
-                            transaction: provider.transactions[index],
-                            width: screenWidth,
-                          ),
-                        ),
+                        child: (settlementProvider.isAllTransactionsLoading &&
+                                settlementProvider.allTransactions.isEmpty)
+                            ? Center(
+                                child: CircularProgressIndicator(),
+                              )
+                            : settlementProvider.allTransactions.isNotEmpty
+                                ? GestureDetector(
+                                    onTapUp: (details) {
+                                      print("onTapUp");
+                                    },
+                                    child: ListView.builder(
+                                      controller: settlementProvider
+                                          .allSettlementScrollCtrl,
+                                      itemCount: settlementProvider
+                                              .allTransactions.length +
+                                          1,
+                                      itemBuilder: (context, index) {
+                                        if (index <
+                                            settlementProvider
+                                                .allTransactions.length) {
+                                          return SettledTransactionTile(
+                                            transaction: settlementProvider
+                                                .allTransactions[index],
+                                            width: screenWidth,
+                                          );
+                                        } else if (settlementProvider
+                                            .hasMoreTransactions) {
+                                          return Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 16),
+                                            child: Center(
+                                                child:
+                                                    CircularProgressIndicator()),
+                                          );
+                                        } else {
+                                          return Center(
+                                              child: Text(
+                                                  "-----   END OF LIST  ------"));
+                                        }
+                                      },
+                                    ),
+                                  )
+                                : Center(
+                                    child: Text(
+                                      "No transactions available",
+                                      style: TextStyle(
+                                          fontSize: 16, color: Colors.grey),
+                                    ),
+                                  ),
                       ),
                     ]);
               },

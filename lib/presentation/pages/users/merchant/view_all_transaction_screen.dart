@@ -3,6 +3,7 @@ import 'package:anet_merchant_app/core/constants/constants.dart';
 import 'package:anet_merchant_app/core/utils/helpers/default_height.dart';
 import 'package:anet_merchant_app/data/models/transaction_model.dart';
 import 'package:anet_merchant_app/presentation/pages/users/merchant/merchant_scaffold.dart';
+import 'package:anet_merchant_app/presentation/providers/merchant_filtered_transaction_provider.dart';
 import 'package:anet_merchant_app/presentation/providers/transactions_provider.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_container.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
@@ -10,8 +11,46 @@ import 'package:anet_merchant_app/presentation/widgets/transaction_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ViewAllTransactionScreen extends StatelessWidget {
+class ViewAllTransactionScreen extends StatefulWidget {
   const ViewAllTransactionScreen({super.key});
+
+  @override
+  State<ViewAllTransactionScreen> createState() =>
+      _ViewAllTransactionScreenState();
+}
+
+class _ViewAllTransactionScreenState extends State<ViewAllTransactionScreen> {
+  late MerchantFilteredTransactionProvider transactionProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      transactionProvider = Provider.of<MerchantFilteredTransactionProvider>(
+          context,
+          listen: false);
+      transactionProvider.refreshAllTransactions();
+      transactionProvider.getAllTransactions();
+
+      transactionProvider.allTransScrollCtrl.addListener(_onScroll);
+    });
+  }
+
+  // @override
+  // void dispose() {
+  //   transactionProvider.recentTransScrollCtrl.removeListener(_onScroll);
+  //   transactionProvider.recentTransScrollCtrl.dispose();
+  //   super.dispose();
+  // }
+
+  void _onScroll() {
+    if (transactionProvider.allTransScrollCtrl.position.pixels >=
+            transactionProvider.allTransScrollCtrl.position.maxScrollExtent -
+                200 &&
+        !transactionProvider.isAllTransactionsLoading) {
+      transactionProvider.getAllTransactions();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +63,7 @@ class ViewAllTransactionScreen extends StatelessWidget {
         children: [
           CustomTextWidget(text: Constants.storeName, size: 18),
           defaultHeight(15),
-          CustomTextWidget(text: "Total transactions today", size: 12),
+          CustomTextWidget(text: "Transaction since last 7 days", size: 12),
           defaultHeight(10),
           Selector<TransactionProvider, HomeScreenTabItem>(
             selector: (context, provider) =>
@@ -42,7 +81,7 @@ class ViewAllTransactionScreen extends StatelessWidget {
                             color: Colors.white,
                             text: context
                                 .read<TransactionProvider>()
-                                .totalTransactions
+                                .todaysTnxCount
                                 .toString(),
                             size: 18),
                         CustomTextWidget(
@@ -73,20 +112,62 @@ class ViewAllTransactionScreen extends StatelessWidget {
 
           // **Dynamic Content Based on Selected Tab**
           Expanded(
-            child: Consumer<TransactionProvider>(
-              builder: (context, provider, child) {
+            child: Consumer<MerchantFilteredTransactionProvider>(
+              builder: (context, transactionProvider, child) {
                 return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       defaultHeight(10),
                       Expanded(
-                        child: ListView.builder(
-                          itemCount: provider.transactions.length,
-                          itemBuilder: (context, index) => TransactionTile(
-                            transaction: provider.transactions[index],
-                            width: screenWidth,
-                          ),
-                        ),
+                        child: (transactionProvider.isAllTransactionsLoading &&
+                                transactionProvider.allTransactions.isEmpty)
+                            ? Center(
+                                child: CircularProgressIndicator(),
+                              )
+                            : transactionProvider.allTransactions.isNotEmpty
+                                ? GestureDetector(
+                                    onTapUp: (details) {
+                                      print("onTapUp");
+                                    },
+                                    child: ListView.builder(
+                                      controller: transactionProvider
+                                          .allTransScrollCtrl,
+                                      itemCount: transactionProvider
+                                              .allTransactions.length +
+                                          1,
+                                      itemBuilder: (context, index) {
+                                        if (index <
+                                            transactionProvider
+                                                .allTransactions.length) {
+                                          return TransactionTile(
+                                            transaction: transactionProvider
+                                                .allTransactions[index],
+                                            width: screenWidth,
+                                          );
+                                        } else if (transactionProvider
+                                            .hasMoreTransactions) {
+                                          return Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 16),
+                                            child: Center(
+                                                child:
+                                                    CircularProgressIndicator()),
+                                          );
+                                        } else {
+                                          return Center(
+                                              child: Text(
+                                                  "-----   END OF LIST  ------"));
+                                        }
+                                      },
+                                    ),
+                                  )
+                                : Center(
+                                    child: Text(
+                                      "No transactions available",
+                                      style: TextStyle(
+                                          fontSize: 16, color: Colors.grey),
+                                    ),
+                                  ),
                       ),
                     ]);
               },
@@ -113,140 +194,6 @@ class ViewAllTransactionScreen extends StatelessWidget {
             context, "merchantHomeScreen", (route) => false);
         Navigator.pushNamed(context, "merchantHelpScreen");
       },
-    );
-  }
-
-  /// **Function to Return Content Based on Selected Tab*
-
-  /// **Transaction History List**
-  Widget transactionHistoryList(
-      {required List<TransactionElement> transactionElement,
-      required double screenWidth}) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Row(
-        children: [
-          CustomTextWidget(text: "Recent transactions", size: 14),
-          Icon(Icons.sync, color: AppColors.kPrimaryColor, size: 20),
-        ],
-      ),
-      defaultHeight(10),
-      Expanded(
-        child: ListView.builder(
-          itemCount: transactionElement.length,
-          itemBuilder: (context, index) => TransactionTile(
-            transaction: transactionElement[index],
-            width: screenWidth,
-          ),
-        ),
-      ),
-    ]);
-  }
-
-  /// **Settlements List**
-  Widget settlementsList(
-      {required double screenWidth, required double screenHeight}) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
-      child: Column(
-        children: [
-          defaultHeight(screenWidth * 0.05),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CustomTextWidget(
-                text: "Today Settlements",
-                isBold: false,
-                size: 16,
-              ),
-              Icon(Icons.sync)
-            ],
-          ),
-          defaultHeight(screenWidth * 0.05),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CustomTextWidget(
-                text: "Settled Amount",
-                isBold: false,
-                size: 16,
-              ),
-              CustomTextWidget(
-                text: "₹ 30,000",
-                isBold: false,
-                size: 16,
-              ),
-            ],
-          ),
-          defaultHeight(screenWidth * 0.2),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CustomTextWidget(
-                text: "Deductions",
-                isBold: false,
-                size: 16,
-              ),
-              CustomTextWidget(
-                text: "₹ 100",
-                isBold: false,
-                size: 16,
-              ),
-            ],
-          ),
-          Spacer(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CustomTextWidget(
-                text: "Pending Settlements",
-                isBold: false,
-                size: 16,
-              ),
-              CustomTextWidget(
-                text: "₹ 300",
-                isBold: false,
-                size: 16,
-              ),
-            ],
-          ),
-          defaultHeight(screenWidth * 0.1),
-        ],
-      ),
-    );
-  }
-
-  /// **MPR List**
-  Widget mprList() {
-    return ListView(
-      children: [
-        Row(
-          children: [
-            CustomTextWidget(text: "MPR"),
-          ],
-        )
-      ],
-    );
-  }
-
-  /// **Tab Widget**
-  CustomContainer homeScreenTab(double screenHeight,
-      {required double width,
-      required HomeScreenTabItem homeScreenTabItem,
-      required HomeScreenTabItem selectedTabItem,
-      Function()? onTap,
-      required String title}) {
-    return CustomContainer(
-      onTap: onTap,
-      width: width,
-      height: screenHeight * 0.07,
-      color: homeScreenTabItem == selectedTabItem
-          ? Colors.grey
-          : AppColors.kPrimaryColor,
-      child: CustomTextWidget(
-        text: title,
-        size: 14,
-        color: Colors.white,
-      ),
     );
   }
 }

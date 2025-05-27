@@ -1,12 +1,11 @@
 import 'package:anet_merchant_app/core/constants/constants.dart';
 import 'package:anet_merchant_app/presentation/pages/users/merchant/merchant_scaffold.dart';
-import 'package:anet_merchant_app/presentation/providers/merchant_transaction_filter_provider.dart';
+import 'package:anet_merchant_app/presentation/providers/settlement_provider.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_container.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
 
 class MerchantStatementFilterScreen extends StatelessWidget {
   const MerchantStatementFilterScreen({super.key});
@@ -15,7 +14,7 @@ class MerchantStatementFilterScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
-    return Consumer<MerchantTransactionFilterProvider>(
+    return Consumer<SettlementProvider>(
       builder: (context, provider, child) {
         return MerchantScaffold(
           child: Padding(
@@ -27,8 +26,7 @@ class MerchantStatementFilterScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CustomTextWidget(
-                    text: Constants.storeName,
-                    size: screenHeight * 0.025),
+                    text: Constants.storeName, size: screenHeight * 0.025),
                 Spacer(flex: 1),
                 CustomTextWidget(
                     text: "Settlements", size: screenHeight * 0.02),
@@ -61,7 +59,7 @@ class MerchantStatementFilterScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDateRangeSelector(MerchantTransactionFilterProvider provider) {
+  Widget _buildDateRangeSelector(SettlementProvider provider) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -83,7 +81,7 @@ class MerchantStatementFilterScreen extends StatelessWidget {
   }
 
   Widget _buildCustomDatePickers(
-      MerchantTransactionFilterProvider provider, BuildContext context) {
+      SettlementProvider provider, BuildContext context) {
     return Row(
       children: [
         Expanded(
@@ -123,7 +121,7 @@ class MerchantStatementFilterScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildApplyButton(MerchantTransactionFilterProvider provider,
+  Widget _buildApplyButton(SettlementProvider provider,
       {required BuildContext context}) {
     return CustomContainer(
       height: 70,

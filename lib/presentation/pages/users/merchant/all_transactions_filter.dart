@@ -1,5 +1,4 @@
 import 'package:anet_merchant_app/core/constants/constants.dart';
-import 'package:anet_merchant_app/presentation/pages/users/merchant/merchant_scaffold.dart';
 import 'package:anet_merchant_app/presentation/providers/merchant_filtered_transaction_provider.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_container.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
@@ -7,59 +6,58 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class MerchantTransactionFilterScreen extends StatelessWidget {
-  const MerchantTransactionFilterScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    double screenHeight = MediaQuery.of(context).size.height;
-    double screenWidth = MediaQuery.of(context).size.width;
-    return Consumer<MerchantFilteredTransactionProvider>(
-      builder: (context, provider, child) {
-        return MerchantScaffold(
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: screenWidth * 0.04,
-              vertical: screenHeight * 0.02,
-            ),
-            child: ListView(
-              children: [
-                CustomTextWidget(
-                    text: Constants.storeName, size: screenHeight * 0.025),
-                SizedBox(height: screenHeight * 0.02),
-                CustomTextWidget(
-                    text: "Payment transactions", size: screenHeight * 0.02),
-                SizedBox(height: screenHeight * 0.02),
-                _buildSearchField(provider),
-                SizedBox(height: screenHeight * 0.02),
-                _buildTidDropdown(provider),
-                SizedBox(height: screenHeight * 0.02),
-                _buildDateRangeSelector(provider),
-                if (provider.selectedDateRange == 'Custom Date Range')
-                  Padding(
-                    padding: EdgeInsets.only(top: screenHeight * 0.02),
-                    child: _buildCustomDatePickers(provider, context),
-                  ),
-                SizedBox(height: screenHeight * 0.02),
-                _buildPaymentModeDropdown(provider),
-                SizedBox(height: screenHeight * 0.03),
-                _buildApplyButton(provider, context: context),
-              ],
-            ),
-          ),
-          onTapHome: () {
-            Navigator.pop(context);
-          },
-          onTapSupport: () {
-            Navigator.pop(context);
-            Navigator.pushNamed(context, "merchantHelpScreen");
+class MerchantTransactionFilterBottomSheet {
+  static void show(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) {
+        return Consumer<MerchantFilteredTransactionProvider>(
+          builder: (context, provider, child) {
+            double screenHeight = MediaQuery.of(context).size.height;
+            double screenWidth = MediaQuery.of(context).size.width;
+            return Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: screenWidth * 0.04,
+                vertical: screenHeight * 0.02,
+              ),
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  CustomTextWidget(
+                      text: Constants.storeName, size: screenHeight * 0.025),
+                  SizedBox(height: screenHeight * 0.02),
+                  CustomTextWidget(
+                      text: "Payment transactions", size: screenHeight * 0.02),
+                  SizedBox(height: screenHeight * 0.02),
+                  _buildSearchField(provider),
+                  SizedBox(height: screenHeight * 0.02),
+                  _buildTidDropdown(provider),
+                  SizedBox(height: screenHeight * 0.02),
+                  _buildDateRangeSelector(provider),
+                  if (provider.selectedDateRange == 'Custom Date Range')
+                    Padding(
+                      padding: EdgeInsets.only(top: screenHeight * 0.02),
+                      child: _buildCustomDatePickers(provider, context),
+                    ),
+                  SizedBox(height: screenHeight * 0.02),
+                  _buildPaymentModeDropdown(provider),
+                  SizedBox(height: screenHeight * 0.03),
+                  _buildApplyButton(provider, context: context),
+                ],
+              ),
+            );
           },
         );
       },
     );
   }
 
-  Widget _buildSearchField(MerchantFilteredTransactionProvider provider) {
+  static Widget _buildSearchField(
+      MerchantFilteredTransactionProvider provider) {
     return Row(
       children: [
         Radio<String>(
@@ -103,7 +101,8 @@ class MerchantTransactionFilterScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTidDropdown(MerchantFilteredTransactionProvider provider) {
+  static Widget _buildTidDropdown(
+      MerchantFilteredTransactionProvider provider) {
     return DropdownButtonFormField<String>(
       value: provider.selectedTid,
       decoration: InputDecoration(
@@ -117,7 +116,8 @@ class MerchantTransactionFilterScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDateRangeSelector(MerchantFilteredTransactionProvider provider) {
+  static Widget _buildDateRangeSelector(
+      MerchantFilteredTransactionProvider provider) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -138,7 +138,7 @@ class MerchantTransactionFilterScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCustomDatePickers(
+  static Widget _buildCustomDatePickers(
       MerchantFilteredTransactionProvider provider, BuildContext context) {
     return Row(
       children: [
@@ -158,7 +158,7 @@ class MerchantTransactionFilterScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDatePicker(String label, DateTime? selectedDate,
+  static Widget _buildDatePicker(String label, DateTime? selectedDate,
       Function(DateTime) onPicked, BuildContext context) {
     return ListTile(
       title: Text(selectedDate == null
@@ -179,7 +179,7 @@ class MerchantTransactionFilterScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildPaymentModeDropdown(
+  static Widget _buildPaymentModeDropdown(
       MerchantFilteredTransactionProvider provider) {
     return DropdownButtonFormField<String>(
       value: provider.selectedPaymentMode,
@@ -194,11 +194,12 @@ class MerchantTransactionFilterScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildApplyButton(MerchantFilteredTransactionProvider provider,
+  static Widget _buildApplyButton(MerchantFilteredTransactionProvider provider,
       {required BuildContext context}) {
     return CustomContainer(
       height: 70,
       onTap: () {
+        Navigator.pop(context);
         Navigator.pushNamed(context, "viewAllTransaction");
         print(
             'Filters applied: ${provider.searchController.text}, ${provider.selectedTid}, ${provider.selectedDateRange}, ${provider.selectedPaymentMode}');

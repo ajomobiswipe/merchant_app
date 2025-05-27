@@ -1,4 +1,5 @@
 import 'package:anet_merchant_app/core/utils/helpers/default_height.dart';
+import 'package:anet_merchant_app/data/models/get_settlement_history_model.dart';
 import 'package:anet_merchant_app/data/models/transaction_model.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_container.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
@@ -6,11 +7,11 @@ import 'package:anet_merchant_app/presentation/widgets/transaction_invoice.dart'
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class TransactionTile extends StatelessWidget {
-  final TransactionElement transaction;
+class SettledTransactionTile extends StatelessWidget {
+  final SettledTransaction transaction;
   final double width;
 
-  const TransactionTile({
+  const SettledTransactionTile({
     super.key,
     required this.transaction,
     required this.width,
@@ -61,7 +62,7 @@ class TransactionTile extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        transaction.amount ?? "0.00",
+                        transaction.grossTransactionAmount.toString(),
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
@@ -71,7 +72,7 @@ class TransactionTile extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    formatTime(transaction.transactionTime),
+                    formatTime(transaction.tranDate.toString()),
                     style: const TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w300,
@@ -81,27 +82,27 @@ class TransactionTile extends StatelessWidget {
               ),
             ),
             CustomContainer(
-              color:
-                  transaction.responseCode == "00" ? Colors.green : Colors.red,
+              color: transaction.merPayDone == true ? Colors.green : Colors.red,
               width: width * 0.22,
               height: 20,
               child: CustomTextWidget(
                 size: 10,
-                text: getTransactionStatus(transaction),
+                text: transaction.merPayDone == true ? "Success" "" : "Failed",
+                // text: getTransactionStatus(transaction),
                 color: Colors.white,
               ),
             ),
             defaultWidth(width * 0.02),
             GestureDetector(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ShowTransactionInvoice(
-                      transaction: transaction,
-                    ),
-                  ),
-                );
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (context) => ShowTransactionInvoice(
+                //       transaction: transaction,
+                //     ),
+                //   ),
+                // );
               },
               child: const Icon(Icons.info_outline),
             ),

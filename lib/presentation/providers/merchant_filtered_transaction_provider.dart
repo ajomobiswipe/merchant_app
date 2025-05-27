@@ -1,39 +1,22 @@
-import 'package:anet_merchant_app/data/models/get_settlement_dashboard_data.dart';
-import 'package:anet_merchant_app/data/models/get_settlement_history_model.dart';
+import 'package:anet_merchant_app/data/models/transaction_history_request_model.dart';
 import 'package:anet_merchant_app/data/models/transaction_model.dart';
 import 'package:anet_merchant_app/data/services/merchant_service.dart';
-import 'package:anet_merchant_app/presentation/pages/users/merchant/sampledata/sampledata.dart';
-import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class SettlementProvider extends ChangeNotifier {
-  final String _storeName = "Toy Store";
-  String get storeName => _storeName;
-
-  double _totalSettlementAmount = 0.0;
-
-  int _totalTransactions = 20;
-  int _totalSettlement = 0;
-  double _deductions = 0;
-  bool _isoading = false;
-
-  bool get isLoading => _isoading;
-  double get totalSettlementAmount => _totalSettlementAmount;
-  double get deductionsAmount => _deductions;
-
-  int get totalTransactions => _totalTransactions;
-  int get totalSettlement => _totalSettlement;
-
-  AlertService _alertService = AlertService();
-
+class MerchantFilteredTransactionProvider extends ChangeNotifier {
+  MerchantServices merchantServices = MerchantServices();
+  final TextEditingController searchController = TextEditingController();
   // Services
   final MerchantServices _merchantServices = MerchantServices();
-
+  String _searchType = 'RRN';
+  String? _selectedTid = "ALL";
   String? _selectedDateRange;
   DateTime? _customStartDate;
   DateTime? _customEndDate;
+  String _selectedPaymentMode = 'ALL';
 
+  List<String> tidOptions = ["ALL", 'TID001', 'TID002', 'TID003'];
   List<String> dateRanges = [
     "Today - ${DateFormat('d MMM yyyy').format(DateTime.now())}",
     'Yesterday - ${DateFormat('d MMM yyyy').format(DateTime.now().subtract(Duration(days: 1)))}',
@@ -41,16 +24,23 @@ class SettlementProvider extends ChangeNotifier {
     'Last 1 Month',
     'Custom Date Range'
   ];
+  List<String> paymentModes = ['ALL', 'Card', 'UPI'];
 
   // Getters
-
+  String get searchType => _searchType;
+  String? get selectedTid => _selectedTid;
   String? get selectedDateRange => _selectedDateRange;
   DateTime? get customStartDate => _customStartDate;
   DateTime? get customEndDate => _customEndDate;
+  String get selectedPaymentMode => _selectedPaymentMode;
 
   // Controllers
-  final ScrollController _allSettlementScrollCtrl = ScrollController();
-  ScrollController get allSettlementScrollCtrl => _allSettlementScrollCtrl;
+  final ScrollController _allTransScrollCtrl = ScrollController();
+  ScrollController get allTransScrollCtrl => _allTransScrollCtrl;
+
+  // Models
+  final TransactionHistoryRequestModel _allTranReqModel =
+      TransactionHistoryRequestModel();
 
   // Flags
   bool _isAllTransactionsLoading = false;
@@ -62,19 +52,21 @@ class SettlementProvider extends ChangeNotifier {
 
   // Transaction Data
   int _allTnxCount = 0; // Simulate total from API
-  List<SettledTransaction> _allTransactions = [];
-  List<SettledTransaction> get allTransactions => _allTransactions;
+  List<TransactionElement> _allTransactions = [];
+  double _totalAmountInAllTrans = 0;
+
   // Getters
 
   bool get hasMoreTransactions => _allTransactions.length < _allTnxCount;
   bool get isAllTransactionsLoading => _isAllTransactionsLoading;
+  int get todaysTnxCount => _allTnxCount;
+  double get totalSettlementAmount => _totalAmountInAllTrans;
+  List<TransactionElement> get allTransactions => _allTransactions;
 
-  List<SettlementAggregate> _utrWiseSettlements = [];
-  List<SettlementAggregate> get utrWiseSettlements => _utrWiseSettlements;
   // Methods
 
   // Fetch recent transactions
-  Future<void> getTransactionsInSettlement() async {
+  Future<void> getAllTransactions() async {
     print(_selectedDateRange);
     print(_customStartDate);
     print("Current Page: $currentPage");
@@ -86,33 +78,35 @@ class SettlementProvider extends ChangeNotifier {
     print(_customEndDate);
     print(_customStartDate);
     print("Inside fetchItems");
-    var reqBody = {
-      "merchantId": "651076000006945",
-      "fromDate": "2024-05-01",
-      "toDate": "2025-05-22",
-      "reconsiled": true,
-      "merPayDone": true,
-      "misDone": true,
-      "pageDataRequired": false,
-      "settlementAggregatesRequired": true
-    };
+    _allTranReqModel
+      ..acquirerId = "OMAIND"
+      ..merchantId = "65OMA0000000002"
+      ..rrn = ""
+      ..recordFrom = _customStartDate != null
+          ? DateFormat('dd-MM-yyyy').format(_customStartDate!)
+          : _selectedDateRange
+      ..recordTo = _customEndDate != null
+          ? DateFormat('dd-MM-yyyy').format(_customEndDate!)
+          : _selectedDateRange
+      ..terminalId = null;
+
     if (_isAllTransactionsLoading) return;
 
     _isAllTransactionsLoading = true;
     notifyListeners();
 
     try {
-      final response = await _merchantServices.getSettlementDashboardReport(
-        reqBody,
+      final response = await _merchantServices.fetchTransactionHistory(
+        _allTranReqModel.toJson(),
         pageNumber: currentPage,
         pageSize: pageSize,
       );
 
       if (response.statusCode == 200) {
-        final decodedData = getSettlementHistoryDataFromJson(response.body);
-        final newItems = decodedData.settledSummaryPage?.content ?? [];
-        _allTnxCount = decodedData.settledSummaryPage?.totalElements ?? 0;
-
+        final decodedData = transactionHistoryFromJson(response.body);
+        final newItems = decodedData.content ?? [];
+        _allTnxCount = decodedData.totalElements ?? 0;
+        print("todays transaction count: ${decodedData.totalElements}");
         if (newItems.isNotEmpty) {
           currentPage++;
 
@@ -129,53 +123,36 @@ class SettlementProvider extends ChangeNotifier {
     }
   }
 
-  // Fetch recent transactions
-  Future<void> getSettlementDashboardReport() async {
-    _isoading = true;
-    notifyListeners();
-    var reqBody = {
-      "merchantId": "651076000006945",
-      "fromDate": "2024-05-01",
-      "toDate": "2025-05-22",
-      "reconsiled": true,
-      "merPayDone": true,
-      "misDone": true,
-      "pageDataRequired": false,
-      "settlementAggregatesRequired": true
-    };
-
-    try {
-      final response = await _merchantServices.getSettlementDashboardReport(
-        reqBody,
-        pageNumber: currentPage,
-        pageSize: pageSize,
-      );
-
-      if (response.statusCode == 200) {
-        final decodedData = getSettlementDashboardDataFromJson(response.body);
-        _totalSettlementAmount =
-            decodedData.settlementTotal?.totalAmount ?? 0.00;
-        _totalSettlement = decodedData.settlementTotal?.settlementCount ?? 0;
-        _totalTransactions = decodedData.settlementTotal?.transactionCount ?? 0;
-
-        _utrWiseSettlements = decodedData.settlementAggregates ?? [];
-      }
-    } catch (e) {
-      print("Error fetching transactions: $e");
-    } finally {
-      _isoading = false;
-      notifyListeners();
-    }
-  }
-
   // Refresh recent transactions
-  void refreshDasBoard() {
+  void refreshAllTransactions() {
     _allTransactions = [];
     currentPage = 0;
     isAllTransLoadingFistTime = true;
     _allTnxCount = 0;
     notifyListeners();
-    getSettlementDashboardReport();
+    getAllTransactions();
+    notifyListeners();
+  }
+
+  // Setters
+  void setSearchType(String? value) {
+    _searchType = value!;
+    notifyListeners();
+  }
+
+  // fetchTransactionHistory() {
+  //   var res = merchantServices.fetchTransactionHistory({
+  //     "merchantId": "65OMA0000000002",
+  //     "recordFrom": _selectedDateRange,
+  //     "recordTo": _se,
+  //     "acquirerId": "OMAIND",
+  //     "rrn": "000017088748",
+  //     "terminalId": null
+  //   }, pageNumber: 0, pageSize: 10);
+  // }
+
+  void setSelectedTid(String? value) {
+    _selectedTid = value;
     notifyListeners();
   }
 
@@ -200,7 +177,9 @@ class SettlementProvider extends ChangeNotifier {
     } else if (_selectedDateRange == 'Last 1 Month') {
       _customStartDate = DateTime.now().subtract(Duration(days: 30));
       _customEndDate = DateTime.now();
-    } else if (_selectedDateRange == 'Custom Date Range') {}
+    } else if (_selectedDateRange == 'Custom Date Range') {
+      // Custom date range is already set via setCustomStartDate and setCustomEndDate
+    }
     print(_customEndDate);
     print(_customStartDate);
     notifyListeners();
@@ -216,9 +195,8 @@ class SettlementProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // List<SettledTransaction> get transactions =>
-  //     transactionHistoryFromJson(
-  //             getDummyPosTxnHistoryReport(pageNumber: 0, pageSize: 20))
-  //         .content ??
-  //     [];
+  void setSelectedPaymentMode(String? value) {
+    _selectedPaymentMode = value!;
+    notifyListeners();
+  }
 }
