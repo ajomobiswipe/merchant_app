@@ -1,6 +1,7 @@
 import 'package:anet_merchant_app/core/constants/constants.dart';
 import 'package:anet_merchant_app/presentation/pages/users/merchant/merchant_scaffold.dart';
 import 'package:anet_merchant_app/presentation/providers/settlement_provider.dart';
+import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_container.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
 import 'package:flutter/material.dart';
@@ -126,6 +127,14 @@ class MerchantStatementFilterScreen extends StatelessWidget {
     return CustomContainer(
       height: 70,
       onTap: () {
+        if (provider.selectedDateRange == null ||
+            provider.selectedDateRange!.isEmpty) {
+          AlertService().error(
+            "Please select a date range",
+          );
+
+          return;
+        }
         Navigator.pushNamed(context, "settlementDashboard");
       },
       child: CustomTextWidget(text: 'Apply Filters', color: Colors.white),

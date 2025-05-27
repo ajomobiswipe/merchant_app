@@ -44,50 +44,65 @@ class _ViewSettlementInfoState extends State<ViewSettlementInfo> {
           CustomTextWidget(text: Constants.storeName, size: 18),
 
           defaultHeight(10),
-          CustomContainer(
-            color: AppColors.kLightGreen,
-            // height: screenHeight * 0.14,
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                defaultHeight(10),
-                CustomTextWidget(
-                    text: "₹ 2578744", size: 18, color: Colors.white),
-                CustomTextWidget(
-                    text: "43 Transactions", size: 12, color: Colors.white),
-                CustomTextWidget(
-                    text: "Settled 15 Dec 2025", size: 14, color: Colors.white),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CustomTextWidget(
-                            text: "Settled to", size: 12, color: Colors.white),
-                        CustomTextWidget(
-                            text: "Axis Bank Ltd | *******6545",
-                            size: 14,
-                            color: Colors.white),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        CustomTextWidget(
-                            text: "UTR No", size: 14, color: Colors.white),
-                        CustomTextWidget(
-                            text: "487872578744",
-                            size: 16,
-                            color: Colors.white),
-                      ],
-                    ),
-                  ],
-                ),
-                defaultHeight(10),
-              ],
-            ),
-          ),
+          Consumer<SettlementProvider>(
+              builder: (context, settlementProvider, child) {
+            return CustomContainer(
+              color: AppColors.kLightGreen,
+              // height: screenHeight * 0.14,
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  defaultHeight(10),
+                  CustomTextWidget(
+                      text:
+                          "₹ ${settlementProvider.selectedSettlementAggregate?.grossTransactionAmount ?? 0}",
+                      size: 18,
+                      color: Colors.white),
+                  CustomTextWidget(
+                      text:
+                          "${settlementProvider.selectedSettlementAggregate?.transactionCount ?? 0} Transactions",
+                      size: 12,
+                      color: Colors.white),
+                  CustomTextWidget(
+                      text:
+                          "Settled on ${settlementProvider.selectedSettlementAggregate?.tranDate != null ? "${settlementProvider.selectedSettlementAggregate!.tranDate!.day.toString().padLeft(2, '0')}-${settlementProvider.selectedSettlementAggregate!.tranDate!.month.toString().padLeft(2, '0')}-${settlementProvider.selectedSettlementAggregate!.tranDate!.year}" : 'N/A'}",
+                      size: 14,
+                      color: Colors.white),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomTextWidget(
+                              text: "Settled to",
+                              size: 12,
+                              color: Colors.white),
+                          CustomTextWidget(
+                              text: "Axis Bank Ltd | *******6545",
+                              size: 14,
+                              color: Colors.white),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          CustomTextWidget(
+                              text: "UTR No", size: 14, color: Colors.white),
+                          CustomTextWidget(
+                              text:
+                                  "${settlementProvider.selectedSettlementAggregate?.utr ?? "N/A"}",
+                              size: 16,
+                              color: Colors.white),
+                        ],
+                      ),
+                    ],
+                  ),
+                  defaultHeight(10),
+                ],
+              ),
+            );
+          }),
           ExpansionTile(
             title: CustomTextWidget(
                 text: 'View Deductions', color: AppColors.kPrimaryColor),

@@ -73,11 +73,10 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
     print("Page Size: $pageSize");
     print("Total Items: $_allTnxCount");
     print("Recent Transactions Length: ${_allTransactions.length}");
+
     if (_allTransactions.length >= _allTnxCount && !isAllTransLoadingFistTime)
       return;
-    print(_customEndDate);
-    print(_customStartDate);
-    print("Inside fetchItems");
+
     _allTranReqModel
       ..acquirerId = "OMAIND"
       ..merchantId = "65OMA0000000002"

@@ -17,7 +17,6 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:anet_merchant_app/main.dart';
 
-
 // Global Logout Class
 class Logout {
   // Logout widget
@@ -61,8 +60,7 @@ class Logout {
                     const SizedBox(height: 20),
                     const Text(
                       "Are you sure you want to logout?\n\n"
-                      "Logging out will require you to sign in again to access your account. "
-                      "Make sure you’ve saved any important changes.",
+                      "Logging out will require you to sign in again to access your account. ",
                       style: TextStyle(color: Colors.black),
                     ),
                     const SizedBox(height: 30),

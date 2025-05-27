@@ -13,7 +13,7 @@ class SettlementProvider extends ChangeNotifier {
 
   double _totalSettlementAmount = 0.0;
 
-  int _totalTransactions = 20;
+  int _totalTransactions = 0;
   int _totalSettlement = 0;
   double _deductions = 0;
   bool _isoading = false;
@@ -71,29 +71,32 @@ class SettlementProvider extends ChangeNotifier {
 
   List<SettlementAggregate> _utrWiseSettlements = [];
   List<SettlementAggregate> get utrWiseSettlements => _utrWiseSettlements;
+  SettlementAggregate? _selectedSettlementAggregate;
+  void setSelectedSettlementAggregate(SettlementAggregate? settlement) {
+    _selectedSettlementAggregate = settlement;
+  }
+
+  SettlementAggregate? get selectedSettlementAggregate =>
+      _selectedSettlementAggregate;
+
   // Methods
+  getFormattedDate(DateTime? date) {
+    if (date == null) return "N/A";
+    return DateFormat('yyyy-MM-dd').format(date);
+  }
 
   // Fetch recent transactions
   Future<void> getTransactionsInSettlement() async {
-    print(_selectedDateRange);
-    print(_customStartDate);
-    print("Current Page: $currentPage");
-    print("Page Size: $pageSize");
-    print("Total Items: $_allTnxCount");
-    print("Recent Transactions Length: ${_allTransactions.length}");
-    if (_allTransactions.length >= _allTnxCount && !isAllTransLoadingFistTime)
-      return;
-    print(_customEndDate);
-    print(_customStartDate);
-    print("Inside fetchItems");
+    _allTransactions = [];
+    notifyListeners();
     var reqBody = {
       "merchantId": "651076000006945",
-      "fromDate": "2024-05-01",
-      "toDate": "2025-05-22",
+      "fromDate": getFormattedDate(_selectedSettlementAggregate!.tranDate!),
+      "toDate": getFormattedDate(_selectedSettlementAggregate!.tranDate!),
       "reconsiled": true,
       "merPayDone": true,
       "misDone": true,
-      "pageDataRequired": false,
+      "pageDataRequired": true,
       "settlementAggregatesRequired": true
     };
     if (_isAllTransactionsLoading) return;

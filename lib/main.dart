@@ -107,8 +107,8 @@ class MainPage extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         scaffoldMessengerKey: StateKey.snackBarKey,
-        // initialRoute: 'splash',
-        initialRoute: 'merchantHomeScreen',
+        initialRoute: 'splash',
+        // initialRoute: 'merchantHomeScreen',
         onGenerateRoute: CustomRoute.allRoutes,
         navigatorKey: NavigationService.navigatorKey,
         theme: ThemeData(
@@ -148,7 +148,7 @@ class TokenManager {
   Timer? _timer;
   MerchantServices merchantServices = MerchantServices();
   void start(BuildContext context) {
-    _timer ??= Timer.periodic(Duration(seconds: 10), (_) {
+    _timer ??= Timer.periodic(Duration(seconds: 90), (_) {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       if (authProvider.isLoggedIn) {
         _refreshToken();

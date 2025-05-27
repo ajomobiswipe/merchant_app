@@ -65,12 +65,11 @@ class MerchantServices {
 
     var url =
         "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/getPosTxnHistoryReport?pageNumber=$pageNumber&size=$pageSize&sort=insertDateTime%2Cdesc";
-    Response response = Response(
-        getDummyPosTxnHistoryReport(pageNumber: pageNumber, pageSize: pageSize),
-        200);
-    print(jsonEncode(requestModel));
-    //var response = await connection.post(url, requestModel);
-    await Future.delayed(const Duration(seconds: 2));
+    // Response response = Response(
+    //     getDummyPosTxnHistoryReport(pageNumber: pageNumber, pageSize: pageSize),
+    //     200);
+    //        await Future.delayed(const Duration(seconds: 2));
+    var response = await connection.post(url, requestModel);
 
     return response;
   }
@@ -83,9 +82,9 @@ class MerchantServices {
     var url =
         "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/dailySettlementTxnSummary";
 
-    // var response = await connection.post(url, requestModel);
-    Response response = Response(getDummyDailySettlementTxnSummary(), 200);
-    await Future.delayed(const Duration(seconds: 2));
+    // Response response = Response(getDummyDailySettlementTxnSummary(), 200);
+    // await Future.delayed(const Duration(seconds: 2));
+    var response = await connection.post(url, requestModel);
     return response;
   }
 
@@ -96,9 +95,9 @@ class MerchantServices {
     var url =
         "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/getSettlementHistoryReport?pageNumber=$pageNumber&size=$pageSize&sort=desc";
 
-    // var response = await connection.post(url, requestModel);
-    Response response = Response(getDummySettlementHistoryReport(), 200); //
-    await Future.delayed(const Duration(seconds: 2));
+    // Response response = Response(getDummySettlementHistoryReport(), 200); //
+    // await Future.delayed(const Duration(seconds: 2));
+    var response = await connection.post(url, requestModel);
     return response;
   }
 
@@ -109,9 +108,9 @@ class MerchantServices {
     var url =
         "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/getSettlementHistoryReport?pageNumber=$pageNumber&size=$pageSize&sort=desc";
 
-    // var response = await connection.post(url, requestModel);
-    Response response = Response(getDummySettlementHistoryReport(), 200);
-    await Future.delayed(const Duration(seconds: 2));
+    // Response response = Response(getDummySettlementHistoryReport(), 200);
+    // await Future.delayed(const Duration(seconds: 2));
+    var response = await connection.post(url, requestModel);
     return response;
   }
 }

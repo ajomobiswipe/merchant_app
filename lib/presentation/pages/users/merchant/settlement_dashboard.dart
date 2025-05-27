@@ -142,21 +142,34 @@ class _SettlementDashboardState extends State<SettlementDashboard> {
                       itemBuilder: (context, index) {
                         final settlement =
                             settlementProvider.utrWiseSettlements[index];
-                        return settlementTile(
-                            screenWidth, screenHeight, settlement, context);
+
+                        return settlementTile(settlementProvider, screenWidth,
+                            screenHeight, settlement, context);
                       },
                     ),
             ],
           );
         },
       ),
+      onTapHome: () {
+        Navigator.pop(context);
+      },
+      onTapSupport: () {
+        Navigator.pop(context);
+        Navigator.pushNamed(context, "merchantHelpScreen");
+      },
     );
   }
 
-  CustomContainer settlementTile(double screenWidth, double screenHeight,
-      SettlementAggregate settlement, BuildContext context) {
+  CustomContainer settlementTile(
+      SettlementProvider settlementProvider,
+      double screenWidth,
+      double screenHeight,
+      SettlementAggregate settlement,
+      BuildContext context) {
     return CustomContainer(
       onTap: () {
+        settlementProvider.setSelectedSettlementAggregate(settlement);
         Navigator.pushNamed(
           context,
           "viewSettlementInfo",
@@ -172,7 +185,8 @@ class _SettlementDashboardState extends State<SettlementDashboard> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CustomTextWidget(
-                  text: "₹ ${settlement.totalAmount ?? 0}", size: 18),
+                  text: "₹ ${settlement.grossTransactionAmount ?? 0}",
+                  size: 18),
               CustomTextWidget(
                   text: "${settlement.transactionCount ?? 0} Transactions ",
                   size: 12),

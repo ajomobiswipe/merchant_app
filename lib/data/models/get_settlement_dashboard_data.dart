@@ -1,3 +1,7 @@
+// To parse this JSON data, do
+//
+//     final getSettlementDashboardData = getSettlementDashboardDataFromJson(jsonString);
+
 import 'dart:convert';
 
 GetSettlementDashboardData getSettlementDashboardDataFromJson(String str) =>
@@ -36,32 +40,44 @@ class GetSettlementDashboardData {
 
 class SettlementAggregate {
   DateTime? tranDate;
-  double? totalAmount;
+  double? grossTransactionAmount;
   int? transactionCount;
   String? utr;
+  double? gst;
+  double? mdrAmount;
+  double? settlementAmount;
 
   SettlementAggregate({
     this.tranDate,
-    this.totalAmount,
+    this.grossTransactionAmount,
     this.transactionCount,
     this.utr,
+    this.gst,
+    this.mdrAmount,
+    this.settlementAmount,
   });
 
   factory SettlementAggregate.fromJson(Map<String, dynamic> json) =>
       SettlementAggregate(
         tranDate:
             json["tranDate"] == null ? null : DateTime.parse(json["tranDate"]),
-        totalAmount: json["totalAmount"]?.toDouble(),
+        grossTransactionAmount: json["grossTransactionAmount"]?.toDouble(),
         transactionCount: json["transactionCount"],
         utr: json["utr"],
+        gst: json["gst"]?.toDouble(),
+        mdrAmount: json["mdrAmount"]?.toDouble(),
+        settlementAmount: json["settlementAmount"]?.toDouble(),
       );
 
   Map<String, dynamic> toJson() => {
         "tranDate":
             "${tranDate!.year.toString().padLeft(4, '0')}-${tranDate!.month.toString().padLeft(2, '0')}-${tranDate!.day.toString().padLeft(2, '0')}",
-        "totalAmount": totalAmount,
+        "grossTransactionAmount": grossTransactionAmount,
         "transactionCount": transactionCount,
         "utr": utr,
+        "gst": gst,
+        "mdrAmount": mdrAmount,
+        "settlementAmount": settlementAmount,
       };
 }
 

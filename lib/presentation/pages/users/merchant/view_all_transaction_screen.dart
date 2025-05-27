@@ -65,46 +65,27 @@ class _ViewAllTransactionScreenState extends State<ViewAllTransactionScreen> {
           defaultHeight(15),
           CustomTextWidget(text: "Transaction since last 7 days", size: 12),
           defaultHeight(10),
-          Selector<TransactionProvider, HomeScreenTabItem>(
-            selector: (context, provider) =>
-                provider.selectedTab, // Listen only to selectedTab
-            builder: (context, selectedTab, child) {
-              switch (selectedTab) {
-                case HomeScreenTabItem.TransactionHistory:
-                  return CustomContainer(
-                    height: screenHeight * 0.05,
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        CustomTextWidget(
-                            color: Colors.white,
-                            text: context
-                                .read<TransactionProvider>()
-                                .todaysTnxCount
+          Consumer<MerchantFilteredTransactionProvider>(
+            builder: (context, transactionProvider, child) {
+              return CustomContainer(
+                height: screenHeight * 0.05,
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CustomTextWidget(
+                        color: Colors.white,
+                        text: transactionProvider.todaysTnxCount.toString(),
+                        size: 18),
+                    CustomTextWidget(
+                        text: "₹ " +
+                            transactionProvider.totalSettlementAmount
                                 .toString(),
-                            size: 18),
-                        CustomTextWidget(
-                            text: "₹ 2578744", size: 18, color: Colors.white),
-                      ],
-                    ),
-                  );
-                case HomeScreenTabItem.Settlements:
-                  return CustomContainer(
-                    height: screenHeight * 0.06,
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        CustomTextWidget(
-                            text:
-                                "₹ ${context.read<TransactionProvider>().totalSettlementAmount}",
-                            size: 18,
-                            color: Colors.white), //totalSettlementAmount
-                      ],
-                    ),
-                  );
-              }
+                        size: 18,
+                        color: Colors.white),
+                  ],
+                ),
+              );
             },
           ),
 

@@ -65,6 +65,8 @@ class CustomRoute {
         // Merchant Routes
         case "merchantLogin":
           return const MerchantLogin();
+        case "login":
+          return const MerchantLogin();
         case "merchantHomeScreen":
           return const MerchantHomeScreen();
         case "merchantHelpScreen":

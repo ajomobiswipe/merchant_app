@@ -1,5 +1,6 @@
 import 'package:anet_merchant_app/core/constants/constants.dart';
 import 'package:anet_merchant_app/presentation/providers/merchant_filtered_transaction_provider.dart';
+import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_container.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
 import 'package:flutter/material.dart';
@@ -199,6 +200,14 @@ class MerchantTransactionFilterBottomSheet {
     return CustomContainer(
       height: 70,
       onTap: () {
+        if (provider.selectedDateRange == null ||
+            provider.selectedDateRange!.isEmpty) {
+          AlertService().error(
+            "Please select a date range",
+          );
+          Navigator.pop(context);
+          return;
+        }
         Navigator.pop(context);
         Navigator.pushNamed(context, "viewAllTransaction");
         print(
