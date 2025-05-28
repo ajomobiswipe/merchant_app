@@ -1,6 +1,7 @@
 import 'package:anet_merchant_app/data/models/transaction_history_request_model.dart';
 import 'package:anet_merchant_app/data/models/transaction_model.dart';
 import 'package:anet_merchant_app/data/services/merchant_service.dart';
+import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -32,6 +33,15 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
   String? get selectedDateRange => _selectedDateRange;
   DateTime? get customStartDate => _customStartDate;
   DateTime? get customEndDate => _customEndDate;
+  String getFormattedDateRange() {
+    if (_selectedDateRange == 'Custom Date Range' &&
+        _customStartDate != null &&
+        _customEndDate != null) {
+      return '${DateFormat('dd-MM-yyyy').format(_customStartDate!)} to ${DateFormat('dd-MM-yyyy').format(_customEndDate!)}';
+    }
+    return _selectedDateRange ?? '';
+  }
+
   String get selectedPaymentMode => _selectedPaymentMode;
 
   // Controllers
@@ -45,6 +55,7 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
   // Flags
   bool _isAllTransactionsLoading = false;
   bool isAllTransLoadingFistTime = true;
+  bool _isEmailSending = false;
 
   // Pagination
   int currentPage = 0;
@@ -62,6 +73,7 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
   int get todaysTnxCount => _allTnxCount;
   double get totalSettlementAmount => _totalAmountInAllTrans;
   List<TransactionElement> get allTransactions => _allTransactions;
+  bool get isEmailSending => _isEmailSending;
 
   // Methods
 
@@ -118,6 +130,56 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
       print("Error fetching transactions: $e");
     } finally {
       _isAllTransactionsLoading = false;
+      notifyListeners();
+    }
+  }
+
+  // Fetch recent transactions
+  Future<void> sendAllTransactionsToEmail() async {
+    if (_allTransactions.isEmpty) {
+      AlertService().error("No transactions available to send.");
+      return;
+    }
+    print(_selectedDateRange);
+    print(_customStartDate);
+    print("Current Page: $currentPage");
+    print("Page Size: $pageSize");
+    print("Total Items: $_allTnxCount");
+    print("Recent Transactions Length: ${_allTransactions.length}");
+
+    _allTranReqModel
+      ..acquirerId = "OMAIND"
+      ..merchantId = "65OMA0000000002"
+      ..rrn = ""
+      ..recordFrom = _customStartDate != null
+          ? DateFormat('dd-MM-yyyy').format(_customStartDate!)
+          : _selectedDateRange
+      ..recordTo = _customEndDate != null
+          ? DateFormat('dd-MM-yyyy').format(_customEndDate!)
+          : _selectedDateRange
+      ..terminalId = null
+      ..sendTxnReportToMail = true;
+
+    _isEmailSending = true;
+    notifyListeners();
+
+    try {
+      final response = await _merchantServices.fetchTransactionHistory(
+        _allTranReqModel.toJson(),
+        pageNumber: 0,
+        pageSize: 100,
+      );
+
+      if (response.statusCode == 200) {
+        AlertService().success(
+            " Settlement report has been sent to your registered email.");
+      } else {
+        AlertService().error("Failed to send settlement report to email.");
+      }
+    } catch (e) {
+      print("Error fetching transactions: $e");
+    } finally {
+      _isEmailSending = false;
       notifyListeners();
     }
   }

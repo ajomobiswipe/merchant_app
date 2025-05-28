@@ -5,6 +5,7 @@ class TransactionHistoryRequestModel {
   String? acquirerId;
   String? rrn;
   dynamic terminalId;
+  bool sendTxnReportToMail;
 
   TransactionHistoryRequestModel({
     this.merchantId,
@@ -13,6 +14,7 @@ class TransactionHistoryRequestModel {
     this.acquirerId,
     this.rrn,
     this.terminalId,
+    this.sendTxnReportToMail = false,
   });
 
   Map<String, dynamic> toJson() => {
@@ -22,5 +24,6 @@ class TransactionHistoryRequestModel {
         "acquirerId": acquirerId,
         "rrn": rrn,
         "terminalId": terminalId,
+        "sendTxnReportToMail": sendTxnReportToMail,
       };
 }

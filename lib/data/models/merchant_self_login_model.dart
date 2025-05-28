@@ -31,4 +31,11 @@ class MerchantSelfLoginModel {
       // 'deviceType': "WEB",
     };
   }
+
+  Map<String, dynamic> validateEmailOtpToJson() {
+    return {
+      'userName': merchantId,
+      'otp': emailOtp,
+    };
+  }
 }

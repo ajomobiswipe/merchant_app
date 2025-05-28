@@ -10,7 +10,6 @@ import 'package:provider/provider.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 import '../../../widgets/app/alert_service.dart';
 import '../../../widgets/loading.dart';
 
@@ -202,24 +201,82 @@ class _MerchantLoginState extends State<MerchantLogin> {
                                   }
                                 },
                               )
-                            : buildTextField(
-                                controller: authProvider.passwordController,
-                                hintText: 'Password',
-                                labelText: "Password",
-                                obscureText: true,
-                                isPasswordField: true,
-                                onSaved: (value) {
-                                  authProvider.req.password = value;
-                                },
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter Password!';
-                                  }
-                                  if (value.length < 10) {
-                                    return 'Minimum character length is 10';
-                                  }
-                                  return null;
-                                },
+                            : Container(
+                                padding:
+                                    const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(bottom: 5),
+                                      child: CustomTextWidget(
+                                        text: "Password",
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    TextFormField(
+                                      controller:
+                                          authProvider.passwordController,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyLarge
+                                          ?.copyWith(
+                                              fontSize: 13, fontFamily: 'Mont'),
+                                      obscureText: authProvider.showPassword,
+                                      obscuringCharacter: '*',
+                                      maxLength: null,
+                                      keyboardType: TextInputType.text,
+                                      autovalidateMode:
+                                          AutovalidateMode.onUserInteraction,
+                                      onSaved: (value) {
+                                        authProvider.req.password = value;
+                                      },
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Please enter Password!';
+                                        }
+                                        if (value.length < 10) {
+                                          return 'Minimum character length is 10';
+                                        }
+                                        return null;
+                                      },
+                                      inputFormatters: null,
+                                      decoration: InputDecoration(
+                                        hintText: 'Password',
+                                        counterText: '',
+                                        labelStyle: Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge
+                                            ?.copyWith(fontSize: 16),
+                                        enabledBorder: InputBorder.none,
+                                        focusedBorder: InputBorder.none,
+                                        border: InputBorder.none,
+                                        errorBorder: InputBorder.none,
+                                        focusedErrorBorder: InputBorder.none,
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                vertical: 10, horizontal: 10),
+                                        fillColor: AppColors.kTileColor,
+                                        filled: true,
+                                        hintStyle: const TextStyle(
+                                            color: Colors.grey, fontSize: 13),
+                                        suffixIcon: IconButton(
+                                          onPressed: () {
+                                            authProvider
+                                                .togglePasswordVisibility();
+                                          },
+                                          icon: Icon(
+                                            authProvider.showPassword
+                                                ? Icons.visibility
+                                                : Icons.visibility_off,
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                         gapWidget(screenHeight * .01),
                         //login(),

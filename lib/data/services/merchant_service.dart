@@ -59,6 +59,16 @@ class MerchantServices {
     return response;
   }
 
+  verifyOtp(requestModel) async {
+    Connection connection = Connection();
+
+    var url = "${EndPoints.baseApiPublicNanoUMS}ums/verifyEmailOtp";
+
+    var response = await connection.postWithOutToken(url, requestModel);
+
+    return response;
+  }
+
   fetchTransactionHistory(requestModel,
       {required int pageNumber, required int pageSize}) async {
     Connection connection = Connection();

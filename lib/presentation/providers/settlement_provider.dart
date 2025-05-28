@@ -16,7 +16,10 @@ class SettlementProvider extends ChangeNotifier {
   int _totalTransactions = 0;
   int _totalSettlement = 0;
   double _deductions = 0;
+
   bool _isoading = false;
+  bool _isEmailSending = false;
+  bool get isEmailSending => _isEmailSending;
 
   bool get isLoading => _isoading;
   double get totalSettlementAmount => _totalSettlementAmount;
@@ -41,7 +44,14 @@ class SettlementProvider extends ChangeNotifier {
     'Last 1 Month',
     'Custom Date Range'
   ];
-
+  String getFormattedDateRange() {
+    if (_selectedDateRange == 'Custom Date Range' &&
+        _customStartDate != null &&
+        _customEndDate != null) {
+      return 'From ${DateFormat('dd-MM-yyyy').format(_customStartDate!)} to ${DateFormat('dd-MM-yyyy').format(_customEndDate!)}';
+    }
+    return _selectedDateRange ?? '';
+  }
   // Getters
 
   String? get selectedDateRange => _selectedDateRange;
@@ -167,6 +177,43 @@ class SettlementProvider extends ChangeNotifier {
       print("Error fetching transactions: $e");
     } finally {
       _isoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> sendSettlementDashboardReportTOEmail() async {
+    _isEmailSending = true;
+    notifyListeners();
+    var reqBody = {
+      "merchantId": "651076000006945",
+      "fromDate": "2024-05-01",
+      "toDate": "2025-05-22",
+      "reconsiled": true,
+      "merPayDone": true,
+      "misDone": true,
+      "pageDataRequired": false,
+      "settlementAggregatesRequired": true,
+      "sendSettlementReportToMail": true
+    };
+
+    try {
+      final response = await _merchantServices.getSettlementDashboardReport(
+        reqBody,
+        pageNumber: currentPage,
+        pageSize: pageSize,
+      );
+
+      if (response.statusCode == 200) {
+        final decodedData = getSettlementDashboardDataFromJson(response.body);
+        AlertService().success(
+            " Settlement report has been sent to your registered email.");
+      } else {
+        AlertService().error("Failed to send settlement report to email.");
+      }
+    } catch (e) {
+      print("Error fetching transactions: $e");
+    } finally {
+      _isEmailSending = false;
       notifyListeners();
     }
   }

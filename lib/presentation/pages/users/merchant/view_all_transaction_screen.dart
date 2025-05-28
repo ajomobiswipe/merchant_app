@@ -10,6 +10,7 @@ import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
 import 'package:anet_merchant_app/presentation/widgets/transaction_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 
 class ViewAllTransactionScreen extends StatefulWidget {
   const ViewAllTransactionScreen({super.key});
@@ -58,16 +59,17 @@ class _ViewAllTransactionScreenState extends State<ViewAllTransactionScreen> {
     double screenWidth = MediaQuery.of(context).size.width;
 
     return MerchantScaffold(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CustomTextWidget(text: Constants.storeName, size: 18),
-          defaultHeight(15),
-          CustomTextWidget(text: "Transaction since last 7 days", size: 12),
-          defaultHeight(10),
-          Consumer<MerchantFilteredTransactionProvider>(
-            builder: (context, transactionProvider, child) {
-              return CustomContainer(
+      child: Consumer<MerchantFilteredTransactionProvider>(
+        builder: (context, transactionProvider, child) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CustomTextWidget(text: Constants.storeName, size: 18),
+              defaultHeight(15),
+              CustomTextWidget(
+                  text: transactionProvider.getFormattedDateRange(), size: 12),
+              defaultHeight(10),
+              CustomContainer(
                 height: screenHeight * 0.05,
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Row(
@@ -85,86 +87,92 @@ class _ViewAllTransactionScreenState extends State<ViewAllTransactionScreen> {
                         color: Colors.white),
                   ],
                 ),
-              );
-            },
-          ),
-
-          defaultHeight(20),
-
-          // **Dynamic Content Based on Selected Tab**
-          Expanded(
-            child: Consumer<MerchantFilteredTransactionProvider>(
-              builder: (context, transactionProvider, child) {
-                return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      defaultHeight(10),
-                      Expanded(
-                        child: (transactionProvider.isAllTransactionsLoading &&
-                                transactionProvider.allTransactions.isEmpty)
-                            ? Center(
-                                child: CircularProgressIndicator(),
-                              )
-                            : transactionProvider.allTransactions.isNotEmpty
-                                ? GestureDetector(
-                                    onTapUp: (details) {
-                                      print("onTapUp");
+              ),
+              defaultHeight(20),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    defaultHeight(10),
+                    Expanded(
+                      child: (transactionProvider.isAllTransactionsLoading &&
+                              transactionProvider.allTransactions.isEmpty)
+                          ? Center(
+                              child: CircularProgressIndicator(),
+                            )
+                          : transactionProvider.allTransactions.isNotEmpty
+                              ? GestureDetector(
+                                  onTapUp: (details) {
+                                    print("onTapUp");
+                                  },
+                                  child: ListView.builder(
+                                    controller:
+                                        transactionProvider.allTransScrollCtrl,
+                                    itemCount: transactionProvider
+                                            .allTransactions.length +
+                                        1,
+                                    itemBuilder: (context, index) {
+                                      if (index <
+                                          transactionProvider
+                                              .allTransactions.length) {
+                                        return TransactionTile(
+                                          transaction: transactionProvider
+                                              .allTransactions[index],
+                                          width: screenWidth,
+                                        );
+                                      } else if (transactionProvider
+                                          .hasMoreTransactions) {
+                                        return Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 16),
+                                          child: Center(
+                                              child:
+                                                  CircularProgressIndicator()),
+                                        );
+                                      } else {
+                                        return Center(
+                                            child: Text(
+                                                "-----   END OF LIST  ------"));
+                                      }
                                     },
-                                    child: ListView.builder(
-                                      controller: transactionProvider
-                                          .allTransScrollCtrl,
-                                      itemCount: transactionProvider
-                                              .allTransactions.length +
-                                          1,
-                                      itemBuilder: (context, index) {
-                                        if (index <
-                                            transactionProvider
-                                                .allTransactions.length) {
-                                          return TransactionTile(
-                                            transaction: transactionProvider
-                                                .allTransactions[index],
-                                            width: screenWidth,
-                                          );
-                                        } else if (transactionProvider
-                                            .hasMoreTransactions) {
-                                          return Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                vertical: 16),
-                                            child: Center(
-                                                child:
-                                                    CircularProgressIndicator()),
-                                          );
-                                        } else {
-                                          return Center(
-                                              child: Text(
-                                                  "-----   END OF LIST  ------"));
-                                        }
-                                      },
-                                    ),
-                                  )
-                                : Center(
-                                    child: Text(
-                                      "No transactions available",
-                                      style: TextStyle(
-                                          fontSize: 16, color: Colors.grey),
-                                    ),
                                   ),
+                                )
+                              : Center(
+                                  child: Text(
+                                    "No transactions available",
+                                    style: TextStyle(
+                                        fontSize: 16, color: Colors.grey),
+                                  ),
+                                ),
+                    ),
+                  ],
+                ),
+              ),
+              transactionProvider.isEmailSending
+                  ? Shimmer.fromColors(
+                      baseColor: Colors.grey[300]!,
+                      highlightColor: Colors.grey[100]!,
+                      child: CustomContainer(
+                        height: screenHeight * 0.06,
+                        child: CustomTextWidget(
+                          text: "Sending Email...",
+                          color: AppColors.gray,
+                        ),
                       ),
-                    ]);
-              },
-            ),
-          ),
-          CustomContainer(
-            onTap: () {
-              // Navigator.pushNamed(context, "merchantTransactionFilterScreen");
-            },
-            height: screenHeight * 0.06,
-            child: CustomTextWidget(
-              text: "Send By Email",
-              color: AppColors.gray,
-            ),
-          ),
-        ],
+                    )
+                  : CustomContainer(
+                      onTap: () {
+                        transactionProvider.sendAllTransactionsToEmail();
+                      },
+                      height: screenHeight * 0.06,
+                      child: CustomTextWidget(
+                        text: "Send By Email",
+                        color: AppColors.gray,
+                      ),
+                    ),
+            ],
+          );
+        },
       ),
       onTapHome: () {
         Navigator.pushNamedAndRemoveUntil(

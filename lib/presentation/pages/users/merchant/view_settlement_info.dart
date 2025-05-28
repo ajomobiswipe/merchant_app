@@ -11,6 +11,7 @@ import 'package:anet_merchant_app/presentation/widgets/settledTransactionTile.da
 import 'package:anet_merchant_app/presentation/widgets/transaction_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 
 class ViewSettlementInfo extends StatefulWidget {
   const ViewSettlementInfo({super.key});
@@ -181,15 +182,32 @@ class _ViewSettlementInfoState extends State<ViewSettlementInfo> {
               },
             ),
           ),
-          CustomContainer(
-            onTap: () {
-              // Navigator.pushNamed(context, "merchantTransactionFilterScreen");
+          Consumer<SettlementProvider>(
+            builder: (context, settlementProvider, child) {
+              return settlementProvider.isEmailSending
+                  ? Shimmer.fromColors(
+                      baseColor: Colors.grey[300]!,
+                      highlightColor: Colors.grey[100]!,
+                      child: CustomContainer(
+                        height: screenHeight * 0.06,
+                        child: CustomTextWidget(
+                          text: "Sending Email...",
+                          color: AppColors.gray,
+                        ),
+                      ),
+                    )
+                  : CustomContainer(
+                      onTap: () {
+                        settlementProvider
+                            .sendSettlementDashboardReportTOEmail();
+                      },
+                      height: screenHeight * 0.06,
+                      child: CustomTextWidget(
+                        text: "Send By Email",
+                        color: AppColors.gray,
+                      ),
+                    );
             },
-            height: screenHeight * 0.06,
-            child: CustomTextWidget(
-              text: "Send By Email",
-              color: AppColors.gray,
-            ),
           ),
         ],
       ),
@@ -300,41 +318,6 @@ class _ViewSettlementInfoState extends State<ViewSettlementInfo> {
           ),
           defaultHeight(screenWidth * 0.1),
         ],
-      ),
-    );
-  }
-
-  /// **MPR List**
-  Widget mprList() {
-    return ListView(
-      children: [
-        Row(
-          children: [
-            CustomTextWidget(text: "MPR"),
-          ],
-        )
-      ],
-    );
-  }
-
-  /// **Tab Widget**
-  CustomContainer homeScreenTab(double screenHeight,
-      {required double width,
-      required HomeScreenTabItem homeScreenTabItem,
-      required HomeScreenTabItem selectedTabItem,
-      Function()? onTap,
-      required String title}) {
-    return CustomContainer(
-      onTap: onTap,
-      width: width,
-      height: screenHeight * 0.07,
-      color: homeScreenTabItem == selectedTabItem
-          ? Colors.grey
-          : AppColors.kPrimaryColor,
-      child: CustomTextWidget(
-        text: title,
-        size: 14,
-        color: Colors.white,
       ),
     );
   }

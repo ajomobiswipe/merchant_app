@@ -48,6 +48,8 @@ class _SettlementDashboardState extends State<SettlementDashboard> {
                   : CustomTextWidget(
                       text: settlementProvider.storeName ?? "N/A", size: 18),
               CustomTextWidget(text: "Total Settlements", size: 12),
+              CustomTextWidget(
+                  text: settlementProvider.getFormattedDateRange(), size: 12),
               settlementProvider.isLoading
                   ? Shimmer.fromColors(
                       baseColor: Colors.grey[300]!,

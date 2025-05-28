@@ -12,7 +12,6 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:anet_merchant_app/main.dart';
 
-
 class AuthProvider with ChangeNotifier {
   @override
   void dispose() {
@@ -53,15 +52,22 @@ class AuthProvider with ChangeNotifier {
   bool _isLoggedIn = false;
   bool _isLoading = false;
   bool _isOtpSent = false;
+  bool _showPassword = false;
   String _message = '';
   bool get isLoggedIn => _isLoggedIn;
   MerchantInfoModel get merchantInfo => _merchantInfo;
   bool get isLoading => _isLoading;
   bool get isOtpSent => _isOtpSent;
+  bool get showPassword => _showPassword;
   clearOtp() {
     _isOtpSent = false;
     _phoneNumberOtpController.clear();
     _emailOtpController.clear();
+    notifyListeners();
+  }
+
+  togglePasswordVisibility() {
+    _showPassword = !_showPassword;
     notifyListeners();
   }
 
@@ -105,6 +111,9 @@ class AuthProvider with ChangeNotifier {
       if (response != null &&
           response['responseCode'] == "00" &&
           res.statusCode == 200) {
+        StorageServices.saveSecureStorage(response,
+            userName: _merchantIdController.text,
+            password: _passwordController.text);
         if (response['twoFARequired']) {
           _isOtpSent = true;
           alertService
@@ -129,38 +138,34 @@ class AuthProvider with ChangeNotifier {
 
   Future<void> validateMerchantLoginOtp() async {
     req
-      ..deviceType = "WEB"
-      ..mobileNumberOtp = _phoneNumberOtpController.text
+      ..merchantId = _merchantIdController.text
       ..emailOtp = _emailOtpController.text;
 
     try {
       final res =
-          await _merchantServices.merchantSelfLogin(req.validateOtpToJson());
+          await _merchantServices.verifyOtp(req.validateEmailOtpToJson());
       var response = jsonDecode(res.body);
       if (res.statusCode == 200) {
-        if (response != null && response['responseCode'] == "00") {
+        if (response != null && response['errorMessage'] == "Success") {
           _isLoggedIn = true;
           _isOtpSent = false;
           alertService.success(
-              response['responseMessage'] ?? 'otp verification successful');
+              response['successMessage'] ?? 'OTP Verified successfully!');
           TokenManager()
               .start(NavigationService.navigatorKey.currentState!.context);
           NavigationService.navigatorKey.currentState
               ?.pushNamedAndRemoveUntil('merchantHomeScreen', (route) => false);
-          StorageServices.saveSecureStorage(response,
-              userName: _merchantIdController.text,
-              password: _passwordController.text);
         } else {
           alertService
-              .error(response['responseMessage'] ?? 'otp verification failed');
+              .error(response['errorMessage'] ?? 'OTP verification failed');
         }
       } else {
         alertService
-            .error(response['responseMessage'] ?? 'otp verification failed');
+            .error(response['errorMessage'] ?? 'OTP verification failed');
       }
     } catch (e) {
       alertService
-          .error('An error occurred while sending OTP: ${e.toString()}');
+          .error('An error occurred while verifying OTP: ${e.toString()}');
     } finally {
       _setLoading(false);
       notifyListeners();
