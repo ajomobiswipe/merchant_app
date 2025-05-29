@@ -225,6 +225,7 @@ class AuthProvider with ChangeNotifier {
     pref.setString('custId', decodeData['custId'].toString());
     if (decodeData['role'].toString() == "MERCHANT") {
       pref.setString('merchantId', decodeData['merchantId'].toString());
+      pref.setString('acqMerchantId', decodeData['acqMerchantId'].toString());
       pref.setString('terminalId', decodeData['terminalId'].toString());
       pref.setString(
           'kycExpiryAlertMsg', decodeData['kycExpiryAlertMsg'].toString());

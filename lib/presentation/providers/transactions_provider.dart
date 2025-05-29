@@ -5,6 +5,7 @@ import 'package:anet_merchant_app/data/models/transaction_model.dart';
 import 'package:anet_merchant_app/data/services/merchant_service.dart';
 import 'package:anet_merchant_app/presentation/pages/users/merchant/sampledata/sampledata.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // Enums
 enum HomeScreenTabItem {
@@ -71,10 +72,14 @@ class TransactionProvider with ChangeNotifier {
     if (recentTransactions.length >= _todaysTnxCount &&
         !isRecentTransLoadingFistTime) return;
 
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String? merchantId = prefs.getString('acqMerchantId') ?? '65OMA0000000002';
+
     print("Inside fetchItems");
     _recentTranReqModel
       ..acquirerId = "OMAIND"
-      ..merchantId = "65OMA0000000002"
+      ..merchantId = merchantId
       ..recordFrom = "22-08-2024"
       ..recordTo = "09-09-2024"
       //      ..recordFrom = "${DateTime.now().toLocal().toString().split(' ')[0]}"
@@ -133,8 +138,11 @@ class TransactionProvider with ChangeNotifier {
 
   // Fetch daily settlement transaction summary
   Future<void> fetchDailySettlementTxnSummary() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String? merchantId = prefs.getString('acqMerchantId') ?? '65OMA0000000002';
     var reqbody = {
-      "merchantId": "65OMA0000000002",
+      "merchantId": merchantId,
       "isReconsiled": true,
       "isSettled": true
     };
@@ -151,8 +159,10 @@ class TransactionProvider with ChangeNotifier {
   }
 
   Future<void> fetchDailyMerchantTxnSummary() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? merchantId = prefs.getString('acqMerchantId') ?? '65OMA0000000002';
     var reqbody = {
-      "merchantId": "65OMA0000000002",
+      "merchantId": merchantId,
     };
     var response =
         await _merchantServices.fetchDailyMerchantTxnSummary(reqbody);

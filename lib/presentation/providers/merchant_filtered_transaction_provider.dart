@@ -4,6 +4,7 @@ import 'package:anet_merchant_app/data/services/merchant_service.dart';
 import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MerchantFilteredTransactionProvider extends ChangeNotifier {
   MerchantServices merchantServices = MerchantServices();
@@ -86,12 +87,16 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
     print("Total Items: $_allTnxCount");
     print("Recent Transactions Length: ${_allTransactions.length}");
 
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
     if (_allTransactions.length >= _allTnxCount && !isAllTransLoadingFistTime)
       return;
 
+    String? merchantId = prefs.getString('acqMerchantId') ?? '65OMA0000000002';
+
     _allTranReqModel
       ..acquirerId = "OMAIND"
-      ..merchantId = "65OMA0000000002"
+      ..merchantId = merchantId
       ..rrn = ""
       ..recordFrom = _customStartDate != null
           ? DateFormat('dd-MM-yyyy').format(_customStartDate!)
