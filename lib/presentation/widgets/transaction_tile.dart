@@ -29,83 +29,106 @@ class TransactionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
       child: Container(
-        // margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
+          gradient: LinearGradient(
+            colors: [Colors.white, Colors.blue.shade50],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
-              spreadRadius: 2,
-              blurRadius: 5,
-              offset: const Offset(0, 2),
+              color: Colors.grey.withOpacity(0.3),
+              spreadRadius: 3,
+              blurRadius: 7,
+              offset: const Offset(0, 3),
             ),
           ],
         ),
-        child: Row(
-          children: [
-            const Icon(Icons.payment, color: Colors.blueAccent),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      const Text(
-                        "₹ ",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      Text(
-                        transaction.amount ?? "0.00",
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    formatTime(transaction.transactionTime),
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w300,
-                    ),
-                  ),
-                ],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          child: Row(
+            children: [
+              CircleAvatar(
+                backgroundColor: Colors.blueAccent.withOpacity(0.1),
+                child: const Icon(Icons.payment, color: Colors.blueAccent),
               ),
-            ),
-            CustomContainer(
-              color:
-                  transaction.responseCode == "00" ? Colors.green : Colors.red,
-              width: width * 0.22,
-              height: 20,
-              child: CustomTextWidget(
-                size: 10,
-                text: getTransactionStatus(transaction),
-                color: Colors.white,
-              ),
-            ),
-            defaultWidth(width * 0.02),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ShowTransactionInvoice(
-                      transaction: transaction,
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Text(
+                          "₹ ",
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        Text(
+                          transaction.amount ?? "0.00",
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                );
-              },
-              child: const Icon(Icons.info_outline),
-            ),
-          ],
+                    const SizedBox(height: 6),
+                    Text(
+                      formatTime(transaction.transactionTime),
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.grey.shade600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              CustomContainer(
+                color: (transaction.responseCode == "000" ||
+                        transaction.responseCode == "00")
+                    ? Colors.green
+                    : Colors.red,
+                width: width * 0.22,
+                height: 24,
+                // borderRadius: 12,
+                child: CustomTextWidget(
+                  size: 12,
+                  text: getTransactionStatus(transaction),
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              defaultWidth(width * 0.02),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ShowTransactionInvoice(
+                        transaction: transaction,
+                      ),
+                    ),
+                  );
+                },
+                child: Icon(
+                  Icons.info_outline,
+                  color: Colors.blueAccent.shade200,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -113,7 +136,7 @@ class TransactionTile extends StatelessWidget {
 
   String getTransactionStatus(TransactionElement txn) {
     if (txn.voided == true) return "Voided";
-    if (txn.isReverse == true) return "Reversed";
+    if (txn.responseCode == "68") return "Reversed";
     if (txn.responseCode != "00") return "Failed";
     if (txn.responseCode == "00") return "Success";
     if (txn.settled == true || txn.batchClosed == true) return "Completed";

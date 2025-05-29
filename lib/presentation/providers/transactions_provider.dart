@@ -49,7 +49,7 @@ class TransactionProvider with ChangeNotifier {
   HomeScreenTabItem get selectedTab => _selectedTab;
 // Getters for settlement data
   String get storeName => "Toy Store"; // Simulated store name
-  double _totalSettlementAmount = 3455265;
+  double _totalSettlementAmount = 0;
   int _totalSettlements = 20;
   int _totalTransactions = 20;
   double _deductions = 0;
@@ -77,6 +77,8 @@ class TransactionProvider with ChangeNotifier {
       ..merchantId = "65OMA0000000002"
       ..recordFrom = "22-08-2024"
       ..recordTo = "09-09-2024"
+      //      ..recordFrom = "${DateTime.now().toLocal().toString().split(' ')[0]}"
+      // ..recordTo = "${DateTime.now().toLocal().toString().split(' ')[0]}"
       ..rrn = ""
       ..terminalId = null;
 
@@ -111,6 +113,12 @@ class TransactionProvider with ChangeNotifier {
     }
   }
 
+  void clearTransactions() {
+    recentTransactions = [];
+
+    notifyListeners();
+  }
+
   // Refresh recent transactions
   void refreshRecentTransactions() {
     recentTransactions = [];
@@ -119,6 +127,7 @@ class TransactionProvider with ChangeNotifier {
     _todaysTnxCount = 0;
     notifyListeners();
     getRecentTransactions();
+    fetchDailyMerchantTxnSummary();
     notifyListeners();
   }
 
@@ -137,6 +146,23 @@ class TransactionProvider with ChangeNotifier {
       _totalSettlementAmount = decodedData['txnAmount'] ?? 0.0;
       _deductions = decodedData['deductionAmount'] ?? 0.0;
       _pendingSettlement = decodedData['pendingSettlementAmount'] ?? 0.0;
+      notifyListeners();
+    }
+  }
+
+  Future<void> fetchDailyMerchantTxnSummary() async {
+    var reqbody = {
+      "merchantId": "65OMA0000000002",
+    };
+    var response =
+        await _merchantServices.fetchDailyMerchantTxnSummary(reqbody);
+
+    if (response.statusCode == 200) {
+      var decodedData = jsonDecode(response.body)['responseData'];
+      _totalSettlementAmount = decodedData['txnAmount'] ?? 0.0;
+      // _totalSettlementAmount = decodedData['txnAmount'] ?? 0.0;
+      // _deductions = decodedData['deductionAmount'] ?? 0.0;
+      // _pendingSettlement = decodedData['pendingSettlementAmount'] ?? 0.0;
       notifyListeners();
     }
   }

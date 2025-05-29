@@ -57,6 +57,7 @@ dependencies:
   flutter_dotenv: ^5.2.1
   shimmer: ^3.0.0
   connectivity_plus: ^6.1.4
+  open_file: ^3.5.10
 
 dev_dependencies:
   flutter_test:

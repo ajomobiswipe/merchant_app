@@ -25,31 +25,30 @@ class _MerchantLoginState extends State<MerchantLogin> {
   String password = "Password";
   String pin = "PIN";
   var keyboardType = TextInputType.text;
-  // late PackageInfo _packageInfo = PackageInfo(
-  //   appName: 'Unknown',
-  //   packageName: 'Unknown',
-  //   version: 'Unknown',
-  //   buildNumber: 'Unknown',
-  //   buildSignature: 'Unknown',
-  // );
-
-  // VARIABLE DECLARATION
-  bool hidePassword = true;
-  bool hideMobileOtp = true;
-  bool hideEmailOtp = true;
-  bool isFinished = false;
-  AlertService alertWidget = AlertService();
   bool isRemember = false;
 
   double screenWidth = 0;
   double screenHeight = 0;
 
+  late AuthProvider authProvider;
+
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      authProvider = Provider.of<AuthProvider>(context, listen: false);
+      authProvider.resetAll();
+    });
     DevicePermission().checkPermission();
     _checkRememberMe();
     // _initPackageInfo();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    authProvider.resetAll();
   }
 
   Future _checkRememberMe() async {
@@ -133,29 +132,6 @@ class _MerchantLoginState extends State<MerchantLogin> {
                         // toggledButton(),
                         authProvider.isOtpSent
                             ? Container()
-                            // buildTextField(
-                            //     controller:
-                            //         authProvider.phoneNumberOtpController,
-                            //     hintText: 'Enter the OTP sent to your mobile',
-                            //     labelText: "******9545",
-                            //     obscureText: hideMobileOtp,
-                            //     maxLength: 6,
-                            //     isPasswordField: true,
-                            //     inputFormatters: [
-                            //       FilteringTextInputFormatter.allow(
-                            //           RegExp(r'[0-9]'))
-                            //     ],
-                            //     keyboardType: TextInputType.number,
-                            //     onSaved: (value) {
-                            //       authProvider.req.mobileNumberOtp = value;
-                            //     },
-                            //     validator: (value) {
-                            //       if (value == null || value.isEmpty) {
-                            //         return 'Please enter OTP!';
-                            //       }
-                            //     },
-                            //   )
-
                             : buildTextField(
                                 controller: authProvider.merchantIdController,
                                 hintText: 'Username',
@@ -180,26 +156,83 @@ class _MerchantLoginState extends State<MerchantLogin> {
                               ),
                         gapWidget(screenHeight * .01),
                         authProvider.isOtpSent
-                            ? buildTextField(
-                                controller: authProvider.emailOtpController,
-                                hintText: 'Enter the OTP sent to your email',
-                                labelText: "******@gmail.com",
-                                maxLength: 6,
-                                obscureText: hideEmailOtp,
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.allow(
-                                      RegExp(r'[0-9]'))
-                                ],
-                                keyboardType: TextInputType.number,
-                                isPasswordField: true,
-                                onSaved: (value) {
-                                  authProvider.req.emailOtp = value;
-                                },
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter OTP';
-                                  }
-                                },
+                            ? Container(
+                                padding:
+                                    const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(bottom: 5),
+                                      child: CustomTextWidget(
+                                        text:
+                                            "Enter the OTP sent to your email",
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    TextFormField(
+                                      controller:
+                                          authProvider.emailOtpController,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyLarge
+                                          ?.copyWith(
+                                              fontSize: 13, fontFamily: 'Mont'),
+                                      obscureText: authProvider.showEmailOtp,
+                                      obscuringCharacter: '*',
+                                      maxLength: 6,
+                                      keyboardType: TextInputType.number,
+                                      autovalidateMode:
+                                          AutovalidateMode.onUserInteraction,
+                                      onSaved: (value) {
+                                        authProvider.req.emailOtp = value;
+                                      },
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Please enter OTP';
+                                        }
+                                      },
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.allow(
+                                            RegExp(r'[0-9]'))
+                                      ],
+                                      decoration: InputDecoration(
+                                        hintText:
+                                            'Enter the OTP sent to your email',
+                                        counterText: '',
+                                        labelStyle: Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge
+                                            ?.copyWith(fontSize: 16),
+                                        enabledBorder: InputBorder.none,
+                                        focusedBorder: InputBorder.none,
+                                        border: InputBorder.none,
+                                        errorBorder: InputBorder.none,
+                                        focusedErrorBorder: InputBorder.none,
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                vertical: 10, horizontal: 10),
+                                        fillColor: AppColors.kTileColor,
+                                        filled: true,
+                                        hintStyle: const TextStyle(
+                                            color: Colors.grey, fontSize: 13),
+                                        suffixIcon: IconButton(
+                                          onPressed: () {
+                                            authProvider
+                                                .toggleEmailOtpVisibility();
+                                          },
+                                          icon: Icon(
+                                            authProvider.showEmailOtp
+                                                ? Icons.visibility
+                                                : Icons.visibility_off,
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               )
                             : Container(
                                 padding:

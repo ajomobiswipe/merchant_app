@@ -98,6 +98,18 @@ class MerchantServices {
     return response;
   }
 
+  fetchDailyMerchantTxnSummary(
+    requestModel,
+  ) async {
+    Connection connection = Connection();
+
+    var url =
+        "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/dailyMerchantTxnSummary";
+
+    var response = await connection.post(url, requestModel);
+    return response;
+  }
+
   getSettlementDashboardReport(requestModel,
       {required int pageNumber, required int pageSize}) async {
     Connection connection = Connection();

@@ -18,7 +18,7 @@ class AuthProvider with ChangeNotifier {
     // TODO: implement dispose
     super.dispose();
     if (kDebugMode) {
-      print("object");
+      print("dispose called in AuthProvider");
     }
   }
 
@@ -53,7 +53,9 @@ class AuthProvider with ChangeNotifier {
   bool _isLoading = false;
   bool _isOtpSent = false;
   bool _showPassword = false;
-  String _message = '';
+  bool _showEmailOtp = false;
+  bool get showEmailOtp => _showEmailOtp;
+
   bool get isLoggedIn => _isLoggedIn;
   MerchantInfoModel get merchantInfo => _merchantInfo;
   bool get isLoading => _isLoading;
@@ -66,12 +68,28 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  resetAll() {
+    _isLoggedIn = false;
+    _isLoading = false;
+    _isOtpSent = false;
+    _showPassword = false;
+    _showEmailOtp = false;
+    // _merchantIdController.clear();
+    // _passwordController.clear();
+    // _phoneNumberOtpController.clear();
+    _emailOtpController.clear();
+  }
+
   togglePasswordVisibility() {
     _showPassword = !_showPassword;
     notifyListeners();
   }
 
-  String get message => _message;
+  toggleEmailOtpVisibility() {
+    _showEmailOtp = !showEmailOtp;
+    notifyListeners();
+  }
+
   Function() onPresSendButton() {
     if (formKey.currentState!.validate()) {
       if (!_isOtpSent) {
@@ -166,19 +184,6 @@ class AuthProvider with ChangeNotifier {
     } catch (e) {
       alertService
           .error('An error occurred while verifying OTP: ${e.toString()}');
-    } finally {
-      _setLoading(false);
-      notifyListeners();
-    }
-  }
-
-  Future<void> submitLoginWithOtp(String userName, String password) async {
-    _setLoading(true);
-    try {
-      // Your logic to verify login
-      _message = 'Login successful';
-    } catch (e) {
-      _message = 'Login failed: ${e.toString()}';
     } finally {
       _setLoading(false);
       notifyListeners();

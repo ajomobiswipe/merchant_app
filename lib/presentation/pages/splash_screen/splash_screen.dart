@@ -9,6 +9,7 @@
 import 'dart:async';
 
 import 'package:anet_merchant_app/data/services/merchant_service.dart';
+import 'package:anet_merchant_app/main.dart';
 import 'package:easy_splash_screen/easy_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -48,10 +49,11 @@ class _SplashScreenState extends State<SplashScreen> {
     final bool isLogged = sharedPreferences.getBool('isLogged') ?? false;
 
     if (isLogged) {
-      var tokenResponse = await MerchantServices().refreshToken();
+      // var tokenResponse = await MerchantServices().refreshToken();
 
-      if (tokenResponse == null) return;
-
+      // if (tokenResponse == null) return;
+      TokenManager()
+          .start(NavigationService.navigatorKey.currentState!.context);
       if (!mounted) return;
       Navigator.pushReplacementNamed(context, 'merchantHomeScreen');
     } else {
