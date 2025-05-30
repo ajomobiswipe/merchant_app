@@ -7,10 +7,7 @@ import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../../widgets/app/alert_service.dart';
 import '../../../widgets/loading.dart';
 
 class MerchantLogin extends StatefulWidget {
@@ -64,8 +61,7 @@ class _MerchantLoginState extends State<MerchantLogin> {
 
     if (isRemember) {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
-      authProvider.merchantIdController.text =
-          pref.getString('merchantId') ?? '';
+      authProvider.merchantIdController.text = pref.getString('userName') ?? '';
       authProvider.passwordController.text = pref.getString('password') ?? '';
     }
 
@@ -142,14 +138,11 @@ class _MerchantLoginState extends State<MerchantLogin> {
                                 obscureText: false,
                                 inputFormatters: [
                                   FilteringTextInputFormatter.allow(
-                                      RegExp(r'[0-9,a-zA-Z]'))
+                                      RegExp(r'[0-9a-zA-Z ,\-]'))
                                 ],
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return 'Please enter Username!';
-                                  }
-                                  if (value.length < 10) {
-                                    return 'Minimum character length is 10';
                                   }
                                   return null;
                                 },
@@ -178,7 +171,7 @@ class _MerchantLoginState extends State<MerchantLogin> {
                                           .bodyLarge
                                           ?.copyWith(
                                               fontSize: 13, fontFamily: 'Mont'),
-                                      obscureText: authProvider.showEmailOtp,
+                                      obscureText: !authProvider.showEmailOtp,
                                       obscuringCharacter: '*',
                                       maxLength: 6,
                                       keyboardType: TextInputType.number,
@@ -223,8 +216,8 @@ class _MerchantLoginState extends State<MerchantLogin> {
                                           },
                                           icon: Icon(
                                             authProvider.showEmailOtp
-                                                ? Icons.visibility
-                                                : Icons.visibility_off,
+                                                ? Icons.visibility_off
+                                                : Icons.visibility,
                                             color:
                                                 Theme.of(context).primaryColor,
                                           ),
@@ -255,7 +248,7 @@ class _MerchantLoginState extends State<MerchantLogin> {
                                           .bodyLarge
                                           ?.copyWith(
                                               fontSize: 13, fontFamily: 'Mont'),
-                                      obscureText: authProvider.showPassword,
+                                      obscureText: !authProvider.showPassword,
                                       obscuringCharacter: '*',
                                       maxLength: null,
                                       keyboardType: TextInputType.text,

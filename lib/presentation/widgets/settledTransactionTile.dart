@@ -3,6 +3,7 @@ import 'package:anet_merchant_app/data/models/get_settlement_history_model.dart'
 import 'package:anet_merchant_app/data/models/transaction_model.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_container.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
+import 'package:anet_merchant_app/presentation/widgets/show_settled_transaction_invoice.dart';
 import 'package:anet_merchant_app/presentation/widgets/transaction_invoice.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -29,84 +30,86 @@ class SettledTransactionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Container(
-        // margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
-              spreadRadius: 2,
-              blurRadius: 5,
-              offset: const Offset(0, 2),
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ShowSettledTransactionInvoice(
+              transaction: transaction,
             ),
-          ],
-        ),
-        child: Row(
-          children: [
-            const Icon(Icons.payment, color: Colors.blueAccent),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      const Text(
-                        "₹ ",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
+          ),
+        );
+      },
+      child: Card(
+        child: Container(
+          // margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.2),
+                spreadRadius: 2,
+                blurRadius: 5,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              const Icon(Icons.payment, color: Colors.blueAccent),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Text(
+                          "₹ ",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
-                      ),
-                      Text(
-                        transaction.grossTransactionAmount.toString(),
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
+                        Text(
+                          transaction.grossTransactionAmount.toString(),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    formatTime(transaction.tranDate.toString()),
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w300,
+                      ],
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 4),
+                    Text(
+                      formatTime(transaction.tranDate.toString()),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w300,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            CustomContainer(
-              color: transaction.merPayDone == true ? Colors.green : Colors.red,
-              width: width * 0.22,
-              height: 20,
-              child: CustomTextWidget(
-                size: 10,
-                text: transaction.merPayDone == true ? "Success" "" : "Failed",
-                // text: getTransactionStatus(transaction),
-                color: Colors.white,
+              CustomContainer(
+                color:
+                    transaction.merPayDone == true ? Colors.green : Colors.red,
+                width: width * 0.22,
+                height: 20,
+                child: CustomTextWidget(
+                  size: 10,
+                  text:
+                      transaction.merPayDone == true ? "Success" "" : "Failed",
+                  // text: getTransactionStatus(transaction),
+                  color: Colors.white,
+                ),
               ),
-            ),
-            defaultWidth(width * 0.02),
-            GestureDetector(
-              onTap: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (context) => ShowTransactionInvoice(
-                //       transaction: transaction,
-                //     ),
-                //   ),
-                // );
-              },
-              child: const Icon(Icons.info_outline),
-            ),
-          ],
+              defaultWidth(width * 0.02),
+              const Icon(Icons.info_outline),
+            ],
+          ),
         ),
       ),
     );

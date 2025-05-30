@@ -93,19 +93,29 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
       return;
 
     String? merchantId = prefs.getString('acqMerchantId') ?? '65OMA0000000002';
-
+    print(merchantId);
     _allTranReqModel
       ..acquirerId = "OMAIND"
       ..merchantId = merchantId
-      ..rrn = ""
-      ..recordFrom = _customStartDate != null
-          ? DateFormat('dd-MM-yyyy').format(_customStartDate!)
-          : _selectedDateRange
-      ..recordTo = _customEndDate != null
-          ? DateFormat('dd-MM-yyyy').format(_customEndDate!)
-          : _selectedDateRange
+      ..rrn = null
+      ..recordFrom = "22-01-2023"
+
+      //  _customStartDate != null
+      //     ? DateFormat('dd-MM-yyyy').format(_customStartDate!)
+      //     : _selectedDateRange
+      ..recordTo = "27-05-2025"
+      // _customEndDate != null
+      //     ? DateFormat('dd-MM-yyyy').format(_customEndDate!)
+      //     : _selectedDateRange
       ..terminalId = null;
 
+    // "merchantId": "651010000022371",
+    // "recordFrom": "22-01-2023",
+    // "recordTo": "27-05-2025",
+    // "acquirerId": "OMAIND",
+    // "rrn": null,
+    // "terminalId": null,
+    // "sendTxnReportToMail": true
     if (_isAllTransactionsLoading) return;
 
     _isAllTransactionsLoading = true;

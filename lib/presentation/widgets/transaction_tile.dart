@@ -15,14 +15,23 @@ class TransactionTile extends StatelessWidget {
     required this.transaction,
     required this.width,
   });
+  String formattedDateTime(String? date, String? time) {
+    if (date == null || time == null) return "N/A";
 
-  String formatTime(String? time) {
-    if (time == null) return "N/A";
     try {
-      final parsedTime = DateFormat("HHmmss").parse(time);
-      return DateFormat("hh:mm:ss a").format(parsedTime);
-    } catch (_) {
-      return time;
+      final input = '$date $time'; // Combine to "26/05/2025 17:45:01"
+      final inputFormat = DateFormat("dd/MM/yyyy HH:mm:ss");
+
+      final dateTime = inputFormat.parse(input);
+
+      final formattedDate =
+          DateFormat("d MMM").format(dateTime); // e.g., 26 May
+      final formattedTime =
+          DateFormat("h:mm a").format(dateTime); // e.g., 5:45 PM
+
+      return "$formattedDate | $formattedTime";
+    } catch (e) {
+      return "N/A";
     }
   }
 
@@ -85,7 +94,8 @@ class TransactionTile extends StatelessWidget {
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      formatTime(transaction.transactionTime),
+                      formattedDateTime(transaction.transactionDate,
+                          transaction.transactionTime),
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w400,
@@ -137,8 +147,8 @@ class TransactionTile extends StatelessWidget {
   String getTransactionStatus(TransactionElement txn) {
     if (txn.voided == true) return "Voided";
     if (txn.responseCode == "68") return "Reversed";
+    if (txn.responseCode == "00" || txn.responseCode == "000") return "Success";
     if (txn.responseCode != "00") return "Failed";
-    if (txn.responseCode == "00") return "Success";
     if (txn.settled == true || txn.batchClosed == true) return "Completed";
     return "Pending";
   }

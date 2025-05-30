@@ -74,18 +74,27 @@ class TransactionProvider with ChangeNotifier {
 
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    String? merchantId = prefs.getString('acqMerchantId') ?? '65OMA0000000002';
+    String? merchantId = prefs.getString('acqMerchantId') ?? "651010000022371";
+    print(merchantId);
 
     print("Inside fetchItems");
     _recentTranReqModel
       ..acquirerId = "OMAIND"
       ..merchantId = merchantId
-      ..recordFrom = "22-08-2024"
-      ..recordTo = "09-09-2024"
-      //      ..recordFrom = "${DateTime.now().toLocal().toString().split(' ')[0]}"
-      // ..recordTo = "${DateTime.now().toLocal().toString().split(' ')[0]}"
-      ..rrn = ""
+      ..recordFrom = "22-01-2023"
+      ..recordTo = "27-05-2025"
+      ..rrn = null
       ..terminalId = null;
+    //      ..recordFrom = "${DateTime.now().toLocal().toString().split(' ')[0]}"
+    // ..recordTo = "${DateTime.now().toLocal().toString().split(' ')[0]}"
+
+    //       "merchantId": "651010000022371",
+    // "recordFrom": "22-01-2023",
+    // "recordTo": "27-05-2025",
+    // "acquirerId": "OMAIND",
+    // "rrn": null,
+    // "terminalId": null,
+    // "sendTxnReportToMail": false
 
     if (_isDailyTransactionsLoading) return;
 

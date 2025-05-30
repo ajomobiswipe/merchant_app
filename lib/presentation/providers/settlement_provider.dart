@@ -6,6 +6,7 @@ import 'package:anet_merchant_app/presentation/pages/users/merchant/sampledata/s
 import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettlementProvider extends ChangeNotifier {
   final String _storeName = "Toy Store";
@@ -97,17 +98,21 @@ class SettlementProvider extends ChangeNotifier {
 
   // Fetch recent transactions
   Future<void> getTransactionsInSettlement() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String? merchantId = prefs.getString('acqMerchantId') ?? '65OMA0000000002';
     _allTransactions = [];
     notifyListeners();
     var reqBody = {
-      "merchantId": "651076000006945",
+      "merchantId": merchantId,
       "fromDate": getFormattedDate(_selectedSettlementAggregate!.tranDate!),
       "toDate": getFormattedDate(_selectedSettlementAggregate!.tranDate!),
-      "reconsiled": true,
+      "reconciled": true,
       "merPayDone": true,
       "misDone": true,
       "pageDataRequired": true,
-      "settlementAggregatesRequired": true
+      "settlementAggregatesRequired": true,
+      "sendSettlementReportToMail": false
     };
     if (_isAllTransactionsLoading) return;
 
@@ -144,17 +149,22 @@ class SettlementProvider extends ChangeNotifier {
 
   // Fetch recent transactions
   Future<void> getSettlementDashboardReport() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? merchantId = prefs.getString('acqMerchantId') ?? '651010000022371';
     _isoading = true;
     notifyListeners();
     var reqBody = {
-      "merchantId": "651076000006945",
+      "merchantId": merchantId,
       "fromDate": "2024-05-01",
-      "toDate": "2025-05-22",
-      "reconsiled": true,
+      "toDate": "2025-05-28",
+      // "fromDate": getFormattedDate(_selectedSettlementAggregate!.tranDate!),
+      // "toDate": getFormattedDate(_selectedSettlementAggregate!.tranDate!),
+      "reconciled": true,
       "merPayDone": true,
       "misDone": true,
-      "pageDataRequired": false,
-      "settlementAggregatesRequired": true
+      "pageDataRequired": true,
+      "settlementAggregatesRequired": true,
+      "sendSettlementReportToMail": true
     };
 
     try {
@@ -182,12 +192,14 @@ class SettlementProvider extends ChangeNotifier {
   }
 
   Future<void> sendSettlementDashboardReportTOEmail() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? merchantId = prefs.getString('acqMerchantId') ?? '65OMA0000000002';
     _isEmailSending = true;
     notifyListeners();
     var reqBody = {
-      "merchantId": "651076000006945",
+      "merchantId": merchantId,
       "fromDate": "2024-05-01",
-      "toDate": "2025-05-22",
+      "toDate": "2025-05-28",
       "reconsiled": true,
       "merPayDone": true,
       "misDone": true,

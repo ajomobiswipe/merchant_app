@@ -89,11 +89,11 @@ class _ViewSettlementInfoState extends State<ViewSettlementInfo> {
                       Column(
                         children: [
                           CustomTextWidget(
-                              text: "UTR No", size: 14, color: Colors.white),
+                              text: "UTR No", size: 12, color: Colors.white),
                           CustomTextWidget(
                               text:
                                   "${settlementProvider.selectedSettlementAggregate?.utr ?? "N/A"}",
-                              size: 16,
+                              size: 12,
                               color: Colors.white),
                         ],
                       ),
@@ -104,18 +104,49 @@ class _ViewSettlementInfoState extends State<ViewSettlementInfo> {
               ),
             );
           }),
-          ExpansionTile(
-            title: CustomTextWidget(
-                text: 'View Deductions', color: AppColors.kPrimaryColor),
-            // subtitle: Text('Subtitle here'),
-            leading: Icon(Icons.list, color: AppColors.kPrimaryColor),
-            trailing:
-                Icon(Icons.arrow_drop_down, color: AppColors.kPrimaryColor),
-            children: <Widget>[
-              ListTile(title: Text('Item 1')),
-              ListTile(title: Text('Item 2')),
-              ListTile(title: Text('Item 3')),
-            ],
+          Consumer<SettlementProvider>(
+            builder: (context, settlementProvider, child) {
+              return ExpansionTile(
+                title: CustomTextWidget(
+                    text: 'View Deductions', color: AppColors.kPrimaryColor),
+                leading: Icon(Icons.list, color: AppColors.kPrimaryColor),
+                trailing:
+                    Icon(Icons.arrow_drop_down, color: AppColors.kPrimaryColor),
+                children: <Widget>[
+                  ListTile(
+                    title: CustomTextWidget(
+                        text: "GST", size: 14, color: Colors.black),
+                    trailing: CustomTextWidget(
+                        text:
+                            "₹ ${settlementProvider.selectedSettlementAggregate?.gst ?? 0.00}",
+                        size: 14,
+                        color: Colors.black),
+                  ),
+                  Divider(),
+                  ListTile(
+                    title: CustomTextWidget(
+                        text: "MDR Amount", size: 14, color: Colors.black),
+                    trailing: CustomTextWidget(
+                        text:
+                            "₹ ${settlementProvider.selectedSettlementAggregate?.mdrAmount ?? 0.00}",
+                        size: 14,
+                        color: Colors.black),
+                  ),
+                  Divider(),
+                  ListTile(
+                    title: CustomTextWidget(
+                        text: "Settlement Amount",
+                        size: 14,
+                        color: Colors.black),
+                    trailing: CustomTextWidget(
+                        text:
+                            "₹ ${settlementProvider.selectedSettlementAggregate?.settlementAmount ?? 0.00}",
+                        size: 14,
+                        color: Colors.black),
+                  ),
+                ],
+              );
+            },
           ),
           // defaultHeight(20),
 
@@ -134,41 +165,36 @@ class _ViewSettlementInfoState extends State<ViewSettlementInfo> {
                                 child: CircularProgressIndicator(),
                               )
                             : settlementProvider.allTransactions.isNotEmpty
-                                ? GestureDetector(
-                                    onTapUp: (details) {
-                                      print("onTapUp");
+                                ? ListView.builder(
+                                    controller: settlementProvider
+                                        .allSettlementScrollCtrl,
+                                    itemCount: settlementProvider
+                                            .allTransactions.length +
+                                        1,
+                                    itemBuilder: (context, index) {
+                                      if (index <
+                                          settlementProvider
+                                              .allTransactions.length) {
+                                        return SettledTransactionTile(
+                                          transaction: settlementProvider
+                                              .allTransactions[index],
+                                          width: screenWidth,
+                                        );
+                                      } else if (settlementProvider
+                                          .hasMoreTransactions) {
+                                        return Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 16),
+                                          child: Center(
+                                              child:
+                                                  CircularProgressIndicator()),
+                                        );
+                                      } else {
+                                        return Center(
+                                            child: Text(
+                                                "-----   END OF LIST  ------"));
+                                      }
                                     },
-                                    child: ListView.builder(
-                                      controller: settlementProvider
-                                          .allSettlementScrollCtrl,
-                                      itemCount: settlementProvider
-                                              .allTransactions.length +
-                                          1,
-                                      itemBuilder: (context, index) {
-                                        if (index <
-                                            settlementProvider
-                                                .allTransactions.length) {
-                                          return SettledTransactionTile(
-                                            transaction: settlementProvider
-                                                .allTransactions[index],
-                                            width: screenWidth,
-                                          );
-                                        } else if (settlementProvider
-                                            .hasMoreTransactions) {
-                                          return Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                vertical: 16),
-                                            child: Center(
-                                                child:
-                                                    CircularProgressIndicator()),
-                                          );
-                                        } else {
-                                          return Center(
-                                              child: Text(
-                                                  "-----   END OF LIST  ------"));
-                                        }
-                                      },
-                                    ),
                                   )
                                 : Center(
                                     child: Text(

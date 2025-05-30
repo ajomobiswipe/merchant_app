@@ -22,10 +22,8 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  final TextEditingController _passwordController =
-      TextEditingController(text: kDebugMode ? "Maker@1234" : '');
-  final TextEditingController _merchantIdController =
-      TextEditingController(text: kDebugMode ? "legal-name" : '');
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _merchantIdController = TextEditingController();
   final TextEditingController _phoneNumberOtpController =
       TextEditingController();
   final TextEditingController _emailOtpController = TextEditingController();
@@ -223,9 +221,11 @@ class AuthProvider with ChangeNotifier {
     pref.setString('lastLogin', dateStr);
     pref.setBool('isLogged', true);
     pref.setString('custId', decodeData['custId'].toString());
+    pref.setString('acqMerchantId', decodeData['acqMerchantId'].toString());
+    print(decodeData['acqMerchantId'].toString());
     if (decodeData['role'].toString() == "MERCHANT") {
       pref.setString('merchantId', decodeData['merchantId'].toString());
-      pref.setString('acqMerchantId', decodeData['acqMerchantId'].toString());
+
       pref.setString('terminalId', decodeData['terminalId'].toString());
       pref.setString(
           'kycExpiryAlertMsg', decodeData['kycExpiryAlertMsg'].toString());

@@ -30,6 +30,8 @@ class StorageServices {
     pref.setString('lastLogin', dateStr);
     pref.setBool('isLogged', true);
     pref.setString('custId', decodeData['custId'].toString());
+    pref.setString('acqMerchantId', decodeData['acqMerchantId'].toString());
+    print(decodeData['acqMerchantId'].toString());
 
     if (isMerchant) {
       pref.setString('merchantId', decodeData['merchantId'].toString());

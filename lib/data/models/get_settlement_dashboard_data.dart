@@ -41,6 +41,7 @@ class GetSettlementDashboardData {
 class SettlementAggregate {
   DateTime? tranDate;
   double? grossTransactionAmount;
+  double? totalAmountPayable;
   int? transactionCount;
   String? utr;
   double? gst;
@@ -50,6 +51,7 @@ class SettlementAggregate {
   SettlementAggregate({
     this.tranDate,
     this.grossTransactionAmount,
+    this.totalAmountPayable,
     this.transactionCount,
     this.utr,
     this.gst,
