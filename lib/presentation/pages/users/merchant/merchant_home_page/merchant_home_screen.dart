@@ -141,7 +141,8 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
                         text: provider.todaysTnxCount.toString(),
                         size: 18),
                     CustomTextWidget(
-                        text: provider.totalSettlementAmount.toString(),
+                        text: provider.getTotalTransactionAmount
+                            .toStringAsFixed(2),
                         size: 18,
                         color: Colors.white),
                   ],
@@ -176,8 +177,8 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
       case HomeScreenTabItem.TransactionHistory:
         return CustomContainer(
           onTap: () {
-            MerchantTransactionFilterBottomSheet.show(context);
-            // Navigator.pushNamed(context, "merchantTransactionFilterScreen");
+            // MerchantTransactionFilterBottomSheet.show(context);
+            Navigator.pushNamed(context, "merchantTransactionFilterScreen");
           },
           height: screenHeight * 0.06,
           child: CustomTextWidget(
@@ -260,7 +261,12 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
                           );
                         } else {
                           return Center(
-                              child: Text("-----   END OF LIST  ------"));
+                            child: Text("No more transactions to display",
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey,
+                                    fontStyle: FontStyle.italic)),
+                          );
                         }
                       },
                     )

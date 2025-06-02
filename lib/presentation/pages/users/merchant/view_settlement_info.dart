@@ -7,7 +7,7 @@ import 'package:anet_merchant_app/presentation/providers/settlement_provider.dar
 import 'package:anet_merchant_app/presentation/providers/transactions_provider.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_container.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
-import 'package:anet_merchant_app/presentation/widgets/settledTransactionTile.dart';
+import 'package:anet_merchant_app/presentation/widgets/settled_transaction_tile.dart';
 import 'package:anet_merchant_app/presentation/widgets/transaction_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -81,8 +81,8 @@ class _ViewSettlementInfoState extends State<ViewSettlementInfo> {
                               size: 12,
                               color: Colors.white),
                           CustomTextWidget(
-                              text: "Axis Bank Ltd | *******6545",
-                              size: 14,
+                              text: "Axis Bank Ltd | ***6545",
+                              size: 12,
                               color: Colors.white),
                         ],
                       ),
@@ -93,7 +93,7 @@ class _ViewSettlementInfoState extends State<ViewSettlementInfo> {
                           CustomTextWidget(
                               text:
                                   "${settlementProvider.selectedSettlementAggregate?.utr ?? "N/A"}",
-                              size: 12,
+                              size: 10,
                               color: Colors.white),
                         ],
                       ),
@@ -192,7 +192,12 @@ class _ViewSettlementInfoState extends State<ViewSettlementInfo> {
                                       } else {
                                         return Center(
                                             child: Text(
-                                                "-----   END OF LIST  ------"));
+                                                "No more transactions to display",
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: Colors.grey,
+                                                    fontStyle:
+                                                        FontStyle.italic)));
                                       }
                                     },
                                   )

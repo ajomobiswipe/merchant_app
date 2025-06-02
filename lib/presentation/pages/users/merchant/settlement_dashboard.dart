@@ -64,7 +64,7 @@ class _SettlementDashboardState extends State<SettlementDashboard> {
                       ),
                     )
                   : CustomContainer(
-                      height: screenHeight * 0.14,
+                      // height: screenHeight * 0.14,
                       color: AppColors.kLightGreen,
                       padding: EdgeInsets.symmetric(
                           horizontal: screenWidth * 0.05,
@@ -195,7 +195,7 @@ class _SettlementDashboardState extends State<SettlementDashboard> {
               CustomTextWidget(
                   text:
                       "UTR : ${settlement.utr ?? 'N/A'} | Settled on ${settlement.tranDate != null ? DateFormat('dd MMM yyyy').format(settlement.tranDate!) : 'N/A'}",
-                  size: 12,
+                  size: 10,
                   color: AppColors.black),
             ],
           ),

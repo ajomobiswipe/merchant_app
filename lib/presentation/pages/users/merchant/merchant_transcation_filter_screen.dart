@@ -1,6 +1,7 @@
 import 'package:anet_merchant_app/core/constants/constants.dart';
 import 'package:anet_merchant_app/presentation/pages/users/merchant/merchant_scaffold.dart';
 import 'package:anet_merchant_app/presentation/providers/merchant_filtered_transaction_provider.dart';
+import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_container.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,8 @@ class MerchantTransactionFilterScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
+    print("screenWidth");
+    print(screenWidth);
     return Consumer<MerchantFilteredTransactionProvider>(
       builder: (context, provider, child) {
         return MerchantScaffold(
@@ -30,7 +33,7 @@ class MerchantTransactionFilterScreen extends StatelessWidget {
                 CustomTextWidget(
                     text: "Payment transactions", size: screenHeight * 0.02),
                 SizedBox(height: screenHeight * 0.02),
-                _buildSearchField(provider),
+                _buildSearchField(provider, screenWidth),
                 SizedBox(height: screenHeight * 0.02),
                 _buildTidDropdown(provider),
                 SizedBox(height: screenHeight * 0.02),
@@ -43,7 +46,8 @@ class MerchantTransactionFilterScreen extends StatelessWidget {
                 SizedBox(height: screenHeight * 0.02),
                 _buildPaymentModeDropdown(provider),
                 SizedBox(height: screenHeight * 0.03),
-                _buildApplyButton(provider, context: context),
+                _buildApplyButton(provider,
+                    context: context, screenHeight: screenHeight),
               ],
             ),
           ),
@@ -59,46 +63,71 @@ class MerchantTransactionFilterScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSearchField(MerchantFilteredTransactionProvider provider) {
-    return Row(
+  Widget _buildSearchField(
+      MerchantFilteredTransactionProvider provider, double screenWidth) {
+    return Column(
       children: [
-        Radio<String>(
-          value: 'RRN',
-          groupValue: provider.searchType,
-          onChanged: provider.setSearchType,
-        ),
-        CustomTextWidget(text: 'RRN', size: 10),
-        Radio<String>(
-          value: 'App Code',
-          groupValue: provider.searchType,
-          onChanged: provider.setSearchType,
-        ),
-        CustomTextWidget(text: 'App Code', size: 10),
-        SizedBox(width: 10),
-        Expanded(
-          child: SizedBox(
-            height: 30,
-            child: TextField(
-              controller: provider.searchController,
-              decoration: InputDecoration(
-                prefixIcon: Icon(Icons.search, size: 16),
-                suffixIcon: InkWell(
-                  onTap: () {
-                    provider.searchController.clear();
-                  },
-                  child: Icon(Icons.close, size: 16),
-                ),
-                labelText: 'Enter ${provider.searchType}',
-                labelStyle: TextStyle(fontSize: 12),
-                contentPadding:
-                    EdgeInsets.symmetric(vertical: 0, horizontal: 8),
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(6)),
-              ),
-              style: TextStyle(fontSize: 12),
+        Row(
+          children: [
+            Radio<String>(
+              value: 'RRN',
+              groupValue: provider.searchType,
+              onChanged: provider.setSearchType,
             ),
-          ),
+            CustomTextWidget(text: 'RRN', size: 10),
+            Radio<String>(
+              value: 'App Code',
+              groupValue: provider.searchType,
+              onChanged: provider.setSearchType,
+            ),
+            CustomTextWidget(text: 'App Code', size: 10),
+            SizedBox(width: 10),
+            if (screenWidth > 400)
+              Expanded(
+                child: SizedBox(
+                  height: 30,
+                  child: TextField(
+                    controller: provider.searchController,
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.search, size: 16),
+                      suffixIcon: InkWell(
+                        onTap: () {
+                          provider.searchController.clear();
+                        },
+                        child: Icon(Icons.close, size: 16),
+                      ),
+                      labelText: 'Enter ${provider.searchType}',
+                      labelStyle: TextStyle(fontSize: 12),
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 0, horizontal: 8),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(6)),
+                    ),
+                    style: TextStyle(fontSize: 12),
+                  ),
+                ),
+              ),
+          ],
         ),
+        if (screenWidth <= 400)
+          TextField(
+            controller: provider.searchController,
+            decoration: InputDecoration(
+              prefixIcon: Icon(Icons.search, size: 16),
+              suffixIcon: InkWell(
+                onTap: () {
+                  provider.searchController.clear();
+                },
+                child: Icon(Icons.close, size: 16),
+              ),
+              labelText: 'Enter ${provider.searchType}',
+              labelStyle: TextStyle(fontSize: 12),
+              contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 8),
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(6)),
+            ),
+            style: TextStyle(fontSize: 12),
+          )
       ],
     );
   }
@@ -107,11 +136,16 @@ class MerchantTransactionFilterScreen extends StatelessWidget {
     return DropdownButtonFormField<String>(
       value: provider.selectedTid,
       decoration: InputDecoration(
-        labelText: 'Terminal-All',
-        border: OutlineInputBorder(),
-      ),
+          labelText: 'Terminal-All',
+          border: OutlineInputBorder(),
+          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 4)),
       items: provider.tidOptions.map((tid) {
-        return DropdownMenuItem(value: tid, child: Text(tid));
+        return DropdownMenuItem(
+            value: tid,
+            child: Text(
+              tid,
+              style: TextStyle(fontSize: 10),
+            ));
       }).toList(),
       onChanged: provider.setSelectedTid,
     );
@@ -124,13 +158,16 @@ class MerchantTransactionFilterScreen extends StatelessWidget {
         Text('Date', style: TextStyle(fontWeight: FontWeight.bold)),
         Column(
           children: provider.dateRanges.map((range) {
-            return RadioListTile<String>(
-              dense: true,
-              contentPadding: EdgeInsets.zero,
-              title: Text(range, style: TextStyle(fontSize: 12)),
-              value: range,
-              groupValue: provider.selectedDateRange,
-              onChanged: provider.setSelectedDateRange,
+            return Row(
+              children: [
+                Radio<String>(
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  value: range,
+                  groupValue: provider.selectedDateRange,
+                  onChanged: provider.setSelectedDateRange,
+                ),
+                Text(range, style: TextStyle(fontSize: 10)),
+              ],
             );
           }).toList(),
         ),
@@ -186,19 +223,31 @@ class MerchantTransactionFilterScreen extends StatelessWidget {
       decoration: InputDecoration(
         labelText: 'Payment Mode',
         border: OutlineInputBorder(),
+        contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       ),
       items: provider.paymentModes.map((mode) {
-        return DropdownMenuItem(value: mode, child: Text(mode));
+        return DropdownMenuItem(
+            value: mode,
+            child: Text(
+              mode,
+              style: TextStyle(fontSize: 10),
+            ));
       }).toList(),
       onChanged: provider.setSelectedPaymentMode,
     );
   }
 
   Widget _buildApplyButton(MerchantFilteredTransactionProvider provider,
-      {required BuildContext context}) {
+      {required BuildContext context, required double screenHeight}) {
     return CustomContainer(
-      height: 70,
+      height: screenHeight * 0.06,
       onTap: () {
+        if ((provider.searchType == "RRN" &&
+                provider.searchController.text.isEmpty) &&
+            provider.selectedDateRange == null) {
+          AlertService().error("Please enter RRN or select a date range.");
+          return;
+        }
         Navigator.pushNamed(context, "viewAllTransaction");
         print(
             'Filters applied: ${provider.searchController.text}, ${provider.selectedTid}, ${provider.selectedDateRange}, ${provider.selectedPaymentMode}');

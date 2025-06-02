@@ -67,12 +67,12 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
   List<TransactionElement> _allTransactions = [];
   double _totalAmountInAllTrans = 0;
 
+  double get getTotalTransactionAmount => _totalAmountInAllTrans;
   // Getters
 
   bool get hasMoreTransactions => _allTransactions.length < _allTnxCount;
   bool get isAllTransactionsLoading => _isAllTransactionsLoading;
   int get todaysTnxCount => _allTnxCount;
-  double get totalSettlementAmount => _totalAmountInAllTrans;
   List<TransactionElement> get allTransactions => _allTransactions;
   bool get isEmailSending => _isEmailSending;
 
@@ -97,7 +97,7 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
     _allTranReqModel
       ..acquirerId = "OMAIND"
       ..merchantId = merchantId
-      ..rrn = null
+      ..rrn = _searchType == "RRN" ? searchController.text : ''
       ..recordFrom = "22-01-2023"
 
       //  _customStartDate != null
@@ -130,9 +130,11 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
 
       if (response.statusCode == 200) {
         final decodedData = transactionHistoryFromJson(response.body);
-        final newItems = decodedData.content ?? [];
-        _allTnxCount = decodedData.totalElements ?? 0;
-        print("todays transaction count: ${decodedData.totalElements}");
+        final newItems = decodedData.responsePage!.content ?? [];
+        _allTnxCount = decodedData.responsePage!.totalElements ?? 0;
+        _totalAmountInAllTrans = decodedData.totalAmount ?? 0.0;
+        print(
+            "todays transaction count: ${decodedData.responsePage!.totalElements}");
         if (newItems.isNotEmpty) {
           currentPage++;
 
@@ -165,7 +167,7 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
     _allTranReqModel
       ..acquirerId = "OMAIND"
       ..merchantId = "65OMA0000000002"
-      ..rrn = ""
+      ..rrn = _searchType == "RRN" ? searchController.text : ''
       ..recordFrom = _customStartDate != null
           ? DateFormat('dd-MM-yyyy').format(_customStartDate!)
           : _selectedDateRange
@@ -213,6 +215,7 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
   // Setters
   void setSearchType(String? value) {
     _searchType = value!;
+    searchController.clear();
     notifyListeners();
   }
 

@@ -137,7 +137,7 @@ class ShowSettledTransactionInvoice extends StatelessWidget {
                 const Spacer(),
                 CustomContainer(
                   onTap: () => generatePDF(context),
-                  height: 70,
+                  height: screenHeight * 0.06,
                   child: const CustomTextWidget(
                     text: "Download",
                     color: Colors.white,

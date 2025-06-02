@@ -13,15 +13,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:anet_merchant_app/main.dart';
 
 class AuthProvider with ChangeNotifier {
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    if (kDebugMode) {
-      print("dispose called in AuthProvider");
-    }
-  }
-
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _merchantIdController = TextEditingController();
   final TextEditingController _phoneNumberOtpController =
@@ -35,6 +26,8 @@ class AuthProvider with ChangeNotifier {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   MerchantSelfLoginModel req = MerchantSelfLoginModel();
   AlertService alertService = AlertService();
+
+  dynamic loginResponse;
 
   GlobalKey<FormState> get formKey => _formKey;
   String get merchantId => _merchantInfo.merchantId ?? 'MER3456789';
@@ -122,26 +115,27 @@ class AuthProvider with ChangeNotifier {
     try {
       final res =
           await _merchantServices.merchantSelfLogin(req.sentOtpToJson());
-      var response = jsonDecode(res.body);
+      loginResponse = jsonDecode(res.body);
 
-      if (response != null &&
-          response['responseCode'] == "00" &&
+      if (loginResponse != null &&
+          loginResponse['responseCode'] == "00" &&
           res.statusCode == 200) {
-        StorageServices.saveSecureStorage(response,
-            userName: _merchantIdController.text,
-            password: _passwordController.text);
-        if (response['twoFARequired']) {
+        // StorageServices.saveSecureStorage(loginResponse,
+        //     userName: _merchantIdController.text,
+        //     password: _passwordController.text);
+        if (loginResponse['twoFARequired']) {
           _isOtpSent = true;
-          alertService
-              .success(response['responseMessage'] ?? 'OTP sent successfully');
+          alertService.success(
+              loginResponse['responseMessage'] ?? 'OTP sent successfully');
         } else {
           _isOtpSent = false;
           alertService
-              .error(response['responseMessage'] ?? 'Failed to Send OTP');
+              .error(loginResponse['responseMessage'] ?? 'Failed to Send OTP');
         }
       } else {
         _isOtpSent = false;
-        alertService.error(response['responseMessage'] ?? 'Failed to Send OTP');
+        alertService
+            .error(loginResponse['responseMessage'] ?? 'Failed to Send OTP');
       }
     } catch (e) {
       alertService
@@ -165,6 +159,10 @@ class AuthProvider with ChangeNotifier {
         if (response != null && response['errorMessage'] == "Success") {
           _isLoggedIn = true;
           _isOtpSent = false;
+          StorageServices.saveSecureStorage(loginResponse,
+              userName: _merchantIdController.text,
+              password: _passwordController.text);
+          loginResponse = null;
           alertService.success(
               response['successMessage'] ?? 'OTP Verified successfully!');
           TokenManager()

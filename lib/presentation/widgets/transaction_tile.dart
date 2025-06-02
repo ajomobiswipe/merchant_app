@@ -105,23 +105,7 @@ class TransactionTile extends StatelessWidget {
                   ],
                 ),
               ),
-              CustomContainer(
-                color: (transaction.responseCode == "000" ||
-                        transaction.responseCode == "00")
-                    ? Colors.green
-                    : Colors.red,
-                width: width * 0.22,
-                height: 24,
-                // borderRadius: 12,
-                child: CustomTextWidget(
-                  size: 12,
-                  text: getTransactionStatus(transaction),
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              defaultWidth(width * 0.02),
-              GestureDetector(
+              InkWell(
                 onTap: () {
                   Navigator.push(
                     context,
@@ -132,11 +116,29 @@ class TransactionTile extends StatelessWidget {
                     ),
                   );
                 },
-                child: Icon(
-                  Icons.info_outline,
-                  color: Colors.blueAccent.shade200,
-                ),
-              ),
+                child: Row(children: [
+                  CustomContainer(
+                    color: (transaction.responseCode == "000" ||
+                            transaction.responseCode == "00")
+                        ? Colors.green
+                        : Colors.red,
+                    width: width * 0.22,
+                    height: 24,
+                    // borderRadius: 12,
+                    child: CustomTextWidget(
+                      size: 12,
+                      text: getTransactionStatus(transaction),
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  defaultWidth(width * 0.02),
+                  Icon(
+                    Icons.info_outline,
+                    color: Colors.blueAccent.shade200,
+                  ),
+                ]),
+              )
             ],
           ),
         ),

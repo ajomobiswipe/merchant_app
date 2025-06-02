@@ -39,6 +39,9 @@ class TransactionProvider with ChangeNotifier {
   // Transaction Data
   int _todaysTnxCount = 0; // Simulate total from API
   List<TransactionElement> recentTransactions = [];
+  double _totalTransactionAmount = 0.0;
+
+  double get getTotalTransactionAmount => _totalTransactionAmount;
 
   // Getters
 
@@ -110,9 +113,11 @@ class TransactionProvider with ChangeNotifier {
 
       if (response.statusCode == 200) {
         final decodedData = transactionHistoryFromJson(response.body);
-        final newItems = decodedData.content ?? [];
-        _todaysTnxCount = decodedData.totalElements ?? 0;
-        print("todays transaction count: ${decodedData.totalElements}");
+        final newItems = decodedData.responsePage!.content ?? [];
+        _todaysTnxCount = decodedData.responsePage!.totalElements ?? 0;
+        _totalTransactionAmount = decodedData.totalAmount ?? 0.0;
+        print(
+            "todays transaction count: ${decodedData.responsePage!.totalElements}");
         if (newItems.isNotEmpty) {
           isRecentTransLoadingFistTime = false;
           currentPage++;

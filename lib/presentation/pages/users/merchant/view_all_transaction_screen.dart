@@ -81,8 +81,8 @@ class _ViewAllTransactionScreenState extends State<ViewAllTransactionScreen> {
                         size: 18),
                     CustomTextWidget(
                         text: "₹ " +
-                            transactionProvider.totalSettlementAmount
-                                .toString(),
+                            transactionProvider.getTotalTransactionAmount
+                                .toStringAsFixed(2),
                         size: 18,
                         color: Colors.white),
                   ],
@@ -132,7 +132,12 @@ class _ViewAllTransactionScreenState extends State<ViewAllTransactionScreen> {
                                       } else {
                                         return Center(
                                             child: Text(
-                                                "-----   END OF LIST  ------"));
+                                                "No more transactions to display",
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: Colors.grey,
+                                                    fontStyle:
+                                                        FontStyle.italic)));
                                       }
                                     },
                                   ),
