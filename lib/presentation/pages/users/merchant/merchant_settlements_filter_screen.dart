@@ -8,8 +8,27 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class MerchantStatementFilterScreen extends StatelessWidget {
+class MerchantStatementFilterScreen extends StatefulWidget {
   const MerchantStatementFilterScreen({super.key});
+
+  @override
+  State<MerchantStatementFilterScreen> createState() =>
+      _MerchantStatementFilterScreenState();
+}
+
+class _MerchantStatementFilterScreenState
+    extends State<MerchantStatementFilterScreen> {
+  late SettlementProvider _settlementProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _settlementProvider =
+          Provider.of<SettlementProvider>(context, listen: false);
+      _settlementProvider.resetFilters();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

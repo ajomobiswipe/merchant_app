@@ -147,6 +147,11 @@ class SettlementProvider extends ChangeNotifier {
     }
   }
 
+  resetFilters() {
+    _selectedDateRange = null;
+    notifyListeners();
+  }
+
   // Fetch recent transactions
   Future<void> getSettlementDashboardReport() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -164,7 +169,7 @@ class SettlementProvider extends ChangeNotifier {
       "misDone": true,
       "pageDataRequired": true,
       "settlementAggregatesRequired": true,
-      "sendSettlementReportToMail": true
+      "sendSettlementReportToMail": false
     };
 
     try {

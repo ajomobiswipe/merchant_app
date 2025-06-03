@@ -94,6 +94,7 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
 
     String? merchantId = prefs.getString('acqMerchantId') ?? '65OMA0000000002';
     print(merchantId);
+
     _allTranReqModel
       ..acquirerId = "OMAIND"
       ..merchantId = merchantId
@@ -209,6 +210,17 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
     _allTnxCount = 0;
     notifyListeners();
     getAllTransactions();
+    notifyListeners();
+  }
+
+  void resetFilters() {
+    _searchType = 'RRN';
+    _selectedTid = "ALL";
+    _selectedDateRange = null;
+    _customStartDate = null;
+    _customEndDate = null;
+    _selectedPaymentMode = 'ALL';
+    searchController.clear();
     notifyListeners();
   }
 

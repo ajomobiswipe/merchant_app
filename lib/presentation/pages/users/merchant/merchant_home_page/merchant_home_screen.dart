@@ -141,8 +141,8 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
                         text: provider.todaysTnxCount.toString(),
                         size: 18),
                     CustomTextWidget(
-                        text: provider.getTotalTransactionAmount
-                            .toStringAsFixed(2),
+                        text:
+                            "₹ ${provider.getTotalTransactionAmount.toStringAsFixed(2)}",
                         size: 18,
                         color: Colors.white),
                   ],

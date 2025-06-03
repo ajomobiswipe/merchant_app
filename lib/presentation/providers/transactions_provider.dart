@@ -84,21 +84,13 @@ class TransactionProvider with ChangeNotifier {
     _recentTranReqModel
       ..acquirerId = "OMAIND"
       ..merchantId = merchantId
+      // ..recordFrom = "${DateTime.now().toLocal().toString().split(' ')[0]}"
+      // ..recordTo = "${DateTime.now().toLocal().toString().split(' ')[0]}"
       ..recordFrom = "22-01-2023"
       ..recordTo = "27-05-2025"
       ..rrn = null
-      ..terminalId = null;
-    //      ..recordFrom = "${DateTime.now().toLocal().toString().split(' ')[0]}"
-    // ..recordTo = "${DateTime.now().toLocal().toString().split(' ')[0]}"
-
-    //       "merchantId": "651010000022371",
-    // "recordFrom": "22-01-2023",
-    // "recordTo": "27-05-2025",
-    // "acquirerId": "OMAIND",
-    // "rrn": null,
-    // "terminalId": null,
-    // "sendTxnReportToMail": false
-
+      ..terminalId = null
+      ..sendTxnReportToMail = false;
     if (_isDailyTransactionsLoading) return;
 
     _isDailyTransactionsLoading = true;
