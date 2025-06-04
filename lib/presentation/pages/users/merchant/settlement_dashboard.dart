@@ -112,7 +112,10 @@ class _SettlementDashboardState extends State<SettlementDashboard> {
                         ],
                       ),
                     ),
-              CustomTextWidget(text: "UTR Wise settlement", size: 12),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: CustomTextWidget(text: "UTR Wise settlement", size: 12),
+              ),
               settlementProvider.isLoading
                   ? Shimmer.fromColors(
                       baseColor: Colors.grey[300]!,
@@ -134,22 +137,34 @@ class _SettlementDashboardState extends State<SettlementDashboard> {
                         },
                       ),
                     )
-                  : ListView.separated(
-                      separatorBuilder: (context, index) => SizedBox(
-                        height: screenHeight * 0.02,
-                      ),
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: settlementProvider.utrWiseSettlements.length,
-                      scrollDirection: Axis.vertical,
-                      itemBuilder: (context, index) {
-                        final settlement =
-                            settlementProvider.utrWiseSettlements[index];
+                  : settlementProvider.utrWiseSettlements.isEmpty
+                      ? Center(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 20),
+                            child: CustomTextWidget(
+                              text: "No settlements available",
+                              size: 14,
+                              color: AppColors.kPrimaryColor,
+                            ),
+                          ),
+                        )
+                      : ListView.separated(
+                          separatorBuilder: (context, index) => SizedBox(
+                            height: screenHeight * 0.02,
+                          ),
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount:
+                              settlementProvider.utrWiseSettlements.length,
+                          scrollDirection: Axis.vertical,
+                          itemBuilder: (context, index) {
+                            final settlement =
+                                settlementProvider.utrWiseSettlements[index];
 
-                        return settlementTile(settlementProvider, screenWidth,
-                            screenHeight, settlement, context);
-                      },
-                    ),
+                            return settlementTile(settlementProvider,
+                                screenWidth, screenHeight, settlement, context);
+                          },
+                        ),
             ],
           );
         },

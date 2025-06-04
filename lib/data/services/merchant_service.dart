@@ -74,7 +74,7 @@ class MerchantServices {
     Connection connection = Connection();
 
     var url =
-        "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/getPosTxnHistoryReport?pageNumber=$pageNumber&size=$pageSize&sort=insertDateTime%2Cdesc";
+        "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/getPosTxnHistoryReport?page=$pageNumber&size=$pageSize&sort=insertDateTime%2Cdesc";
     // Response response = Response(
     //     getDummyPosTxnHistoryReport(pageNumber: pageNumber, pageSize: pageSize),
     //     200);
@@ -115,7 +115,7 @@ class MerchantServices {
     Connection connection = Connection();
 
     var url =
-        "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/getSettlementHistoryReport?pageNumber=$pageNumber&size=$pageSize&sort=desc";
+        "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/getSettlementHistoryReport?page=$pageNumber&size=$pageSize&sort=desc";
 
     // Response response = Response(getDummySettlementHistoryReport(), 200); //
     // await Future.delayed(const Duration(seconds: 2));

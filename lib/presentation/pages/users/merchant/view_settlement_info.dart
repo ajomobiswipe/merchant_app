@@ -29,8 +29,20 @@ class _ViewSettlementInfoState extends State<ViewSettlementInfo> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _settlementProvider =
           Provider.of<SettlementProvider>(context, listen: false);
+      _settlementProvider.allSettlementScrollCtrl.addListener(_onScroll);
+      _settlementProvider.clearTransactionList();
       _settlementProvider.getTransactionsInSettlement();
     });
+  }
+
+  void _onScroll() {
+    if (_settlementProvider.allSettlementScrollCtrl.position.pixels >=
+            _settlementProvider
+                    .allSettlementScrollCtrl.position.maxScrollExtent -
+                200 &&
+        !_settlementProvider.isAllTransactionsLoading) {
+      _settlementProvider.getTransactionsInSettlement();
+    }
   }
 
   @override

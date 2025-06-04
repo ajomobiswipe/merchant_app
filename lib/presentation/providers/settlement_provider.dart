@@ -53,7 +53,11 @@ class SettlementProvider extends ChangeNotifier {
     }
     return _selectedDateRange ?? '';
   }
+
   // Getters
+  bool isDateNotSelected() {
+    return _customStartDate == null || _customEndDate == null;
+  }
 
   String? get selectedDateRange => _selectedDateRange;
   DateTime? get customStartDate => _customStartDate;
@@ -73,11 +77,15 @@ class SettlementProvider extends ChangeNotifier {
 
   // Transaction Data
   int _allTnxCount = 0; // Simulate total from API
+  int _transactionsInSettlementCount = 0; // Simulate total from API
+  int get transactionsInSettlementCount => _transactionsInSettlementCount;
   List<SettledTransaction> _allTransactions = [];
   List<SettledTransaction> get allTransactions => _allTransactions;
   // Getters
 
-  bool get hasMoreTransactions => _allTransactions.length < _allTnxCount;
+  bool get hasMoreTransactions =>
+      _allTransactions.length < _transactionsInSettlementCount;
+
   bool get isAllTransactionsLoading => _isAllTransactionsLoading;
 
   List<SettlementAggregate> _utrWiseSettlements = [];
@@ -101,7 +109,9 @@ class SettlementProvider extends ChangeNotifier {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     String? merchantId = prefs.getString('acqMerchantId') ?? '65OMA0000000002';
-    _allTransactions = [];
+    if (_allTransactions.length >= _transactionsInSettlementCount &&
+        !isAllTransLoadingFistTime) return;
+
     notifyListeners();
     var reqBody = {
       "merchantId": merchantId,
@@ -129,7 +139,8 @@ class SettlementProvider extends ChangeNotifier {
       if (response.statusCode == 200) {
         final decodedData = getSettlementHistoryDataFromJson(response.body);
         final newItems = decodedData.settledSummaryPage?.content ?? [];
-        _allTnxCount = decodedData.settledSummaryPage?.totalElements ?? 0;
+        _transactionsInSettlementCount =
+            decodedData.settledSummaryPage?.totalElements ?? 0;
 
         if (newItems.isNotEmpty) {
           currentPage++;
@@ -152,16 +163,27 @@ class SettlementProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  clearTransactionList() {
+    currentPage = 0;
+    _allTransactions = [];
+    isAllTransLoadingFistTime = true;
+    _transactionsInSettlementCount = 0;
+    notifyListeners();
+  }
+
   // Fetch recent transactions
   Future<void> getSettlementDashboardReport() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String? merchantId = prefs.getString('acqMerchantId') ?? '651010000022371';
     _isoading = true;
     notifyListeners();
+    print("selected DateRange ${_selectedDateRange}");
     var reqBody = {
       "merchantId": merchantId,
-      "fromDate": "2024-05-01",
-      "toDate": "2025-05-28",
+      "fromDate": DateFormat('yyyy-MM-dd').format(_customStartDate!),
+      "toDate": DateFormat('yyyy-MM-dd').format(_customEndDate!),
+      // "fromDate": "2024-05-01",
+      // "toDate": "2025-05-28",
       // "fromDate": getFormattedDate(_selectedSettlementAggregate!.tranDate!),
       // "toDate": getFormattedDate(_selectedSettlementAggregate!.tranDate!),
       "reconciled": true,
@@ -175,8 +197,8 @@ class SettlementProvider extends ChangeNotifier {
     try {
       final response = await _merchantServices.getSettlementDashboardReport(
         reqBody,
-        pageNumber: currentPage,
-        pageSize: pageSize,
+        pageNumber: 0,
+        pageSize: 100,
       );
 
       if (response.statusCode == 200) {
@@ -203,12 +225,12 @@ class SettlementProvider extends ChangeNotifier {
     notifyListeners();
     var reqBody = {
       "merchantId": merchantId,
-      "fromDate": "2024-05-01",
-      "toDate": "2025-05-28",
+      "fromDate": DateFormat('yyyy-MM-dd').format(_customStartDate!),
+      "toDate": DateFormat('yyyy-MM-dd').format(_customEndDate!),
       "reconsiled": true,
       "merPayDone": true,
       "misDone": true,
-      "pageDataRequired": false,
+      "pageDataRequired": true,
       "settlementAggregatesRequired": true,
       "sendSettlementReportToMail": true
     };
@@ -216,8 +238,8 @@ class SettlementProvider extends ChangeNotifier {
     try {
       final response = await _merchantServices.getSettlementDashboardReport(
         reqBody,
-        pageNumber: currentPage,
-        pageSize: pageSize,
+        pageNumber: 0,
+        pageSize: 100,
       );
 
       if (response.statusCode == 200) {
@@ -267,9 +289,10 @@ class SettlementProvider extends ChangeNotifier {
     } else if (_selectedDateRange == 'Last 1 Month') {
       _customStartDate = DateTime.now().subtract(Duration(days: 30));
       _customEndDate = DateTime.now();
-    } else if (_selectedDateRange == 'Custom Date Range') {}
-    print(_customEndDate);
-    print(_customStartDate);
+    } else if (_selectedDateRange == 'Custom Date Range') {
+      _customStartDate = DateTime.now().subtract(Duration(days: 30));
+      _customEndDate = DateTime.now();
+    }
     notifyListeners();
   }
 

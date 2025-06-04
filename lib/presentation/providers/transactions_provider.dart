@@ -84,10 +84,12 @@ class TransactionProvider with ChangeNotifier {
     _recentTranReqModel
       ..acquirerId = "OMAIND"
       ..merchantId = merchantId
-      // ..recordFrom = "${DateTime.now().toLocal().toString().split(' ')[0]}"
-      // ..recordTo = "${DateTime.now().toLocal().toString().split(' ')[0]}"
-      ..recordFrom = "22-01-2023"
-      ..recordTo = "27-05-2025"
+      ..recordFrom = "${DateTime.now().toLocal().toString().split(' ')[0]}"
+      ..recordTo = "${DateTime.now().toLocal().toString().split(' ')[0]}"
+      // ..recordFrom = "26-05-2025"
+      // ..recordTo = "03-06-2025"
+      // ..recordFrom = "22-01-2023"
+      // ..recordTo = "27-05-2025"
       ..rrn = null
       ..terminalId = null
       ..sendTxnReportToMail = false;
@@ -105,11 +107,11 @@ class TransactionProvider with ChangeNotifier {
 
       if (response.statusCode == 200) {
         final decodedData = transactionHistoryFromJson(response.body);
-        final newItems = decodedData.responsePage!.content ?? [];
-        _todaysTnxCount = decodedData.responsePage!.totalElements ?? 0;
+        final newItems = decodedData.responsePage?.content ?? [];
+        _todaysTnxCount = decodedData.responsePage?.totalElements ?? 0;
         _totalTransactionAmount = decodedData.totalAmount ?? 0.0;
-        print(
-            "todays transaction count: ${decodedData.responsePage!.totalElements}");
+        // print(
+        //     "todays transaction count: ${decodedData.responsePage!.totalElements}");
         if (newItems.isNotEmpty) {
           isRecentTransLoadingFistTime = false;
           currentPage++;

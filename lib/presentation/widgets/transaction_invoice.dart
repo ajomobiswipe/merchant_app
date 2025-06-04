@@ -15,7 +15,7 @@ class ShowTransactionInvoice extends StatelessWidget {
   const ShowTransactionInvoice({super.key, required this.transaction});
 
   String getCurrencySymbol(String? code) {
-    if (code == "356") return "INR   ₹";
+    if (code == "356") return "INR   \₹";
     return "\$";
   }
 
@@ -324,8 +324,7 @@ class ShowTransactionInvoice extends StatelessWidget {
                   pw.Text("Amount",
                       style: pw.TextStyle(
                           fontSize: 16, fontWeight: pw.FontWeight.bold)),
-                  pw.Text(
-                      "${getCurrencySymbol(transaction.currency)} ${transaction.amount ?? "N/A"}",
+                  pw.Text(" INR ${transaction.amount ?? "N/A"}",
                       style: pw.TextStyle(
                           fontSize: 16, fontWeight: pw.FontWeight.bold)),
                 ],

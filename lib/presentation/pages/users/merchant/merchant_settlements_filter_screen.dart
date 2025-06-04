@@ -147,7 +147,8 @@ class _MerchantStatementFilterScreenState
       height: 70,
       onTap: () {
         if (provider.selectedDateRange == null ||
-            provider.selectedDateRange!.isEmpty) {
+            provider.selectedDateRange!.isEmpty ||
+            provider.isDateNotSelected()) {
           AlertService().error(
             "Please select a date range",
           );

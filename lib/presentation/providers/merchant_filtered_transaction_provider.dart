@@ -16,6 +16,13 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
   String? _selectedDateRange;
   DateTime? _customStartDate;
   DateTime? _customEndDate;
+
+  DateTime? get customStartDate => _customStartDate;
+  DateTime? get customEndDate => _customEndDate;
+  bool isDateNotSelected() {
+    return _customStartDate == null || _customEndDate == null;
+  }
+
   String _selectedPaymentMode = 'ALL';
 
   List<String> tidOptions = ["ALL", 'TID001', 'TID002', 'TID003'];
@@ -32,8 +39,7 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
   String get searchType => _searchType;
   String? get selectedTid => _selectedTid;
   String? get selectedDateRange => _selectedDateRange;
-  DateTime? get customStartDate => _customStartDate;
-  DateTime? get customEndDate => _customEndDate;
+
   String getFormattedDateRange() {
     if (_selectedDateRange == 'Custom Date Range' &&
         _customStartDate != null &&
@@ -95,28 +101,16 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
     String? merchantId = prefs.getString('acqMerchantId') ?? '65OMA0000000002';
     print(merchantId);
 
-    _allTranReqModel
-      ..acquirerId = "OMAIND"
-      ..merchantId = merchantId
-      ..rrn = _searchType == "RRN" ? searchController.text : ''
-      ..recordFrom = "22-01-2023"
+    _allTranReqModel.acquirerId = "OMAIND";
+    _allTranReqModel.merchantId = merchantId;
+    _allTranReqModel.rrn = _searchType == "RRN" ? searchController.text : '';
+    _allTranReqModel.recordFrom =
+        DateFormat('dd-MM-yyyy').format(_customStartDate!);
+    _allTranReqModel.recordTo =
+        DateFormat('dd-MM-yyyy').format(_customEndDate!);
+    _allTranReqModel.terminalId = null;
+    _allTranReqModel.sendTxnReportToMail = false;
 
-      //  _customStartDate != null
-      //     ? DateFormat('dd-MM-yyyy').format(_customStartDate!)
-      //     : _selectedDateRange
-      ..recordTo = "27-05-2025"
-      // _customEndDate != null
-      //     ? DateFormat('dd-MM-yyyy').format(_customEndDate!)
-      //     : _selectedDateRange
-      ..terminalId = null;
-
-    // "merchantId": "651010000022371",
-    // "recordFrom": "22-01-2023",
-    // "recordTo": "27-05-2025",
-    // "acquirerId": "OMAIND",
-    // "rrn": null,
-    // "terminalId": null,
-    // "sendTxnReportToMail": true
     if (_isAllTransactionsLoading) return;
 
     _isAllTransactionsLoading = true;
@@ -131,7 +125,7 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
 
       if (response.statusCode == 200) {
         final decodedData = transactionHistoryFromJson(response.body);
-        final newItems = decodedData.responsePage!.content ?? [];
+        var newItems = decodedData.responsePage!.content ?? [];
         _allTnxCount = decodedData.responsePage!.totalElements ?? 0;
         _totalAmountInAllTrans = decodedData.totalAmount ?? 0.0;
         print(
@@ -158,6 +152,10 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
       AlertService().error("No transactions available to send.");
       return;
     }
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String? merchantId = prefs.getString('acqMerchantId') ?? '65OMA0000000002';
+    print(merchantId);
     print(_selectedDateRange);
     print(_customStartDate);
     print("Current Page: $currentPage");
@@ -167,7 +165,7 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
 
     _allTranReqModel
       ..acquirerId = "OMAIND"
-      ..merchantId = "65OMA0000000002"
+      ..merchantId = merchantId
       ..rrn = _searchType == "RRN" ? searchController.text : ''
       ..recordFrom = _customStartDate != null
           ? DateFormat('dd-MM-yyyy').format(_customStartDate!)
@@ -190,9 +188,9 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
 
       if (response.statusCode == 200) {
         AlertService().success(
-            " Settlement report has been sent to your registered email.");
+            " Transaction report has been sent to your registered email.");
       } else {
-        AlertService().error("Failed to send settlement report to email.");
+        AlertService().error("Failed to send Transaction report to email.");
       }
     } catch (e) {
       print("Error fetching transactions: $e");
@@ -269,7 +267,8 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
       _customStartDate = DateTime.now().subtract(Duration(days: 30));
       _customEndDate = DateTime.now();
     } else if (_selectedDateRange == 'Custom Date Range') {
-      // Custom date range is already set via setCustomStartDate and setCustomEndDate
+      print("object");
+      print(_customEndDate);
     }
     print(_customEndDate);
     print(_customStartDate);

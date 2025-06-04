@@ -25,7 +25,7 @@ class TransactionTile extends StatelessWidget {
       final dateTime = inputFormat.parse(input);
 
       final formattedDate =
-          DateFormat("d MMM").format(dateTime); // e.g., 26 May
+          DateFormat("d MMM yy").format(dateTime); // e.g., 26 May
       final formattedTime =
           DateFormat("h:mm a").format(dateTime); // e.g., 5:45 PM
 
@@ -97,7 +97,7 @@ class TransactionTile extends StatelessWidget {
                       formattedDateTime(transaction.transactionDate,
                           transaction.transactionTime),
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 12,
                         fontWeight: FontWeight.w400,
                         color: Colors.grey.shade600,
                       ),

@@ -54,8 +54,8 @@ class _MerchantTransactionFilterScreenState
                     text: "Payment transactions", size: screenHeight * 0.02),
                 SizedBox(height: screenHeight * 0.02),
                 _buildSearchField(provider, screenWidth),
-                SizedBox(height: screenHeight * 0.02),
-                _buildTidDropdown(provider),
+                // SizedBox(height: screenHeight * 0.02),
+                // _buildTidDropdown(provider),
                 SizedBox(height: screenHeight * 0.02),
                 _buildDateRangeSelector(provider),
                 if (provider.selectedDateRange == 'Custom Date Range')
@@ -95,12 +95,12 @@ class _MerchantTransactionFilterScreenState
               onChanged: provider.setSearchType,
             ),
             CustomTextWidget(text: 'RRN', size: 10),
-            Radio<String>(
-              value: 'App Code',
-              groupValue: provider.searchType,
-              onChanged: provider.setSearchType,
-            ),
-            CustomTextWidget(text: 'App Code', size: 10),
+            // Radio<String>(
+            //   value: 'App Code',
+            //   groupValue: provider.searchType,
+            //   onChanged: provider.setSearchType,
+            // ),
+            // CustomTextWidget(text: 'App Code', size: 10),
             SizedBox(width: 10),
             if (screenWidth > 400)
               Expanded(
@@ -264,7 +264,7 @@ class _MerchantTransactionFilterScreenState
       onTap: () {
         if ((provider.searchType == "RRN" &&
                 provider.searchController.text.isEmpty) &&
-            provider.selectedDateRange == null) {
+            provider.isDateNotSelected()) {
           AlertService().error("Please enter RRN or select a date range.");
           return;
         }
