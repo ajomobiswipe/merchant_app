@@ -160,6 +160,8 @@ class ShowSettledTransactionInvoice extends StatelessWidget {
     final pdf = pw.Document();
     final logo =
         (await rootBundle.load('assets/screen/anet.png')).buffer.asUint8List();
+    final inrIcon =
+        (await rootBundle.load('assets/screen/rupee.png')).buffer.asUint8List();
 
     pdf.addPage(
       pw.Page(
@@ -175,14 +177,17 @@ class ShowSettledTransactionInvoice extends StatelessWidget {
               rowText("Approval Code", transaction.approveCode ?? "N/A"),
               rowText("MID", transaction.mid ?? "N/A"),
               rowText("UTR", transaction.utr ?? "N/A"),
-              rowText("Gross Amount",
-                  "INR ${transaction.grossTransactionAmount?.toStringAsFixed(2) ?? "N/A"}"),
-              rowText("MDR",
-                  "INR ${transaction.mdrAmount?.toStringAsFixed(2) ?? "N/A"}"),
-              rowText(
-                  "GST", "INR ${transaction.gst?.toStringAsFixed(2) ?? "N/A"}"),
+              rowTextWithINR(
+                  "Gross Amount",
+                  transaction.grossTransactionAmount?.toStringAsFixed(2) ??
+                      "N/A",
+                  inrIcon),
+              rowTextWithINR("MDR",
+                  transaction.mdrAmount?.toStringAsFixed(2) ?? "N/A", inrIcon),
+              rowTextWithINR(
+                  "GST", transaction.gst?.toStringAsFixed(2) ?? "N/A", inrIcon),
               rowText("Total Payable",
-                  "INR ${transaction.totalAmountPayable?.toStringAsFixed(2) ?? "N/A"}"),
+                  transaction.totalAmountPayable?.toStringAsFixed(2) ?? "N/A"),
               rowText("Merchant Payment Done",
                   transaction.merPayDone == true ? "Yes" : "No"),
               rowText("MIS Done", transaction.misDone == true ? "Yes" : "No"),
@@ -207,6 +212,22 @@ class ShowSettledTransactionInvoice extends StatelessWidget {
         mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
         children: [
           pw.Text("$label:", style: pw.TextStyle(fontSize: 12)),
+          pw.Text(value, style: pw.TextStyle(fontSize: 12)),
+        ],
+      ),
+    );
+  }
+
+  pw.Widget rowTextWithINR(String label, String value, Uint8List inrIcon) {
+    return pw.Padding(
+      padding: const pw.EdgeInsets.symmetric(vertical: 2),
+      child: pw.Row(
+        mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+        children: [
+          pw.Text("$label:", style: pw.TextStyle(fontSize: 12)),
+          pw.Spacer(),
+          pw.Image(pw.MemoryImage(inrIcon), width: 12, height: 12),
+          pw.SizedBox(width: 4),
           pw.Text(value, style: pw.TextStyle(fontSize: 12)),
         ],
       ),

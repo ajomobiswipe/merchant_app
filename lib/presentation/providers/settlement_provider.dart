@@ -22,7 +22,6 @@ class SettlementProvider extends ChangeNotifier {
   bool _isEmailSending = false;
   bool get isEmailSending => _isEmailSending;
 
-  bool get isLoading => _isoading;
   double get totalSettlementAmount => _totalSettlementAmount;
   double get deductionsAmount => _deductions;
 
@@ -66,18 +65,27 @@ class SettlementProvider extends ChangeNotifier {
   // Controllers
   final ScrollController _allSettlementScrollCtrl = ScrollController();
   ScrollController get allSettlementScrollCtrl => _allSettlementScrollCtrl;
+  // Controllers
+  final ScrollController _allUtrWiseSettlementScrollCtrl = ScrollController();
+  ScrollController get allUtrWiseSettlementScrollCtrl =>
+      _allUtrWiseSettlementScrollCtrl;
 
   // Flags
   bool _isAllTransactionsLoading = false;
   bool isAllTransLoadingFistTime = true;
+  bool _isAllUtrWiseSettlementLoading = false;
+  bool isAllUtrWiseSettlementFistTime = true;
 
   // Pagination
   int currentPage = 0;
   final int pageSize = 10;
+  int utrCurrentPage = 0;
+  final int utrPageSize = 10;
 
   // Transaction Data
   int _allTnxCount = 0; // Simulate total from API
   int _transactionsInSettlementCount = 0; // Simulate total from API
+  int _utrWiseSettlementCount = 0; // Simulate total from API
   int get transactionsInSettlementCount => _transactionsInSettlementCount;
   List<SettledTransaction> _allTransactions = [];
   List<SettledTransaction> get allTransactions => _allTransactions;
@@ -85,17 +93,22 @@ class SettlementProvider extends ChangeNotifier {
 
   bool get hasMoreTransactions =>
       _allTransactions.length < _transactionsInSettlementCount;
+  bool get hasMoreUtrSettlements =>
+      _utrWiseSettlements.length < _utrWiseSettlementCount;
 
   bool get isAllTransactionsLoading => _isAllTransactionsLoading;
+  bool get isAllUtrWiseSettlementLoading => _isAllUtrWiseSettlementLoading;
 
-  List<SettlementAggregate> _utrWiseSettlements = [];
-  List<SettlementAggregate> get utrWiseSettlements => _utrWiseSettlements;
-  SettlementAggregate? _selectedSettlementAggregate;
-  void setSelectedSettlementAggregate(SettlementAggregate? settlement) {
+  List<SettlementAggregatePageContent> _utrWiseSettlements = [];
+  List<SettlementAggregatePageContent> get utrWiseSettlements =>
+      _utrWiseSettlements;
+  SettlementAggregatePageContent? _selectedSettlementAggregate;
+  void setSelectedSettlementAggregate(
+      SettlementAggregatePageContent? settlement) {
     _selectedSettlementAggregate = settlement;
   }
 
-  SettlementAggregate? get selectedSettlementAggregate =>
+  SettlementAggregatePageContent? get selectedSettlementAggregate =>
       _selectedSettlementAggregate;
 
   // Methods
@@ -163,6 +176,15 @@ class SettlementProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  resetDashBoard() {
+    _utrWiseSettlements = [];
+    _utrWiseSettlementCount = 0;
+    utrCurrentPage = 0;
+    isAllUtrWiseSettlementFistTime = true;
+    _isAllUtrWiseSettlementLoading = false;
+    notifyListeners();
+  }
+
   clearTransactionList() {
     currentPage = 0;
     _allTransactions = [];
@@ -173,9 +195,17 @@ class SettlementProvider extends ChangeNotifier {
 
   // Fetch recent transactions
   Future<void> getSettlementDashboardReport() async {
+    print("utrWiseSettlements length: ${_utrWiseSettlements.length}");
+    print("utrWiseSettlementCount: $_utrWiseSettlementCount");
+    print("isAllUtrWiseSettlementFistTime: $isAllUtrWiseSettlementFistTime");
+    if (_utrWiseSettlements.length >= _utrWiseSettlementCount &&
+        !isAllUtrWiseSettlementFistTime) {
+      return;
+    }
+    if (_isAllUtrWiseSettlementLoading) return;
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String? merchantId = prefs.getString('acqMerchantId') ?? '651010000022371';
-    _isoading = true;
+    _isAllUtrWiseSettlementLoading = true;
     notifyListeners();
     print("selected DateRange ${_selectedDateRange}");
     var reqBody = {
@@ -191,14 +221,15 @@ class SettlementProvider extends ChangeNotifier {
       "misDone": true,
       "pageDataRequired": true,
       "settlementAggregatesRequired": true,
+      "settlementTotalRequired": true,
       "sendSettlementReportToMail": false
     };
 
     try {
       final response = await _merchantServices.getSettlementDashboardReport(
         reqBody,
-        pageNumber: 0,
-        pageSize: 100,
+        pageNumber: utrCurrentPage,
+        pageSize: utrPageSize,
       );
 
       if (response.statusCode == 200) {
@@ -207,31 +238,44 @@ class SettlementProvider extends ChangeNotifier {
             decodedData.settlementTotal?.totalAmount ?? 0.00;
         _totalSettlement = decodedData.settlementTotal?.settlementCount ?? 0;
         _totalTransactions = decodedData.settlementTotal?.transactionCount ?? 0;
-
-        _utrWiseSettlements = decodedData.settlementAggregates ?? [];
+        _utrWiseSettlementCount =
+            decodedData.settlementTotal?.settlementCount ?? 0;
+        final newItems = decodedData.settlementAggregatePage?.content ?? [];
+        if (decodedData.settlementAggregatePage?.content != null) {
+          isAllUtrWiseSettlementFistTime = false;
+          utrCurrentPage++;
+          _utrWiseSettlements.addAll(newItems);
+        } else {}
       }
     } catch (e) {
       print("Error fetching transactions: $e");
     } finally {
-      _isoading = false;
+      _isAllUtrWiseSettlementLoading = false;
       notifyListeners();
     }
   }
 
   Future<void> sendSettlementDashboardReportTOEmail() async {
+    if (_selectedSettlementAggregate == null) {
+      AlertService().error("Please select a settlement date first.");
+      return;
+    }
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String? merchantId = prefs.getString('acqMerchantId') ?? '65OMA0000000002';
     _isEmailSending = true;
     notifyListeners();
     var reqBody = {
       "merchantId": merchantId,
-      "fromDate": DateFormat('yyyy-MM-dd').format(_customStartDate!),
-      "toDate": DateFormat('yyyy-MM-dd').format(_customEndDate!),
-      "reconsiled": true,
+      "fromDate": DateFormat('yyyy-MM-dd')
+          .format(_selectedSettlementAggregate!.tranDate!),
+      "toDate": DateFormat('yyyy-MM-dd')
+          .format(_selectedSettlementAggregate!.tranDate!),
+      "reconciled": true,
       "merPayDone": true,
       "misDone": true,
       "pageDataRequired": true,
       "settlementAggregatesRequired": true,
+      "settlementTotalRequired": true,
       "sendSettlementReportToMail": true
     };
 
@@ -239,7 +283,7 @@ class SettlementProvider extends ChangeNotifier {
       final response = await _merchantServices.getSettlementDashboardReport(
         reqBody,
         pageNumber: 0,
-        pageSize: 100,
+        pageSize: selectedSettlementAggregate!.transactionCount ?? 20,
       );
 
       if (response.statusCode == 200) {
@@ -255,17 +299,6 @@ class SettlementProvider extends ChangeNotifier {
       _isEmailSending = false;
       notifyListeners();
     }
-  }
-
-  // Refresh recent transactions
-  void refreshDasBoard() {
-    _allTransactions = [];
-    currentPage = 0;
-    isAllTransLoadingFistTime = true;
-    _allTnxCount = 0;
-    notifyListeners();
-    getSettlementDashboardReport();
-    notifyListeners();
   }
 
   void setSelectedDateRange(String? value) {

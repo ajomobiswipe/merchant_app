@@ -183,14 +183,17 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
       final response = await _merchantServices.fetchTransactionHistory(
         _allTranReqModel.toJson(),
         pageNumber: 0,
-        pageSize: 100,
+        pageSize: _allTnxCount,
       );
 
       if (response.statusCode == 200) {
-        AlertService().success(
-            " Transaction report has been sent to your registered email.");
-      } else {
-        AlertService().error("Failed to send Transaction report to email.");
+        final decodedData = transactionHistoryFromJson(response.body);
+        if (decodedData.sendMailResponse!.responseCode == "00") {
+          AlertService().success(
+              " Transaction report has been sent to your registered email.");
+        } else {
+          AlertService().error("Error Sending Transaction report .");
+        }
       }
     } catch (e) {
       print("Error fetching transactions: $e");

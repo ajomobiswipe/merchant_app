@@ -1,10 +1,8 @@
 import 'package:anet_merchant_app/core/app_color.dart';
 import 'package:anet_merchant_app/core/constants/constants.dart';
 import 'package:anet_merchant_app/core/utils/helpers/default_height.dart';
-import 'package:anet_merchant_app/data/models/transaction_model.dart';
 import 'package:anet_merchant_app/presentation/pages/users/merchant/merchant_scaffold.dart';
 import 'package:anet_merchant_app/presentation/providers/merchant_filtered_transaction_provider.dart';
-import 'package:anet_merchant_app/presentation/providers/transactions_provider.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_container.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
 import 'package:anet_merchant_app/presentation/widgets/transaction_tile.dart';
@@ -101,46 +99,40 @@ class _ViewAllTransactionScreenState extends State<ViewAllTransactionScreen> {
                               child: CircularProgressIndicator(),
                             )
                           : transactionProvider.allTransactions.isNotEmpty
-                              ? GestureDetector(
-                                  onTapUp: (details) {
-                                    print("onTapUp");
+                              ? ListView.builder(
+                                  controller:
+                                      transactionProvider.allTransScrollCtrl,
+                                  itemCount: transactionProvider
+                                          .allTransactions.length +
+                                      1,
+                                  itemBuilder: (context, index) {
+                                    if (index <
+                                        transactionProvider
+                                            .allTransactions.length) {
+                                      return TransactionTile(
+                                        transaction: transactionProvider
+                                            .allTransactions[index],
+                                        width: screenWidth,
+                                      );
+                                    } else if (transactionProvider
+                                        .hasMoreTransactions) {
+                                      return Padding(
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 16),
+                                        child: Center(
+                                            child: CircularProgressIndicator()),
+                                      );
+                                    } else {
+                                      return Center(
+                                          child: Text(
+                                              "No more transactions to display",
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.grey,
+                                                  fontStyle:
+                                                      FontStyle.italic)));
+                                    }
                                   },
-                                  child: ListView.builder(
-                                    controller:
-                                        transactionProvider.allTransScrollCtrl,
-                                    itemCount: transactionProvider
-                                            .allTransactions.length +
-                                        1,
-                                    itemBuilder: (context, index) {
-                                      if (index <
-                                          transactionProvider
-                                              .allTransactions.length) {
-                                        return TransactionTile(
-                                          transaction: transactionProvider
-                                              .allTransactions[index],
-                                          width: screenWidth,
-                                        );
-                                      } else if (transactionProvider
-                                          .hasMoreTransactions) {
-                                        return Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 16),
-                                          child: Center(
-                                              child:
-                                                  CircularProgressIndicator()),
-                                        );
-                                      } else {
-                                        return Center(
-                                            child: Text(
-                                                "No more transactions to display",
-                                                style: TextStyle(
-                                                    fontSize: 14,
-                                                    color: Colors.grey,
-                                                    fontStyle:
-                                                        FontStyle.italic)));
-                                      }
-                                    },
-                                  ),
                                 )
                               : Center(
                                   child: Text(

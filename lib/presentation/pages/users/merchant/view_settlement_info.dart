@@ -4,7 +4,6 @@ import 'package:anet_merchant_app/core/utils/helpers/default_height.dart';
 import 'package:anet_merchant_app/data/models/transaction_model.dart';
 import 'package:anet_merchant_app/presentation/pages/users/merchant/merchant_scaffold.dart';
 import 'package:anet_merchant_app/presentation/providers/settlement_provider.dart';
-import 'package:anet_merchant_app/presentation/providers/transactions_provider.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_container.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
 import 'package:anet_merchant_app/presentation/widgets/settled_transaction_tile.dart';
@@ -152,7 +151,7 @@ class _ViewSettlementInfoState extends State<ViewSettlementInfo> {
                         color: Colors.black),
                     trailing: CustomTextWidget(
                         text:
-                            "₹ ${settlementProvider.selectedSettlementAggregate?.settlementAmount ?? 0.00}",
+                            "₹ ${settlementProvider.selectedSettlementAggregate?.totalAmountPayable ?? 0.00}",
                         size: 14,
                         color: Colors.black),
                   ),
