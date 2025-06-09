@@ -319,7 +319,7 @@ class ShowTransactionInvoice extends StatelessWidget {
                 centerText(transaction.nameOnCard!, size: 14),
               pw.SizedBox(height: 10),
               pw.Row(
-                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
                 children: [
                   pw.Text("Amount",
                       style: pw.TextStyle(
@@ -356,11 +356,12 @@ class ShowTransactionInvoice extends StatelessWidget {
 
   pw.Widget rowText(String label, String value) {
     return pw.Padding(
-      padding: const pw.EdgeInsets.symmetric(vertical: 2),
+      padding: const pw.EdgeInsets.symmetric(vertical: 2, horizontal: 80),
       child: pw.Row(
         mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
-          pw.Text("$label:", style: pw.TextStyle(fontSize: 12)),
+          pw.Text(label, style: pw.TextStyle(fontSize: 12)),
           pw.Text(value, style: pw.TextStyle(fontSize: 12)),
         ],
       ),

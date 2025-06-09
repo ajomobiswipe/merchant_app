@@ -95,20 +95,21 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
     return Consumer<TransactionProvider>(
       builder: (context, provider, child) {
         return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             homeScreenTab(
               screenHeight,
-              width: screenWidth * 0.4,
+              width: screenWidth * 0.425,
               homeScreenTabItem: HomeScreenTabItem.TransactionHistory,
               selectedTabItem: provider.selectedTab,
               onTap: () => provider
                   .updateSelectedTab(HomeScreenTabItem.TransactionHistory),
               title: "Transaction History",
             ),
+            defaultWidth(screenWidth*.05),
             homeScreenTab(
               screenHeight,
-              width: screenWidth * 0.4,
+              width: screenWidth * 0.425,
               homeScreenTabItem: HomeScreenTabItem.Settlements,
               selectedTabItem: provider.selectedTab,
               onTap: () =>

@@ -165,7 +165,7 @@ class ShowSettledTransactionInvoice extends StatelessWidget {
 
     pdf.addPage(
       pw.Page(
-        margin: const pw.EdgeInsets.symmetric(horizontal: 44, vertical: 24),
+        margin: const pw.EdgeInsets.symmetric(horizontal: 120, vertical: 24),
         build: (pw.Context context) {
           return pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
