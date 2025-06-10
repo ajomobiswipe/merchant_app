@@ -115,112 +115,120 @@ class _ViewSettlementInfoState extends State<ViewSettlementInfo> {
               ),
             );
           }),
-          Consumer<SettlementProvider>(
-            builder: (context, settlementProvider, child) {
-              return ExpansionTile(
-                title: CustomTextWidget(
-                    text: 'View Deductions', color: AppColors.kPrimaryColor),
-                leading: Icon(Icons.list, color: AppColors.kPrimaryColor),
-                trailing:
-                    Icon(Icons.arrow_drop_down, color: AppColors.kPrimaryColor),
-                children: <Widget>[
-                  ListTile(
-                    title: CustomTextWidget(
-                        text: "GST", size: 14, color: Colors.black),
-                    trailing: CustomTextWidget(
-                        text:
-                            "₹ ${settlementProvider.selectedSettlementAggregate?.gst ?? 0.00}",
-                        size: 14,
-                        color: Colors.black),
-                  ),
-                  Divider(),
-                  ListTile(
-                    title: CustomTextWidget(
-                        text: "MDR Amount", size: 14, color: Colors.black),
-                    trailing: CustomTextWidget(
-                        text:
-                            "₹ ${settlementProvider.selectedSettlementAggregate?.mdrAmount ?? 0.00}",
-                        size: 14,
-                        color: Colors.black),
-                  ),
-                  Divider(),
-                  ListTile(
-                    title: CustomTextWidget(
-                        text: "Settlement Amount",
-                        size: 14,
-                        color: Colors.black),
-                    trailing: CustomTextWidget(
-                        text:
-                            "₹ ${settlementProvider.selectedSettlementAggregate?.totalAmountPayable ?? 0.00}",
-                        size: 14,
-                        color: Colors.black),
-                  ),
-                ],
-              );
-            },
-          ),
-          // defaultHeight(20),
 
           // **Dynamic Content Based on Selected Tab**
           Expanded(
             child: Consumer<SettlementProvider>(
               builder: (context, settlementProvider, child) {
-                return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      defaultHeight(10),
-                      Expanded(
-                        child: (settlementProvider.isAllTransactionsLoading &&
-                                settlementProvider.allTransactions.isEmpty)
-                            ? Center(
-                                child: CircularProgressIndicator(),
-                              )
-                            : settlementProvider.allTransactions.isNotEmpty
-                                ? ListView.builder(
-                                    controller: settlementProvider
-                                        .allSettlementScrollCtrl,
-                                    itemCount: settlementProvider
-                                            .allTransactions.length +
-                                        1,
-                                    itemBuilder: (context, index) {
-                                      if (index <
-                                          settlementProvider
-                                              .allTransactions.length) {
-                                        return SettledTransactionTile(
-                                          transaction: settlementProvider
-                                              .allTransactions[index],
-                                          width: screenWidth,
-                                        );
-                                      } else if (settlementProvider
-                                          .hasMoreTransactions) {
-                                        return Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 16),
-                                          child: Center(
-                                              child:
-                                                  CircularProgressIndicator()),
-                                        );
-                                      } else {
-                                        return Center(
-                                            child: Text(
-                                                "No more transactions to display",
+                return settlementProvider.showDeductions
+                    ? ListView(
+                        children: <Widget>[
+                          defaultHeight(10),
+                          buildSettlementRow("Amt Packed for Settlement", null),
+                          buildSettlementRow("Refund Amount", null),
+                          buildSettlementRow("Chargeback Amount", null),
+                          buildSettlementRow("Loan Recovery Amount", null),
+                          buildSettlementRow(
+                              "MSF/MDR",
+                              settlementProvider
+                                  .selectedSettlementAggregate?.mdrAmount),
+                          buildSettlementRow("MAR", null),
+                          buildSettlementRow("Late Stl Fee", null),
+                          buildSettlementRow(
+                              "GST",
+                              settlementProvider
+                                  .selectedSettlementAggregate?.gst),
+                          buildSettlementRow("Others", null),
+                          // buildSettlementRow(
+                          //     "Settled Amount",
+                          //     settlementProvider.selectedSettlementAggregate
+                          //         ?.totalAmountPayable),
+                          ListTile(
+                            title: CustomTextWidget(
+                                text: "Settled Amount",
+                                size: 14,
+                                color: Colors.black),
+                            trailing: CustomTextWidget(
+                                text:
+                                    "₹ ${settlementProvider.selectedSettlementAggregate?.totalAmountPayable ?? 0.00}",
+                                size: 14,
+                                color: Colors.black),
+                          ),
+                          changeDeductionButton(
+                              screenWidth, settlementProvider),
+                        ],
+                      )
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          defaultHeight(10),
+                          changeDeductionButton(
+                            screenWidth,
+                            settlementProvider,
+                          ),
+                          defaultHeight(10),
+                          Expanded(
+                            child: (settlementProvider
+                                        .isAllTransactionsLoading &&
+                                    settlementProvider.allTransactions.isEmpty)
+                                ? Center(
+                                    child: CircularProgressIndicator(),
+                                  )
+                                : settlementProvider.allTransactions.isNotEmpty
+                                    ? ListView.builder(
+                                        controller: settlementProvider
+                                            .allSettlementScrollCtrl,
+                                        itemCount: settlementProvider
+                                                .allTransactions.length +
+                                            1,
+                                        itemBuilder: (context, index) {
+                                          if (index <
+                                              settlementProvider
+                                                  .allTransactions.length) {
+                                            return SettledTransactionTile(
+                                              transaction: settlementProvider
+                                                  .allTransactions[index],
+                                              width: screenWidth,
+                                            );
+                                          } else if (settlementProvider
+                                              .hasMoreTransactions) {
+                                            return Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 16),
+                                              child: Center(
+                                                child:
+                                                    CircularProgressIndicator(),
+                                              ),
+                                            );
+                                          } else {
+                                            return Center(
+                                              child: Text(
+                                                settlementProvider
+                                                            .allTransactions
+                                                            .length >
+                                                        10
+                                                    ? "No more transactions to display"
+                                                    : '',
                                                 style: TextStyle(
                                                     fontSize: 14,
                                                     color: Colors.grey,
                                                     fontStyle:
-                                                        FontStyle.italic)));
-                                      }
-                                    },
-                                  )
-                                : Center(
-                                    child: Text(
-                                      "No transactions available",
-                                      style: TextStyle(
-                                          fontSize: 16, color: Colors.grey),
-                                    ),
-                                  ),
-                      ),
-                    ]);
+                                                        FontStyle.italic),
+                                              ),
+                                            );
+                                          }
+                                        },
+                                      )
+                                    : Center(
+                                        child: Text(
+                                          "No transactions available",
+                                          style: TextStyle(
+                                              fontSize: 16, color: Colors.grey),
+                                        ),
+                                      ),
+                          ),
+                        ],
+                      );
               },
             ),
           ),
@@ -265,6 +273,41 @@ class _ViewSettlementInfoState extends State<ViewSettlementInfo> {
     );
   }
 
+  Center changeDeductionButton(
+    double screenWidth,
+    SettlementProvider settlementProvider,
+  ) {
+    return Center(
+      child: CustomContainer(
+        color: Colors.grey[300]!,
+        width: screenWidth * .5,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 4),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              CustomTextWidget(
+                text: settlementProvider.showDeductions
+                    ? "Hide Deductions"
+                    : "View Deductions",
+                isBold: true,
+                size: 14,
+              ),
+              Icon(
+                settlementProvider.showDeductions
+                    ? Icons.keyboard_arrow_up
+                    : Icons.keyboard_arrow_down,
+              )
+            ],
+          ),
+        ),
+        onTap: () {
+          settlementProvider.toggleDeductions();
+        },
+      ),
+    );
+  }
+
   /// **Function to Return Content Based on Selected Tab*
 
   /// **Transaction History List**
@@ -291,74 +334,22 @@ class _ViewSettlementInfoState extends State<ViewSettlementInfo> {
     ]);
   }
 
-  /// **Settlements List**
-  Widget settlementsList(
-      {required double screenWidth, required double screenHeight}) {
+  Widget buildSettlementRow(String label, double? amount) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
-      child: Column(
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          defaultHeight(screenWidth * 0.05),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CustomTextWidget(
-                text: "Today Settlements",
-                isBold: false,
-                size: 16,
-              ),
-              Icon(Icons.sync)
-            ],
+          CustomTextWidget(
+            text: label,
+            size: 14,
+            color: Colors.grey[700] ?? Colors.black54,
           ),
-          defaultHeight(screenWidth * 0.05),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CustomTextWidget(
-                text: "Settled Amount",
-                isBold: false,
-                size: 16,
-              ),
-              CustomTextWidget(
-                text: "₹ 30,000",
-                isBold: false,
-                size: 16,
-              ),
-            ],
+          CustomTextWidget(
+            text: "₹ ${amount?.toStringAsFixed(2) ?? "0.00"}",
+            size: 14,
+            color: Colors.grey[700] ?? Colors.black54,
           ),
-          defaultHeight(screenWidth * 0.2),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CustomTextWidget(
-                text: "Deductions",
-                isBold: false,
-                size: 16,
-              ),
-              CustomTextWidget(
-                text: "₹ 100",
-                isBold: false,
-                size: 16,
-              ),
-            ],
-          ),
-          Spacer(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CustomTextWidget(
-                text: "Pending Settlements",
-                isBold: false,
-                size: 16,
-              ),
-              CustomTextWidget(
-                text: "₹ 300",
-                isBold: false,
-                size: 16,
-              ),
-            ],
-          ),
-          defaultHeight(screenWidth * 0.1),
         ],
       ),
     );

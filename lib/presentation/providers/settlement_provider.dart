@@ -1,8 +1,6 @@
 import 'package:anet_merchant_app/data/models/get_settlement_dashboard_data.dart';
 import 'package:anet_merchant_app/data/models/get_settlement_history_model.dart';
-import 'package:anet_merchant_app/data/models/transaction_model.dart';
 import 'package:anet_merchant_app/data/services/merchant_service.dart';
-import 'package:anet_merchant_app/presentation/pages/users/merchant/sampledata/sampledata.dart';
 import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -18,7 +16,6 @@ class SettlementProvider extends ChangeNotifier {
   int _totalSettlement = 0;
   double _deductions = 0;
 
-  bool _isoading = false;
   bool _isEmailSending = false;
   bool get isEmailSending => _isEmailSending;
 
@@ -29,6 +26,12 @@ class SettlementProvider extends ChangeNotifier {
   int get totalSettlement => _totalSettlement;
 
   AlertService _alertService = AlertService();
+  bool _showDeductions = false;
+  bool get showDeductions => _showDeductions;
+  void toggleDeductions() {
+    _showDeductions = !_showDeductions;
+    notifyListeners();
+  }
 
   // Services
   final MerchantServices _merchantServices = MerchantServices();
@@ -188,6 +191,7 @@ class SettlementProvider extends ChangeNotifier {
   clearTransactionList() {
     currentPage = 0;
     _allTransactions = [];
+    _showDeductions = false;
     isAllTransLoadingFistTime = true;
     _transactionsInSettlementCount = 0;
     notifyListeners();

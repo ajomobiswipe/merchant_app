@@ -61,10 +61,13 @@ class _SettlementDashboardState extends State<SettlementDashboard> {
 
     return MerchantScaffold(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Consumer<SettlementProvider>(
             builder: (context, settlementProvider, child) {
               return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: screenHeight * 0.01,
                 children: [
                   CustomTextWidget(
                       text: settlementProvider.storeName ?? "N/A", size: 18),
