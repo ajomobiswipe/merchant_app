@@ -47,3 +47,5 @@ app.*.map.json
 /android/app/.cxx
 /linux/
 /macos/
+/windows/
+/web/
