@@ -73,12 +73,12 @@ class ShowTransactionInvoice extends StatelessWidget {
                 CustomTextWidget(
                   isBold: false,
                   size: 14,
-                  text: "Date ${transaction.transactionDate ?? "N/A"}",
+                  text: "Date :${transaction.transactionDate ?? "N/A"}",
                 ),
                 CustomTextWidget(
                   size: 14,
                   isBold: false,
-                  text: "Time ${transaction.transactionTime ?? "N/A"}",
+                  text: "Time :${transaction.transactionTime ?? "N/A"}",
                 ),
               ],
             ),
@@ -99,12 +99,12 @@ class ShowTransactionInvoice extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 CustomTextWidget(
-                  text: "MID:     ${transaction.merchantId ?? "N/A"}",
+                  text: "MID     :${transaction.merchantId ?? "N/A"}",
                   size: 12,
                   isBold: false,
                 ),
                 CustomTextWidget(
-                  text: "TID:     ${transaction.terminalId ?? "N/A"}",
+                  text: "TID     :${transaction.terminalId ?? "N/A"}",
                   size: 12,
                   isBold: false,
                 ),
@@ -117,12 +117,12 @@ class ShowTransactionInvoice extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 CustomTextWidget(
-                  text: "Batch     ${transaction.batchNo ?? "N/A"}",
+                  text: "Batch     :${transaction.batchNo ?? "N/A"}",
                   size: 12,
                   isBold: false,
                 ),
                 CustomTextWidget(
-                  text: "Invoice     ${transaction.traceNumber ?? "N/A"}",
+                  text: "Invoice     :${transaction.traceNumber ?? "N/A"}",
                   size: 12,
                   isBold: false,
                 ),
@@ -135,12 +135,12 @@ class ShowTransactionInvoice extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 CustomTextWidget(
-                  text: "RRN:     ${transaction.rrn ?? "N/A"}",
+                  text: "RRN     :${transaction.rrn ?? "N/A"}",
                   size: 12,
                   isBold: false,
                 ),
                 CustomTextWidget(
-                  text: "PAN SEQ     ${transaction.traceNumber ?? "N/A"}",
+                  text: "PAN SEQ     :${transaction.traceNumber ?? "N/A"}",
                   size: 12,
                   isBold: false,
                 ),
@@ -148,6 +148,17 @@ class ShowTransactionInvoice extends StatelessWidget {
             ),
             defaultHeight(basePadding),
 
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CustomTextWidget(
+                  text: "AUTH CODE  :${transaction.authCode ?? "N/A"}",
+                  size: 12,
+                  isBold: false,
+                ),
+              ],
+            ),
+defaultHeight(basePadding),
             // Entry Mode & Card Brand
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -194,16 +205,7 @@ class ShowTransactionInvoice extends StatelessWidget {
             defaultHeight(basePadding),
 
             // Auth Code
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CustomTextWidget(
-                  text: "AUTH CODE  : ${transaction.authCode ?? "N/A"}",
-                  size: 12,
-                  isBold: false,
-                ),
-              ],
-            ),
+
             defaultHeight(basePadding),
 
             // Transaction Confirmation Message
@@ -313,8 +315,10 @@ class ShowTransactionInvoice extends StatelessWidget {
               rowText("Invoice", transaction.traceNumber ?? "N/A"),
               rowText("RRN", transaction.rrn ?? "N/A"),
               rowText("PAN SEQ", transaction.traceNumber ?? "N/A"),
+              rowText("AUTH CODE", transaction.authCode ?? "N/A"),
               rowText("Entry/Card Brand",
                   "${transaction.posEntryMode ?? "N/A"} (${transaction.schemeName ?? "N/A"})"),
+                    pw.SizedBox(height: 10),
               if (transaction.nameOnCard != null)
                 centerText(transaction.nameOnCard!, size: 14),
               pw.SizedBox(height: 10),
@@ -330,7 +334,7 @@ class ShowTransactionInvoice extends StatelessWidget {
                 ],
               ),
               pw.SizedBox(height: 10),
-              rowText("AUTH CODE", transaction.authCode ?? "N/A"),
+              
               pw.Divider(),
               centerText("PLEASE DEBIT MY ACCOUNT"),
               centerText("PIN VERIFIED OK SIGNATURE NOT REQUIRED"),
