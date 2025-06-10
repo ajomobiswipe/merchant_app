@@ -63,13 +63,13 @@ class _ViewAllTransactionScreenState extends State<ViewAllTransactionScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CustomTextWidget(text: Constants.storeName, size: 18),
-              defaultHeight(15),
+              defaultHeight(screenHeight * .01),
               CustomTextWidget(
                   text: transactionProvider.getFormattedDateRange(), size: 12),
-              defaultHeight(10),
+              defaultHeight(screenHeight * .01),
               CustomContainer(
-                height: screenHeight * 0.05,
-                padding: EdgeInsets.symmetric(horizontal: 20),
+                height: screenHeight * 0.06,
+                padding: EdgeInsets.symmetric(horizontal: screenWidth * .025),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -78,20 +78,18 @@ class _ViewAllTransactionScreenState extends State<ViewAllTransactionScreen> {
                         text: transactionProvider.todaysTnxCount.toString(),
                         size: 18),
                     CustomTextWidget(
-                        text: "₹ " +
-                            transactionProvider.getTotalTransactionAmount
-                                .toStringAsFixed(2),
+                        text:
+                            "₹ ${transactionProvider.getTotalTransactionAmount.toStringAsFixed(2)}",
                         size: 18,
                         color: Colors.white),
                   ],
                 ),
               ),
-              defaultHeight(20),
+              // defaultHeight(20),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    defaultHeight(10),
                     Expanded(
                       child: (transactionProvider.isAllTransactionsLoading &&
                               transactionProvider.allTransactions.isEmpty)
@@ -109,28 +107,38 @@ class _ViewAllTransactionScreenState extends State<ViewAllTransactionScreen> {
                                     if (index <
                                         transactionProvider
                                             .allTransactions.length) {
-                                      return TransactionTile(
-                                        transaction: transactionProvider
-                                            .allTransactions[index],
-                                        width: screenWidth,
+                                      return Column(
+                                        children: [
+                                          SizedBox(
+                                            height: screenHeight * .01,
+                                          ),
+                                          TransactionTile(
+                                            transaction: transactionProvider
+                                                .allTransactions[index],
+                                            width: screenWidth,
+                                          ),
+                                        ],
                                       );
                                     } else if (transactionProvider
                                         .hasMoreTransactions) {
                                       return Padding(
-                                        padding:
-                                            EdgeInsets.symmetric(vertical: 16),
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: screenHeight * .025),
                                         child: Center(
                                             child: CircularProgressIndicator()),
                                       );
                                     } else {
-                                      return Center(
-                                          child: Text(
-                                              "No more transactions to display",
-                                              style: TextStyle(
-                                                  fontSize: 14,
-                                                  color: Colors.grey,
-                                                  fontStyle:
-                                                      FontStyle.italic)));
+                                      return Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Center(
+                                            child: Text(
+                                                "No more transactions to display",
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: Colors.grey,
+                                                    fontStyle:
+                                                        FontStyle.italic))),
+                                      );
                                     }
                                   },
                                 )
@@ -138,7 +146,9 @@ class _ViewAllTransactionScreenState extends State<ViewAllTransactionScreen> {
                                   child: Text(
                                     "No transactions available",
                                     style: TextStyle(
-                                        fontSize: 16, color: Colors.grey),
+                                        fontSize: 16,
+                                        color: Colors.grey,
+                                        fontStyle: FontStyle.italic),
                                   ),
                                 ),
                     ),

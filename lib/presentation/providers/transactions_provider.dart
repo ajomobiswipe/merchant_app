@@ -84,8 +84,8 @@ class TransactionProvider with ChangeNotifier {
     _recentTranReqModel
       ..acquirerId = "OMAIND"
       ..merchantId = merchantId
-      ..recordFrom = "${DateTime.now().toLocal().toString().split(' ')[0]}"
-      ..recordTo = "${DateTime.now().toLocal().toString().split(' ')[0]}"
+      ..recordFrom = DateTime.now().toLocal().toString().split(' ')[0]
+      ..recordTo = DateTime.now().toLocal().toString().split(' ')[0]
       // ..recordFrom = "26-05-2025"
       // ..recordTo = "03-06-2025"
       // ..recordFrom = "22-01-2023"

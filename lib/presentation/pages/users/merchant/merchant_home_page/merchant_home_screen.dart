@@ -2,7 +2,6 @@ import 'package:anet_merchant_app/core/app_color.dart';
 import 'package:anet_merchant_app/core/constants/constants.dart';
 import 'package:anet_merchant_app/core/utils/helpers/default_height.dart';
 import 'package:anet_merchant_app/data/models/transaction_model.dart';
-import 'package:anet_merchant_app/presentation/pages/users/merchant/all_transactions_filter.dart';
 import 'package:anet_merchant_app/presentation/pages/users/merchant/merchant_scaffold.dart';
 import 'package:anet_merchant_app/presentation/providers/transactions_provider.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_container.dart';
@@ -53,16 +52,16 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CustomTextWidget(text: Constants.storeName, size: 18),
-          defaultHeight(screenHeight * .015),
+          defaultHeight(screenHeight * .01),
           CustomTextWidget(text: "Total transactions today", size: 12),
-          defaultHeight(screenHeight * .015),
-          _transactionSummaryDetailsHeader(screenHeight),
-          defaultHeight(screenHeight * .015),
+          defaultHeight(screenHeight * .01),
+          _transactionSummaryDetailsHeader(screenHeight, screenWidth),
+          defaultHeight(screenHeight * .01),
           _tabItems(screenHeight, screenWidth),
 
-          defaultHeight(screenHeight * .015),
+          defaultHeight(screenHeight * .02),
 
-          // **Dynamic Content Based on Selected Tab**
+          // **Dynamic Content Based on Selected Tab**r
           Expanded(
             child: Consumer<TransactionProvider>(
               builder: (context, provider, child) {
@@ -106,7 +105,7 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
                   .updateSelectedTab(HomeScreenTabItem.TransactionHistory),
               title: "Transaction History",
             ),
-            defaultWidth(screenWidth*.05),
+            defaultWidth(screenWidth * .05),
             homeScreenTab(
               screenHeight,
               width: screenWidth * 0.425,
@@ -123,7 +122,8 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
   }
 
   Selector<TransactionProvider, HomeScreenTabItem>
-      _transactionSummaryDetailsHeader(double screenHeight) {
+      _transactionSummaryDetailsHeader(
+          double screenHeight, double screenWidth) {
     return Selector<TransactionProvider, HomeScreenTabItem>(
       selector: (context, provider) => provider.selectedTab,
       builder: (context, selectedTab, child) {
@@ -131,7 +131,7 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
           case HomeScreenTabItem.TransactionHistory:
             return CustomContainer(
               height: screenHeight * 0.06,
-              padding: EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.symmetric(horizontal: screenWidth * .025),
               child: Consumer<TransactionProvider>(
                   builder: (context, provider, child) {
                 return Row(
@@ -153,7 +153,7 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
           case HomeScreenTabItem.Settlements:
             return CustomContainer(
               height: screenHeight * 0.06,
-              padding: EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.symmetric(horizontal: screenWidth * .025),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -212,7 +212,8 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
         return transactionHistoryList(
             transactionElement: TransactionProvider.transactions ?? [],
             screenWidth: screenWidth,
-            transactionProvider: TransactionProvider);
+            transactionProvider: TransactionProvider,
+            screenHeight: screenHeight);
       case HomeScreenTabItem.Settlements:
         return settlementsList(
             screenWidth: screenWidth, screenHeight: screenHeight);
@@ -223,7 +224,8 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
   Widget transactionHistoryList(
       {required List<TransactionElement> transactionElement,
       required TransactionProvider transactionProvider,
-      required double screenWidth}) {
+      required double screenWidth,
+      required double screenHeight}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -238,7 +240,6 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
             transactionProvider.refreshRecentTransactions();
           },
         ),
-        defaultHeight(10),
         Expanded(
           child: (transactionProvider.isDailyTransactionsLoading &&
                   transactionProvider.recentTransactions.isEmpty)
@@ -251,9 +252,16 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
                       itemCount: transactionElement.length + 1,
                       itemBuilder: (context, index) {
                         if (index < transactionElement.length) {
-                          return TransactionTile(
-                            transaction: transactionElement[index],
-                            width: screenWidth,
+                          return Column(
+                            children: [
+                              SizedBox(
+                                height: screenHeight * .01,
+                              ),
+                              TransactionTile(
+                                transaction: transactionElement[index],
+                                width: screenWidth,
+                              ),
+                            ],
                           );
                         } else if (transactionProvider.hasMoreTransactions) {
                           return Padding(
@@ -261,12 +269,15 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
                             child: Center(child: CircularProgressIndicator()),
                           );
                         } else {
-                          return Center(
-                            child: Text("No more transactions to display",
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.grey,
-                                    fontStyle: FontStyle.italic)),
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Center(
+                              child: Text("No more transactions to display",
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.grey,
+                                      fontStyle: FontStyle.italic)),
+                            ),
                           );
                         }
                       },
@@ -274,7 +285,10 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
                   : Center(
                       child: Text(
                         "No transactions available",
-                        style: TextStyle(fontSize: 16, color: Colors.grey),
+                        style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey,
+                            fontStyle: FontStyle.italic),
                       ),
                     ),
         ),

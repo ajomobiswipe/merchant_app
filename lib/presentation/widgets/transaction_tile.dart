@@ -40,7 +40,7 @@ class TransactionTile extends StatelessWidget {
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(10),
       ),
       child: Container(
         decoration: BoxDecoration(
@@ -49,13 +49,13 @@ class TransactionTile extends StatelessWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.3),
-              spreadRadius: 3,
-              blurRadius: 7,
-              offset: const Offset(0, 3),
+              color: Colors.white.withOpacity(0.05),
+              spreadRadius: -1,
+              blurRadius: 5,
+              offset: Offset(0, -1),
             ),
           ],
         ),
