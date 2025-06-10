@@ -47,7 +47,7 @@ class MerchantTransactionFilterBottomSheet {
                   SizedBox(height: screenHeight * 0.02),
                   _buildPaymentModeDropdown(provider),
                   SizedBox(height: screenHeight * 0.03),
-                  _buildApplyButton(provider, context: context),
+                  _buildApplyButton(provider, context: context,height:screenHeight*.06),
                 ],
               ),
             );
@@ -196,9 +196,9 @@ class MerchantTransactionFilterBottomSheet {
   }
 
   static Widget _buildApplyButton(MerchantFilteredTransactionProvider provider,
-      {required BuildContext context}) {
+      {required BuildContext context,double? height}) {
     return CustomContainer(
-      height: 70,
+      height: height??70,
       onTap: () {
         if (provider.selectedDateRange == null ||
             provider.selectedDateRange!.isEmpty) {
@@ -213,7 +213,7 @@ class MerchantTransactionFilterBottomSheet {
         print(
             'Filters applied: ${provider.searchController.text}, ${provider.selectedTid}, ${provider.selectedDateRange}, ${provider.selectedPaymentMode}');
       },
-      child: CustomTextWidget(text: 'Apply Filters', color: Colors.white),
+      child: CustomTextWidget(text: 'Apply', color: Colors.white),
     );
   }
 }

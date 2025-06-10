@@ -1,4 +1,5 @@
 import 'package:anet_merchant_app/core/constants/constants.dart';
+import 'package:anet_merchant_app/core/utils/helpers/default_height.dart';
 import 'package:anet_merchant_app/presentation/pages/users/merchant/merchant_scaffold.dart';
 import 'package:anet_merchant_app/presentation/providers/settlement_provider.dart';
 import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
@@ -45,12 +46,10 @@ class _MerchantStatementFilterScreenState
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CustomTextWidget(
-                    text: Constants.storeName, size: screenHeight * 0.025),
-                Spacer(flex: 1),
-                CustomTextWidget(
-                    text: "Settlements", size: screenHeight * 0.02),
-                Spacer(flex: 2),
+                CustomTextWidget(text: Constants.storeName, size: 18),
+                defaultHeight(screenHeight * .01),
+                CustomTextWidget(text: "Settlements", size: 12),
+                defaultHeight(screenHeight * .05),
                 CustomTextWidget(
                   text: "Total Settlements",
                   size: 12,
@@ -63,7 +62,8 @@ class _MerchantStatementFilterScreenState
                   ),
                 Spacer(flex: 1),
                 Spacer(flex: 2),
-                _buildApplyButton(provider, context: context),
+                _buildApplyButton(provider,
+                    context: context, height: screenHeight * .06),
               ],
             ),
           ),
@@ -83,7 +83,7 @@ class _MerchantStatementFilterScreenState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Date', style: TextStyle(fontWeight: FontWeight.bold)),
+        CustomTextWidget(text: "Date", size: 12),
         Column(
           children: provider.dateRanges.map((range) {
             return RadioListTile<String>(
@@ -142,9 +142,9 @@ class _MerchantStatementFilterScreenState
   }
 
   Widget _buildApplyButton(SettlementProvider provider,
-      {required BuildContext context}) {
+      {required BuildContext context, double? height}) {
     return CustomContainer(
-      height: 70,
+      height: height ?? 70,
       onTap: () {
         if (provider.selectedDateRange == null ||
             provider.selectedDateRange!.isEmpty ||
@@ -157,7 +157,7 @@ class _MerchantStatementFilterScreenState
         }
         Navigator.pushNamed(context, "settlementDashboard");
       },
-      child: CustomTextWidget(text: 'Apply Filters', color: Colors.white),
+      child: CustomTextWidget(text: 'Apply', color: Colors.white),
     );
   }
 }

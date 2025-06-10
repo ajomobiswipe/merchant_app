@@ -124,7 +124,10 @@ class _ViewSettlementInfoState extends State<ViewSettlementInfo> {
                     ? ListView(
                         children: <Widget>[
                           defaultHeight(10),
-                          buildSettlementRow("Amt Packed for Settlement", null),
+                          buildSettlementRow(
+                              "Amt Packed for Settlement",
+                              settlementProvider.selectedSettlementAggregate
+                                  ?.grossTransactionAmount),
                           buildSettlementRow("Refund Amount", null),
                           buildSettlementRow("Chargeback Amount", null),
                           buildSettlementRow("Loan Recovery Amount", null),
@@ -146,16 +149,22 @@ class _ViewSettlementInfoState extends State<ViewSettlementInfo> {
                           ListTile(
                             title: CustomTextWidget(
                                 text: "Settled Amount",
-                                size: 14,
+                                size: 13,
                                 color: Colors.black),
                             trailing: CustomTextWidget(
                                 text:
                                     "₹ ${settlementProvider.selectedSettlementAggregate?.totalAmountPayable ?? 0.00}",
-                                size: 14,
+                                size: 13,
                                 color: Colors.black),
                           ),
                           changeDeductionButton(
-                              screenWidth, settlementProvider),
+                            screenWidth,
+                            screenHeight,
+                            settlementProvider,
+                          ),
+                          SizedBox(
+                            height: screenHeight * .015,
+                          )
                         ],
                       )
                     : Column(
@@ -164,6 +173,7 @@ class _ViewSettlementInfoState extends State<ViewSettlementInfo> {
                           defaultHeight(10),
                           changeDeductionButton(
                             screenWidth,
+                            screenHeight,
                             settlementProvider,
                           ),
                           defaultHeight(10),
@@ -275,11 +285,13 @@ class _ViewSettlementInfoState extends State<ViewSettlementInfo> {
 
   Center changeDeductionButton(
     double screenWidth,
+    double screenHeight,
     SettlementProvider settlementProvider,
   ) {
     return Center(
       child: CustomContainer(
         color: Colors.grey[300]!,
+        height: screenHeight * .06,
         width: screenWidth * .5,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 4),
@@ -342,13 +354,13 @@ class _ViewSettlementInfoState extends State<ViewSettlementInfo> {
         children: [
           CustomTextWidget(
             text: label,
-            size: 14,
-            color: Colors.grey[700] ?? Colors.black54,
+            size: 13,
+            color: Colors.black.withOpacity(.5)
           ),
           CustomTextWidget(
             text: "₹ ${amount?.toStringAsFixed(2) ?? "0.00"}",
             size: 14,
-            color: Colors.grey[700] ?? Colors.black54,
+            color: Colors.black.withOpacity(.5)
           ),
         ],
       ),

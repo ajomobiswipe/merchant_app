@@ -1,4 +1,5 @@
 import 'package:anet_merchant_app/core/constants/constants.dart';
+import 'package:anet_merchant_app/core/utils/helpers/default_height.dart';
 import 'package:anet_merchant_app/presentation/pages/users/merchant/merchant_scaffold.dart';
 import 'package:anet_merchant_app/presentation/providers/merchant_filtered_transaction_provider.dart';
 import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
@@ -35,8 +36,6 @@ class _MerchantTransactionFilterScreenState
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
-    print("screenWidth");
-    print(screenWidth);
     return Consumer<MerchantFilteredTransactionProvider>(
       builder: (context, provider, child) {
         return MerchantScaffold(
@@ -48,24 +47,24 @@ class _MerchantTransactionFilterScreenState
             child: ListView(
               children: [
                 CustomTextWidget(
-                    text: Constants.storeName, size: screenHeight * 0.025),
-                SizedBox(height: screenHeight * 0.02),
+                    text: Constants.storeName, size: 18),
+               defaultHeight(screenHeight * .01),
                 CustomTextWidget(
-                    text: "Payment transactions", size: screenHeight * 0.02),
-                SizedBox(height: screenHeight * 0.02),
+                    text: "Payment transactions",  size: 12),
+               defaultHeight(screenHeight * .01),
                 _buildSearchField(provider, screenWidth),
                 // SizedBox(height: screenHeight * 0.02),
                 // _buildTidDropdown(provider),
-                SizedBox(height: screenHeight * 0.02),
+              defaultHeight(screenHeight * .03),
                 _buildDateRangeSelector(provider),
                 if (provider.selectedDateRange == 'Custom Date Range')
                   Padding(
                     padding: EdgeInsets.only(top: screenHeight * 0.02),
                     child: _buildCustomDatePickers(provider, context),
                   ),
-                SizedBox(height: screenHeight * 0.02),
+               defaultHeight(screenHeight * .03),
                 _buildPaymentModeDropdown(provider),
-                SizedBox(height: screenHeight * 0.03),
+              defaultHeight(screenHeight * .03),
                 _buildApplyButton(provider,
                     context: context, screenHeight: screenHeight),
               ],
@@ -175,7 +174,8 @@ class _MerchantTransactionFilterScreenState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Date', style: TextStyle(fontWeight: FontWeight.bold)),
+       CustomTextWidget(
+                    text: "Date",  size: 12),
         Column(
           children: provider.dateRanges.map((range) {
             return Row(
@@ -272,7 +272,7 @@ class _MerchantTransactionFilterScreenState
         print(
             'Filters applied: ${provider.searchController.text}, ${provider.selectedTid}, ${provider.selectedDateRange}, ${provider.selectedPaymentMode}');
       },
-      child: CustomTextWidget(text: 'Apply Filters', color: Colors.white),
+      child: CustomTextWidget(text: 'Apply', color: Colors.white),
     );
   }
 }

@@ -195,7 +195,6 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
           height: screenHeight * 0.06,
           child: CustomTextWidget(
             text: "View All Settlements",
-            size: 12.0,
             color: AppColors.gray,
           ),
         );
@@ -231,6 +230,7 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
       children: [
         InkWell(
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               CustomTextWidget(text: "Recent transactions", size: 14),
               Icon(Icons.sync, color: AppColors.kPrimaryColor, size: 20),
@@ -299,81 +299,78 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
   /// **Settlements List**
   Widget settlementsList(
       {required double screenWidth, required double screenHeight}) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
-      child: Consumer<TransactionProvider>(builder: (context, provider, child) {
-        return Column(
-          children: [
-            defaultHeight(screenWidth * 0.05),
-            InkWell(
-              onTap: () {
-                provider.fetchDailySettlementTxnSummary();
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  CustomTextWidget(
-                    text: "Today Settlements",
-                    isBold: false,
-                    size: 16,
-                  ),
-                  Icon(Icons.sync, color: AppColors.kPrimaryColor, size: 20),
-                ],
+    return Consumer<TransactionProvider>(builder: (context, provider, child) {
+      return Column(
+        children: [
+          
+          InkWell(
+            onTap: () {
+              provider.fetchDailySettlementTxnSummary();
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CustomTextWidget(
+                  text: "Today Settlements",
+                  isBold: true,
+                  size: 14,
+                ),
+                Icon(Icons.sync, color: AppColors.kPrimaryColor, size: 20),
+              ],
+            ),
+          ),
+          defaultHeight(screenWidth * 0.05),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              CustomTextWidget(
+                text: "Settled Amount",
+                isBold: false,
+                size: 16,
               ),
-            ),
-            defaultHeight(screenWidth * 0.05),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CustomTextWidget(
-                  text: "Settled Amount",
-                  isBold: false,
-                  size: 16,
-                ),
-                CustomTextWidget(
-                  text: "₹ ${provider.totalSettlementAmount}",
-                  isBold: false,
-                  size: 16,
-                ),
-              ],
-            ),
-            defaultHeight(screenWidth * 0.2),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CustomTextWidget(
-                  text: "Deductions",
-                  isBold: false,
-                  size: 16,
-                ),
-                CustomTextWidget(
-                  text: "₹ ${provider.deductionsAmount}",
-                  isBold: false,
-                  size: 16,
-                ),
-              ],
-            ),
-            Spacer(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CustomTextWidget(
-                  text: "Pending Settlements",
-                  isBold: false,
-                  size: 16,
-                ),
-                CustomTextWidget(
-                  text: "₹ ${provider.pendingSettlementAmount}",
-                  isBold: false,
-                  size: 16,
-                ),
-              ],
-            ),
-            defaultHeight(screenWidth * 0.1),
-          ],
-        );
-      }),
-    );
+              CustomTextWidget(
+                text: "₹ ${provider.totalSettlementAmount}",
+                isBold: false,
+                size: 16,
+              ),
+            ],
+          ),
+          defaultHeight(screenWidth * 0.2),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              CustomTextWidget(
+                text: "Deductions",
+                isBold: false,
+                size: 16,
+              ),
+              CustomTextWidget(
+                text: "₹ ${provider.deductionsAmount}",
+                isBold: false,
+                size: 16,
+              ),
+            ],
+          ),
+          Spacer(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              CustomTextWidget(
+                text: "Pending Settlements",
+                isBold: false,
+                size: 16,
+              ),
+              CustomTextWidget(
+                text: "₹ ${provider.pendingSettlementAmount}",
+                isBold: false,
+                size: 16,
+              ),
+            ],
+          ),
+          defaultHeight(screenWidth * 0.1),
+        ],
+      );
+    });
   }
 
   /// **Tab Widget**
