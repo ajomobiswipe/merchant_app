@@ -8,6 +8,7 @@ class CustomTextWidget extends StatelessWidget {
   final bool isBold;
   final FontWeight fontWeight;
   final int? maxLines;
+  final bool isUpperCase;
 
   const CustomTextWidget(
       {super.key,
@@ -17,12 +18,13 @@ class CustomTextWidget extends StatelessWidget {
       this.fontWeight = FontWeight.normal,
       this.textAlign,
       this.isBold = true,
-      this.maxLines});
+      this.maxLines,
+      this.isUpperCase = false});
 
   @override
   Widget build(BuildContext context) {
     return Text(
-      text,
+      isUpperCase ? text.toUpperCase() : text,
       textAlign: textAlign,
       maxLines: maxLines,
       overflow: TextOverflow.ellipsis,
