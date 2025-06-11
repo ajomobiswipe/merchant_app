@@ -9,6 +9,7 @@ import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
 import 'package:anet_merchant_app/presentation/widgets/transaction_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MerchantHomeScreen extends StatefulWidget {
   const MerchantHomeScreen({super.key});
@@ -19,10 +20,11 @@ class MerchantHomeScreen extends StatefulWidget {
 
 class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
   late TransactionProvider transactionProvider;
-
+  String? storeName;
   @override
   void initState() {
     super.initState();
+    getStoreName();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       transactionProvider =
           Provider.of<TransactionProvider>(context, listen: false);
@@ -32,6 +34,11 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
       transactionProvider.fetchDailyMerchantTxnSummary();
       transactionProvider.recentTransScrollCtrl.addListener(_onScroll);
     });
+  }
+
+  getStoreName() async {
+    final pref = await SharedPreferences.getInstance();
+    storeName = pref.getString("storeName") ?? "N/A";
   }
 
   void _onScroll() {
@@ -51,7 +58,7 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CustomTextWidget(text: Constants.storeName, size: 18),
+          CustomTextWidget(text: storeName ?? Constants.storeName, size: 18),
           defaultHeight(screenHeight * .01),
           CustomTextWidget(text: "Total transactions today", size: 12),
           defaultHeight(screenHeight * .01),
@@ -302,7 +309,6 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
     return Consumer<TransactionProvider>(builder: (context, provider, child) {
       return Column(
         children: [
-          
           InkWell(
             onTap: () {
               provider.fetchDailySettlementTxnSummary();

@@ -6,13 +6,27 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+enum FilterType {
+  RRNAPPCODE,
+  DATERANGE,
+}
+
+enum SearchType {
+  RRN,
+  APP_CODE,
+}
+
 class MerchantFilteredTransactionProvider extends ChangeNotifier {
   MerchantServices merchantServices = MerchantServices();
   final TextEditingController searchController = TextEditingController();
   // Services
   final MerchantServices _merchantServices = MerchantServices();
-  String _searchType = 'RRN';
-  String? _selectedTid = "ALL";
+  SearchType _selectedSearchType = SearchType.RRN;
+  FilterType _searchFilterType = FilterType.DATERANGE;
+
+  FilterType get selectedSearchFilterType => _searchFilterType;
+  TextEditingController _tidSearchController = TextEditingController();
+  TextEditingController get tidSearchController => _tidSearchController;
   String? _selectedDateRange;
   DateTime? _customStartDate;
   DateTime? _customEndDate;
@@ -36,8 +50,8 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
   List<String> paymentModes = ['ALL', 'Card', 'UPI'];
 
   // Getters
-  String get searchType => _searchType;
-  String? get selectedTid => _selectedTid;
+  SearchType get selectedSearchType => _selectedSearchType;
+  // String? get selectedTid => _selectedTid;
   String? get selectedDateRange => _selectedDateRange;
 
   String getFormattedDateRange() {
@@ -103,12 +117,10 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
 
     _allTranReqModel.acquirerId = "OMAIND";
     _allTranReqModel.merchantId = merchantId;
-    _allTranReqModel.rrn = _searchType == "RRN" ? searchController.text : '';
-    _allTranReqModel.recordFrom =
-        DateFormat('dd-MM-yyyy').format(_customStartDate!);
-    _allTranReqModel.recordTo =
-        DateFormat('dd-MM-yyyy').format(_customEndDate!);
-    _allTranReqModel.terminalId = null;
+    _allTranReqModel.rrn = getRRn();
+    _allTranReqModel.recordFrom = getRecordFrom();
+    _allTranReqModel.recordTo = getRecordTo();
+    _allTranReqModel.terminalId = getTid();
     _allTranReqModel.sendTxnReportToMail = false;
 
     if (_isAllTransactionsLoading) return;
@@ -166,13 +178,9 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
     _allTranReqModel
       ..acquirerId = "OMAIND"
       ..merchantId = merchantId
-      ..rrn = _searchType == "RRN" ? searchController.text : ''
-      ..recordFrom = _customStartDate != null
-          ? DateFormat('dd-MM-yyyy').format(_customStartDate!)
-          : _selectedDateRange
-      ..recordTo = _customEndDate != null
-          ? DateFormat('dd-MM-yyyy').format(_customEndDate!)
-          : _selectedDateRange
+      ..rrn = getRRn()
+      ..recordFrom = getRecordFrom()
+      ..recordTo = getRecordTo()
       ..terminalId = null
       ..sendTxnReportToMail = true;
 
@@ -203,6 +211,39 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
     }
   }
 
+  getRRn() {
+    if (_searchFilterType == FilterType.RRNAPPCODE) {
+      return searchController.text;
+    } else {
+      return '';
+    }
+  }
+
+  getRecordFrom() {
+    if (_searchFilterType == FilterType.DATERANGE) {
+      return DateFormat('dd-MM-yyyy').format(_customStartDate!);
+    } else {
+      return null;
+    }
+  }
+
+  getRecordTo() {
+    if (_searchFilterType == FilterType.DATERANGE) {
+      return DateFormat('dd-MM-yyyy').format(_customEndDate!);
+    } else {
+      return null;
+    }
+  }
+
+  getTid() {
+    if (_searchFilterType == FilterType.DATERANGE &&
+        _tidSearchController.text.isNotEmpty) {
+      return _tidSearchController.text;
+    } else {
+      return null;
+    }
+  }
+
   // Refresh recent transactions
   void refreshAllTransactions() {
     _allTransactions = [];
@@ -215,8 +256,10 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
   }
 
   void resetFilters() {
-    _searchType = 'RRN';
-    _selectedTid = "ALL";
+    _selectedSearchType = SearchType.RRN;
+    _searchFilterType = FilterType.DATERANGE;
+    tidSearchController.clear();
+    _tidSearchController.clear();
     _selectedDateRange = null;
     _customStartDate = null;
     _customEndDate = null;
@@ -226,9 +269,18 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
   }
 
   // Setters
-  void setSearchType(String? value) {
-    _searchType = value!;
+  void setSearchType(SearchType value) {
+    _selectedSearchType = value;
     searchController.clear();
+
+    notifyListeners();
+  }
+
+  void setFilterType(FilterType? value) {
+    searchController.clear();
+    _tidSearchController.clear();
+    _selectedDateRange = null;
+    _searchFilterType = value!;
     notifyListeners();
   }
 
@@ -243,10 +295,10 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
   //   }, pageNumber: 0, pageSize: 10);
   // }
 
-  void setSelectedTid(String? value) {
-    _selectedTid = value;
-    notifyListeners();
-  }
+  // void setSelectedTid(String? value) {
+  //   _selectedTid = value;
+  //   notifyListeners();
+  // }
 
   void setSelectedDateRange(String? value) {
     _selectedDateRange = value;
