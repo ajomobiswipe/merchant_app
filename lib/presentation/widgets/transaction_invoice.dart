@@ -1,3 +1,4 @@
+import 'package:anet_merchant_app/presentation/providers/authProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:anet_merchant_app/core/utils/helpers/default_height.dart';
 import 'package:anet_merchant_app/data/models/transaction_model.dart';
@@ -9,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:path_provider/path_provider.dart';
 import 'package:open_file/open_file.dart';
+import 'package:provider/provider.dart';
 
 class ShowTransactionInvoice extends StatelessWidget {
   final TransactionElement transaction;
@@ -59,6 +61,18 @@ class ShowTransactionInvoice extends StatelessWidget {
                 ),
               ],
             ),
+            defaultHeight(basePadding),
+            Row(
+              children: [
+                SizedBox(
+                  width: screenWidth * 0.5,
+                  child: CustomTextWidget(
+                    text: Provider.of<AuthProvider>(context).merchantDbaName,
+                    maxLines: 3,
+                  ),
+                ),
+              ],
+            ),
             Center(
               child: Image.asset(
                 'assets/screen/anet.png',
@@ -92,7 +106,7 @@ class ShowTransactionInvoice extends StatelessWidget {
             Center(
               child: CustomTextWidget(
                 isBold: false,
-                text: transaction.transactionType ?? "N/A",
+                text: getTransactionType(transaction.transactionType),
                 size: 20,
               ),
             ),
@@ -171,7 +185,7 @@ class ShowTransactionInvoice extends StatelessWidget {
               children: [
                 CustomTextWidget(
                   text:
-                      "${transaction.posEntryMode ?? "N/A"} (${transaction.schemeName ?? "N/A"})",
+                      "${getPosEntryMode(transaction.posEntryMode) ?? "N/A"} (${transaction.schemeName ?? getSchemeNameFromCardNumber(transaction.cardNo)})",
                   size: 12,
                   isBold: false,
                 ),
@@ -354,17 +368,68 @@ class ShowTransactionInvoice extends StatelessWidget {
     );
   }
 
+  getTransactionType(String? type) {
+    if (type == "OSAL001") return "SALE";
+    if (type == "VSAL001") return "Void";
+    return type ?? "N/A";
+  }
+
+  getPosEntryMode(String? type) {
+    if (type == "051") return "Chip";
+    if (type == "071") return "Contactless";
+    return type ?? "N/A";
+  }
+
+  String getSchemeNameFromCardNumber(String? cardNumber) {
+    if (cardNumber == null || cardNumber.isEmpty) return "N/A";
+
+    // Remove any spaces or dashes
+    cardNumber = cardNumber.replaceAll(RegExp(r'\s+|-'), '');
+
+    if (cardNumber.startsWith('4')) return "Visa";
+    if (cardNumber.startsWith('5')) return "MasterCard";
+    if (cardNumber.startsWith('6')) {
+      if (cardNumber.startsWith('6011') ||
+          cardNumber.startsWith('65') ||
+          (int.tryParse(cardNumber.substring(0, 6)) ?? 0) >= 622126 &&
+              (int.tryParse(cardNumber.substring(0, 6)) ?? 0) <= 622925) {
+        return "Discover";
+      }
+      if (cardNumber.startsWith('60') ||
+          cardNumber.startsWith('608') ||
+          cardNumber.startsWith('6521') ||
+          cardNumber.startsWith('6522')) {
+        return "RuPay";
+      }
+      return "Discover";
+    }
+    if (cardNumber.startsWith('34') || cardNumber.startsWith('37')) {
+      return "American Express";
+    }
+    if (cardNumber.startsWith('36') ||
+        cardNumber.startsWith('38') ||
+        cardNumber.startsWith('39')) {
+      return "Diners Club";
+    }
+
+    return "Unknown";
+  }
+
   Future<void> generatePDF(BuildContext context, double screenWidth,
       double screenHeight, double logoSize) async {
     final pdf = pw.Document();
     final logo =
         (await rootBundle.load('assets/screen/anet.png')).buffer.asUint8List();
 
-    final fontDataBold = (await rootBundle.load("assets/fonts/Montserrat-Bold.ttf")).buffer.asUint8List();
-    
-    final fontDataRegular =
-        (await rootBundle.load("assets/fonts/Montserrat-Regular.ttf")).buffer.asUint8List();
+    final fontDataBold =
+        (await rootBundle.load("assets/fonts/Montserrat-Bold.ttf"))
+            .buffer
+            .asUint8List();
 
+    final fontDataRegular =
+        (await rootBundle.load("assets/fonts/Montserrat-Regular.ttf"))
+            .buffer
+            .asUint8List();
 
     pdf.addPage(
       pw.Page(
@@ -389,7 +454,7 @@ class ShowTransactionInvoice extends StatelessWidget {
               pw.SizedBox(height: screenHeight * .025),
               // rowText("Date", transaction.transactionDate ?? "N/A"),
               // rowText("Time", transaction.transactionTime ?? "N/A"),
-              centerText(transaction.transactionType ?? "N/A",
+              centerText(getTransactionType(transaction.transactionType),
                   size: 24, fontData: fontDataRegular),
               pw.SizedBox(height: screenHeight * .025),
 
@@ -431,12 +496,20 @@ class ShowTransactionInvoice extends StatelessWidget {
               // rowText("RRN", transaction.rrn ?? "N/A"),
               // rowText("PAN SEQ", transaction.traceNumber ?? "N/A"),
               pw.Row(
-                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: pw.MainAxisAlignment.start,
                 children: [
                   pdfCustomText("AUTH CODE: ${transaction.authCode ?? "N/A"}",
                       fontData: fontDataRegular),
+                ],
+              ),
+              pw.SizedBox(height: screenHeight * .02),
+              // rowText("RRN", transaction.rrn ?? "N/A"),
+              // rowText("PAN SEQ", transaction.traceNumber ?? "N/A"),
+              pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                children: [
                   pdfCustomText(
-                      "Entry/Card Brand: ${transaction.posEntryMode ?? "N/A"} (${transaction.schemeName ?? "N/A"})",
+                      "${getPosEntryMode(transaction.posEntryMode) ?? "N/A"} (${transaction.schemeName ?? getSchemeNameFromCardNumber(transaction.cardNo)})",
                       fontData: fontDataRegular),
                 ],
               ),
@@ -552,7 +625,7 @@ class ShowTransactionInvoice extends StatelessWidget {
   }
 
   pw.Widget pdfCustomText(String value,
-      {pw.FontWeight? fontweight, required  fontData}) {
+      {pw.FontWeight? fontweight, required fontData}) {
     final customFont = pw.Font.ttf(fontData.buffer.asByteData());
 
     return pw.Text(value.toUpperCase(),

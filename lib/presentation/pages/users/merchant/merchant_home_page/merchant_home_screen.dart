@@ -3,6 +3,7 @@ import 'package:anet_merchant_app/core/constants/constants.dart';
 import 'package:anet_merchant_app/core/utils/helpers/default_height.dart';
 import 'package:anet_merchant_app/data/models/transaction_model.dart';
 import 'package:anet_merchant_app/presentation/pages/users/merchant/merchant_scaffold.dart';
+import 'package:anet_merchant_app/presentation/providers/authProvider.dart';
 import 'package:anet_merchant_app/presentation/providers/transactions_provider.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_container.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
@@ -24,7 +25,7 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
   @override
   void initState() {
     super.initState();
-    getStoreName();
+    setStoreName();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       transactionProvider =
           Provider.of<TransactionProvider>(context, listen: false);
@@ -36,9 +37,11 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
     });
   }
 
-  getStoreName() async {
+  setStoreName() async {
     final pref = await SharedPreferences.getInstance();
-    storeName = pref.getString("storeName") ?? "N/A";
+    var dbaName = pref.getString("shopName") ?? "N/A";
+    Provider.of<AuthProvider>(context, listen: false)
+        .setMerchantDbaName(dbaName);
   }
 
   void _onScroll() {
@@ -55,10 +58,10 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
     return MerchantScaffold(
+      showStoreName: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CustomTextWidget(text: storeName ?? Constants.storeName, size: 18),
           defaultHeight(screenHeight * .01),
           CustomTextWidget(text: "Total transactions today", size: 12),
           defaultHeight(screenHeight * .01),

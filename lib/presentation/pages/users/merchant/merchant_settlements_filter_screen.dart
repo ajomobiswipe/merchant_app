@@ -38,6 +38,7 @@ class _MerchantStatementFilterScreenState
     return Consumer<SettlementProvider>(
       builder: (context, provider, child) {
         return MerchantScaffold(
+          showStoreName: true,
           child: Padding(
             padding: EdgeInsets.symmetric(
               horizontal: screenWidth * 0.04,
@@ -46,7 +47,6 @@ class _MerchantStatementFilterScreenState
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CustomTextWidget(text: Constants.storeName, size: 18),
                 defaultHeight(screenHeight * .01),
                 CustomTextWidget(text: "Settlements", size: 12),
                 defaultHeight(screenHeight * .05),

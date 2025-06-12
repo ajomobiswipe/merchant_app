@@ -41,6 +41,7 @@ class _MerchantTransactionFilterScreenState
     return Consumer<MerchantFilteredTransactionProvider>(
       builder: (context, provider, child) {
         return MerchantScaffold(
+          showStoreName: true,
           child: Padding(
             padding: EdgeInsets.symmetric(
               horizontal: screenWidth * 0.04,
@@ -48,8 +49,6 @@ class _MerchantTransactionFilterScreenState
             ),
             child: ListView(
               children: [
-                CustomTextWidget(text: Constants.storeName, size: 18),
-                defaultHeight(screenHeight * .01),
                 CustomTextWidget(text: "Payment transactions", size: 12),
                 defaultHeight(screenHeight * .01),
                 _buildFilterSelection(
@@ -309,12 +308,9 @@ class _MerchantTransactionFilterScreenState
       onTap: () {
         if (provider.selectedSearchFilterType == FilterType.DATERANGE) {
           // provider.selectedDateRange == 'Custom Date Range' &&
-          if (provider.isDateNotSelected()) {
-            AlertService().error("Please select a valid date range.");
-            return;
-          } else if (provider.customStartDate!
-              .isAfter(provider.customEndDate!)) {
-            AlertService().error("Start date cannot be after end date.");
+          if (provider.isDateNotSelected() &&
+              provider.tidSearchController.text.isEmpty) {
+            AlertService().error("Please select a date range or enter TID.");
             return;
           }
           //  else if (provider.selectedTid == null ||

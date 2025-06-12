@@ -84,6 +84,32 @@ class MerchantServices {
     return response;
   }
 
+  getSupportActionData() async {
+    Connection connection = Connection();
+
+    var url =
+        "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/getSupportActionData";
+
+    // Response response = Response(getDummyDailySettlementTxnSummary(), 200);
+    // await Future.delayed(const Duration(seconds: 2));
+    var response = await connection.get(
+      url,
+    );
+    return response;
+  }
+
+  raiseSupportRequest(
+    requestModel,
+  ) async {
+    Connection connection = Connection();
+
+    var url =
+        "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/raiseSupportRequest";
+
+    var response = await connection.post(url, requestModel);
+    return response;
+  }
+
   fetchDailySettlementTxnSummary(
     requestModel,
   ) async {

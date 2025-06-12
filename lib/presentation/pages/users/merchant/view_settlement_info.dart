@@ -50,11 +50,10 @@ class _ViewSettlementInfoState extends State<ViewSettlementInfo> {
     double screenWidth = MediaQuery.of(context).size.width;
 
     return MerchantScaffold(
+      showStoreName: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CustomTextWidget(text: Constants.storeName, size: 18),
-
           defaultHeight(10),
           Consumer<SettlementProvider>(
               builder: (context, settlementProvider, child) {
@@ -353,15 +352,11 @@ class _ViewSettlementInfoState extends State<ViewSettlementInfo> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           CustomTextWidget(
-            text: label,
-            size: 13,
-            color: Colors.black.withOpacity(.5)
-          ),
+              text: label, size: 13, color: Colors.black.withOpacity(.5)),
           CustomTextWidget(
-            text: "₹ ${amount?.toStringAsFixed(2) ?? "0.00"}",
-            size: 14,
-            color: Colors.black.withOpacity(.5)
-          ),
+              text: "₹ ${amount?.toStringAsFixed(2) ?? "0.00"}",
+              size: 14,
+              color: Colors.black.withOpacity(.5)),
         ],
       ),
     );

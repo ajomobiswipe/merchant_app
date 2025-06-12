@@ -10,9 +10,11 @@ import 'dart:async';
 
 import 'package:anet_merchant_app/data/services/merchant_service.dart';
 import 'package:anet_merchant_app/main.dart';
+import 'package:anet_merchant_app/presentation/providers/authProvider.dart';
 import 'package:easy_splash_screen/easy_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 // import 'package:freerasp/freerasp.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -37,10 +39,19 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     // isRooted();
+    setStoreName();
     Future.delayed(const Duration(seconds: 1), () {
       getValidationData();
     });
     super.initState();
+  }
+
+  setStoreName() async {
+    final pref = await SharedPreferences.getInstance();
+    print("Store Name: ${pref.getString("shopName")}");
+    var dbaName = pref.getString("shopName") ?? "N/A";
+    Provider.of<AuthProvider>(context, listen: false)
+        .setMerchantDbaName(dbaName);
   }
 
   Future<void> getValidationData() async {

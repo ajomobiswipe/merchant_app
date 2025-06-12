@@ -34,12 +34,11 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
   DateTime? get customStartDate => _customStartDate;
   DateTime? get customEndDate => _customEndDate;
   bool isDateNotSelected() {
-    return _customStartDate == null || _customEndDate == null;
+    return (_customStartDate == null || _customEndDate == null);
   }
 
-  String _selectedPaymentMode = 'ALL';
+  String _selectedPaymentMode = 'Card';
 
-  List<String> tidOptions = ["ALL", 'TID001', 'TID002', 'TID003'];
   List<String> dateRanges = [
     "Today - ${DateFormat('d MMM yyyy').format(DateTime.now())}",
     'Yesterday - ${DateFormat('d MMM yyyy').format(DateTime.now().subtract(Duration(days: 1)))}',
@@ -47,7 +46,7 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
     'Last 1 Month',
     'Custom Date Range'
   ];
-  List<String> paymentModes = ['ALL', 'Card', 'UPI'];
+  List<String> paymentModes = ['Card', 'UPI'];
 
   // Getters
   SearchType get selectedSearchType => _selectedSearchType;
@@ -219,16 +218,23 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
     }
   }
 
-  getRecordFrom() {
-    if (_searchFilterType == FilterType.DATERANGE) {
-      return DateFormat('dd-MM-yyyy').format(_customStartDate!);
+  getuthcode() {
+    if (_searchFilterType == FilterType.RRNAPPCODE) {
+      return searchController.text;
     } else {
-      return null;
+      return '';
     }
   }
 
+  getRecordFrom() {
+    if (_searchFilterType == FilterType.DATERANGE && _customStartDate != null) {
+      return DateFormat('dd-MM-yyyy').format(_customStartDate!);
+    }
+    return null;
+  }
+
   getRecordTo() {
-    if (_searchFilterType == FilterType.DATERANGE) {
+    if (_searchFilterType == FilterType.DATERANGE && _customEndDate != null) {
       return DateFormat('dd-MM-yyyy').format(_customEndDate!);
     } else {
       return null;
@@ -263,7 +269,7 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
     _selectedDateRange = null;
     _customStartDate = null;
     _customEndDate = null;
-    _selectedPaymentMode = 'ALL';
+    _selectedPaymentMode = 'Card';
     searchController.clear();
     notifyListeners();
   }
@@ -324,6 +330,9 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
     } else if (_selectedDateRange == 'Custom Date Range') {
       print("object");
       print(_customEndDate);
+    } else if (_selectedDateRange == 'All') {
+      _customStartDate = null;
+      _customEndDate = null;
     }
     print(_customEndDate);
     print(_customStartDate);

@@ -60,6 +60,7 @@ class _SettlementDashboardState extends State<SettlementDashboard> {
     double screenHeight = MediaQuery.of(context).size.height;
 
     return MerchantScaffold(
+      showStoreName: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -69,8 +70,6 @@ class _SettlementDashboardState extends State<SettlementDashboard> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 spacing: screenHeight * 0.01,
                 children: [
-                  CustomTextWidget(
-                      text: settlementProvider.storeName ?? "N/A", size: 18),
                   CustomTextWidget(text: "Total Settlements", size: 12),
                   CustomTextWidget(
                       text: settlementProvider.getFormattedDateRange(),

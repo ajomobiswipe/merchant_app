@@ -57,12 +57,12 @@ class _ViewAllTransactionScreenState extends State<ViewAllTransactionScreen> {
     double screenWidth = MediaQuery.of(context).size.width;
 
     return MerchantScaffold(
+      showStoreName: true,
       child: Consumer<MerchantFilteredTransactionProvider>(
         builder: (context, transactionProvider, child) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CustomTextWidget(text: Constants.storeName, size: 18),
               defaultHeight(screenHeight * .01),
               CustomTextWidget(
                   text: transactionProvider.getFormattedDateRange(), size: 12),

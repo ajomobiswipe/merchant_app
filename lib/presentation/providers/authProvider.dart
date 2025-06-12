@@ -20,7 +20,7 @@ class AuthProvider with ChangeNotifier {
   final TextEditingController _emailOtpController = TextEditingController();
 
   final MerchantInfoModel _merchantInfo = MerchantInfoModel();
-
+  String? _merchantDbaName;
   final MerchantServices _merchantServices = MerchantServices();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -31,7 +31,7 @@ class AuthProvider with ChangeNotifier {
 
   GlobalKey<FormState> get formKey => _formKey;
   String get merchantId => _merchantInfo.merchantId ?? 'MER3456789';
-  String get merchantName => _merchantInfo.merchantName ?? 'Toy Store';
+  String get merchantDbaName => _merchantDbaName ?? 'N/A';
   String get merchantCity => _merchantInfo.merchantCity ?? 'New York';
   String get merchantAddress => _merchantInfo.merchantAddress ?? '123 Main St';
   TextEditingController get passwordController => _passwordController;
@@ -52,6 +52,12 @@ class AuthProvider with ChangeNotifier {
   bool get isLoading => _isLoading;
   bool get isOtpSent => _isOtpSent;
   bool get showPassword => _showPassword;
+
+  void setMerchantDbaName(String name) {
+    _merchantDbaName = name;
+    notifyListeners();
+  }
+
   clearOtp() {
     _isOtpSent = false;
     _phoneNumberOtpController.clear();

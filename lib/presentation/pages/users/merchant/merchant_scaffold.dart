@@ -1,6 +1,8 @@
+import 'package:anet_merchant_app/presentation/providers/authProvider.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
 import 'package:anet_merchant_app/presentation/widgets/logout.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MerchantScaffold extends StatelessWidget {
   final Widget child;
@@ -13,6 +15,7 @@ class MerchantScaffold extends StatelessWidget {
   final Function()? onTapHome;
 
   final bool canPop;
+  final bool showStoreName;
 
   const MerchantScaffold({
     super.key,
@@ -25,6 +28,7 @@ class MerchantScaffold extends StatelessWidget {
     this.floatingActionButton,
     this.onTapSupport,
     this.onTapHome,
+    this.showStoreName = false,
   });
 
   @override
@@ -77,7 +81,24 @@ class MerchantScaffold extends StatelessWidget {
               horizontal: screenWidth * 0.05,
               vertical: screenHeight * 0.01,
             ),
-        child: child,
+        child: Column(
+          children: [
+            if (showStoreName)
+              Row(
+                children: [
+                  SizedBox(
+                    width: screenWidth * 0.6,
+                    child: CustomTextWidget(
+                      size: 14,
+                      text: Provider.of<AuthProvider>(context).merchantDbaName,
+                      maxLines: 3,
+                    ),
+                  ),
+                ],
+              ),
+            Expanded(child: child),
+          ],
+        ),
       ),
       bottomNavigationBar: BottomAppBar(
         color: Colors.white,
