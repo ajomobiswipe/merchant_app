@@ -117,6 +117,7 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
     _allTranReqModel.acquirerId = "OMAIND";
     _allTranReqModel.merchantId = merchantId;
     _allTranReqModel.rrn = getRRn();
+    _allTranReqModel.authCode = getAuthCode();
     _allTranReqModel.recordFrom = getRecordFrom();
     _allTranReqModel.recordTo = getRecordTo();
     _allTranReqModel.terminalId = getTid();
@@ -178,6 +179,7 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
       ..acquirerId = "OMAIND"
       ..merchantId = merchantId
       ..rrn = getRRn()
+      ..authCode = getAuthCode()
       ..recordFrom = getRecordFrom()
       ..recordTo = getRecordTo()
       ..terminalId = null
@@ -212,15 +214,17 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
 
   getRRn() {
     if (_searchFilterType == FilterType.RRNAPPCODE) {
-      return searchController.text;
+      return _selectedSearchType == SearchType.RRN ? searchController.text : '';
     } else {
       return '';
     }
   }
 
-  getuthcode() {
+  getAuthCode() {
     if (_searchFilterType == FilterType.RRNAPPCODE) {
-      return searchController.text;
+      return _selectedSearchType == SearchType.APP_CODE
+          ? searchController.text
+          : '';
     } else {
       return '';
     }

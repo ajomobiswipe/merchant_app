@@ -204,7 +204,11 @@ class _MerchantHelpScreenState extends State<MerchantHelpScreen> {
                       query: 'subject=Support Request', // optional
                     );
                     if (await canLaunchUrl(emailUri)) {
-                      await launchUrl(emailUri);
+                      try {
+                        await launchUrl(emailUri);
+                      } catch (error) {
+                        print(error);
+                      }
                     } else {
                       // Handle error
                     }

@@ -63,7 +63,7 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           defaultHeight(screenHeight * .01),
-          CustomTextWidget(text: "Total transactions today", size: 12),
+          CustomTextWidget(text: "Total Success transactions today", size: 12),
           defaultHeight(screenHeight * .01),
           _transactionSummaryDetailsHeader(screenHeight, screenWidth),
           defaultHeight(screenHeight * .01),
