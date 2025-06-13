@@ -129,6 +129,7 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
+      
       final response = await _merchantServices.fetchTransactionHistory(
         _allTranReqModel.toJson(),
         pageNumber: currentPage,
@@ -139,6 +140,7 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
         final decodedData = transactionHistoryFromJson(response.body);
         var newItems = decodedData.responsePage!.content ?? [];
         _allTnxCount = decodedData.responsePage!.totalElements ?? 0;
+        print('_allTnxCount is $_allTnxCount');
         _totalAmountInAllTrans = decodedData.totalAmount ?? 0.0;
         print(
             "todays transaction count: ${decodedData.responsePage!.totalElements}");

@@ -1,5 +1,4 @@
 import 'package:anet_merchant_app/core/app_color.dart';
-import 'package:anet_merchant_app/core/constants/constants.dart';
 import 'package:anet_merchant_app/core/utils/helpers/default_height.dart';
 import 'package:anet_merchant_app/presentation/pages/users/merchant/merchant_scaffold.dart';
 import 'package:anet_merchant_app/presentation/providers/authProvider.dart';
@@ -9,6 +8,7 @@ import 'package:anet_merchant_app/presentation/widgets/custom_container.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
 import 'package:anet_merchant_app/presentation/widgets/form_field/custom_dropdown.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -34,6 +34,16 @@ class _MerchantHelpScreenState extends State<MerchantHelpScreen> {
     });
   }
 
+  Future<void> _copyToClipboard(String mailId) async {
+
+    Clipboard.setData(ClipboardData(text: mailId));
+
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text('$mailId Copied to clipboard'),duration :Duration(seconds: 5)
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -57,7 +67,7 @@ class _MerchantHelpScreenState extends State<MerchantHelpScreen> {
                   size: 14,
                   text: Provider.of<AuthProvider>(context).merchantDbaName,
                   maxLines: 3,
-                  textAlign: TextAlign.center,
+                 
                 ),
               ),
             ],
@@ -198,19 +208,23 @@ class _MerchantHelpScreenState extends State<MerchantHelpScreen> {
                 defaultHeight(10),
                 InkWell(
                   onTap: () async {
+                    final mail = "support@alliancenetworkcompany.com";
+
                     final Uri emailUri = Uri(
                       scheme: 'mailto',
-                      path: 'support@alliancenetworkcompany.com',
+                      path: mail,
                       query: 'subject=Support Request', // optional
                     );
+
                     if (await canLaunchUrl(emailUri)) {
                       try {
                         await launchUrl(emailUri);
                       } catch (error) {
-                        print(error);
+                        _copyToClipboard(mail);
                       }
                     } else {
                       // Handle error
+                      _copyToClipboard(mail);
                     }
                   },
                   child: Row(

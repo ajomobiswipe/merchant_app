@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../widgets/loading.dart';
 
 class MerchantLogin extends StatefulWidget {
@@ -46,6 +47,15 @@ class _MerchantLoginState extends State<MerchantLogin> {
     super.dispose();
 
     authProvider.resetAll();
+  }
+
+  Future<void> _copyToClipboard(String mailId) async {
+    Clipboard.setData(ClipboardData(text: mailId));
+
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('$mailId Copied to clipboard'),
+        duration: Duration(seconds: 5)));
   }
 
   Future _checkRememberMe() async {
@@ -370,11 +380,22 @@ class _MerchantLoginState extends State<MerchantLogin> {
                               ),
                             ),
                             const Spacer(),
-                            CustomTextWidget(
-                                text: "+911203584948",
-                                size: 18,
-                                color: AppColors.black50,
-                                fontWeight: FontWeight.w400),
+                            InkWell(
+                              onTap: () async {
+                                final Uri phoneUri =
+                                    Uri(scheme: 'tel', path: '911203584948');
+                                if (await canLaunchUrl(phoneUri)) {
+                                  await launchUrl(phoneUri);
+                                } else {
+                                  // Handle error
+                                }
+                              },
+                              child: CustomTextWidget(
+                                  text: "+911203584948",
+                                  size: 18,
+                                  color: AppColors.black50,
+                                  fontWeight: FontWeight.w400),
+                            ),
                             const Expanded(
                               flex: 4,
                               child: SizedBox(),
@@ -394,11 +415,34 @@ class _MerchantLoginState extends State<MerchantLogin> {
                               ),
                             ),
                             const Spacer(),
-                            CustomTextWidget(
-                                text: "support@alliancenetworkcompany.com",
-                                size: 12,
-                                color: AppColors.black50,
-                                fontWeight: FontWeight.w400),
+                            InkWell(
+                              onTap: () async {
+                                final mail =
+                                    "support@alliancenetworkcompany.com";
+
+                                final Uri emailUri = Uri(
+                                  scheme: 'mailto',
+                                  path: mail,
+                                  query: 'subject=Support Request', // optional
+                                );
+
+                                if (await canLaunchUrl(emailUri)) {
+                                  try {
+                                    await launchUrl(emailUri);
+                                  } catch (error) {
+                                    _copyToClipboard(mail);
+                                  }
+                                } else {
+                                  // Handle error
+                                  _copyToClipboard(mail);
+                                }
+                              },
+                              child: CustomTextWidget(
+                                  text: "support@alliancenetworkcompany.com",
+                                  size: 12,
+                                  color: AppColors.black50,
+                                  fontWeight: FontWeight.w400),
+                            ),
                             const Expanded(
                               flex: 4,
                               child: SizedBox(),
