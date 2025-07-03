@@ -11,6 +11,7 @@ class MerchantScaffold extends StatelessWidget {
   final VoidCallback? onProfilePressed;
   final VoidCallback? onNotificationPressed;
   final FloatingActionButton? floatingActionButton;
+  final FloatingActionButtonLocation? floatingActionButtonLocation;
   final Function()? onTapSupport;
   final Function()? onTapHome;
 
@@ -29,6 +30,7 @@ class MerchantScaffold extends StatelessWidget {
     this.onTapSupport,
     this.onTapHome,
     this.showStoreName = false,
+    this.floatingActionButtonLocation,
   });
 
   @override
@@ -36,6 +38,7 @@ class MerchantScaffold extends StatelessWidget {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
+      floatingActionButtonLocation: floatingActionButtonLocation,
       resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
       appBar: AppBar(

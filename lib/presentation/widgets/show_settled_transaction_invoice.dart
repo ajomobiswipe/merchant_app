@@ -1,19 +1,17 @@
 import 'package:anet_merchant_app/core/utils/helpers/default_height.dart';
-import 'package:anet_merchant_app/data/models/get_settlement_history_model.dart';
-import 'package:anet_merchant_app/data/models/transaction_model.dart';
+import 'package:anet_merchant_app/data/models/get_settlement_dashboard_data.dart';
 import 'package:anet_merchant_app/presentation/pages/users/merchant/merchant_scaffold.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_container.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:flutter/services.dart';
-import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:path_provider/path_provider.dart';
 import 'package:open_file/open_file.dart';
 
 class ShowSettledTransactionInvoice extends StatelessWidget {
-  final SettledTransaction transaction;
+  final SettledSummaryPageContent transaction;
   const ShowSettledTransactionInvoice({super.key, required this.transaction});
 
   String formatDate(DateTime? date) {

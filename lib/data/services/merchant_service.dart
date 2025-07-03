@@ -1,164 +1,101 @@
-/* ===============================================================
-| Project : MERCHANT ONBOARDING
-| Page    : USER_SERVICE.DART
-| Date    : 04-OCT-2024
-|
-*  ===============================================================*/
-
 import 'dart:convert';
 
 import 'package:anet_merchant_app/core/constants/constants.dart';
 import 'package:anet_merchant_app/core/endpoints.dart';
 import 'package:anet_merchant_app/core/static_functions.dart';
+import 'package:anet_merchant_app/data/services/connection.dart';
 import 'package:anet_merchant_app/domain/datasources/storage/secure_storage.dart';
 import 'package:anet_merchant_app/main.dart';
-import 'package:anet_merchant_app/presentation/pages/users/merchant/sampledata/sampledata.dart';
 import 'package:flutter/foundation.dart';
-import 'package:http/http.dart';
-
-import 'connection.dart';
 
 class MerchantServices {
-  late String token;
+  final BoxStorage boxStorage = BoxStorage();
 
-  BoxStorage boxStorage = BoxStorage();
-  Future refreshToken() async {
-    Connection connection = Connection();
-    String token = boxStorage.getToken();
-    var url = '${EndPoints.baseApiPublicNanoUMS}refreshToken/$token';
+  Future<dynamic> refreshToken() async {
+    final token = boxStorage.getToken();
+    final url = '${EndPoints.baseApiPublicNanoUMS}refreshToken/$token';
 
-    var response = await connection.get(url, fromRefreshTokenAPI: true);
+    final response = await DioClient().get(url); // token-based
 
-    if (kDebugMode) print('url ${response.body}');
-
-    var decodedData = jsonDecode(response.body);
+    if (kDebugMode) print('url ${response.data}');
 
     if (response.statusCode == 401) {
       NavigationService.navigatorKey.currentState
           ?.pushReplacementNamed('login');
-      alertService.errorToast(Constants.unauthorized);
+      alertService.error(Constants.unauthorized);
       clearStorage();
       return;
     }
 
+    final decodedData = response.data;
     BoxStorage secureStorage = BoxStorage();
-    await secureStorage.saveUserDetails(decodedData);
+    var user = secureStorage.getUserDetails();
+    user['bearerToken'] = decodedData['bearerToken'];
+    await secureStorage.saveUserDetails(user);
 
     if (response.statusCode == 200) {
       return decodedData;
     }
   }
 
-  merchantSelfLogin(requestModel) async {
-    Connection connection = Connection();
-
-    var url = "${EndPoints.baseApiPublicNanoUMS}login";
-
-    var response = await connection.postWithOutToken(url, requestModel);
-
-    return response;
+  Future<dynamic> merchantSelfLogin(Map<String, dynamic> requestModel) async {
+    final url = "${EndPoints.baseApiPublicNanoUMS}login";
+    print(url);
+    print(jsonEncode(requestModel));
+    return await DioClient().postWithoutToken(url, requestModel);
   }
 
-  verifyOtp(requestModel) async {
-    Connection connection = Connection();
-
-    var url = "${EndPoints.baseApiPublicNanoUMS}ums/verifyEmailOtp";
-
-    var response = await connection.postWithOutToken(url, requestModel);
-
-    return response;
+  Future<dynamic> verifyOtp(Map<String, dynamic> requestModel) async {
+    final url = "${EndPoints.baseApiPublicNanoUMS}ums/verifyEmailOtp";
+    return await DioClient().postWithoutToken(url, requestModel);
   }
 
-  fetchTransactionHistory(requestModel,
+  Future<dynamic> fetchTransactionHistory(Map<String, dynamic> requestModel,
       {required int pageNumber, required int pageSize}) async {
-    Connection connection = Connection();
-
-    var url =
+    final url =
         "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/getPosTxnHistoryReport?page=$pageNumber&size=$pageSize&sort=insertDateTime%2Cdesc";
-    // Response response = Response(
-    //     getDummyPosTxnHistoryReport(pageNumber: pageNumber, pageSize: pageSize),
-    //     200);
-    //        await Future.delayed(const Duration(seconds: 2));
-    var response = await connection.post(url, requestModel);
-
-    return response;
+    return await DioClient().post(url, requestModel);
   }
 
-  getSupportActionData() async {
-    Connection connection = Connection();
-
-    var url =
+  Future<dynamic> getSupportActionData() async {
+    final url =
         "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/getSupportActionData";
-
-    // Response response = Response(getDummyDailySettlementTxnSummary(), 200);
-    // await Future.delayed(const Duration(seconds: 2));
-    var response = await connection.get(
-      url,
-    );
-    return response;
+    return await DioClient().get(url);
   }
 
-  raiseSupportRequest(
-    requestModel,
-  ) async {
-    Connection connection = Connection();
-
-    var url =
+  Future<dynamic> raiseSupportRequest(Map<String, dynamic> requestModel) async {
+    final url =
         "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/raiseSupportRequest";
-
-    var response = await connection.post(url, requestModel);
-    return response;
+    return await DioClient().post(url, requestModel);
   }
 
-  fetchDailySettlementTxnSummary(
-    requestModel,
-  ) async {
-    Connection connection = Connection();
-
-    var url =
+  Future<dynamic> fetchDailySettlementTxnSummary(
+      Map<String, dynamic> requestModel) async {
+    final url =
         "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/dailySettlementTxnSummary";
-
-    // Response response = Response(getDummyDailySettlementTxnSummary(), 200);
-    // await Future.delayed(const Duration(seconds: 2));
-    var response = await connection.post(url, requestModel);
-    return response;
+    return await DioClient().post(url, requestModel);
   }
 
-  fetchDailyMerchantTxnSummary(
-    requestModel,
-  ) async {
-    Connection connection = Connection();
-
-    var url =
+  Future<dynamic> fetchDailyMerchantTxnSummary(
+      Map<String, dynamic> requestModel) async {
+    final url =
         "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/dailyMerchantTxnSummary";
-
-    var response = await connection.post(url, requestModel);
-    return response;
+    return await DioClient().post(url, requestModel);
   }
 
-  getSettlementDashboardReport(requestModel,
-      {required int pageNumber, required int pageSize}) async {
-    Connection connection = Connection();
-
-    var url =
+  Future<dynamic> getSettlementDashboardReport(
+      Map<String, dynamic> requestModel,
+      {required int pageNumber,
+      required int pageSize}) async {
+    final url =
         "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/getSettlementHistoryReport?page=$pageNumber&size=$pageSize&sort=desc";
-
-    // Response response = Response(getDummySettlementHistoryReport(), 200); //
-    // await Future.delayed(const Duration(seconds: 2));
-    var response = await connection.post(url, requestModel);
-    return response;
+    return await DioClient().post(url, requestModel);
   }
 
-  getSettlementHistoryReport(requestModel,
+  Future<dynamic> getSettlementHistoryReport(Map<String, dynamic> requestModel,
       {required int pageNumber, required int pageSize}) async {
-    Connection connection = Connection();
-
-    var url =
+    final url =
         "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/getSettlementHistoryReport?pageNumber=$pageNumber&size=$pageSize&sort=desc";
-
-    // Response response = Response(getDummySettlementHistoryReport(), 200);
-    // await Future.delayed(const Duration(seconds: 2));
-    var response = await connection.post(url, requestModel);
-    return response;
+    return await DioClient().post(url, requestModel);
   }
 }

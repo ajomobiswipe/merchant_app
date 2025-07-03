@@ -102,6 +102,8 @@ class TransactionTile extends StatelessWidget {
                         color: Colors.grey.shade600,
                       ),
                     ),
+                    // CustomTextWidget(
+                    //     size: 10, text: getTransactionStatustext(transaction))
                   ],
                 ),
               ),
@@ -118,8 +120,7 @@ class TransactionTile extends StatelessWidget {
                 },
                 child: Row(children: [
                   CustomContainer(
-                    color: (transaction.responseCode == "000" ||
-                            transaction.responseCode == "00")
+                    color: transaction.transactionType == "OSAL001"
                         ? Colors.green
                         : Colors.red,
                     width: width * 0.22,
@@ -146,12 +147,33 @@ class TransactionTile extends StatelessWidget {
     );
   }
 
+  String getTransactionStatustext(TransactionElement txn) {
+    return "${txn.transactionType ?? 'N/A'} V ${txn.voided.toString()} ${txn.responseCode ?? 'N/A'}";
+  }
+
   String getTransactionStatus(TransactionElement txn) {
-    if (txn.voided == true) return "Voided";
-    if (txn.responseCode == "68") return "Reversed";
-    if (txn.responseCode == "00" || txn.responseCode == "000") return "Success";
-    if (txn.responseCode != "00") return "Failed";
-    if (txn.settled == true || txn.batchClosed == true) return "Completed";
-    return "Pending";
+    if (txn.transactionType == "OSAL001") {
+      return "Success";
+    }
+
+    if (txn.transactionType == "VSAL001") {
+      return "VOID-SALE";
+    }
+    if (txn.transactionType == "POS-REVERSAL") {
+      return "Reversal";
+    }
+
+    return txn.transactionType ?? "N/A";
+  }
+
+  getTransactionType(TransactionElement? element) {
+    if (element == null) return "N/A";
+    if (element.transactionType == "OSAL001" && element.voided == false)
+      return "SALE";
+
+    if (element.transactionType == "OSAL001" &&
+        element.voided == true) if (element.transactionType == "VSAL001")
+      return "Void";
+    return "Void-Sale";
   }
 }

@@ -1,7 +1,6 @@
-import 'dart:convert';
-
 import 'package:anet_merchant_app/data/services/merchant_service.dart';
 import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -28,12 +27,28 @@ class SupportActionProvider with ChangeNotifier {
   MerchantServices _merchantServices = MerchantServices();
 
   Future<void> getSupportActionData() async {
-    var response = await _merchantServices.getSupportActionData();
-    if (response.statusCode == 200) {
-      var decodedData = jsonDecode(response.body);
-      _supportActionList = decodedData['data'] ?? [];
-
-      notifyListeners();
+    try {
+      var response = await _merchantServices.getSupportActionData();
+      if (response.statusCode == 200) {
+        var decodedData = response.data;
+        if (decodedData is Map<String, dynamic> &&
+            decodedData.containsKey('data')) {
+          _supportActionList = decodedData['data'] ?? [];
+        } else {
+          _supportActionList = [];
+          AlertService().error("Invalid response format");
+        }
+        notifyListeners();
+      }
+    } on DioException catch (dioError) {
+      if (dioError.response != null) {
+        AlertService().error(
+            "Failed to fetch support actions: ${dioError.response?.data}");
+      } else {
+        AlertService().error("Network error: ${dioError.message}");
+      }
+    } catch (e) {
+      AlertService().error("An unexpected error occurred: $e");
     }
   }
 
@@ -45,7 +60,7 @@ class SupportActionProvider with ChangeNotifier {
     String? merchantId = prefs.getString('acqMerchantId') ?? '651010000022371';
 
     if (_selectedSupportAction == null || _selectedSupportAction!.isEmpty) {
-      AlertService().errorToast("Please select a support action");
+      AlertService().warning("Please select a support action");
       return;
     }
     var reqBody = {
@@ -61,7 +76,7 @@ class SupportActionProvider with ChangeNotifier {
       if (response.statusCode == 200) {
         AlertService().success("Support request raised successfully");
       } else {
-        AlertService().errorToast("Failed to raise support request");
+        AlertService().error("Failed to raise support request");
       }
     } catch (e) {
       print("Error fetching transactions: $e");

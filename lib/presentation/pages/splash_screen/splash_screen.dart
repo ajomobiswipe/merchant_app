@@ -60,15 +60,16 @@ class _SplashScreenState extends State<SplashScreen> {
     final bool isLogged = sharedPreferences.getBool('isLogged') ?? false;
 
     if (isLogged) {
+      Provider.of<AuthProvider>(context, listen: false).isLoggedIn = true;
       // var tokenResponse = await MerchantServices().refreshToken();
 
       // if (tokenResponse == null) return;
       TokenManager()
           .start(NavigationService.navigatorKey.currentState!.context);
-      if (!mounted) return;
+      //if (!mounted) return;
       Navigator.pushReplacementNamed(context, 'merchantHomeScreen');
     } else {
-      if (!mounted) return;
+      // if (!mounted) return;
       Navigator.pushReplacementNamed(context, 'merchantLogin');
     }
   }

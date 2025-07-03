@@ -1,3 +1,4 @@
+import 'package:anet_merchant_app/core/Constants/constants.dart';
 import 'package:anet_merchant_app/core/app_color.dart';
 import 'package:anet_merchant_app/core/utils/helpers/default_height.dart';
 import 'package:anet_merchant_app/presentation/pages/users/merchant/merchant_scaffold.dart';
@@ -35,13 +36,12 @@ class _MerchantHelpScreenState extends State<MerchantHelpScreen> {
   }
 
   Future<void> _copyToClipboard(String mailId) async {
-
     Clipboard.setData(ClipboardData(text: mailId));
 
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text('$mailId Copied to clipboard'),duration :Duration(seconds: 5)
-    ));
+        content: Text('$mailId Copied to clipboard'),
+        duration: Duration(seconds: 5)));
   }
 
   @override
@@ -67,7 +67,6 @@ class _MerchantHelpScreenState extends State<MerchantHelpScreen> {
                   size: 14,
                   text: Provider.of<AuthProvider>(context).merchantDbaName,
                   maxLines: 3,
-                 
                 ),
               ),
             ],
@@ -155,7 +154,7 @@ class _MerchantHelpScreenState extends State<MerchantHelpScreen> {
                   onTap: () {
                     if (supportActionProvider.selectedQuickAction == null ||
                         supportActionProvider.selectedQuickAction!.isEmpty) {
-                      AlertService().errorToast(
+                      AlertService().error(
                         "Please select a support action first!",
                       );
                       return;
@@ -208,7 +207,7 @@ class _MerchantHelpScreenState extends State<MerchantHelpScreen> {
                 defaultHeight(10),
                 InkWell(
                   onTap: () async {
-                    final mail = "support@alliancenetworkcompany.com";
+                    final mail = Constants.supportEmail;
 
                     final Uri emailUri = Uri(
                       scheme: 'mailto',
@@ -238,8 +237,8 @@ class _MerchantHelpScreenState extends State<MerchantHelpScreen> {
                       ),
                       defaultWidth(20),
                       CustomTextWidget(
-                          text: "support@alliancenetworkcompany.com",
-                          size: 12,
+                          text: Constants.supportEmail,
+                          size: 11,
                           color: AppColors.black50,
                           fontWeight: FontWeight.w400),
                       const Spacer(

@@ -66,33 +66,34 @@ class TransactionProvider with ChangeNotifier {
   int get totalTransactions => _totalTransactions;
   // Methods
 
-  // Fetch recent transactions
   Future<void> getRecentTransactions() async {
     print("Current Page: $currentPage");
     print("Page Size: $pageSize");
     print("Total Items: $_todaysTnxCount");
     print("Recent Transactions Length: ${recentTransactions.length}");
+
     if (recentTransactions.length >= _todaysTnxCount &&
         !isRecentTransLoadingFistTime) return;
 
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-
     String? merchantId = prefs.getString('acqMerchantId') ?? "651010000022371";
     print(merchantId);
 
     print("Inside fetchItems");
+
     _recentTranReqModel
       ..acquirerId = "OMAIND"
       ..merchantId = merchantId
       ..recordFrom = DateTime.now().toLocal().toString().split(' ')[0]
       ..recordTo = DateTime.now().toLocal().toString().split(' ')[0]
-      // ..recordFrom = "26-05-2025"
+      // ..recordFrom = "06-05-2025"
       // ..recordTo = "03-06-2025"
       // ..recordFrom = "22-01-2023"
       // ..recordTo = "27-05-2025"
       ..rrn = null
       ..terminalId = null
       ..sendTxnReportToMail = false;
+
     if (_isDailyTransactionsLoading) return;
 
     _isDailyTransactionsLoading = true;
@@ -106,12 +107,20 @@ class TransactionProvider with ChangeNotifier {
       );
 
       if (response.statusCode == 200) {
-        final decodedData = transactionHistoryFromJson(response.body);
+        final decodedData = TransactionHistory.fromJson(
+          response.data,
+        ); //for dio
+        // final decodedData = transactionHistoryFromJson(
+        //   jsonEncode(response.data),
+        // );// for http
+
         final newItems = decodedData.responsePage?.content ?? [];
         _todaysTnxCount = decodedData.responsePage?.totalElements ?? 0;
         _totalTransactionAmount = decodedData.totalAmount ?? 0.0;
+
         // print(
         //     "todays transaction count: ${decodedData.responsePage!.totalElements}");
+
         if (newItems.isNotEmpty) {
           isRecentTransLoadingFistTime = false;
           currentPage++;
@@ -144,21 +153,21 @@ class TransactionProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // Fetch daily settlement transaction summary
   Future<void> fetchDailySettlementTxnSummary() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-
     String? merchantId = prefs.getString('acqMerchantId') ?? '65OMA0000000002';
+
     var reqbody = {
       "merchantId": merchantId,
       "isReconsiled": true,
       "isSettled": true
     };
-    var response =
+
+    final response =
         await _merchantServices.fetchDailySettlementTxnSummary(reqbody);
 
     if (response.statusCode == 200) {
-      var decodedData = jsonDecode(response.body)['responseData'];
+      final decodedData = response.data['responseData'];
       _totalSettlementAmount = decodedData['txnAmount'] ?? 0.0;
       _deductions = decodedData['deductionAmount'] ?? 0.0;
       _pendingSettlement = decodedData['pendingSettlementAmount'] ?? 0.0;
@@ -169,18 +178,17 @@ class TransactionProvider with ChangeNotifier {
   Future<void> fetchDailyMerchantTxnSummary() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String? merchantId = prefs.getString('acqMerchantId') ?? '65OMA0000000002';
+
     var reqbody = {
       "merchantId": merchantId,
     };
-    var response =
+
+    final response =
         await _merchantServices.fetchDailyMerchantTxnSummary(reqbody);
 
     if (response.statusCode == 200) {
-      var decodedData = jsonDecode(response.body)['responseData'];
+      final decodedData = response.data['responseData'];
       _totalSettlementAmount = decodedData['txnAmount'] ?? 0.0;
-      // _totalSettlementAmount = decodedData['txnAmount'] ?? 0.0;
-      // _deductions = decodedData['deductionAmount'] ?? 0.0;
-      // _pendingSettlement = decodedData['pendingSettlementAmount'] ?? 0.0;
       notifyListeners();
     }
   }

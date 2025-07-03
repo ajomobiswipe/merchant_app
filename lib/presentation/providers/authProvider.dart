@@ -6,6 +6,7 @@ import 'package:anet_merchant_app/data/services/storage_services.dart';
 import 'package:anet_merchant_app/domain/datasources/storage/secure_storage.dart';
 import 'package:anet_merchant_app/presentation/pages/users/merchant/merchant_home_page/merchant_info_model.dart';
 import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -48,6 +49,10 @@ class AuthProvider with ChangeNotifier {
   bool get showEmailOtp => _showEmailOtp;
 
   bool get isLoggedIn => _isLoggedIn;
+  set isLoggedIn(bool value) {
+    _isLoggedIn = value;
+  }
+
   MerchantInfoModel get merchantInfo => _merchantInfo;
   bool get isLoading => _isLoading;
   bool get isOtpSent => _isOtpSent;
@@ -121,15 +126,19 @@ class AuthProvider with ChangeNotifier {
     try {
       final res =
           await _merchantServices.merchantSelfLogin(req.sentOtpToJson());
-      loginResponse = jsonDecode(res.body);
+
+      // ✅ Dio's `Response.data` is already decoded
+      loginResponse = res.data;
 
       if (loginResponse != null &&
           loginResponse['responseCode'] == "00" &&
           res.statusCode == 200) {
-        // StorageServices.saveSecureStorage(loginResponse,
+        // Optionally store credentials
+        // await StorageServices.saveSecureStorage(loginResponse,
         //     userName: _merchantIdController.text,
         //     password: _passwordController.text);
-        if (loginResponse['twoFARequired']) {
+
+        if (loginResponse['twoFARequired'] == true) {
           _isOtpSent = true;
           alertService.success(
               loginResponse['responseMessage'] ?? 'OTP sent successfully');
@@ -160,79 +169,48 @@ class AuthProvider with ChangeNotifier {
     try {
       final res =
           await _merchantServices.verifyOtp(req.validateEmailOtpToJson());
-      var response = jsonDecode(res.body);
-      if (res.statusCode == 200) {
-        if (response != null && response['errorMessage'] == "Success") {
-          _isLoggedIn = true;
-          _isOtpSent = false;
-          StorageServices.saveSecureStorage(loginResponse,
-              userName: _merchantIdController.text,
-              password: _passwordController.text);
-          loginResponse = null;
-          alertService.success(
-              response['successMessage'] ?? 'OTP Verified successfully!');
-          TokenManager()
-              .start(NavigationService.navigatorKey.currentState!.context);
-          NavigationService.navigatorKey.currentState
-              ?.pushNamedAndRemoveUntil('merchantHomeScreen', (route) => false);
-        } else {
-          alertService
-              .error(response['errorMessage'] ?? 'OTP verification failed');
-        }
+      final response = res.data;
+
+      if (res.statusCode == 200 && response?['errorMessage'] == "Success") {
+        _isLoggedIn = true;
+        _isOtpSent = false;
+
+        await StorageServices.saveSecureStorage(
+          loginResponse,
+          userName: _merchantIdController.text,
+          password: _passwordController.text,
+        );
+
+        loginResponse = null;
+
+        alertService.success(
+            response['successMessage'] ?? 'OTP Verified successfully!');
+
+        TokenManager()
+            .start(NavigationService.navigatorKey.currentState!.context);
+
+        NavigationService.navigatorKey.currentState?.pushNamedAndRemoveUntil(
+          'merchantHomeScreen',
+          (route) => false,
+        );
       } else {
         alertService
-            .error(response['errorMessage'] ?? 'OTP verification failed');
+            .error(response?['errorMessage'] ?? 'OTP verification failed');
       }
+    } on DioException catch (e) {
+      final response = e.response?.data;
+      alertService.error(response?['message'] ??
+          'OTP verification failed with status: ${e.response?.statusCode}');
     } catch (e) {
       alertService
           .error('An error occurred while verifying OTP: ${e.toString()}');
     } finally {
       _setLoading(false);
-      notifyListeners();
     }
   }
 
   void _setLoading(bool loading) {
     _isLoading = loading;
     notifyListeners();
-  }
-
-  saveSecureStorage(decodeData, {String? userName, String? password}) async {
-    /// NEW HIVE STORAGE CONTROLS
-    var datetime = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
-    String dateStr = datetime.toString();
-    BoxStorage secureStorage = BoxStorage();
-
-    decodeData['userName'] = userName;
-
-    secureStorage.saveUserDetails(decodeData, userName: userName);
-    secureStorage.save('lastLogin', dateStr);
-    secureStorage.save('isLogged', true);
-    // secureStorage.save('notificationToken', decodeData.notificationToken);
-    if (decodeData['role'].toString() == "MERCHANT") {
-      secureStorage.save('merchantStatus', decodeData['status'].toString());
-    }
-
-    /// OLD Shared Preferences STORAGE CONTROLS
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    pref.setString('token', decodeData['bearerToken'].toString());
-
-    // pref.setString('userName', decodeData['userName'].toString());
-    pref.setString('userName', userName!);
-    pref.setString('password', password!);
-
-    pref.setString('role', decodeData['role'].toString());
-    pref.setString('lastLogin', dateStr);
-    pref.setBool('isLogged', true);
-    pref.setString('custId', decodeData['custId'].toString());
-    pref.setString('acqMerchantId', decodeData['acqMerchantId'].toString());
-    print(decodeData['acqMerchantId'].toString());
-    if (decodeData['role'].toString() == "MERCHANT") {
-      pref.setString('merchantId', decodeData['merchantId'].toString());
-
-      pref.setString('terminalId', decodeData['terminalId'].toString());
-      pref.setString(
-          'kycExpiryAlertMsg', decodeData['kycExpiryAlertMsg'].toString());
-    }
   }
 }

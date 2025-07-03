@@ -16,7 +16,6 @@ import 'package:anet_merchant_app/presentation/pages/users/merchant/settlement_d
 import 'package:anet_merchant_app/presentation/pages/users/merchant/view_all_transaction_screen.dart';
 import 'package:anet_merchant_app/presentation/pages/users/merchant/view_settlement_info.dart';
 import 'package:anet_merchant_app/presentation/providers/connectivity_provider.dart';
-import 'package:anet_merchant_app/presentation/widgets/no_internet_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -27,10 +26,10 @@ class CustomRoute {
     var args = settings.arguments;
 
     return CupertinoPageRoute(builder: (context) {
-      final isOnline = Provider.of<ConnectivityProvider>(context).isOnline;
-      if (!isOnline) {
-        return const NoInternetPage();
-      }
+      // final isOnline = Provider.of<ConnectivityProvider>(context).isOnline;
+      // if (!isOnline) {
+      //   return const NoInternetPage();
+      // }
       switch (settings.name) {
         // case "login":
         //   return const LoginPage();

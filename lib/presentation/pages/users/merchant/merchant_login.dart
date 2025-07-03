@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'package:anet_merchant_app/core/app_color.dart';
+import 'package:anet_merchant_app/core/constants/constants.dart';
+import 'package:anet_merchant_app/data/services/connectivity_service.dart';
 import 'package:anet_merchant_app/presentation/providers/authProvider.dart';
+import 'package:anet_merchant_app/presentation/providers/connectivity_provider.dart';
 import 'package:anet_merchant_app/presentation/providers/permission.dart';
 import 'package:anet_merchant_app/presentation/widgets/common_widgets/custom_app_button.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
@@ -38,6 +41,7 @@ class _MerchantLoginState extends State<MerchantLogin> {
       authProvider.resetAll();
     });
     DevicePermission().checkPermission();
+    ConnectivityService().checkConnectivity();
     _checkRememberMe();
     // _initPackageInfo();
   }
@@ -417,8 +421,7 @@ class _MerchantLoginState extends State<MerchantLogin> {
                             const Spacer(),
                             InkWell(
                               onTap: () async {
-                                final mail =
-                                    "support@alliancenetworkcompany.com";
+                                final mail = Constants.supportEmail;
 
                                 final Uri emailUri = Uri(
                                   scheme: 'mailto',
@@ -438,7 +441,7 @@ class _MerchantLoginState extends State<MerchantLogin> {
                                 }
                               },
                               child: CustomTextWidget(
-                                  text: "support@alliancenetworkcompany.com",
+                                  text: Constants.supportEmail,
                                   size: 12,
                                   color: AppColors.black50,
                                   fontWeight: FontWeight.w400),

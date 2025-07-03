@@ -129,7 +129,6 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      
       final response = await _merchantServices.fetchTransactionHistory(
         _allTranReqModel.toJson(),
         pageNumber: currentPage,
@@ -137,7 +136,7 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
       );
 
       if (response.statusCode == 200) {
-        final decodedData = transactionHistoryFromJson(response.body);
+        final decodedData = TransactionHistory.fromJson(response.data);
         var newItems = decodedData.responsePage!.content ?? [];
         _allTnxCount = decodedData.responsePage!.totalElements ?? 0;
         print('_allTnxCount is $_allTnxCount');
@@ -198,7 +197,7 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
       );
 
       if (response.statusCode == 200) {
-        final decodedData = transactionHistoryFromJson(response.body);
+        final decodedData = TransactionHistory.fromJson(response.data);
         if (decodedData.sendMailResponse!.responseCode == "00") {
           AlertService().success(
               " Transaction report has been sent to your registered email.");
@@ -214,23 +213,15 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
     }
   }
 
-  getRRn() {
-    if (_searchFilterType == FilterType.RRNAPPCODE) {
-      return _selectedSearchType == SearchType.RRN ? searchController.text : '';
-    } else {
-      return '';
-    }
-  }
+  String? getRRn() => _searchFilterType == FilterType.RRNAPPCODE &&
+          _selectedSearchType == SearchType.RRN
+      ? searchController.text
+      : '';
 
-  getAuthCode() {
-    if (_searchFilterType == FilterType.RRNAPPCODE) {
-      return _selectedSearchType == SearchType.APP_CODE
-          ? searchController.text
-          : '';
-    } else {
-      return '';
-    }
-  }
+  String? getAuthCode() => _searchFilterType == FilterType.RRNAPPCODE &&
+          _selectedSearchType == SearchType.APP_CODE
+      ? searchController.text
+      : '';
 
   getRecordFrom() {
     if (_searchFilterType == FilterType.DATERANGE && _customStartDate != null) {

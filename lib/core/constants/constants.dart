@@ -19,5 +19,6 @@ class Constants {
 
   static const noInternetImage = 'assets/screen/no-internet.jpg';
 
-  static const storeName="Toy Store";
+  static const storeName = "Toy Store";
+  static const supportEmail = "customer.support@alliancenetworkglobal.com";
 }

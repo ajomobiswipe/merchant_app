@@ -17,7 +17,7 @@ class ShowTransactionInvoice extends StatelessWidget {
   const ShowTransactionInvoice({super.key, required this.transaction});
 
   String getCurrencySymbol(String? code) {
-    if (code == "356") return "INR   \₹";
+    if (code == "356") return "INR";
     return "\$";
   }
 
@@ -30,49 +30,48 @@ class ShowTransactionInvoice extends StatelessWidget {
     double logoSize = screenHeight * .1;
 
     return MerchantScaffold(
+      floatingActionButton: FloatingActionButton.small(
+        onPressed: () => Navigator.pop(context),
+        backgroundColor: Colors.red,
+        child: Icon(Icons.close, color: Colors.white, size: 20),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                InkWell(
-                  onTap: () => Navigator.pop(context),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
-                          blurRadius: 6,
-                          offset: Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    padding: const EdgeInsets.all(8),
-                    child: Icon(
-                      Icons.close,
-                      color: Colors.white,
-                      size: 24,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            defaultHeight(basePadding),
-            Row(
-              children: [
-                SizedBox(
-                  width: screenWidth * 0.5,
-                  child: CustomTextWidget(
-                    text: Provider.of<AuthProvider>(context).merchantDbaName,
-                    maxLines: 3,
-                  ),
-                ),
-              ],
-            ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.end,
+            //   children: [
+            //     GestureDetector(
+            //       onTap: () => Navigator.pop(context),
+            //       child: Container(
+            //         decoration: BoxDecoration(
+            //           color: Colors.red,
+            //           shape: BoxShape.circle,
+            //           boxShadow: [
+            //             BoxShadow(
+            //               color: Colors.black.withOpacity(0.2),
+            //               blurRadius: 6,
+            //               offset: Offset(0, 3),
+            //             ),
+            //           ],
+            //         ),
+            //         padding: const EdgeInsets.all(8),
+            //         child: Icon(
+            //           Icons.close,
+            //           color: Colors.white,
+            //           size: 24,
+            //         ),
+            //       ),
+            //     ),
+            //   ],
+            // ),
+            // defaultHeight(basePadding),
+
             Center(
               child: Image.asset(
                 'assets/screen/anet.png',
@@ -81,7 +80,18 @@ class ShowTransactionInvoice extends StatelessWidget {
               ),
             ),
             defaultHeight(basePadding),
-
+            Row(
+              children: [
+                SizedBox(
+                  width: screenWidth * 0.9,
+                  child: CustomTextWidget(
+                    text: Provider.of<AuthProvider>(context).merchantDbaName,
+                    maxLines: 3,
+                  ),
+                ),
+              ],
+            ),
+            defaultHeight(basePadding),
             // Date and Time
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -100,29 +110,66 @@ class ShowTransactionInvoice extends StatelessWidget {
                 ),
               ],
             ),
-            defaultHeight(screenHeight * .015),
+            defaultHeight(basePadding),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CustomTextWidget(
+                  isBold: false,
+                  size: 12,
+                  text: "TID: ${transaction.terminalId ?? "N/A"}",
+                  isUpperCase: true,
+                ),
+                CustomTextWidget(
+                  size: 12,
+                  isBold: false,
+                  text: "MID: ${transaction.merchantId ?? "N/A"}",
+                  isUpperCase: true,
+                ),
+              ],
+            ),
+            defaultHeight(basePadding),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CustomTextWidget(
+                  isBold: false,
+                  size: 12,
+                  text: "BATCH NO: ${transaction.batchNo ?? "N/A"}",
+                  isUpperCase: true,
+                ),
+                CustomTextWidget(
+                  size: 12,
+                  isBold: false,
+                  text: "INVOICE: ${transaction.stan ?? "N/A"}",
+                  isUpperCase: true,
+                ),
+              ],
+            ),
+            defaultHeight(basePadding),
 
             // Transaction Type
             Center(
               child: CustomTextWidget(
-                isBold: false,
-                text: getTransactionType(transaction.transactionType),
+                isBold: true,
+                text: getTransactionType(transaction),
                 size: 20,
               ),
             ),
-            defaultHeight(screenHeight * .015),
+            defaultHeight(basePadding),
 
             // MID & TID
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 CustomTextWidget(
-                  text: "MID: ${transaction.merchantId ?? "N/A"}",
+                  text:
+                      "CARD TYPE: ${transaction.schemeName ?? getSchemeNameFromCardNumber(transaction.cardNo)}",
                   size: 12,
                   isBold: false,
                 ),
                 CustomTextWidget(
-                  text: "TID: ${transaction.terminalId ?? "N/A"}",
+                  text: "EXP: XX/XX",
                   size: 12,
                   isBold: false,
                 ),
@@ -135,13 +182,13 @@ class ShowTransactionInvoice extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 CustomTextWidget(
-                  text: "Batch: ${transaction.batchNo ?? "N/A"}",
+                  text: "CARD NO: ${transaction.cardNo ?? "N/A"}",
                   isUpperCase: true,
                   size: 12,
                   isBold: false,
                 ),
                 CustomTextWidget(
-                  text: "Invoice: ${transaction.traceNumber ?? "N/A"}",
+                  text: getPosEntryMode(transaction.posEntryMode),
                   isUpperCase: true,
                   size: 12,
                   isBold: false,
@@ -155,61 +202,76 @@ class ShowTransactionInvoice extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 CustomTextWidget(
-                  text: "RRN: ${transaction.rrn ?? "N/A"}",
-                  size: 12,
-                  isBold: false,
-                ),
-                CustomTextWidget(
-                  text: "PAN SEQ: ${transaction.traceNumber ?? "N/A"}",
-                  size: 12,
-                  isBold: false,
-                ),
-              ],
-            ),
-            defaultHeight(basePadding),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CustomTextWidget(
                   text: "AUTH CODE: ${transaction.authCode ?? "N/A"}",
                   size: 12,
                   isBold: false,
                 ),
-              ],
-            ),
-            defaultHeight(basePadding),
-            // Entry Mode & Card Brand
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
                 CustomTextWidget(
-                  text:
-                      "${getPosEntryMode(transaction.posEntryMode) ?? "N/A"} (${transaction.schemeName ?? getSchemeNameFromCardNumber(transaction.cardNo)})",
+                  text: "RRN: ${transaction.rrn ?? "N/A"}",
                   size: 12,
                   isBold: false,
                 ),
               ],
             ),
+            defaultHeight(basePadding),
 
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CustomTextWidget(
+                  text: "AID: ${transaction.acquirerId ?? "N/A"}",
+                  size: 12,
+                  isBold: false,
+                ),
+              ],
+            ),
+            defaultHeight(basePadding),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CustomTextWidget(
+                  text: "LABEL: ${transaction.schemeName ?? "N/A"}",
+                  size: 12,
+                  isBold: false,
+                ),
+              ],
+            ),
+            defaultHeight(basePadding),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CustomTextWidget(
+                  text: "TVR: ${transaction.batchNo ?? "N/A"}  ",
+                  size: 12,
+                  isBold: false,
+                ),
+                CustomTextWidget(
+                  text: "TSI: ${transaction.terminalId ?? "N/A"}  ",
+                  size: 12,
+                  isBold: false,
+                ),
+              ],
+            ),
+            defaultHeight(basePadding),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CustomTextWidget(
+                  text: "TC: ${transaction.batchNo ?? "N/A"}  ",
+                  size: 12,
+                  isBold: false,
+                ),
+              ],
+            ),
             defaultHeight(basePadding),
 
             // Cardholder Name
-            if (transaction.nameOnCard != null)
-              Column(
-                children: [
-                  CustomTextWidget(
-                    text: transaction.nameOnCard!,
-                    size: 12,
-                    isBold: true,
-                  ),
-                  defaultHeight(mediumPadding),
-                ],
-              ),
 
+            Divider(),
             // Amount
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 CustomTextWidget(
                   text: "AMOUNT ",
@@ -228,123 +290,70 @@ class ShowTransactionInvoice extends StatelessWidget {
                 ),
               ],
             ),
-
-            // Auth Code
-
+            Divider(),
             // Transaction Confirmation Message
             Center(
               child: Column(
                 children: [
-                  Divider(),
-                  CustomTextWidget(
-                    text: "PLEASE DEBIT MY ACCOUNT",
-                    size: 14,
-                    isBold: false,
+                  SizedBox(
+                    width: screenWidth * 0.8,
+                    child: CustomTextWidget(
+                      textAlign: TextAlign.center,
+                      text: getPinVerifyMessage(type: transaction.posEntryMode),
+                      size: 14,
+                      isBold: false,
+                      maxLines: 3,
+                    ),
                   ),
-                  CustomTextWidget(
-                    text: "PIN VERIFIED OK SIGNATURE NOT REQUIRED",
-                    size: 14,
-                    isBold: false,
-                  ),
-                  Divider(),
                 ],
               ),
             ),
 
             defaultHeight(mediumPadding),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CustomTextWidget(
-                  text:
-                      "Label: ${transaction.processCode ?? ""} ${transaction.schemeName ?? "N/A"} ",
-                  isUpperCase: true,
-                  size: 12,
-                  isBold: false,
-                ),
-                CustomTextWidget(
-                  text: "AID: ${transaction.terminalId ?? "N/A"}  ",
-                  size: 12,
-                  isBold: false,
-                ),
-              ],
+            if (transaction.nameOnCard != null)
+              Column(
+                children: [
+                  CustomTextWidget(
+                    text: transaction.nameOnCard!,
+                    size: 12,
+                    isBold: true,
+                  ),
+                  defaultHeight(mediumPadding),
+                ],
+              ),
+
+            SizedBox(
+              width: screenWidth * 0.9,
+              child: CustomTextWidget(
+                textAlign: TextAlign.center,
+                text:
+                    "* I am Satisfied with the goods/Services received and agree to pay as per issuer terms.",
+                size: 14,
+                isBold: false,
+                maxLines: 3,
+              ),
             ),
-
-            // // Label / Process Code
-            // CustomTextWidget(
-            //   text:
-            //       "Label: ${transaction.processCode ?? ""} ${transaction.schemeName ?? "N/A"} ",
-            //   size: 12,
-            //   isBold: false,
-            // ),
-            // defaultHeight(basePadding),
-
-            // // Optional Tags (placeholders unless backend supplies them)
-            // CustomTextWidget(
-            //   text: "AID: ${transaction.terminalId ?? "N/A"}  ",
-            //   size: 12,
-            //   isBold: false,
-            // ),
-            defaultHeight(basePadding),
-            // CustomTextWidget(
-            //   text: "TVR: ${transaction.batchNo ?? "N/A"}  ",
-            //   size: 12,
-            //   isBold: false,
-            // ),
-            // defaultHeight(basePadding),
-            // CustomTextWidget(
-            //   text: "TSI: ${transaction.terminalId ?? "N/A"}  ",
-            //   size: 12,
-            //   isBold: false,
-            // ),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CustomTextWidget(
-                  text: "TVR: ${transaction.batchNo ?? "N/A"}  ",
-                  size: 12,
-                  isBold: false,
-                ),
-                CustomTextWidget(
-                  text: "TSI: ${transaction.terminalId ?? "N/A"}  ",
-                  size: 12,
-                  isBold: false,
-                ),
-              ],
+            SizedBox(
+              width: screenWidth * 0.9,
+              child: CustomTextWidget(
+                textAlign: TextAlign.center,
+                text: "THANK YOU MERCHANT\nPLEASE KEEP THIS COPY",
+                size: 14,
+                isBold: false,
+                maxLines: 3,
+              ),
             ),
-
-            defaultHeight(basePadding),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CustomTextWidget(
-                  text: "CID: ${transaction.terminalId ?? "N/A"}  ",
-                  size: 12,
-                  isBold: false,
-                ),
-                CustomTextWidget(
-                  text: "AC: ${transaction.terminalId ?? "N/A"}  ",
-                  size: 12,
-                  isBold: false,
-                ),
-              ],
+            SizedBox(
+              width: screenWidth * 0.9,
+              child: CustomTextWidget(
+                textAlign: TextAlign.center,
+                text: "<<MERCHANT COPY>>",
+                size: 18,
+                isBold: true,
+                maxLines: 3,
+              ),
             ),
-            // CustomTextWidget(
-            //   text: "CID: ${transaction.terminalId ?? "N/A"}  ",
-            //   size: 12,
-            //   isBold: false,
-            // ),
-            // defaultHeight(basePadding),
-            // CustomTextWidget(
-            //   text: "AC: ${transaction.terminalId ?? "N/A"}  ",
-            //   size: 12,
-            //   isBold: false,
-            // ),
-
             defaultHeight(mediumPadding),
-
             // Download Button
             CustomContainer(
               onTap: () =>
@@ -368,15 +377,32 @@ class ShowTransactionInvoice extends StatelessWidget {
     );
   }
 
-  getTransactionType(String? type) {
-    if (type == "OSAL001") return "SALE";
-    if (type == "VSAL001") return "Void";
-    return type ?? "N/A";
+  getTransactionType(TransactionElement? txn) {
+    if (txn == null) return "N/A";
+    if (txn.transactionType == "OSAL001") {
+      return "SALE";
+    }
+
+    if (txn.transactionType == "VSAL001") {
+      return "VOID-SALE";
+    }
+    if (txn.transactionType == "POS-REVERSAL") {
+      return "POS-REVERSAL";
+    }
+
+    return txn.transactionType ?? "N/A";
   }
 
   getPosEntryMode(String? type) {
     if (type == "051") return "Chip";
-    if (type == "071") return "Contactless";
+    if (type == "071") return "CTLS";
+    return type ?? "N/A";
+  }
+
+  getPinVerifyMessage({String? type}) {
+    if (type == "051") return "PIN VERIFIED OK SIGNATURE NOT REQUIRED";
+    if (type == "071") return "PIN NOT REQUIRED FOR CONTACTLESS TRANSACTION";
+
     return type ?? "N/A";
   }
 
@@ -431,17 +457,32 @@ class ShowTransactionInvoice extends StatelessWidget {
             .buffer
             .asUint8List();
 
+    final merchantName =
+        Provider.of<AuthProvider>(context, listen: false).merchantDbaName;
+
     pdf.addPage(
       pw.Page(
         margin: pw.EdgeInsets.symmetric(
-            horizontal: screenWidth * .05, vertical: screenHeight * 0.05),
+            horizontal: screenWidth * .1, vertical: screenHeight * 0.05),
         build: (pw.Context context) {
           return pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
               pw.Center(
-                  child: pw.Image(pw.MemoryImage(logo), height: logoSize)),
+                child: pw.Image(pw.MemoryImage(logo), height: logoSize),
+              ),
               pw.SizedBox(height: screenHeight * .02),
+
+              /// Merchant Name
+              centerText(
+                merchantName,
+                fontData: fontDataBold,
+                fontWeight: pw.FontWeight.bold,
+                size: 14,
+              ),
+              pw.SizedBox(height: screenHeight * .02),
+
+              /// Date & Time
               pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
@@ -451,119 +492,84 @@ class ShowTransactionInvoice extends StatelessWidget {
                       fontData: fontDataRegular),
                 ],
               ),
-              pw.SizedBox(height: screenHeight * .025),
-              // rowText("Date", transaction.transactionDate ?? "N/A"),
-              // rowText("Time", transaction.transactionTime ?? "N/A"),
-              centerText(getTransactionType(transaction.transactionType),
-                  size: 24, fontData: fontDataRegular),
-              pw.SizedBox(height: screenHeight * .025),
+              pw.SizedBox(height: screenHeight * .02),
 
+              /// TID & MID
               pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pdfCustomText("MID: ${transaction.merchantId ?? "N/A"}",
-                      fontData: fontDataRegular),
                   pdfCustomText("TID: ${transaction.terminalId ?? "N/A"}",
                       fontData: fontDataRegular),
+                  pdfCustomText("MID: ${transaction.merchantId ?? "N/A"}",
+                      fontData: fontDataRegular),
                 ],
               ),
               pw.SizedBox(height: screenHeight * .02),
-              // rowText("MID", transaction.merchantId ?? "N/A"),
-              // rowText("TID", transaction.terminalId ?? "N/A"),
 
+              /// Batch & Invoice
               pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pdfCustomText("Batch: ${transaction.batchNo ?? "N/A"}",
+                  pdfCustomText("BATCH NO: ${transaction.batchNo ?? "N/A"}",
                       fontData: fontDataRegular),
-                  pdfCustomText("Invoice: ${transaction.traceNumber ?? "N/A"}",
+                  pdfCustomText("INVOICE: ${transaction.stan ?? "N/A"}",
                       fontData: fontDataRegular),
                 ],
               ),
               pw.SizedBox(height: screenHeight * .02),
-              // rowText("Batch", transaction.batchNo ?? "N/A"),
-              // rowText("Invoice", transaction.traceNumber ?? "N/A"),
+
+              /// Transaction Type
+              centerText(getTransactionType(transaction),
+                  size: 24, fontData: fontDataBold),
+              pw.SizedBox(height: screenHeight * .02),
+
+              /// CARD TYPE & EXP
               pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pdfCustomText("RRN: ${transaction.rrn ?? "N/A"}",
+                  pdfCustomText(
+                      "CARD TYPE: ${transaction.schemeName ?? getSchemeNameFromCardNumber(transaction.cardNo)}",
                       fontData: fontDataRegular),
-                  pdfCustomText("PAN SEQ: ${transaction.traceNumber ?? "N/A"}",
+                  pdfCustomText("EXP: XX/XX", fontData: fontDataRegular),
+                ],
+              ),
+              pw.SizedBox(height: screenHeight * .02),
+
+              /// CARD NO & ENTRY MODE
+              pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                children: [
+                  pdfCustomText("CARD NO: ${transaction.cardNo ?? "N/A"}",
+                      fontData: fontDataRegular),
+                  pdfCustomText(getPosEntryMode(transaction.posEntryMode),
                       fontData: fontDataRegular),
                 ],
               ),
               pw.SizedBox(height: screenHeight * .02),
-              // rowText("RRN", transaction.rrn ?? "N/A"),
-              // rowText("PAN SEQ", transaction.traceNumber ?? "N/A"),
+
+              /// AUTH & RRN
               pw.Row(
-                mainAxisAlignment: pw.MainAxisAlignment.start,
+                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
                   pdfCustomText("AUTH CODE: ${transaction.authCode ?? "N/A"}",
                       fontData: fontDataRegular),
+                  pdfCustomText("RRN: ${transaction.rrn ?? "N/A"}",
+                      fontData: fontDataRegular),
                 ],
               ),
               pw.SizedBox(height: screenHeight * .02),
-              // rowText("RRN", transaction.rrn ?? "N/A"),
-              // rowText("PAN SEQ", transaction.traceNumber ?? "N/A"),
-              pw.Row(
-                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                children: [
-                  pdfCustomText(
-                      "${getPosEntryMode(transaction.posEntryMode) ?? "N/A"} (${transaction.schemeName ?? getSchemeNameFromCardNumber(transaction.cardNo)})",
-                      fontData: fontDataRegular),
-                ],
-              ),
-              // rowText("AUTH CODE", transaction.authCode ?? "N/A"),
-              // rowText("Entry/Card Brand",
-              //     "${transaction.posEntryMode ?? "N/A"} (${transaction.schemeName ?? "N/A"})"),
-              pw.SizedBox(height: screenHeight * .025),
 
-              if (transaction.nameOnCard != null)
-                pw.Column(
-                  children: [
-                    pdfCustomText(transaction.nameOnCard!,
-                        fontweight: pw.FontWeight.bold, fontData: fontDataBold),
-                    pw.SizedBox(height: screenHeight * .025),
-                  ],
-                ),
-
-              pw.Row(
-                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                children: [
-                  pw.Text("Amount",
-                      style: pw.TextStyle(
-                          fontSize: 26,
-                          fontWeight: pw.FontWeight.bold,
-                          font: pw.Font.ttf(fontDataBold.buffer.asByteData()))),
-                  pw.Text(" INR ${transaction.amount ?? "N/A"}",
-                      style: pw.TextStyle(
-                          fontSize: 26,
-                          fontWeight: pw.FontWeight.bold,
-                          font: pw.Font.ttf(fontDataBold.buffer.asByteData()))),
-                ],
-              ),
-              pw.SizedBox(height: screenHeight * .025),
-              pw.Divider(thickness: .2),
-              centerText("PLEASE DEBIT MY ACCOUNT",
-                  size: 20, fontData: fontDataRegular),
-              centerText("PIN VERIFIED OK SIGNATURE NOT REQUIRED",
-                  size: 20, fontData: fontDataRegular),
-              pw.Divider(thickness: .2),
-              pw.SizedBox(height: screenHeight * .03),
-              pw.Row(
-                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                children: [
-                  pdfCustomText(
-                      "LABEL: ${transaction.processCode ?? ""} ${transaction.schemeName ?? "N/A"}",
-                      fontData: fontDataRegular),
-                  pdfCustomText("AID: ${transaction.terminalId ?? "N/A"}",
-                      fontData: fontDataRegular),
-                ],
-              ),
-              // rowText("LABEL",
-              //     "${transaction.processCode ?? ""} ${transaction.schemeName ?? "N/A"}"),
-              // rowText("AID", transaction.terminalId ?? "N/A"),
+              /// AID
+              pdfCustomText("AID: ${transaction.acquirerId ?? "N/A"}",
+                  fontData: fontDataRegular),
               pw.SizedBox(height: screenHeight * .02),
+
+              /// LABEL
+              pdfCustomText("LABEL: ${transaction.schemeName ?? "N/A"}",
+                  fontData: fontDataRegular),
+              pw.SizedBox(height: screenHeight * .02),
+
+              /// TVR & TSI
               pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
@@ -574,19 +580,58 @@ class ShowTransactionInvoice extends StatelessWidget {
                 ],
               ),
               pw.SizedBox(height: screenHeight * .02),
-              // rowText("TVR", transaction.batchNo ?? "N/A"),
-              // rowText("TSI", transaction.terminalId ?? "N/A"),
+
+              /// TC
+              pdfCustomText("TC: ${transaction.batchNo ?? "N/A"}",
+                  fontData: fontDataRegular),
+              pw.Divider(),
+
+              /// Amount
               pw.Row(
-                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: pw.MainAxisAlignment.spaceEvenly,
                 children: [
-                  pdfCustomText("CID: ${transaction.terminalId ?? "N/A"}",
-                      fontData: fontDataRegular),
-                  pdfCustomText("AC: ${transaction.terminalId ?? "N/A"}",
-                      fontData: fontDataRegular),
+                  pw.Text("AMOUNT",
+                      style: pw.TextStyle(
+                          fontSize: 18,
+                          fontWeight: pw.FontWeight.bold,
+                          font: pw.Font.ttf(fontDataBold.buffer.asByteData()))),
+                  pw.Text(getCurrencySymbol(transaction.currency),
+                      style: pw.TextStyle(
+                          fontSize: 20,
+                          fontWeight: pw.FontWeight.bold,
+                          font: pw.Font.ttf(fontDataBold.buffer.asByteData()))),
+                  pw.Text(transaction.amount ?? "N/A",
+                      style: pw.TextStyle(
+                          fontSize: 18,
+                          fontWeight: pw.FontWeight.bold,
+                          font: pw.Font.ttf(fontDataBold.buffer.asByteData()))),
                 ],
               ),
-              // rowText("CID", transaction.terminalId ?? "N/A"),
-              // rowText("AC", transaction.terminalId ?? "N/A"),
+              pw.Divider(),
+
+              /// PIN Message
+              centerText(getPinVerifyMessage(type: transaction.posEntryMode),
+                  size: 14, fontData: fontDataRegular),
+              pw.SizedBox(height: screenHeight * .02),
+
+              /// Cardholder Name
+              if (transaction.nameOnCard != null)
+                pw.Column(children: [
+                  pdfCustomText(transaction.nameOnCard!,
+                      fontData: fontDataBold, fontweight: pw.FontWeight.bold),
+                  pw.SizedBox(height: screenHeight * .02),
+                ]),
+
+              /// Satisfaction & Footer
+              centerText(
+                  "* I am Satisfied with the goods/Services received and agree to pay as per issuer terms.",
+                  size: 14,
+                  fontData: fontDataRegular),
+              pw.SizedBox(height: screenHeight * .01),
+              centerText("THANK YOU MERCHANT\nPLEASE KEEP THIS COPY",
+                  size: 14, fontData: fontDataRegular),
+              pw.SizedBox(height: screenHeight * .01),
+              centerText("<<MERCHANT COPY>>", size: 18, fontData: fontDataBold),
             ],
           );
         },
@@ -613,12 +658,18 @@ class ShowTransactionInvoice extends StatelessWidget {
     );
   }
 
-  pw.Widget centerText(String value, {double size = 12, Uint8List? fontData}) {
+  pw.Widget centerText(String value,
+      {double size = 12,
+      Uint8List? fontData,
+      pw.FontStyle? fontStyle,
+      pw.FontWeight? fontWeight}) {
     final customFont = pw.Font.ttf(fontData!.buffer.asByteData());
     return pw.Center(
       child: pw.Text(value,
           style: pw.TextStyle(
             fontSize: size,
+            fontStyle: fontStyle,
+            fontWeight: fontWeight,
             font: customFont,
           )),
     );

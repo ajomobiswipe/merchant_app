@@ -14,6 +14,7 @@ import 'package:anet_merchant_app/core/constants/constants.dart';
 import 'package:anet_merchant_app/core/endpoints.dart';
 import 'package:anet_merchant_app/core/routes.dart';
 import 'package:anet_merchant_app/core/state_key.dart';
+import 'package:anet_merchant_app/data/services/connectivity_service.dart';
 import 'package:anet_merchant_app/data/services/merchant_service.dart';
 import 'package:anet_merchant_app/presentation/providers/authProvider.dart';
 import 'package:anet_merchant_app/presentation/providers/connectivity_provider.dart';
@@ -54,11 +55,12 @@ void main() {
 
     // --- Root
     WidgetsFlutterBinding.ensureInitialized();
+    ConnectivityService().initialize();
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     runApp(MultiProvider(providers: [
       ChangeNotifierProvider(create: (_) => AuthProvider()),
-      ChangeNotifierProvider(create: (context) => ConnectivityProvider()),
+      // ChangeNotifierProvider(create: (context) => ConnectivityProvider()),
       ChangeNotifierProvider(create: (_) => TransactionProvider()),
       ChangeNotifierProvider(create: (_) => SettlementProvider()),
       ChangeNotifierProvider(create: (_) => SupportActionProvider()),
@@ -151,8 +153,10 @@ class TokenManager {
   MerchantServices merchantServices = MerchantServices();
 
   void start(BuildContext context) {
-    _timer ??= Timer.periodic(Duration(seconds: 90), (_) {
+    print("token manager started at ${DateTime.now()}");
+    _timer ??= Timer.periodic(Duration(seconds: 100), (_) {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
       if (authProvider.isLoggedIn) {
         try {
           _refreshToken();
@@ -165,6 +169,10 @@ class TokenManager {
   }
 
   void stop() {
+    Provider.of<AuthProvider>(
+            NavigationService.navigatorKey.currentState!.context,
+            listen: false)
+        .isLoggedIn = false;
     _timer?.cancel();
     _timer = null;
   }

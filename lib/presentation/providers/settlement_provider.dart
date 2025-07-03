@@ -1,5 +1,4 @@
 import 'package:anet_merchant_app/data/models/get_settlement_dashboard_data.dart';
-import 'package:anet_merchant_app/data/models/get_settlement_history_model.dart';
 import 'package:anet_merchant_app/data/services/merchant_service.dart';
 import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
 import 'package:flutter/material.dart';
@@ -90,8 +89,8 @@ class SettlementProvider extends ChangeNotifier {
   int _transactionsInSettlementCount = 0; // Simulate total from API
   int _utrWiseSettlementCount = 0; // Simulate total from API
   int get transactionsInSettlementCount => _transactionsInSettlementCount;
-  List<SettledTransaction> _allTransactions = [];
-  List<SettledTransaction> get allTransactions => _allTransactions;
+  List<SettledSummaryPageContent> _allTransactions = [];
+  List<SettledSummaryPageContent> get allTransactions => _allTransactions;
   // Getters
 
   bool get hasMoreTransactions =>
@@ -153,7 +152,7 @@ class SettlementProvider extends ChangeNotifier {
       );
 
       if (response.statusCode == 200) {
-        final decodedData = getSettlementHistoryDataFromJson(response.body);
+        final decodedData = GetSettlementDashboardData.fromJson(response.data);
         final newItems = decodedData.settledSummaryPage?.content ?? [];
         _transactionsInSettlementCount =
             decodedData.settledSummaryPage?.totalElements ?? 0;
@@ -237,7 +236,7 @@ class SettlementProvider extends ChangeNotifier {
       );
 
       if (response.statusCode == 200) {
-        final decodedData = getSettlementDashboardDataFromJson(response.body);
+        final decodedData = GetSettlementDashboardData.fromJson(response.data);
         _totalSettlementAmount =
             decodedData.settlementTotal?.totalAmount ?? 0.00;
         _totalSettlement = decodedData.settlementTotal?.settlementCount ?? 0;
@@ -291,7 +290,8 @@ class SettlementProvider extends ChangeNotifier {
       );
 
       if (response.statusCode == 200) {
-        final decodedData = getSettlementDashboardDataFromJson(response.body);
+        final decodedData = GetSettlementDashboardData.fromJson(response.data);
+
         AlertService().success(
             " Settlement report has been sent to your registered email.");
       } else {

@@ -1,5 +1,6 @@
 import 'package:anet_merchant_app/core/utils/helpers/default_height.dart';
-import 'package:anet_merchant_app/data/models/get_settlement_history_model.dart';
+import 'package:anet_merchant_app/data/models/get_settlement_dashboard_data.dart';
+
 import 'package:anet_merchant_app/presentation/widgets/custom_container.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
 import 'package:anet_merchant_app/presentation/widgets/show_settled_transaction_invoice.dart';
@@ -7,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class SettledTransactionTile extends StatelessWidget {
-  final SettledTransaction transaction;
+  final SettledSummaryPageContent transaction;
   final double width;
 
   const SettledTransactionTile({
