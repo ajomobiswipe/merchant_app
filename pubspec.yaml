@@ -60,6 +60,7 @@ dependencies:
   open_file: ^3.5.10
   url_launcher: ^6.3.1
   dio: ^5.8.0+1
+  dropdown_search:
 
 dev_dependencies:
   flutter_test:

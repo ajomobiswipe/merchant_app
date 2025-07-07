@@ -57,6 +57,15 @@ class MerchantServices {
     return await DioClient().post(url, requestModel);
   }
 
+  Future<dynamic> getTidByMerchantId(Map<String, dynamic> requestModel,
+      {required int pageNumber,
+      required int pageSize,
+      required String merchantId}) async {
+    final url =
+        "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/getPosTerminalsByMerchantId?page=$pageNumber&size=$pageSize&sort=insertDateTime%2Cdesc&merchantId=$merchantId";
+    return await DioClient().post(url, requestModel);
+  }
+
   Future<dynamic> getSupportActionData() async {
     final url =
         "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/getSupportActionData";

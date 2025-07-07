@@ -1,8 +1,8 @@
 import 'package:anet_merchant_app/core/app_color.dart';
-import 'package:anet_merchant_app/core/constants/constants.dart';
 import 'package:anet_merchant_app/core/utils/helpers/default_height.dart';
 import 'package:anet_merchant_app/presentation/pages/users/merchant/merchant_scaffold.dart';
 import 'package:anet_merchant_app/presentation/providers/merchant_filtered_transaction_provider.dart';
+import 'package:anet_merchant_app/presentation/providers/tidprovider.dart';
 import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_container.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
@@ -22,6 +22,7 @@ class MerchantTransactionFilterScreen extends StatefulWidget {
 class _MerchantTransactionFilterScreenState
     extends State<MerchantTransactionFilterScreen> {
   late MerchantFilteredTransactionProvider transactionProvider;
+  late TidProvider midProvider;
 
   @override
   void initState() {
@@ -30,8 +31,18 @@ class _MerchantTransactionFilterScreenState
       transactionProvider = Provider.of<MerchantFilteredTransactionProvider>(
           context,
           listen: false);
-      transactionProvider.resetFilters();
+      midProvider = Provider.of<TidProvider>(context, listen: false);
+      midProvider.refreshAllTid();
+      midProvider.allTidScrollCtrl.addListener(_onScroll);
     });
+  }
+
+  void _onScroll() {
+    if (midProvider.allTidScrollCtrl.position.pixels >=
+            midProvider.allTidScrollCtrl.position.maxScrollExtent - 200 &&
+        !midProvider.isAllTidLoading) {
+      midProvider.getTidByMerchantId();
+    }
   }
 
   @override
@@ -49,7 +60,7 @@ class _MerchantTransactionFilterScreenState
             ),
             child: ListView(
               children: [
-                CustomTextWidget(text: "Payment transactions", size: 12),
+                CustomTextWidget(text: "Payment Tid", size: 12),
                 defaultHeight(screenHeight * .01),
                 _buildFilterSelection(
                   provider,
@@ -60,7 +71,7 @@ class _MerchantTransactionFilterScreenState
                 provider.selectedSearchFilterType == FilterType.DATERANGE
                     ? Column(
                         children: [
-                          _buildTidTextFelid(provider, screenWidth),
+                          _buildTidTextFelid(screenWidth),
                           defaultHeight(screenHeight * .02),
                           _buildDateRangeSelector(provider),
                           if (provider.selectedDateRange == 'Custom Date Range')
@@ -188,23 +199,142 @@ class _MerchantTransactionFilterScreenState
     );
   }
 
-  Widget _buildTidTextFelid(
-      MerchantFilteredTransactionProvider provider, double screenWidth) {
-    return Row(
+  Widget _buildTidTextFelid(double screenWidth) {
+    return Column(
       children: [
-        CustomTextWidget(text: "Tid", size: 12),
-        SizedBox(width: screenWidth * 0.2),
-        Expanded(
-          child: TextField(
-            controller: provider.tidSearchController,
-            decoration: commonInputDecoration(
-              hintText: "Enter TID",
-              Icons.point_of_sale_outlined,
-            ),
-            // onChanged: provider.setSelectedTid,
-          ),
+        Consumer<TidProvider>(
+          builder: (context, midProvider, child) {
+            return Row(
+              children: [
+                CustomTextWidget(text: "Tid", size: 12),
+                SizedBox(width: screenWidth * 0.2),
+                Expanded(
+                  child: TextField(
+                    enabled: true,
+                    readOnly: true,
+                    onTap: () {
+                      showBottomSheet(screenWidth);
+                    },
+                    //  controller: provider.tidSearchController,
+                    decoration: commonInputDecoration(
+                      hintText: "Select",
+                      Icons.point_of_sale_outlined,
+                    ),
+                    onChanged: (value) => print("Entered: $value"),
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ],
+    );
+  }
+
+  void showBottomSheet(double screenWidth) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        return Container(
+          padding: EdgeInsets.all(16.0),
+          height: MediaQuery.of(context).size.height * 0.8,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CustomTextWidget(
+                text: "Select Terminal ID",
+                color: AppColors.kPrimaryColor,
+                size: 16,
+                fontWeight: FontWeight.bold,
+              ),
+              SizedBox(height: 16),
+              Expanded(
+                child: Consumer<TidProvider>(
+                  builder: (context, tidProvider, child) {
+                    if (tidProvider.isAllTidLoading &&
+                        tidProvider.allTid.isEmpty) {
+                      return Center(child: CircularProgressIndicator());
+                    }
+
+                    if (tidProvider.allTid.isEmpty) {
+                      return Center(
+                        child: Text(
+                          "No Tid available",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      );
+                    }
+
+                    return ListView.separated(
+                      controller: tidProvider.allTidScrollCtrl,
+                      itemCount: tidProvider.allTid.length + 1,
+                      itemBuilder: (context, index) {
+                        if (index < tidProvider.allTid.length) {
+                          return TextField(
+                            enabled: true,
+                            readOnly: true,
+                            onTap: () {
+                              tidProvider.tidSearchController.text =
+                                  tidProvider.allTid[index] ?? '';
+                              Navigator.pop(context);
+                            },
+                            decoration: commonInputDecoration(
+                              hintText: tidProvider.allTid[index] ?? '',
+                              Icons.point_of_sale_outlined,
+                            ),
+                            onChanged: (value) => print("Entered: $value"),
+                          );
+                        } else if (tidProvider.hasMoreTid) {
+                          return Center(child: CircularProgressIndicator());
+                        } else {
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Center(
+                              child: Text(
+                                "No more Tid",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey,
+                                  fontStyle: FontStyle.italic,
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                      separatorBuilder: (context, index) => Divider(
+                        color: Colors.grey,
+                        height: 1,
+                      ),
+                    );
+                  },
+                ),
+              ),
+              SizedBox(height: 16),
+              Center(
+                child: CustomContainer(
+                  width: screenWidth * 0.85,
+                  height: 40,
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Center(
+                    child: CustomTextWidget(
+                      text: "Close",
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
