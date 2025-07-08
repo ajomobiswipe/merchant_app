@@ -123,9 +123,12 @@ class _MerchantStatementFilterScreenState
   Widget _buildDatePicker(String label, DateTime? selectedDate,
       Function(DateTime) onPicked, BuildContext context) {
     return ListTile(
-      title: Text(selectedDate == null
-          ? 'Select $label'
-          : DateFormat.yMMMd().format(selectedDate)),
+      title: CustomTextWidget(
+          size: 12,
+          isBold: false,
+          text: selectedDate == null
+              ? 'Select $label'
+              : DateFormat.yMMMd().format(selectedDate)),
       trailing: Icon(Icons.calendar_today),
       onTap: () async {
         DateTime? picked = await showDatePicker(

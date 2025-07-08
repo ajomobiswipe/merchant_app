@@ -63,7 +63,7 @@ void main() {
       ChangeNotifierProvider(create: (_) => AuthProvider()),
       // ChangeNotifierProvider(create: (context) => ConnectivityProvider()),
       ChangeNotifierProvider(create: (_) => TransactionProvider()),
-      ChangeNotifierProvider(create: (_) => TidProvider()),
+      // ChangeNotifierProvider(create: (_) => TidProvider()),
       ChangeNotifierProvider(create: (_) => SettlementProvider()),
       ChangeNotifierProvider(create: (_) => SupportActionProvider()),
       ChangeNotifierProvider(

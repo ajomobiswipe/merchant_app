@@ -5,6 +5,7 @@ class TransactionHistoryRequestModel {
   String? acquirerId;
   String? rrn;
   String? authCode;
+  String? sourceOftxn;
   dynamic terminalId;
   bool sendTxnReportToMail;
 
@@ -15,6 +16,7 @@ class TransactionHistoryRequestModel {
     this.acquirerId,
     this.rrn,
     this.authCode,
+    this.sourceOftxn,
     this.terminalId,
     this.sendTxnReportToMail = false,
   });
@@ -26,6 +28,7 @@ class TransactionHistoryRequestModel {
         "acquirerId": acquirerId,
         "rrn": rrn,
         "authCode": authCode,
+        "sourceOftxn": sourceOftxn,
         "terminalId": terminalId,
         "sendTxnReportToMail": sendTxnReportToMail,
       };

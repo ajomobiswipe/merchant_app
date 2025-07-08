@@ -2,7 +2,6 @@ import 'package:anet_merchant_app/core/app_color.dart';
 import 'package:anet_merchant_app/core/utils/helpers/default_height.dart';
 import 'package:anet_merchant_app/presentation/pages/users/merchant/merchant_scaffold.dart';
 import 'package:anet_merchant_app/presentation/providers/merchant_filtered_transaction_provider.dart';
-import 'package:anet_merchant_app/presentation/providers/tidprovider.dart';
 import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_container.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
@@ -22,7 +21,6 @@ class MerchantTransactionFilterScreen extends StatefulWidget {
 class _MerchantTransactionFilterScreenState
     extends State<MerchantTransactionFilterScreen> {
   late MerchantFilteredTransactionProvider transactionProvider;
-  late TidProvider midProvider;
 
   @override
   void initState() {
@@ -31,17 +29,18 @@ class _MerchantTransactionFilterScreenState
       transactionProvider = Provider.of<MerchantFilteredTransactionProvider>(
           context,
           listen: false);
-      midProvider = Provider.of<TidProvider>(context, listen: false);
-      midProvider.refreshAllTid();
-      midProvider.allTidScrollCtrl.addListener(_onScroll);
+
+      transactionProvider.resetFilters();
+      transactionProvider.allTidScrollCtrl.addListener(_onScroll);
     });
   }
 
   void _onScroll() {
-    if (midProvider.allTidScrollCtrl.position.pixels >=
-            midProvider.allTidScrollCtrl.position.maxScrollExtent - 200 &&
-        !midProvider.isAllTidLoading) {
-      midProvider.getTidByMerchantId();
+    if (transactionProvider.allTidScrollCtrl.position.pixels >=
+            transactionProvider.allTidScrollCtrl.position.maxScrollExtent -
+                200 &&
+        !transactionProvider.isAllTidLoading) {
+      transactionProvider.getTidByMerchantId();
     }
   }
 
@@ -202,7 +201,7 @@ class _MerchantTransactionFilterScreenState
   Widget _buildTidTextFelid(double screenWidth) {
     return Column(
       children: [
-        Consumer<TidProvider>(
+        Consumer<MerchantFilteredTransactionProvider>(
           builder: (context, midProvider, child) {
             return Row(
               children: [
@@ -210,6 +209,7 @@ class _MerchantTransactionFilterScreenState
                 SizedBox(width: screenWidth * 0.2),
                 Expanded(
                   child: TextField(
+                    controller: midProvider.tidSearchController,
                     enabled: true,
                     readOnly: true,
                     onTap: () {
@@ -250,7 +250,7 @@ class _MerchantTransactionFilterScreenState
               ),
               SizedBox(height: 16),
               Expanded(
-                child: Consumer<TidProvider>(
+                child: Consumer<MerchantFilteredTransactionProvider>(
                   builder: (context, tidProvider, child) {
                     if (tidProvider.isAllTidLoading &&
                         tidProvider.allTid.isEmpty) {
@@ -279,8 +279,10 @@ class _MerchantTransactionFilterScreenState
                             enabled: true,
                             readOnly: true,
                             onTap: () {
-                              tidProvider.tidSearchController.text =
-                                  tidProvider.allTid[index] ?? '';
+                              tidProvider
+                                  .setTid(tidProvider.allTid[index] ?? '');
+                              // tidProvider.tidSearchController.text =
+                              //     tidProvider.allTid[index] ?? '';
                               Navigator.pop(context);
                             },
                             decoration: commonInputDecoration(
@@ -296,7 +298,9 @@ class _MerchantTransactionFilterScreenState
                             padding: const EdgeInsets.all(8.0),
                             child: Center(
                               child: Text(
-                                "No more Tid",
+                                tidProvider.allTid.length > 15
+                                    ? "No more Tid"
+                                    : '',
                                 style: TextStyle(
                                   fontSize: 14,
                                   color: Colors.grey,
@@ -385,9 +389,12 @@ class _MerchantTransactionFilterScreenState
   Widget _buildDatePicker(String label, DateTime? selectedDate,
       Function(DateTime) onPicked, BuildContext context) {
     return ListTile(
-      title: Text(selectedDate == null
-          ? 'Select $label'
-          : DateFormat.yMMMd().format(selectedDate)),
+      title: CustomTextWidget(
+          size: 12,
+          isBold: false,
+          text: selectedDate == null
+              ? 'Select $label'
+              : DateFormat.yMMMd().format(selectedDate)),
       trailing: Icon(Icons.calendar_today),
       onTap: () async {
         DateTime? picked = await showDatePicker(
@@ -433,39 +440,60 @@ class _MerchantTransactionFilterScreenState
 
   Widget _buildApplyButton(MerchantFilteredTransactionProvider provider,
       {required BuildContext context, required double screenHeight}) {
-    return CustomContainer(
-      height: screenHeight * 0.06,
-      onTap: () {
-        if (provider.selectedSearchFilterType == FilterType.DATERANGE) {
-          // provider.selectedDateRange == 'Custom Date Range' &&
-          if (provider.isDateNotSelected() &&
-              provider.tidSearchController.text.isEmpty) {
-            AlertService().error("Please select a date range or enter TID.");
-            return;
-          }
-          //  else if (provider.selectedTid == null ||
-          //     provider.selectedTid!.isEmpty) {
-          // }
+    return Row(
+      children: [
+        Expanded(
+          flex: 1,
+          child: CustomContainer(
+            color: Colors.red.shade400,
+            height: screenHeight * 0.06,
+            onTap: () {
+              provider.resetFilters();
+            },
+            child: CustomTextWidget(text: 'Reset', color: Colors.white),
+          ),
+        ),
+        SizedBox(width: 10),
+        Expanded(
+          flex: 3,
+          child: CustomContainer(
+            height: screenHeight * 0.06,
+            onTap: () {
+              if (provider.selectedSearchFilterType == FilterType.DATERANGE) {
+                // provider.selectedDateRange == 'Custom Date Range' &&
+                if (provider.isDateNotSelected() &&
+                    provider.tidSearchController.text.isEmpty) {
+                  AlertService()
+                      .error("Please select a date range or enter TID.");
+                  return;
+                }
+                //  else if (provider.selectedTid == null ||
+                //     provider.selectedTid!.isEmpty) {
+                // }
 
-          Navigator.pushNamed(context, "viewAllTransaction");
-        } else if (provider.selectedSearchFilterType == FilterType.RRNAPPCODE) {
-          if (provider.selectedSearchType == SearchType.RRN &&
-              provider.searchController.text.isEmpty) {
-            AlertService().error("Please enter RRN.");
-            return;
-          } else if (provider.selectedSearchType == SearchType.APP_CODE &&
-              provider.searchController.text.isEmpty) {
-            AlertService().error("Please enter App Code.");
+                Navigator.pushNamed(context, "viewAllTransaction");
+              } else if (provider.selectedSearchFilterType ==
+                  FilterType.RRNAPPCODE) {
+                if (provider.selectedSearchType == SearchType.RRN &&
+                    provider.searchController.text.isEmpty) {
+                  AlertService().error("Please enter RRN.");
+                  return;
+                } else if (provider.selectedSearchType == SearchType.APP_CODE &&
+                    provider.searchController.text.isEmpty) {
+                  AlertService().error("Please enter App Code.");
 
-            return;
-          }
+                  return;
+                }
 
-          Navigator.pushNamed(context, "viewAllTransaction");
-        }
+                Navigator.pushNamed(context, "viewAllTransaction");
+              }
 
-        //Navigator.pushNamed(context, "viewAllTransaction");
-      },
-      child: CustomTextWidget(text: 'Apply', color: Colors.white),
+              //Navigator.pushNamed(context, "viewAllTransaction");
+            },
+            child: CustomTextWidget(text: 'Apply', color: Colors.white),
+          ),
+        ),
+      ],
     );
   }
 }

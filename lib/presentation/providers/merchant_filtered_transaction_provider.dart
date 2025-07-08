@@ -2,6 +2,7 @@ import 'package:anet_merchant_app/data/models/transaction_history_request_model.
 import 'package:anet_merchant_app/data/models/transaction_model.dart';
 import 'package:anet_merchant_app/data/services/merchant_service.dart';
 import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -25,8 +26,22 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
   FilterType _searchFilterType = FilterType.DATERANGE;
 
   FilterType get selectedSearchFilterType => _searchFilterType;
+  // TextEditingController _tidSearchController = TextEditingController();
+  // TextEditingController get tidSearchController => _tidSearchController;
+
+  final ScrollController _allTidScrollCtrl = ScrollController();
   TextEditingController _tidSearchController = TextEditingController();
+
+  ScrollController get allTidScrollCtrl => _allTidScrollCtrl;
   TextEditingController get tidSearchController => _tidSearchController;
+  //  void setTid(param0) {
+
+  //  }
+  setTid(tid) {
+    _tidSearchController.text = tid;
+    notifyListeners();
+  }
+
   String? _selectedDateRange;
   DateTime? _customStartDate;
   DateTime? _customEndDate;
@@ -37,7 +52,7 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
     return (_customStartDate == null || _customEndDate == null);
   }
 
-  String _selectedPaymentMode = 'Card';
+  String _selectedPaymentMode = "ALL";
 
   List<String> dateRanges = [
     "Today - ${DateFormat('d MMM yyyy').format(DateTime.now())}",
@@ -46,7 +61,7 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
     'Last 1 Month',
     'Custom Date Range'
   ];
-  List<String> paymentModes = ['Card', 'UPI'];
+  List<String> paymentModes = ["ALL", 'CARD', 'UPI'];
 
   // Getters
   SearchType get selectedSearchType => _selectedSearchType;
@@ -97,6 +112,114 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
 
   // Methods
 
+  // Flags
+  bool _isAllTidLoading = false;
+  bool isAllTidApiLoadingFistTime = true;
+
+  bool get isAllTidLoading => _isAllTidLoading;
+
+  // Pagination
+  int currentTidListPageNo = 0;
+  int tidPageSize = 40;
+
+  int _allTidCount = 0; // Simulate total from API
+  List<dynamic> _allTerminalId = [];
+
+  List<dynamic> get allTid => _allTerminalId;
+  bool get hasMoreTid => _allTerminalId.length < _allTidCount;
+
+  /// Fetch recent TIDs by Merchant ID
+  Future<void> getTidByMerchantId() async {
+    print("Current Page: $currentTidListPageNo");
+    print("Page Size: $tidPageSize");
+    print("Total tid: $_allTidCount");
+    print("Tid list Length: ${_allTerminalId.length}");
+
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    if (_allTerminalId.length >= _allTidCount && !isAllTidApiLoadingFistTime) {
+      return;
+    }
+
+    String? merchantId = prefs.getString('acqMerchantId') ?? '65OMA0000000002';
+    print(merchantId);
+
+    if (_isAllTidLoading) return;
+
+    _isAllTidLoading = true;
+    notifyListeners();
+
+    try {
+      final response = await _merchantServices.getTidByMerchantId(
+        {},
+        pageNumber: tidPageSize,
+        pageSize: 40,
+        merchantId: merchantId,
+      );
+
+      if (response.statusCode == 200) {
+        var decodedData = response.data;
+        var newItems = response.data["content"] ?? [];
+        _allTidCount = decodedData["totalElements"] ?? 0;
+        print('_allTidCount is $_allTidCount');
+
+        if (newItems.isNotEmpty) {
+          tidPageSize++;
+          isAllTidApiLoadingFistTime = false;
+          _allTerminalId.addAll(newItems);
+        }
+      }
+    } on DioException catch (dioError) {
+      _handleDioError(dioError);
+    } catch (e) {
+      print("Error fetching Tid: $e");
+    } finally {
+      _isAllTidLoading = false;
+      notifyListeners();
+    }
+  }
+
+  /// Refresh all TIDs
+  void refreshAllTid() {
+    _allTerminalId = [];
+    tidPageSize = 0;
+    isAllTidApiLoadingFistTime = true;
+    _tidSearchController.clear();
+    _allTidCount = 0;
+    notifyListeners();
+    getTidByMerchantId();
+  }
+
+  /// Handle Dio errors
+  void _handleDioError(DioException dioError) {
+    if (dioError.type == DioExceptionType.connectionTimeout) {
+      AlertService().error(
+          "Connection timeout while fetching Tid. Please try again later.");
+      print("Connection timeout while fetching Tid.");
+    } else if (dioError.type == DioExceptionType.receiveTimeout) {
+      AlertService()
+          .error("Receive timeout while fetching Tid. Please try again later.");
+      print("Receive timeout while fetching Tid.");
+    } else if (dioError.type == DioExceptionType.sendTimeout) {
+      AlertService()
+          .error("Send timeout while fetching Tid. Please try again later.");
+      print("Send timeout while fetching Tid.");
+    } else if (dioError.type == DioExceptionType.badResponse) {
+      AlertService().error(
+          "Bad response while fetching Tid: ${dioError.response?.statusCode}");
+      print(
+          "Bad response while fetching Tid: ${dioError.response?.statusCode}");
+    } else {
+      AlertService().error(
+          "An error occurred while fetching Tid. Please try again later.");
+      print("DioError fetching Tid: ${dioError.message}");
+      if (dioError.response != null) {
+        print("DioError response data: ${dioError.response?.data}");
+        print("DioError response status: ${dioError.response?.statusCode}");
+      }
+    }
+  }
+
   // Fetch recent transactions
   Future<void> getAllTransactions() async {
     print(_selectedDateRange);
@@ -122,6 +245,7 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
     _allTranReqModel.recordTo = getRecordTo();
     _allTranReqModel.terminalId = getTid();
     _allTranReqModel.sendTxnReportToMail = false;
+    _allTranReqModel.sourceOftxn = getPaymentMode();
 
     if (_isAllTransactionsLoading) return;
 
@@ -183,7 +307,8 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
       ..authCode = getAuthCode()
       ..recordFrom = getRecordFrom()
       ..recordTo = getRecordTo()
-      ..terminalId = null
+      ..terminalId = getTid()
+      ..sourceOftxn = getPaymentMode()
       ..sendTxnReportToMail = true;
 
     _isEmailSending = true;
@@ -247,6 +372,14 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
     }
   }
 
+  getPaymentMode() {
+    if (_searchFilterType == FilterType.DATERANGE) {
+      return _selectedPaymentMode;
+    } else {
+      return null;
+    }
+  }
+
   // Refresh recent transactions
   void refreshAllTransactions() {
     _allTransactions = [];
@@ -266,8 +399,10 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
     _selectedDateRange = null;
     _customStartDate = null;
     _customEndDate = null;
-    _selectedPaymentMode = 'Card';
+    _selectedPaymentMode = 'ALL';
+    refreshAllTid();
     searchController.clear();
+
     notifyListeners();
   }
 
