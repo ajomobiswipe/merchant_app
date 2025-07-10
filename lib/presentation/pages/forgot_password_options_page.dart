@@ -10,7 +10,7 @@ import 'package:anet_merchant_app/core/constants/constants.dart';
 import 'package:anet_merchant_app/presentation/widgets/app_widget/app_button.dart';
 import 'package:flutter/material.dart';
 
-import '../../widgets/loading.dart';
+import '../widgets/loading.dart';
 
 // STATEFUL WIDGET
 class Forgot extends StatefulWidget {

@@ -17,8 +17,6 @@ class Constants {
 
   static const forgotPasswordImage = 'assets/screen/forgot-password.png';
 
-  static const noInternetImage = 'assets/screen/no-internet.jpg';
-
   static const storeName = "Toy Store";
   static const supportEmail = "customer.support@alliancenetworkglobal.com";
 }

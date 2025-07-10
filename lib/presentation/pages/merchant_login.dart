@@ -12,7 +12,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../../widgets/loading.dart';
+import '../widgets/loading.dart';
 
 class MerchantLogin extends StatefulWidget {
   const MerchantLogin({super.key});

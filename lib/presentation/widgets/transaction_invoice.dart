@@ -2,7 +2,7 @@ import 'package:anet_merchant_app/presentation/providers/authProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:anet_merchant_app/core/utils/helpers/default_height.dart';
 import 'package:anet_merchant_app/data/models/transaction_model.dart';
-import 'package:anet_merchant_app/presentation/pages/users/merchant/merchant_scaffold.dart';
+import 'package:anet_merchant_app/presentation/pages/merchant_scaffold.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_container.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
 import 'dart:io';
@@ -96,54 +96,24 @@ class ShowTransactionInvoice extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                CustomTextWidget(
-                  isBold: false,
-                  size: 12,
-                  text: "Date: ${transaction.transactionDate ?? "N/A"}",
-                  isUpperCase: true,
-                ),
-                CustomTextWidget(
-                  size: 12,
-                  isBold: false,
-                  text: "Time: ${transaction.transactionTime ?? "N/A"}",
-                  isUpperCase: true,
-                ),
+                buildKeyValueRow("Date", transaction.transactionDate ?? "N/A"),
+                buildKeyValueRow("Time", transaction.transactionTime ?? "N/A"),
               ],
             ),
             defaultHeight(basePadding),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                CustomTextWidget(
-                  isBold: false,
-                  size: 12,
-                  text: "TID: ${transaction.terminalId ?? "N/A"}",
-                  isUpperCase: true,
-                ),
-                CustomTextWidget(
-                  size: 12,
-                  isBold: false,
-                  text: "MID: ${transaction.merchantId ?? "N/A"}",
-                  isUpperCase: true,
-                ),
+                buildKeyValueRow("TID", transaction.terminalId ?? "N/A"),
+                buildKeyValueRow("MID", transaction.merchantId ?? "N/A"),
               ],
             ),
             defaultHeight(basePadding),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                CustomTextWidget(
-                  isBold: false,
-                  size: 12,
-                  text: "BATCH NO: ${transaction.batchNo ?? "N/A"}",
-                  isUpperCase: true,
-                ),
-                CustomTextWidget(
-                  size: 12,
-                  isBold: false,
-                  text: "INVOICE: ${transaction.stan ?? "N/A"}",
-                  isUpperCase: true,
-                ),
+                buildKeyValueRow("BATCH NO", transaction.batchNo ?? "N/A"),
+                buildKeyValueRow("INVOICE", transaction.stan ?? "N/A"),
               ],
             ),
             defaultHeight(basePadding),
@@ -158,112 +128,49 @@ class ShowTransactionInvoice extends StatelessWidget {
             ),
             defaultHeight(basePadding),
 
-            // MID & TID
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                CustomTextWidget(
-                  text:
-                      "CARD TYPE: ${transaction.schemeName ?? getSchemeNameFromCardNumber(transaction.cardNo)}",
-                  size: 12,
-                  isBold: false,
+                buildKeyValueRow(
+                  "CARD TYPE",
+                  transaction.schemeName ??
+                      getSchemeNameFromCardNumber(transaction.cardNo),
                 ),
-                CustomTextWidget(
-                  text: "EXP: XX/XX",
-                  size: 12,
-                  isBold: false,
-                ),
+                buildKeyValueRow("EXP", "XX/XX"),
+              ],
+            ),
+            defaultHeight(basePadding),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                buildKeyValueRow("CARD NO", transaction.cardNo ?? "N/A"),
+                buildKeyValueRow(
+                    "ENTRY MODE", getPosEntryMode(transaction.posEntryMode)),
+              ],
+            ),
+            defaultHeight(basePadding),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                buildKeyValueRow("AUTH CODE", transaction.authCode ?? "N/A"),
+                buildKeyValueRow("RRN", transaction.rrn ?? "N/A"),
               ],
             ),
             defaultHeight(basePadding),
 
-            // Batch & Invoice
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CustomTextWidget(
-                  text: "CARD NO: ${transaction.cardNo ?? "N/A"}",
-                  isUpperCase: true,
-                  size: 12,
-                  isBold: false,
-                ),
-                CustomTextWidget(
-                  text: getPosEntryMode(transaction.posEntryMode),
-                  isUpperCase: true,
-                  size: 12,
-                  isBold: false,
-                ),
-              ],
-            ),
+            buildKeyValueRow("AID", transaction.acquirerId ?? "N/A"),
             defaultHeight(basePadding),
-
-            // RRN & PAN SEQ
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CustomTextWidget(
-                  text: "AUTH CODE: ${transaction.authCode ?? "N/A"}",
-                  size: 12,
-                  isBold: false,
-                ),
-                CustomTextWidget(
-                  text: "RRN: ${transaction.rrn ?? "N/A"}",
-                  size: 12,
-                  isBold: false,
-                ),
-              ],
-            ),
-            defaultHeight(basePadding),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CustomTextWidget(
-                  text: "AID: ${transaction.acquirerId ?? "N/A"}",
-                  size: 12,
-                  isBold: false,
-                ),
-              ],
-            ),
+            buildKeyValueRow("LABEL", transaction.schemeName ?? "N/A"),
             defaultHeight(basePadding),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                CustomTextWidget(
-                  text: "LABEL: ${transaction.schemeName ?? "N/A"}",
-                  size: 12,
-                  isBold: false,
-                ),
+                buildKeyValueRow("TVR", transaction.batchNo ?? "N/A"),
+                buildKeyValueRow("TSI", transaction.terminalId ?? "N/A"),
               ],
             ),
             defaultHeight(basePadding),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CustomTextWidget(
-                  text: "TVR: ${transaction.batchNo ?? "N/A"}  ",
-                  size: 12,
-                  isBold: false,
-                ),
-                CustomTextWidget(
-                  text: "TSI: ${transaction.terminalId ?? "N/A"}  ",
-                  size: 12,
-                  isBold: false,
-                ),
-              ],
-            ),
-            defaultHeight(basePadding),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CustomTextWidget(
-                  text: "TC: ${transaction.batchNo ?? "N/A"}  ",
-                  size: 12,
-                  isBold: false,
-                ),
-              ],
-            ),
+            buildKeyValueRow("TC", transaction.batchNo ?? "N/A"),
             defaultHeight(basePadding),
 
             // Cardholder Name
@@ -301,7 +208,7 @@ class ShowTransactionInvoice extends StatelessWidget {
                       textAlign: TextAlign.center,
                       text: getPinVerifyMessage(type: transaction.posEntryMode),
                       size: 14,
-                      isBold: false,
+                      isBold: true,
                       maxLines: 3,
                     ),
                   ),
@@ -343,16 +250,16 @@ class ShowTransactionInvoice extends StatelessWidget {
                 maxLines: 3,
               ),
             ),
-            SizedBox(
-              width: screenWidth * 0.9,
-              child: CustomTextWidget(
-                textAlign: TextAlign.center,
-                text: "<<MERCHANT COPY>>",
-                size: 18,
-                isBold: true,
-                maxLines: 3,
-              ),
-            ),
+            // SizedBox(
+            //   width: screenWidth * 0.9,
+            //   child: CustomTextWidget(
+            //     textAlign: TextAlign.center,
+            //     text: "<<MERCHANT COPY>>",
+            //     size: 18,
+            //     isBold: true,
+            //     maxLines: 3,
+            //   ),
+            // ),
             defaultHeight(mediumPadding),
             // Download Button
             CustomContainer(
@@ -486,10 +393,16 @@ class ShowTransactionInvoice extends StatelessWidget {
               pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pdfCustomText("Date: ${transaction.transactionDate ?? "N/A"}",
-                      fontData: fontDataRegular),
-                  pdfCustomText("Time: ${transaction.transactionTime ?? "N/A"}",
-                      fontData: fontDataRegular),
+                  buildPdfKeyValueRow(
+                      key: "Date",
+                      value: transaction.transactionDate ?? "N/A",
+                      fontDataBold: fontDataBold,
+                      fontDataRegular: fontDataRegular),
+                  buildPdfKeyValueRow(
+                      key: "Time",
+                      value: transaction.transactionTime ?? "N/A",
+                      fontDataBold: fontDataBold,
+                      fontDataRegular: fontDataRegular),
                 ],
               ),
               pw.SizedBox(height: screenHeight * .02),
@@ -498,10 +411,16 @@ class ShowTransactionInvoice extends StatelessWidget {
               pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pdfCustomText("TID: ${transaction.terminalId ?? "N/A"}",
-                      fontData: fontDataRegular),
-                  pdfCustomText("MID: ${transaction.merchantId ?? "N/A"}",
-                      fontData: fontDataRegular),
+                  buildPdfKeyValueRow(
+                      key: "TID",
+                      value: transaction.terminalId ?? "N/A",
+                      fontDataBold: fontDataBold,
+                      fontDataRegular: fontDataRegular),
+                  buildPdfKeyValueRow(
+                      key: "MID",
+                      value: transaction.merchantId ?? "N/A",
+                      fontDataBold: fontDataBold,
+                      fontDataRegular: fontDataRegular),
                 ],
               ),
               pw.SizedBox(height: screenHeight * .02),
@@ -510,10 +429,16 @@ class ShowTransactionInvoice extends StatelessWidget {
               pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pdfCustomText("BATCH NO: ${transaction.batchNo ?? "N/A"}",
-                      fontData: fontDataRegular),
-                  pdfCustomText("INVOICE: ${transaction.stan ?? "N/A"}",
-                      fontData: fontDataRegular),
+                  buildPdfKeyValueRow(
+                      key: "BATCH NO",
+                      value: transaction.batchNo ?? "N/A",
+                      fontDataBold: fontDataBold,
+                      fontDataRegular: fontDataRegular),
+                  buildPdfKeyValueRow(
+                      key: "INVOICE",
+                      value: transaction.stan ?? "N/A",
+                      fontDataBold: fontDataBold,
+                      fontDataRegular: fontDataRegular),
                 ],
               ),
               pw.SizedBox(height: screenHeight * .02),
@@ -527,10 +452,17 @@ class ShowTransactionInvoice extends StatelessWidget {
               pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pdfCustomText(
-                      "CARD TYPE: ${transaction.schemeName ?? getSchemeNameFromCardNumber(transaction.cardNo)}",
-                      fontData: fontDataRegular),
-                  pdfCustomText("EXP: XX/XX", fontData: fontDataRegular),
+                  buildPdfKeyValueRow(
+                      key: "CARD TYPE",
+                      value: transaction.schemeName ??
+                          getSchemeNameFromCardNumber(transaction.cardNo),
+                      fontDataBold: fontDataBold,
+                      fontDataRegular: fontDataRegular),
+                  buildPdfKeyValueRow(
+                      key: "EXP",
+                      value: "XX/XX",
+                      fontDataBold: fontDataBold,
+                      fontDataRegular: fontDataRegular),
                 ],
               ),
               pw.SizedBox(height: screenHeight * .02),
@@ -539,10 +471,16 @@ class ShowTransactionInvoice extends StatelessWidget {
               pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pdfCustomText("CARD NO: ${transaction.cardNo ?? "N/A"}",
-                      fontData: fontDataRegular),
-                  pdfCustomText(getPosEntryMode(transaction.posEntryMode),
-                      fontData: fontDataRegular),
+                  buildPdfKeyValueRow(
+                      key: "CARD NO",
+                      value: transaction.cardNo ?? "N/A",
+                      fontDataBold: fontDataBold,
+                      fontDataRegular: fontDataRegular),
+                  buildPdfKeyValueRow(
+                      key: "ENTRY MODE",
+                      value: getPosEntryMode(transaction.posEntryMode),
+                      fontDataBold: fontDataBold,
+                      fontDataRegular: fontDataRegular),
                 ],
               ),
               pw.SizedBox(height: screenHeight * .02),
@@ -551,39 +489,60 @@ class ShowTransactionInvoice extends StatelessWidget {
               pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pdfCustomText("AUTH CODE: ${transaction.authCode ?? "N/A"}",
-                      fontData: fontDataRegular),
-                  pdfCustomText("RRN: ${transaction.rrn ?? "N/A"}",
-                      fontData: fontDataRegular),
+                  buildPdfKeyValueRow(
+                      key: "AUTH CODE",
+                      value: transaction.authCode ?? "N/A",
+                      fontDataBold: fontDataBold,
+                      fontDataRegular: fontDataRegular),
+                  buildPdfKeyValueRow(
+                      key: "RRN",
+                      value: transaction.rrn ?? "N/A",
+                      fontDataBold: fontDataBold,
+                      fontDataRegular: fontDataRegular),
                 ],
               ),
               pw.SizedBox(height: screenHeight * .02),
 
-              /// AID
-              pdfCustomText("AID: ${transaction.acquirerId ?? "N/A"}",
-                  fontData: fontDataRegular),
-              pw.SizedBox(height: screenHeight * .02),
+              /// AID & LABEL
 
-              /// LABEL
-              pdfCustomText("LABEL: ${transaction.schemeName ?? "N/A"}",
-                  fontData: fontDataRegular),
+              buildPdfKeyValueRow(
+                  key: "AID",
+                  value: transaction.acquirerId ?? "N/A",
+                  fontDataBold: fontDataBold,
+                  fontDataRegular: fontDataRegular),
+              pw.SizedBox(height: screenHeight * .02),
+              buildPdfKeyValueRow(
+                  key: "LABEL",
+                  value: transaction.schemeName ?? "N/A",
+                  fontDataBold: fontDataBold,
+                  fontDataRegular: fontDataRegular),
+
               pw.SizedBox(height: screenHeight * .02),
 
               /// TVR & TSI
               pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pdfCustomText("TVR: ${transaction.batchNo ?? "N/A"}",
-                      fontData: fontDataRegular),
-                  pdfCustomText("TSI: ${transaction.terminalId ?? "N/A"}",
-                      fontData: fontDataRegular),
+                  buildPdfKeyValueRow(
+                      key: "TVR",
+                      value: transaction.batchNo ?? "N/A",
+                      fontDataBold: fontDataBold,
+                      fontDataRegular: fontDataRegular),
+                  buildPdfKeyValueRow(
+                      key: "TSI",
+                      value: transaction.terminalId ?? "N/A",
+                      fontDataBold: fontDataBold,
+                      fontDataRegular: fontDataRegular),
                 ],
               ),
               pw.SizedBox(height: screenHeight * .02),
 
               /// TC
-              pdfCustomText("TC: ${transaction.batchNo ?? "N/A"}",
-                  fontData: fontDataRegular),
+              buildPdfKeyValueRow(
+                  key: "TC",
+                  value: transaction.batchNo ?? "N/A",
+                  fontDataBold: fontDataBold,
+                  fontDataRegular: fontDataRegular),
               pw.Divider(),
 
               /// Amount
@@ -630,8 +589,6 @@ class ShowTransactionInvoice extends StatelessWidget {
               pw.SizedBox(height: screenHeight * .01),
               centerText("THANK YOU MERCHANT\nPLEASE KEEP THIS COPY",
                   size: 14, fontData: fontDataRegular),
-              pw.SizedBox(height: screenHeight * .01),
-              centerText("<<MERCHANT COPY>>", size: 18, fontData: fontDataBold),
             ],
           );
         },
@@ -684,5 +641,42 @@ class ShowTransactionInvoice extends StatelessWidget {
             font: customFont,
             fontSize: 16,
             fontWeight: fontweight ?? pw.FontWeight.normal));
+  }
+
+  Widget buildKeyValueRow(String key, String value) {
+    return Row(
+      children: [
+        CustomTextWidget(text: "$key  ", isBold: true, size: 12),
+        CustomTextWidget(text: value, isBold: false, size: 12),
+      ],
+    );
+  }
+
+  /// For PDF
+  pw.Widget buildPdfKeyValueRow({
+    required String key,
+    required String value,
+    required Uint8List fontDataBold,
+    required Uint8List fontDataRegular,
+  }) {
+    final boldFont = pw.Font.ttf(fontDataBold.buffer.asByteData());
+    final regularFont = pw.Font.ttf(fontDataRegular.buffer.asByteData());
+
+    return pw.Row(
+      children: [
+        pw.Text("$key  ",
+            style: pw.TextStyle(
+              font: boldFont,
+              fontSize: 16,
+              fontWeight: pw.FontWeight.bold,
+            )),
+        pw.Text(value,
+            style: pw.TextStyle(
+              font: regularFont,
+              fontSize: 16,
+              fontWeight: pw.FontWeight.normal,
+            )),
+      ],
+    );
   }
 }

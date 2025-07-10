@@ -429,7 +429,7 @@ class ResponsePage {
 
 class TransactionElement {
   String? merchantId;
-  Acquir? acquirerId;
+  String? acquirerId;
   String? terminalId;
   String? transactionDate;
   String? transactionTime;
@@ -438,7 +438,7 @@ class TransactionElement {
   String? amount;
   String? authCode;
   String? responseCode;
-  ResponseDesc? responseDesc;
+  String? responseDesc;
   String? transactionType;
   String? mcc;
   String? cardNo;
@@ -452,15 +452,15 @@ class TransactionElement {
   String? insertDateTime;
   String? batchNo;
   String? traceNumber;
-  TerminalLocation? terminalLocation;
+  String? terminalLocation;
   String? de7;
-  Acquir? acquiringBin;
+  String? acquiringBin;
   dynamic schemeName;
   String? processCode;
   dynamic p2PRequestId;
   String? posEntryMode;
-  DeviceType? deviceType;
-  TxnSource? txnSource;
+  String? deviceType;
+  String? txnSource;
   String? nameOnCard;
   String? batchClosedOn;
   String? settledOn;
@@ -521,7 +521,7 @@ class TransactionElement {
   factory TransactionElement.fromJson(Map<String, dynamic> json) =>
       TransactionElement(
         merchantId: json["merchantId"],
-        acquirerId: acquirValues.map[json["acquirerId"]],
+        acquirerId: json["acquirerId"],
         terminalId: json["terminalId"],
         transactionDate: json["transactionDate"],
         transactionTime: json["transactionTime"],
@@ -530,7 +530,7 @@ class TransactionElement {
         amount: json["amount"],
         authCode: json["authCode"],
         responseCode: json["responseCode"],
-        responseDesc: responseDescValues.map[json["responseDesc"]],
+        responseDesc: json["responseDesc"],
         transactionType: json["transactionType"],
         mcc: json["mcc"],
         cardNo: json["cardNo"],
@@ -544,15 +544,15 @@ class TransactionElement {
         insertDateTime: json["insertDateTime"],
         batchNo: json["batchNo"],
         traceNumber: json["traceNumber"],
-        terminalLocation: terminalLocationValues.map[json["terminalLocation"]],
+        terminalLocation: json["terminalLocation"],
         de7: json["de_7"],
-        acquiringBin: acquirValues.map[json["acquiringBIN"]],
+        acquiringBin: json["acquiringBIN"],
         schemeName: json["schemeName"],
         processCode: json["processCode"],
         p2PRequestId: json["p2pRequestId"],
         posEntryMode: json["posEntryMode"],
-        deviceType: deviceTypeValues.map[json["deviceType"]],
-        txnSource: txnSourceValues.map[json["txnSource"]],
+        deviceType: json["deviceType"],
+        txnSource: json["txnSource"],
         nameOnCard: json["nameOnCard"],
         batchClosedOn: json["batchClosedOn"],
         settledOn: json["settledOn"],
@@ -567,7 +567,7 @@ class TransactionElement {
 
   Map<String, dynamic> toJson() => {
         "merchantId": merchantId,
-        "acquirerId": acquirValues.reverse[acquirerId],
+        "acquirerId": acquirerId,
         "terminalId": terminalId,
         "transactionDate": transactionDate,
         "transactionTime": transactionTime,
@@ -576,7 +576,7 @@ class TransactionElement {
         "amount": amount,
         "authCode": authCode,
         "responseCode": responseCode,
-        "responseDesc": responseDescValues.reverse[responseDesc],
+        "responseDesc": responseDesc,
         "transactionType": transactionType,
         "mcc": mcc,
         "cardNo": cardNo,
@@ -590,15 +590,15 @@ class TransactionElement {
         "insertDateTime": insertDateTime,
         "batchNo": batchNo,
         "traceNumber": traceNumber,
-        "terminalLocation": terminalLocationValues.reverse[terminalLocation],
+        "terminalLocation": terminalLocation,
         "de_7": de7,
-        "acquiringBIN": acquirValues.reverse[acquiringBin],
+        "acquiringBIN": acquiringBin,
         "schemeName": schemeName,
         "processCode": processCode,
         "p2pRequestId": p2PRequestId,
         "posEntryMode": posEntryMode,
-        "deviceType": deviceTypeValues.reverse[deviceType],
-        "txnSource": txnSourceValues.reverse[txnSource],
+        "deviceType": deviceType,
+        "txnSource": txnSource,
         "nameOnCard": nameOnCard,
         "batchClosedOn": batchClosedOn,
         "settledOn": settledOn,
@@ -611,34 +611,6 @@ class TransactionElement {
         "voided": voided,
       };
 }
-
-enum Acquir { OMAIND }
-
-final acquirValues = EnumValues({"OMAIND": Acquir.OMAIND});
-
-enum DeviceType { ANDROID_POS }
-
-final deviceTypeValues = EnumValues({"ANDROID POS": DeviceType.ANDROID_POS});
-
-enum ResponseDesc { INVALID_AMOUNT, SUCCESS, TRANSACTION_CANNOT_BE_COMPLETED }
-
-final responseDescValues = EnumValues({
-  "INVALID AMOUNT": ResponseDesc.INVALID_AMOUNT,
-  "SUCCESS": ResponseDesc.SUCCESS,
-  "TRANSACTION CANNOT BE COMPLETED":
-      ResponseDesc.TRANSACTION_CANNOT_BE_COMPLETED
-});
-
-enum TerminalLocation { HARDWARI_SWEETS_MILK_ADELHI_DL_IN }
-
-final terminalLocationValues = EnumValues({
-  "HARDWARI SWEETS MILK ADELHI        DL IN":
-      TerminalLocation.HARDWARI_SWEETS_MILK_ADELHI_DL_IN
-});
-
-enum TxnSource { CARD }
-
-final txnSourceValues = EnumValues({"CARD": TxnSource.CARD});
 
 class Pageable {
   Sort? sort;

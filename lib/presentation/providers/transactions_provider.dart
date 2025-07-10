@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:anet_merchant_app/data/models/transaction_history_request_model.dart';
 import 'package:anet_merchant_app/data/models/transaction_model.dart';
 import 'package:anet_merchant_app/data/services/merchant_service.dart';
-import 'package:anet_merchant_app/presentation/pages/users/merchant/sampledata/sampledata.dart';
 import 'package:flutter/material.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 // Enums

@@ -1,6 +1,6 @@
 import 'package:anet_merchant_app/core/constants/constants.dart';
 import 'package:anet_merchant_app/core/utils/helpers/default_height.dart';
-import 'package:anet_merchant_app/presentation/pages/users/merchant/merchant_scaffold.dart';
+import 'package:anet_merchant_app/presentation/pages/merchant_scaffold.dart';
 import 'package:anet_merchant_app/presentation/providers/settlement_provider.dart';
 import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_container.dart';

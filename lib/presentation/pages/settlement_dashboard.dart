@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:anet_merchant_app/core/app_color.dart';
 import 'package:anet_merchant_app/data/models/get_settlement_dashboard_data.dart';
 import 'package:anet_merchant_app/main.dart';
-import 'package:anet_merchant_app/presentation/pages/users/merchant/merchant_scaffold.dart';
+import 'package:anet_merchant_app/presentation/pages/merchant_scaffold.dart';
 import 'package:anet_merchant_app/presentation/providers/settlement_provider.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_container.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';

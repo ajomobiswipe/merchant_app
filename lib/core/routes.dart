@@ -7,14 +7,14 @@
 
 // Dependencies or Plugins - Models - Services - Global Functions
 import 'package:anet_merchant_app/presentation/pages/splash_screen/splash_screen.dart';
-import 'package:anet_merchant_app/presentation/pages/users/merchant/merchant_help_screen.dart';
-import 'package:anet_merchant_app/presentation/pages/users/merchant/merchant_home_page/merchant_home_screen.dart';
-import 'package:anet_merchant_app/presentation/pages/users/merchant/merchant_login.dart';
-import 'package:anet_merchant_app/presentation/pages/users/merchant/merchant_transcation_filter_screen.dart';
-import 'package:anet_merchant_app/presentation/pages/users/merchant/merchant_settlements_filter_screen.dart';
-import 'package:anet_merchant_app/presentation/pages/users/merchant/settlement_dashboard.dart';
-import 'package:anet_merchant_app/presentation/pages/users/merchant/view_all_transaction_screen.dart';
-import 'package:anet_merchant_app/presentation/pages/users/merchant/view_settlement_info.dart';
+import 'package:anet_merchant_app/presentation/pages/merchant_help_screen.dart';
+import 'package:anet_merchant_app/presentation/pages/merchant_home_page/merchant_home_screen.dart';
+import 'package:anet_merchant_app/presentation/pages/merchant_login.dart';
+import 'package:anet_merchant_app/presentation/pages/merchant_transcation_filter_screen.dart';
+import 'package:anet_merchant_app/presentation/pages/merchant_settlements_filter_screen.dart';
+import 'package:anet_merchant_app/presentation/pages/settlement_dashboard.dart';
+import 'package:anet_merchant_app/presentation/pages/view_all_transaction_screen.dart';
+import 'package:anet_merchant_app/presentation/pages/view_settlement_info.dart';
 import 'package:anet_merchant_app/presentation/providers/connectivity_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

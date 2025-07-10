@@ -59,7 +59,7 @@ class MerchantScaffold extends StatelessWidget {
         ),
         centerTitle: true,
         title: Image.asset(
-          "assets/screen/anet_icon.png",
+          "assets/screen/anet_launcher_icon.png",
           height: 40,
         ),
         actions: [
