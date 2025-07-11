@@ -43,35 +43,6 @@ class ShowTransactionInvoice extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.end,
-            //   children: [
-            //     GestureDetector(
-            //       onTap: () => Navigator.pop(context),
-            //       child: Container(
-            //         decoration: BoxDecoration(
-            //           color: Colors.red,
-            //           shape: BoxShape.circle,
-            //           boxShadow: [
-            //             BoxShadow(
-            //               color: Colors.black.withOpacity(0.2),
-            //               blurRadius: 6,
-            //               offset: Offset(0, 3),
-            //             ),
-            //           ],
-            //         ),
-            //         padding: const EdgeInsets.all(8),
-            //         child: Icon(
-            //           Icons.close,
-            //           color: Colors.white,
-            //           size: 24,
-            //         ),
-            //       ),
-            //     ),
-            //   ],
-            // ),
-            // defaultHeight(basePadding),
-
             Center(
               child: Image.asset(
                 'assets/screen/anet.png',
@@ -90,6 +61,13 @@ class ShowTransactionInvoice extends StatelessWidget {
                   ),
                 ),
               ],
+            ),
+            defaultHeight(basePadding),
+            Center(
+              child: CustomTextWidget(
+                text: transaction.terminalAddress ?? "N/A",
+                maxLines: 3,
+              ),
             ),
             defaultHeight(basePadding),
             // Date and Time
@@ -144,8 +122,7 @@ class ShowTransactionInvoice extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 buildKeyValueRow("CARD NO", transaction.cardNo ?? "N/A"),
-                buildKeyValueRow(
-                    "ENTRY MODE", getPosEntryMode(transaction.posEntryMode)),
+                buildKeyValueRow("", getPosEntryMode(transaction.posEntryMode)),
               ],
             ),
             defaultHeight(basePadding),
@@ -178,18 +155,20 @@ class ShowTransactionInvoice extends StatelessWidget {
             Divider(),
             // Amount
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 CustomTextWidget(
                   text: "AMOUNT ",
                   size: 16,
                   isBold: true,
                 ),
+                SizedBox(width: screenWidth * 0.05),
                 CustomTextWidget(
                   text: getCurrencySymbol(transaction.currency),
                   size: 20,
                   isBold: true,
                 ),
+                SizedBox(width: screenWidth * 0.05),
                 CustomTextWidget(
                   text: transaction.amount ?? "N/A",
                   size: 16,
@@ -385,6 +364,12 @@ class ShowTransactionInvoice extends StatelessWidget {
                 merchantName,
                 fontData: fontDataBold,
                 fontWeight: pw.FontWeight.bold,
+                size: 10,
+              ),
+              centerText(
+                transaction.terminalAddress ?? "N/A",
+                fontData: fontDataBold,
+                fontWeight: pw.FontWeight.bold,
                 size: 14,
               ),
               pw.SizedBox(height: screenHeight * .02),
@@ -477,7 +462,7 @@ class ShowTransactionInvoice extends StatelessWidget {
                       fontDataBold: fontDataBold,
                       fontDataRegular: fontDataRegular),
                   buildPdfKeyValueRow(
-                      key: "ENTRY MODE",
+                      key: "",
                       value: getPosEntryMode(transaction.posEntryMode),
                       fontDataBold: fontDataBold,
                       fontDataRegular: fontDataRegular),
@@ -546,19 +531,22 @@ class ShowTransactionInvoice extends StatelessWidget {
               pw.Divider(),
 
               /// Amount
+              ///
               pw.Row(
-                mainAxisAlignment: pw.MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: pw.MainAxisAlignment.center,
                 children: [
                   pw.Text("AMOUNT",
                       style: pw.TextStyle(
                           fontSize: 18,
                           fontWeight: pw.FontWeight.bold,
                           font: pw.Font.ttf(fontDataBold.buffer.asByteData()))),
+                  pw.SizedBox(width: screenWidth * 0.1),
                   pw.Text(getCurrencySymbol(transaction.currency),
                       style: pw.TextStyle(
                           fontSize: 20,
                           fontWeight: pw.FontWeight.bold,
                           font: pw.Font.ttf(fontDataBold.buffer.asByteData()))),
+                  pw.SizedBox(width: screenWidth * 0.1),
                   pw.Text(transaction.amount ?? "N/A",
                       style: pw.TextStyle(
                           fontSize: 18,
@@ -566,6 +554,7 @@ class ShowTransactionInvoice extends StatelessWidget {
                           font: pw.Font.ttf(fontDataBold.buffer.asByteData()))),
                 ],
               ),
+
               pw.Divider(),
 
               /// PIN Message

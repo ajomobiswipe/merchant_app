@@ -15,7 +15,6 @@ import 'package:anet_merchant_app/core/endpoints.dart';
 import 'package:anet_merchant_app/core/routes.dart';
 import 'package:anet_merchant_app/core/state_key.dart';
 import 'package:anet_merchant_app/data/services/connectivity_service.dart';
-import 'package:anet_merchant_app/data/services/merchant_service.dart';
 import 'package:anet_merchant_app/presentation/providers/authProvider.dart';
 import 'package:anet_merchant_app/presentation/providers/support_action_provider.dart';
 import 'package:anet_merchant_app/presentation/providers/transactions_provider.dart';
@@ -44,13 +43,10 @@ void main() {
     // setUpServiceLocator();
     // final StorageService storageService = getIt<StorageService>();
     // await storageService.init();
+
     await dotenv.load();
     await Hive.initFlutter(); // THIS IS FOR THEME STORAGE
     await Hive.openBox(Constants.hiveName); // THIS IS FOR USER STORAGE
-    ByteData data = await PlatformAssetBundle()
-        .load('assets/ca/omaemirates_root_certificate.cer');
-    SecurityContext.defaultContext
-        .setTrustedCertificatesBytes(data.buffer.asUint8List());
 
     // --- Root
     WidgetsFlutterBinding.ensureInitialized();

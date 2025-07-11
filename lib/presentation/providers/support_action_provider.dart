@@ -1,3 +1,4 @@
+import 'package:anet_merchant_app/data/services/dio_exception_handlers.dart';
 import 'package:anet_merchant_app/data/services/merchant_service.dart';
 import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
 import 'package:dio/dio.dart';
@@ -40,15 +41,10 @@ class SupportActionProvider with ChangeNotifier {
         }
         notifyListeners();
       }
-    } on DioException catch (dioError) {
-      if (dioError.response != null) {
-        AlertService().error(
-            "Failed to fetch support actions: ${dioError.response?.data}");
-      } else {
-        AlertService().error("Network error: ${dioError.message}");
-      }
+    } on DioException catch (e) {
+      handleDioError(e);
     } catch (e) {
-      AlertService().error("An unexpected error occurred: $e");
+      AlertService().error("Failed to fetch support actions : $e");
     }
   }
 
@@ -76,10 +72,13 @@ class SupportActionProvider with ChangeNotifier {
       if (response.statusCode == 200) {
         AlertService().success("Support request raised successfully");
       } else {
-        AlertService().error("Failed to raise support request");
+        AlertService()
+            .error("Failed to raise support request :${response["message"]}");
       }
+    } on DioException catch (e) {
+      handleDioError(e);
     } catch (e) {
-      print("Error fetching transactions: $e");
+      AlertService().error("Failed to raise support request : $e");
     } finally {
       _selectedSupportAction = null;
       selectedQuickAction = null;

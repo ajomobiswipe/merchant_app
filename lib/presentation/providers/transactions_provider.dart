@@ -2,7 +2,10 @@ import 'dart:convert';
 
 import 'package:anet_merchant_app/data/models/transaction_history_request_model.dart';
 import 'package:anet_merchant_app/data/models/transaction_model.dart';
+import 'package:anet_merchant_app/data/services/dio_exception_handlers.dart';
 import 'package:anet_merchant_app/data/services/merchant_service.dart';
+import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -127,8 +130,10 @@ class TransactionProvider with ChangeNotifier {
           recentTransactions.addAll(newItems);
         }
       }
+    } on DioException catch (e) {
+      handleDioError(e);
     } catch (e) {
-      print("Error fetching transactions: $e");
+      AlertService().error("Error fetching transactions: $e");
     } finally {
       _isDailyTransactionsLoading = false;
       notifyListeners();

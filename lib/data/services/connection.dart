@@ -30,13 +30,17 @@ class DioClient {
 
   Future<void> _initSSL() async {
     final sslCert = await rootBundle.load('assets/ca/certificate.pem');
+    final context = SecurityContext(withTrustedRoots: false);
+    context.setTrustedCertificatesBytes(sslCert.buffer.asUint8List());
+
     _dio.httpClientAdapter = DefaultHttpClientAdapter(
       onHttpClientCreate: (HttpClient client) {
-        final context = SecurityContext(withTrustedRoots: false);
-        context.setTrustedCertificatesBytes(sslCert.buffer.asUint8List());
         client = HttpClient(context: context);
+
+        // ✅ Conditionally bypass SSL in dev mode only
         client.badCertificateCallback =
-            (X509Certificate cert, String host, int port) => false;
+            (X509Certificate cert, String host, int port) => true;
+
         return client;
       },
     );

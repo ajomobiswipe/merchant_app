@@ -91,7 +91,7 @@ class _SettlementDashboardState extends State<SettlementDashboard> {
                               children: [
                                 CustomTextWidget(
                                     text:
-                                        "₹ ${settlementProvider.totalSettlementAmount ?? 0}",
+                                        "₹ ${settlementProvider.totalSettlementAmount}",
                                     size: 18),
                                 CustomTextWidget(
                                     text: "Total Settlements",

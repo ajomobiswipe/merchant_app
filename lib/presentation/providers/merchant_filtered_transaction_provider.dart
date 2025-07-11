@@ -1,5 +1,6 @@
 import 'package:anet_merchant_app/data/models/transaction_history_request_model.dart';
 import 'package:anet_merchant_app/data/models/transaction_model.dart';
+import 'package:anet_merchant_app/data/services/dio_exception_handlers.dart';
 import 'package:anet_merchant_app/data/services/merchant_service.dart';
 import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
 import 'package:dio/dio.dart';
@@ -169,10 +170,10 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
           _allTerminalId.addAll(newItems);
         }
       }
-    } on DioException catch (dioError) {
-      _handleDioError(dioError);
+    } on DioException catch (e) {
+      handleDioError(e);
     } catch (e) {
-      print("Error fetching Tid: $e");
+      AlertService().error("Error fetching Tid: $e");
     } finally {
       _isAllTidLoading = false;
       notifyListeners();
@@ -188,36 +189,6 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
     _allTidCount = 0;
     notifyListeners();
     getTidByMerchantId();
-  }
-
-  /// Handle Dio errors
-  void _handleDioError(DioException dioError) {
-    if (dioError.type == DioExceptionType.connectionTimeout) {
-      AlertService().error(
-          "Connection timeout while fetching Tid. Please try again later.");
-      print("Connection timeout while fetching Tid.");
-    } else if (dioError.type == DioExceptionType.receiveTimeout) {
-      AlertService()
-          .error("Receive timeout while fetching Tid. Please try again later.");
-      print("Receive timeout while fetching Tid.");
-    } else if (dioError.type == DioExceptionType.sendTimeout) {
-      AlertService()
-          .error("Send timeout while fetching Tid. Please try again later.");
-      print("Send timeout while fetching Tid.");
-    } else if (dioError.type == DioExceptionType.badResponse) {
-      AlertService().error(
-          "Bad response while fetching Tid: ${dioError.response?.statusCode}");
-      print(
-          "Bad response while fetching Tid: ${dioError.response?.statusCode}");
-    } else {
-      AlertService().error(
-          "An error occurred while fetching Tid. Please try again later.");
-      print("DioError fetching Tid: ${dioError.message}");
-      if (dioError.response != null) {
-        print("DioError response data: ${dioError.response?.data}");
-        print("DioError response status: ${dioError.response?.statusCode}");
-      }
-    }
   }
 
   // Fetch recent transactions
@@ -275,8 +246,10 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
           _allTransactions.addAll(newItems);
         }
       }
+    } on DioException catch (e) {
+      handleDioError(e);
     } catch (e) {
-      print("Error fetching transactions: $e");
+      AlertService().error("Error fetching transactions: $e");
     } finally {
       _isAllTransactionsLoading = false;
       notifyListeners();
@@ -330,8 +303,10 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
           AlertService().error("Error Sending Transaction report .");
         }
       }
+    } on DioException catch (e) {
+      handleDioError(e);
     } catch (e) {
-      print("Error fetching transactions: $e");
+      AlertService().error("Error fetching transactions: $e");
     } finally {
       _isEmailSending = false;
       notifyListeners();
@@ -460,7 +435,6 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
       _customStartDate = DateTime.now().subtract(Duration(days: 30));
       _customEndDate = DateTime.now();
     } else if (_selectedDateRange == 'Custom Date Range') {
-      print("object");
       print(_customEndDate);
     } else if (_selectedDateRange == 'All') {
       _customStartDate = null;

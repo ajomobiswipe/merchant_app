@@ -1,5 +1,4 @@
 import 'package:anet_merchant_app/core/app_color.dart';
-import 'package:anet_merchant_app/core/constants/constants.dart';
 import 'package:anet_merchant_app/core/utils/helpers/default_height.dart';
 import 'package:anet_merchant_app/data/models/transaction_model.dart';
 import 'package:anet_merchant_app/data/services/connectivity_service.dart';
@@ -221,7 +220,7 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
     switch (TransactionProvider.selectedTab) {
       case HomeScreenTabItem.TransactionHistory:
         return transactionHistoryList(
-            transactionElement: TransactionProvider.transactions ?? [],
+            transactionElement: TransactionProvider.transactions,
             screenWidth: screenWidth,
             transactionProvider: TransactionProvider,
             screenHeight: screenHeight);

@@ -1,4 +1,3 @@
-import 'package:anet_merchant_app/core/state_key.dart';
 import 'package:anet_merchant_app/main.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';

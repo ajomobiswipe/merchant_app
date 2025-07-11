@@ -168,12 +168,14 @@ class TransactionTile extends StatelessWidget {
 
   getTransactionType(TransactionElement? element) {
     if (element == null) return "N/A";
-    if (element.transactionType == "OSAL001" && element.voided == false)
+    if (element.transactionType == "OSAL001" && element.voided == false) {
       return "SALE";
+    }
 
     if (element.transactionType == "OSAL001" &&
-        element.voided == true) if (element.transactionType == "VSAL001")
+        element.voided == true) if (element.transactionType == "VSAL001") {
       return "Void";
+    }
     return "Void-Sale";
   }
 }

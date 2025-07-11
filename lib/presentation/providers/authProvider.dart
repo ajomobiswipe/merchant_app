@@ -1,17 +1,12 @@
-import 'dart:convert';
-
 import 'package:anet_merchant_app/data/models/merchant_self_login_model.dart';
+import 'package:anet_merchant_app/data/services/dio_exception_handlers.dart';
 import 'package:anet_merchant_app/data/services/merchant_service.dart';
 import 'package:anet_merchant_app/data/services/storage_services.dart';
 import 'package:anet_merchant_app/data/services/token_manager.dart';
-import 'package:anet_merchant_app/domain/datasources/storage/secure_storage.dart';
 import 'package:anet_merchant_app/presentation/pages/merchant_home_page/merchant_info_model.dart';
 import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:anet_merchant_app/main.dart';
 
 class AuthProvider with ChangeNotifier {
@@ -199,9 +194,7 @@ class AuthProvider with ChangeNotifier {
             .error(response?['errorMessage'] ?? 'OTP verification failed');
       }
     } on DioException catch (e) {
-      final response = e.response?.data;
-      alertService.error(response?['message'] ??
-          'OTP verification failed with status: ${e.response?.statusCode}');
+      handleDioError(e);
     } catch (e) {
       alertService
           .error('An error occurred while verifying OTP: ${e.toString()}');

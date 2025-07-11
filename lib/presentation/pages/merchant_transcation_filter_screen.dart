@@ -242,9 +242,10 @@ class _MerchantTransactionFilterScreenState
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              SizedBox(height: 16),
               CustomTextWidget(
                 text: "Select Terminal ID",
-                color: AppColors.kPrimaryColor,
+                color: Colors.grey.shade800,
                 size: 16,
                 fontWeight: FontWeight.bold,
               ),
@@ -289,7 +290,6 @@ class _MerchantTransactionFilterScreenState
                               hintText: tidProvider.allTid[index] ?? '',
                               Icons.point_of_sale_outlined,
                             ),
-                            onChanged: (value) => print("Entered: $value"),
                           );
                         } else if (tidProvider.hasMoreTid) {
                           return Center(child: CircularProgressIndicator());
@@ -311,9 +311,8 @@ class _MerchantTransactionFilterScreenState
                           );
                         }
                       },
-                      separatorBuilder: (context, index) => Divider(
-                        color: Colors.grey,
-                        height: 1,
+                      separatorBuilder: (context, index) => SizedBox(
+                        height: 10,
                       ),
                     );
                   },

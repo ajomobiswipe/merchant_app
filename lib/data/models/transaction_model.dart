@@ -453,6 +453,7 @@ class TransactionElement {
   String? batchNo;
   String? traceNumber;
   String? terminalLocation;
+  String? terminalAddress;
   String? de7;
   String? acquiringBin;
   dynamic schemeName;
@@ -498,6 +499,7 @@ class TransactionElement {
     this.batchNo,
     this.traceNumber,
     this.terminalLocation,
+    this.terminalAddress,
     this.de7,
     this.acquiringBin,
     this.schemeName,
@@ -545,6 +547,7 @@ class TransactionElement {
         batchNo: json["batchNo"],
         traceNumber: json["traceNumber"],
         terminalLocation: json["terminalLocation"],
+        terminalAddress: json["terminalAddress"],
         de7: json["de_7"],
         acquiringBin: json["acquiringBIN"],
         schemeName: json["schemeName"],

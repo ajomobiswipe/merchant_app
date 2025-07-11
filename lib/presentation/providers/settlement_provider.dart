@@ -1,6 +1,8 @@
 import 'package:anet_merchant_app/data/models/get_settlement_dashboard_data.dart';
+import 'package:anet_merchant_app/data/services/dio_exception_handlers.dart';
 import 'package:anet_merchant_app/data/services/merchant_service.dart';
 import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -165,8 +167,10 @@ class SettlementProvider extends ChangeNotifier {
           _allTransactions.addAll(newItems);
         }
       }
+    } on DioException catch (e) {
+      handleDioError(e);
     } catch (e) {
-      print("Error fetching transactions: $e");
+      AlertService().error("Error getting transactions : $e");
     } finally {
       _isAllTransactionsLoading = false;
       notifyListeners();
@@ -251,7 +255,7 @@ class SettlementProvider extends ChangeNotifier {
         } else {}
       }
     } catch (e) {
-      print("Error fetching transactions: $e");
+      AlertService().error("Error fetching transactions: $e");
     } finally {
       _isAllUtrWiseSettlementLoading = false;
       notifyListeners();
@@ -297,8 +301,10 @@ class SettlementProvider extends ChangeNotifier {
       } else {
         AlertService().error("Failed to send settlement report to email.");
       }
+    } on DioException catch (e) {
+      handleDioError(e);
     } catch (e) {
-      print("Error fetching transactions: $e");
+      AlertService().error("Error sending settlement : $e");
     } finally {
       _isEmailSending = false;
       notifyListeners();

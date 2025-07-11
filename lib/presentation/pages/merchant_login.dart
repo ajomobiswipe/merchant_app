@@ -3,7 +3,6 @@ import 'package:anet_merchant_app/core/app_color.dart';
 import 'package:anet_merchant_app/core/constants/constants.dart';
 import 'package:anet_merchant_app/data/services/connectivity_service.dart';
 import 'package:anet_merchant_app/presentation/providers/authProvider.dart';
-import 'package:anet_merchant_app/presentation/providers/connectivity_provider.dart';
 import 'package:anet_merchant_app/presentation/providers/permission.dart';
 import 'package:anet_merchant_app/presentation/widgets/common_widgets/custom_app_button.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';

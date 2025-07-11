@@ -15,15 +15,13 @@ import 'package:anet_merchant_app/presentation/pages/merchant_settlements_filter
 import 'package:anet_merchant_app/presentation/pages/settlement_dashboard.dart';
 import 'package:anet_merchant_app/presentation/pages/view_all_transaction_screen.dart';
 import 'package:anet_merchant_app/presentation/pages/view_settlement_info.dart';
-import 'package:anet_merchant_app/presentation/providers/connectivity_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 // Custom route Class
 class CustomRoute {
   static Route<dynamic> allRoutes(RouteSettings settings) {
-    var args = settings.arguments;
+    //var args = settings.arguments;
 
     return CupertinoPageRoute(builder: (context) {
       // final isOnline = Provider.of<ConnectivityProvider>(context).isOnline;
