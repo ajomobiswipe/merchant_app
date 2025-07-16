@@ -6,12 +6,14 @@ import 'package:anet_merchant_app/main.dart';
 import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 class DioClient {
   static final DioClient _instance = DioClient._internal();
   factory DioClient() => _instance;
   late final Dio _dio;
+  SecurityContext? _context;
 
   final AlertService _alertService = AlertService();
   final BoxStorage _boxStorage = BoxStorage();
@@ -30,18 +32,13 @@ class DioClient {
 
   Future<void> _initSSL() async {
     final sslCert = await rootBundle.load('assets/ca/certificate.pem');
-    final context = SecurityContext(withTrustedRoots: false);
-    context.setTrustedCertificatesBytes(sslCert.buffer.asUint8List());
+    _context = SecurityContext(withTrustedRoots: false);
+    _context!.setTrustedCertificatesBytes(sslCert.buffer.asInt8List());
 
-    _dio.httpClientAdapter = DefaultHttpClientAdapter(
-      onHttpClientCreate: (HttpClient client) {
-        client = HttpClient(context: context);
-
-        // ✅ Conditionally bypass SSL in dev mode only
-        client.badCertificateCallback =
-            (X509Certificate cert, String host, int port) => true;
-
-        return client;
+    _dio.httpClientAdapter = IOHttpClientAdapter(
+      createHttpClient: () {
+        return HttpClient(context: _context!)
+          ..badCertificateCallback = (cert, host, port) => true;
       },
     );
   }
@@ -76,23 +73,31 @@ class DioClient {
   // =======================
 
   Future<Response> get(String url) async {
-    print('Request URL: $url');
+    if (kDebugMode) print('Request URL: $url');
     final response = await _dio.get(url);
-    print('Response: ${response.data}');
-    print('Status code: ${response.statusCode}');
+    if (kDebugMode) {
+      print('Response: ${response.data}');
+      print('Status code: ${response.statusCode}');
+    }
     return response;
   }
 
   Future<Response> post(String url, dynamic data,
       {int timeoutSeconds = 20}) async {
-    print("Post");
-    print('Request URL: $url');
-    print('Request Data: $data');
+    if (kDebugMode) {
+      print("Post");
+      print('Request URL: $url');
+      print('Request Data: $data');
+    }
+
     final response = await _dio
         .post(url, data: data)
         .timeout(Duration(seconds: timeoutSeconds));
-    print('Response: ${response.data}');
-    print('Status code: ${response.statusCode}');
+
+    if (kDebugMode) {
+      print('Response: ${response.data}');
+      print('Status code: ${response.statusCode}');
+    }
     return response;
   }
 
@@ -101,34 +106,57 @@ class DioClient {
   // =======================
 
   Future<Response> getWithoutToken(String url) async {
-    print("Get without Token");
-    print('Request URL: $url');
-    final response = await Dio(BaseOptions(
+    if (kDebugMode) {
+      print("Get without Token");
+      print('Request URL: $url');
+    }
+
+    final dio = Dio(BaseOptions(
       connectTimeout: const Duration(seconds: 20),
       receiveTimeout: const Duration(seconds: 20),
       headers: {'Content-Type': 'application/json'},
-    )).get(
-      url,
+    ));
+
+    dio.httpClientAdapter = IOHttpClientAdapter(
+      createHttpClient: () {
+        return HttpClient(context: _context!)
+          ..badCertificateCallback = (cert, host, port) => true;
+      },
     );
-    print('Response: ${response.data}');
-    print('Status code: ${response.statusCode}');
+
+    final response = await dio.get(url);
+    if (kDebugMode) {
+      print('Response: ${response.data}');
+      print('Status code: ${response.statusCode}');
+    }
     return response;
   }
 
   Future<Response> postWithoutToken(String url, dynamic data) async {
-    print("Post without Token");
-    print('Request URL: $url');
-    print('Request Data: $data');
-    final response = await Dio(BaseOptions(
+    if (kDebugMode) {
+      print("Post without Token");
+      print('Request URL: $url');
+      print('Request Data: $data');
+    }
+
+    final dio = Dio(BaseOptions(
       connectTimeout: const Duration(seconds: 20),
       receiveTimeout: const Duration(seconds: 20),
       headers: {'Content-Type': 'application/json'},
-    )).post(
-      url,
-      data: data,
+    ));
+
+    dio.httpClientAdapter = IOHttpClientAdapter(
+      createHttpClient: () {
+        return HttpClient(context: _context!)
+          ..badCertificateCallback = (cert, host, port) => true;
+      },
     );
-    print('Response: ${response.data}');
-    print('Status code: ${response.statusCode}');
+
+    final response = await dio.post(url, data: data);
+    if (kDebugMode) {
+      print('Response: ${response.data}');
+      print('Status code: ${response.statusCode}');
+    }
     return response;
   }
 }

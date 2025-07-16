@@ -6,6 +6,7 @@ import 'package:anet_merchant_app/data/services/token_manager.dart';
 import 'package:anet_merchant_app/presentation/pages/merchant_home_page/merchant_info_model.dart';
 import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:anet_merchant_app/main.dart';
 
@@ -149,6 +150,9 @@ class AuthProvider with ChangeNotifier {
             .error(loginResponse['responseMessage'] ?? 'Failed to Send OTP');
       }
     } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
       alertService
           .error('An error occurred while sending OTP: ${e.toString()}');
     } finally {
