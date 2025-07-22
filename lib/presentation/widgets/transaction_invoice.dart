@@ -66,7 +66,9 @@ class ShowTransactionInvoice extends StatelessWidget {
             Center(
               child: CustomTextWidget(
                 text: transaction.terminalAddress ?? "N/A",
+                size: 13,
                 maxLines: 3,
+                isBold: false,
               ),
             ),
             defaultHeight(basePadding),
@@ -142,12 +144,12 @@ class ShowTransactionInvoice extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                buildKeyValueRow("TVR", transaction.batchNo ?? "N/A"),
-                buildKeyValueRow("TSI", transaction.terminalId ?? "N/A"),
+                buildKeyValueRow("TVR", "N/A"),
+                buildKeyValueRow("TSI", "N/A"),
               ],
             ),
             defaultHeight(basePadding),
-            buildKeyValueRow("TC", transaction.batchNo ?? "N/A"),
+            buildKeyValueRow("TC", "N/A"),
             defaultHeight(basePadding),
 
             // Cardholder Name
@@ -510,12 +512,12 @@ class ShowTransactionInvoice extends StatelessWidget {
                 children: [
                   buildPdfKeyValueRow(
                       key: "TVR",
-                      value: transaction.batchNo ?? "N/A",
+                      value: "N/A",
                       fontDataBold: fontDataBold,
                       fontDataRegular: fontDataRegular),
                   buildPdfKeyValueRow(
                       key: "TSI",
-                      value: transaction.terminalId ?? "N/A",
+                      value: "N/A",
                       fontDataBold: fontDataBold,
                       fontDataRegular: fontDataRegular),
                 ],
@@ -525,7 +527,7 @@ class ShowTransactionInvoice extends StatelessWidget {
               /// TC
               buildPdfKeyValueRow(
                   key: "TC",
-                  value: transaction.batchNo ?? "N/A",
+                  value: "N/A",
                   fontDataBold: fontDataBold,
                   fontDataRegular: fontDataRegular),
               pw.Divider(),

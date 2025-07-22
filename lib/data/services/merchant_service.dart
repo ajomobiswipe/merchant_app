@@ -66,6 +66,15 @@ class MerchantServices {
     return await DioClient().post(url, requestModel);
   }
 
+  Future<dynamic> getVpaByMerchantId(Map<String, dynamic> requestModel,
+      {required int pageNumber,
+      required int pageSize,
+      required String merchantId}) async {
+    final url =
+        "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/getListOfSoundBoxDevices?pageNumber=$pageNumber&size=$pageSize&sort=insertDateTime%2Cdesc";
+    return await DioClient().getWithReqBody(url, requestModel);
+  }
+
   Future<dynamic> getSupportActionData() async {
     final url =
         "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/getSupportActionData";

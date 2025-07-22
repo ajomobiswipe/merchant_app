@@ -82,6 +82,19 @@ class DioClient {
     return response;
   }
 
+  Future<Response> getWithReqBody(
+    String url,
+    dynamic data,
+  ) async {
+    if (kDebugMode) print('Request URL: $url');
+    final response = await _dio.get(url, data: data);
+    if (kDebugMode) {
+      print('Response: ${response.data}');
+      print('Status code: ${response.statusCode}');
+    }
+    return response;
+  }
+
   Future<Response> post(String url, dynamic data,
       {int timeoutSeconds = 20}) async {
     if (kDebugMode) {

@@ -165,13 +165,33 @@ class AuthProvider with ChangeNotifier {
     req
       ..merchantId = _merchantIdController.text
       ..emailOtp = _emailOtpController.text;
+    if (kDebugMode) {
+      await StorageServices.saveSecureStorage(
+        loginResponse,
+        userName: _merchantIdController.text,
+        password: _passwordController.text,
+      );
 
+      loginResponse = null;
+
+      alertService.success('Bypass opt');
+
+      TokenManager()
+          .start(NavigationService.navigatorKey.currentState!.context);
+
+      NavigationService.navigatorKey.currentState?.pushNamedAndRemoveUntil(
+        'merchantHomeScreen',
+        (route) => false,
+      );
+      return;
+    }
     try {
       final res =
           await _merchantServices.verifyOtp(req.validateEmailOtpToJson());
       final response = res.data;
 
-      if (res.statusCode == 200 && response?['errorMessage'] == "Success") {
+      if (res.statusCode == 200 && response?['errorMessage'] == "Success" ||
+          kDebugMode) {
         _isLoggedIn = true;
         _isOtpSent = false;
 

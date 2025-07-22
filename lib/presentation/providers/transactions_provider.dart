@@ -7,6 +7,7 @@ import 'package:anet_merchant_app/data/services/merchant_service.dart';
 import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -79,18 +80,17 @@ class TransactionProvider with ChangeNotifier {
         !isRecentTransLoadingFistTime) return;
 
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? merchantId = prefs.getString('acqMerchantId') ?? "651010000022371";
+    String? merchantId = prefs.getString('acqMerchantId');
     print(merchantId);
-
     print("Inside fetchItems");
-
+    final today = DateFormat('dd-MM-yyyy').format(DateTime.now());
     _recentTranReqModel
       ..acquirerId = "OMAIND"
       ..merchantId = merchantId
-      ..recordFrom = DateTime.now().toLocal().toString().split(' ')[0]
-      ..recordTo = DateTime.now().toLocal().toString().split(' ')[0]
-      // ..recordFrom = "06-05-2025"
-      // ..recordTo = "03-06-2025"
+      ..recordFrom = today
+      ..recordTo = today
+      // ..recordFrom = "20-07-2025"
+      // ..recordTo = "20-07-2025"
       // ..recordFrom = "22-01-2023"
       // ..recordTo = "27-05-2025"
       ..rrn = null

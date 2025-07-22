@@ -31,9 +31,11 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
   // TextEditingController get tidSearchController => _tidSearchController;
 
   final ScrollController _allTidScrollCtrl = ScrollController();
+  final ScrollController _allVpaScrollCtrl = ScrollController();
   TextEditingController _tidSearchController = TextEditingController();
 
   ScrollController get allTidScrollCtrl => _allTidScrollCtrl;
+  ScrollController get allVpaScrollCtrl => _allVpaScrollCtrl;
   TextEditingController get tidSearchController => _tidSearchController;
   //  void setTid(param0) {
 
@@ -115,24 +117,31 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
 
   // Flags
   bool _isAllTidLoading = false;
+  bool _isAllVpaLoading = false;
   bool isAllTidApiLoadingFistTime = true;
+  bool isAllVpaApiLoadingFistTime = true;
 
   bool get isAllTidLoading => _isAllTidLoading;
+  bool get isAllVpaLoading => _isAllVpaLoading;
 
   // Pagination
   int currentTidListPageNo = 0;
-  int tidPageSize = 40;
+  int currentVpaListPageNo = 0;
 
-  int _allTidCount = 0; // Simulate total from API
+  int _allTidCount = 0;
+  int _allVpaCount = 0;
   List<dynamic> _allTerminalId = [];
+  List<dynamic> _allVpa = [];
 
   List<dynamic> get allTid => _allTerminalId;
+  List<dynamic> get allVpa => _allVpa;
   bool get hasMoreTid => _allTerminalId.length < _allTidCount;
+  bool get hasMoreVpa => _allVpa.length < _allVpaCount;
 
   /// Fetch recent TIDs by Merchant ID
   Future<void> getTidByMerchantId() async {
     print("Current Page: $currentTidListPageNo");
-    print("Page Size: $tidPageSize");
+    print("Page Size: 10");
     print("Total tid: $_allTidCount");
     print("Tid list Length: ${_allTerminalId.length}");
 
@@ -153,8 +162,8 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
     try {
       final response = await _merchantServices.getTidByMerchantId(
         {},
-        pageNumber: tidPageSize,
-        pageSize: 40,
+        pageNumber: currentTidListPageNo,
+        pageSize: 10,
         merchantId: merchantId,
       );
 
@@ -165,7 +174,7 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
         print('_allTidCount is $_allTidCount');
 
         if (newItems.isNotEmpty) {
-          tidPageSize++;
+          currentTidListPageNo++;
           isAllTidApiLoadingFistTime = false;
           _allTerminalId.addAll(newItems);
         }
@@ -180,15 +189,72 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
     }
   }
 
+  /// Fetch recent TIDs by Merchant ID
+  Future<void> getVpaByMerchantId() async {
+    print("Current Vpa Page: $currentVpaListPageNo");
+    print("Vpa Page Size: 10");
+    print("Total vpa count : $_allVpaCount");
+    print("Vpa list Length: ${_allVpa.length}");
+
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    if (_allVpa.length >= _allVpaCount && !isAllVpaApiLoadingFistTime) {
+      return;
+    }
+
+    String? merchantId = prefs.getString('acqMerchantId') ?? '65OMA0000000002';
+    print(merchantId);
+
+    if (_isAllVpaLoading) return;
+
+    _isAllVpaLoading = true;
+    notifyListeners();
+
+    try {
+      final response = await _merchantServices.getVpaByMerchantId(
+        {"merchantId": merchantId},
+        pageNumber: currentVpaListPageNo,
+        pageSize: 10,
+        merchantId: merchantId,
+      );
+
+      if (response.statusCode == 200) {
+        var decodedData = response.data;
+        var newItems = response.data["pageData"]["content"] ?? [];
+        _allVpaCount = decodedData["pageData"]["totalElements"] ?? 0;
+        print('_allVpaCount is $_allVpaCount');
+
+        if (newItems.isNotEmpty) {
+          currentVpaListPageNo++;
+          isAllVpaApiLoadingFistTime = false;
+          _allVpa.addAll(newItems);
+        }
+      }
+    } on DioException catch (e) {
+      handleDioError(e);
+    } catch (e) {
+      AlertService().error("Error fetching Vpa list: $e");
+    } finally {
+      _isAllVpaLoading = false;
+      notifyListeners();
+    }
+  }
+
   /// Refresh all TIDs
-  void refreshAllTid() {
+  void refreshAllTidAndVpa() {
     _allTerminalId = [];
-    tidPageSize = 0;
+    _allVpa = [];
+    currentTidListPageNo = 0;
+    currentVpaListPageNo = 0;
     isAllTidApiLoadingFistTime = true;
+    isAllVpaApiLoadingFistTime = true;
     _tidSearchController.clear();
     _allTidCount = 0;
-    notifyListeners();
+    _allVpaCount = 0;
+
     getTidByMerchantId();
+    getVpaByMerchantId();
+    notifyListeners();
   }
 
   // Fetch recent transactions
@@ -375,7 +441,7 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
     _customStartDate = null;
     _customEndDate = null;
     _selectedPaymentMode = 'ALL';
-    refreshAllTid();
+    refreshAllTidAndVpa();
     searchController.clear();
 
     notifyListeners();

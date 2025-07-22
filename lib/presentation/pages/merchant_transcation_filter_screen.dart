@@ -31,16 +31,28 @@ class _MerchantTransactionFilterScreenState
           listen: false);
 
       transactionProvider.resetFilters();
-      transactionProvider.allTidScrollCtrl.addListener(_onScroll);
+      transactionProvider.allTidScrollCtrl.addListener(_onScrollTidList);
+      transactionProvider.allVpaScrollCtrl.addListener(_onScrollVpaList);
     });
   }
 
-  void _onScroll() {
+  void _onScrollTidList() {
     if (transactionProvider.allTidScrollCtrl.position.pixels >=
             transactionProvider.allTidScrollCtrl.position.maxScrollExtent -
                 200 &&
         !transactionProvider.isAllTidLoading) {
       transactionProvider.getTidByMerchantId();
+    }
+  }
+
+  void _onScrollVpaList() {
+    print(!transactionProvider.isAllVpaLoading);
+    if (transactionProvider.allVpaScrollCtrl.position.pixels >=
+            transactionProvider.allVpaScrollCtrl.position.maxScrollExtent -
+                200 &&
+        !transactionProvider.isAllVpaLoading) {
+      print("Fetching VPA list");
+      transactionProvider.getVpaByMerchantId();
     }
   }
 
@@ -199,35 +211,31 @@ class _MerchantTransactionFilterScreenState
   }
 
   Widget _buildTidTextFelid(double screenWidth) {
-    return Column(
-      children: [
-        Consumer<MerchantFilteredTransactionProvider>(
-          builder: (context, midProvider, child) {
-            return Row(
-              children: [
-                CustomTextWidget(text: "Tid", size: 12),
-                SizedBox(width: screenWidth * 0.2),
-                Expanded(
-                  child: TextField(
-                    controller: midProvider.tidSearchController,
-                    enabled: true,
-                    readOnly: true,
-                    onTap: () {
-                      showBottomSheet(screenWidth);
-                    },
-                    //  controller: provider.tidSearchController,
-                    decoration: commonInputDecoration(
-                      hintText: "Select",
-                      Icons.point_of_sale_outlined,
-                    ),
-                    onChanged: (value) => print("Entered: $value"),
-                  ),
+    return Consumer<MerchantFilteredTransactionProvider>(
+      builder: (context, midProvider, child) {
+        return Row(
+          children: [
+            CustomTextWidget(text: "Tid/Vpa", size: 12),
+            SizedBox(width: screenWidth * 0.1),
+            Expanded(
+              child: TextField(
+                controller: midProvider.tidSearchController,
+                enabled: true,
+                readOnly: true,
+                onTap: () {
+                  showBottomSheet(screenWidth);
+                },
+                //  controller: provider.tidSearchController,
+                decoration: commonInputDecoration(
+                  hintText: "Select",
+                  Icons.point_of_sale_outlined,
                 ),
-              ],
-            );
-          },
-        ),
-      ],
+                onChanged: (value) => print("Entered: $value"),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -236,106 +244,237 @@ class _MerchantTransactionFilterScreenState
       context: context,
       isScrollControlled: true,
       builder: (context) {
-        return Container(
-          padding: EdgeInsets.all(16.0),
-          height: MediaQuery.of(context).size.height * 0.8,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 16),
-              CustomTextWidget(
-                text: "Select Terminal ID",
-                color: Colors.grey.shade800,
-                size: 16,
-                fontWeight: FontWeight.bold,
-              ),
-              SizedBox(height: 16),
-              Expanded(
-                child: Consumer<MerchantFilteredTransactionProvider>(
-                  builder: (context, tidProvider, child) {
-                    if (tidProvider.isAllTidLoading &&
-                        tidProvider.allTid.isEmpty) {
-                      return Center(child: CircularProgressIndicator());
-                    }
+        TerminalIdType tidType = TerminalIdType.TID;
 
-                    if (tidProvider.allTid.isEmpty) {
-                      return Center(
-                        child: Text(
-                          "No Tid available",
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.grey,
-                            fontStyle: FontStyle.italic,
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Container(
+              padding: EdgeInsets.all(16.0),
+              height: MediaQuery.of(context).size.height * 0.8,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 16),
+                  CustomTextWidget(
+                    text: "Select TID/VPA",
+                    color: Colors.grey.shade800,
+                    size: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: InkWell(
+                          onTap: () {
+                            setState(() => tidType = TerminalIdType.TID);
+                            // Provider.of<MerchantFilteredTransactionProvider>(
+                            //   context,
+                            //   listen: false,
+                            // ).setTidType(TerminalIdType.TID);
+                          },
+                          child: Row(
+                            children: [
+                              Radio<TerminalIdType>(
+                                value: TerminalIdType.TID,
+                                groupValue: tidType,
+                                onChanged: (value) {
+                                  if (value != null) {
+                                    setState(() => tidType = value);
+                                    // Provider.of<MerchantFilteredTransactionProvider>(
+                                    //   context,
+                                    //   listen: false,
+                                    // ).setTidType(value);
+                                  }
+                                },
+                              ),
+                              Text("TID"),
+                            ],
                           ),
                         ),
-                      );
-                    }
+                      ),
+                      Expanded(
+                        child: InkWell(
+                          onTap: () {
+                            setState(() => tidType = TerminalIdType.VPA);
+                            // Provider.of<MerchantFilteredTransactionProvider>(
+                            //   context,
+                            //   listen: false,
+                            // ).setTidType(TerminalIdType.VPA);
+                          },
+                          child: Row(
+                            children: [
+                              Radio<TerminalIdType>(
+                                value: TerminalIdType.VPA,
+                                groupValue: tidType,
+                                onChanged: (value) {
+                                  if (value != null) {
+                                    setState(() => tidType = value);
+                                    // Provider.of<MerchantFilteredTransactionProvider>(
+                                    //   context,
+                                    //   listen: false,
+                                    // ).setTidType(value);
+                                  }
+                                },
+                              ),
+                              Text("VPA"),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 16),
+                  Expanded(
+                    child: Consumer<MerchantFilteredTransactionProvider>(
+                      builder: (context, tidProvider, child) {
+                        if (tidType == TerminalIdType.VPA) {
+                          // Default for TID
+                          if (tidProvider.isAllVpaLoading &&
+                              tidProvider.allVpa.isEmpty) {
+                            return Center(child: CircularProgressIndicator());
+                          }
 
-                    return ListView.separated(
-                      controller: tidProvider.allTidScrollCtrl,
-                      itemCount: tidProvider.allTid.length + 1,
-                      itemBuilder: (context, index) {
-                        if (index < tidProvider.allTid.length) {
-                          return TextField(
-                            enabled: true,
-                            readOnly: true,
-                            onTap: () {
-                              tidProvider
-                                  .setTid(tidProvider.allTid[index] ?? '');
-                              // tidProvider.tidSearchController.text =
-                              //     tidProvider.allTid[index] ?? '';
-                              Navigator.pop(context);
-                            },
-                            decoration: commonInputDecoration(
-                              hintText: tidProvider.allTid[index] ?? '',
-                              Icons.point_of_sale_outlined,
-                            ),
-                          );
-                        } else if (tidProvider.hasMoreTid) {
-                          return Center(child: CircularProgressIndicator());
-                        } else {
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Center(
+                          if (tidProvider.allVpa.isEmpty) {
+                            return Center(
                               child: Text(
-                                tidProvider.allTid.length > 15
-                                    ? "No more Tid"
-                                    : '',
+                                "No Vpa available",
                                 style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: 16,
                                   color: Colors.grey,
                                   fontStyle: FontStyle.italic,
                                 ),
                               ),
-                            ),
+                            );
+                          }
+
+                          return ListView.separated(
+                            controller: tidProvider.allVpaScrollCtrl,
+                            itemCount: tidProvider.allVpa.length + 1,
+                            itemBuilder: (context, index) {
+                              if (index < tidProvider.allVpa.length) {
+                                return TextField(
+                                  enabled: true,
+                                  readOnly: true,
+                                  onTap: () {
+                                    tidProvider.setTid(
+                                      tidProvider.allVpa[index] ?? '',
+                                    );
+                                    Navigator.pop(context);
+                                  },
+                                  decoration: commonInputDecoration(
+                                    hintText: tidProvider.allVpa[index] ?? '',
+                                    Icons.point_of_sale_outlined,
+                                  ),
+                                );
+                              } else if (tidProvider.hasMoreVpa) {
+                                return Center(
+                                    child: CircularProgressIndicator());
+                              } else {
+                                return Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Center(
+                                    child: Text(
+                                      tidProvider.allVpa.length > 15
+                                          ? "No more Vpa"
+                                          : '',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.grey,
+                                        fontStyle: FontStyle.italic,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                            separatorBuilder: (context, index) =>
+                                SizedBox(height: 10),
+                          );
+                        } else {
+                          // Default for TID
+                          if (tidProvider.isAllTidLoading &&
+                              tidProvider.allTid.isEmpty) {
+                            return Center(child: CircularProgressIndicator());
+                          }
+
+                          if (tidProvider.allTid.isEmpty) {
+                            return Center(
+                              child: Text(
+                                "No Tid available",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.grey,
+                                  fontStyle: FontStyle.italic,
+                                ),
+                              ),
+                            );
+                          }
+
+                          return ListView.separated(
+                            controller: tidProvider.allTidScrollCtrl,
+                            itemCount: tidProvider.allTid.length + 1,
+                            itemBuilder: (context, index) {
+                              if (index < tidProvider.allTid.length) {
+                                return TextField(
+                                  enabled: true,
+                                  readOnly: true,
+                                  onTap: () {
+                                    tidProvider.setTid(
+                                      tidProvider.allTid[index] ?? '',
+                                    );
+                                    Navigator.pop(context);
+                                  },
+                                  decoration: commonInputDecoration(
+                                    hintText: tidProvider.allTid[index] ?? '',
+                                    Icons.point_of_sale_outlined,
+                                  ),
+                                );
+                              } else if (tidProvider.hasMoreTid) {
+                                return Center(
+                                    child: CircularProgressIndicator());
+                              } else {
+                                return Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Center(
+                                    child: Text(
+                                      tidProvider.allTid.length > 15
+                                          ? "No more Tid"
+                                          : '',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.grey,
+                                        fontStyle: FontStyle.italic,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                            separatorBuilder: (context, index) =>
+                                SizedBox(height: 10),
                           );
                         }
                       },
-                      separatorBuilder: (context, index) => SizedBox(
-                        height: 10,
-                      ),
-                    );
-                  },
-                ),
-              ),
-              SizedBox(height: 16),
-              Center(
-                child: CustomContainer(
-                  width: screenWidth * 0.85,
-                  height: 40,
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Center(
-                    child: CustomTextWidget(
-                      text: "Close",
-                      color: Colors.white,
                     ),
                   ),
-                ),
+                  SizedBox(height: 16),
+                  Center(
+                    child: CustomContainer(
+                      width: screenWidth * 0.85,
+                      height: 40,
+                      onTap: () => Navigator.pop(context),
+                      child: Center(
+                        child: CustomTextWidget(
+                          text: "Close",
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         );
       },
     );
@@ -496,3 +635,5 @@ class _MerchantTransactionFilterScreenState
     );
   }
 }
+
+enum TerminalIdType { TID, VPA }
