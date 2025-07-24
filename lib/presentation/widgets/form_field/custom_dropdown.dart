@@ -15,6 +15,7 @@ InputDecoration commonInputDecoration(IconData? prefixIcon,
     IconData? suffixIcon,
     String? helperText,
     TextStyle? helperStyle,
+    String? labelText,
     VoidCallback? onTapSuffixIcon}) {
   return InputDecoration(
     // label: Text(title),
@@ -23,6 +24,8 @@ InputDecoration commonInputDecoration(IconData? prefixIcon,
     hintText: hintText ?? '',
     fillColor: Colors.grey[300],
     filled: true,
+    labelText: labelText,
+
     contentPadding: EdgeInsets.only(
         left: 10, top: 10, bottom: 10, right: rightPadding ?? 10),
     border: OutlineInputBorder(

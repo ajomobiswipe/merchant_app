@@ -18,6 +18,8 @@ enum SearchType {
   APP_CODE,
 }
 
+enum TerminalType { TID, VPA }
+
 class MerchantFilteredTransactionProvider extends ChangeNotifier {
   MerchantServices merchantServices = MerchantServices();
   final TextEditingController searchController = TextEditingController();
@@ -25,6 +27,13 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
   final MerchantServices _merchantServices = MerchantServices();
   SearchType _selectedSearchType = SearchType.RRN;
   FilterType _searchFilterType = FilterType.DATERANGE;
+  TerminalType _selectedTerminalType = TerminalType.TID;
+  TerminalType get selectedTerminalType => _selectedTerminalType;
+
+  set selectedTerminalType(TerminalType value) {
+    _selectedTerminalType = value;
+    notifyListeners();
+  }
 
   FilterType get selectedSearchFilterType => _searchFilterType;
   // TextEditingController _tidSearchController = TextEditingController();
@@ -40,7 +49,7 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
   //  void setTid(param0) {
 
   //  }
-  setTid(tid) {
+  setTidOrVpa(tid) {
     _tidSearchController.text = tid;
     notifyListeners();
   }
@@ -281,6 +290,7 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
     _allTranReqModel.recordFrom = getRecordFrom();
     _allTranReqModel.recordTo = getRecordTo();
     _allTranReqModel.terminalId = getTid();
+    _allTranReqModel.creditVpa = getVpa();
     _allTranReqModel.sendTxnReportToMail = false;
     _allTranReqModel.sourceOftxn = getPaymentMode();
 
@@ -348,6 +358,7 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
       ..recordTo = getRecordTo()
       ..terminalId = getTid()
       ..sourceOftxn = getPaymentMode()
+      ..creditVpa = getVpa()
       ..sendTxnReportToMail = true;
 
     _isEmailSending = true;
@@ -406,7 +417,18 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
 
   getTid() {
     if (_searchFilterType == FilterType.DATERANGE &&
-        _tidSearchController.text.isNotEmpty) {
+        _tidSearchController.text.isNotEmpty &&
+        _selectedTerminalType == TerminalType.TID) {
+      return _tidSearchController.text;
+    } else {
+      return null;
+    }
+  }
+
+  getVpa() {
+    if (_searchFilterType == FilterType.DATERANGE &&
+        _tidSearchController.text.isNotEmpty &&
+        _selectedTerminalType == TerminalType.VPA) {
       return _tidSearchController.text;
     } else {
       return null;
