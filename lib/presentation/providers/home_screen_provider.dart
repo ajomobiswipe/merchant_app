@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:anet_merchant_app/data/models/transaction_history_request_model.dart';
 import 'package:anet_merchant_app/data/models/transaction_model.dart';
 import 'package:anet_merchant_app/data/services/dio_exception_handlers.dart';
@@ -17,7 +15,7 @@ enum HomeScreenTabItem {
   Settlements,
 }
 
-class TransactionProvider with ChangeNotifier {
+class HomeScreenProvider with ChangeNotifier {
   // Enums
   HomeScreenTabItem _selectedTab = HomeScreenTabItem.TransactionHistory;
 
@@ -89,10 +87,8 @@ class TransactionProvider with ChangeNotifier {
       ..merchantId = merchantId
       ..recordFrom = today
       ..recordTo = today
-      // ..recordFrom = "20-07-2025"
+      // ..recordFrom = "20-05-2025"
       // ..recordTo = "20-07-2025"
-      // ..recordFrom = "22-01-2023"
-      // ..recordTo = "27-05-2025"
       ..rrn = null
       ..terminalId = null
       ..sendTxnReportToMail = false;

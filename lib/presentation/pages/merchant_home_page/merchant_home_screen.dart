@@ -1,10 +1,9 @@
 import 'package:anet_merchant_app/core/app_color.dart';
 import 'package:anet_merchant_app/core/utils/helpers/default_height.dart';
-import 'package:anet_merchant_app/data/models/transaction_model.dart';
 import 'package:anet_merchant_app/data/services/connectivity_service.dart';
 import 'package:anet_merchant_app/presentation/pages/merchant_scaffold.dart';
 import 'package:anet_merchant_app/presentation/providers/authProvider.dart';
-import 'package:anet_merchant_app/presentation/providers/transactions_provider.dart';
+import 'package:anet_merchant_app/presentation/providers/home_screen_provider.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_container.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
 import 'package:anet_merchant_app/presentation/widgets/transaction_tile.dart';
@@ -20,25 +19,25 @@ class MerchantHomeScreen extends StatefulWidget {
 }
 
 class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
-  late TransactionProvider transactionProvider;
-  String? storeName;
+  late HomeScreenProvider _transactionProvider;
+
   @override
   void initState() {
     super.initState();
-    setStoreName();
+    _setStoreName();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      transactionProvider =
-          Provider.of<TransactionProvider>(context, listen: false);
-      transactionProvider.clearTransactions();
+      _transactionProvider =
+          Provider.of<HomeScreenProvider>(context, listen: false);
+      _transactionProvider.clearTransactions();
       ConnectivityService().checkConnectivity();
-      transactionProvider.getRecentTransactions();
-      transactionProvider.fetchDailySettlementTxnSummary();
-      transactionProvider.fetchDailyMerchantTxnSummary();
-      transactionProvider.recentTransScrollCtrl.addListener(_onScroll);
+      _transactionProvider.getRecentTransactions();
+      _transactionProvider.fetchDailySettlementTxnSummary();
+      _transactionProvider.fetchDailyMerchantTxnSummary();
+      _transactionProvider.recentTransScrollCtrl.addListener(_onScroll);
     });
   }
 
-  setStoreName() async {
+  Future<void> _setStoreName() async {
     final pref = await SharedPreferences.getInstance();
     var dbaName = pref.getString("shopName") ?? "N/A";
     Provider.of<AuthProvider>(context, listen: false)
@@ -46,52 +45,35 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
   }
 
   void _onScroll() {
-    if (transactionProvider.recentTransScrollCtrl.position.pixels >=
-            transactionProvider.recentTransScrollCtrl.position.maxScrollExtent -
+    if (_transactionProvider.recentTransScrollCtrl.position.pixels >=
+            _transactionProvider
+                    .recentTransScrollCtrl.position.maxScrollExtent -
                 200 &&
-        !transactionProvider.isDailyTransactionsLoading) {
-      transactionProvider.getRecentTransactions();
+        !_transactionProvider.isDailyTransactionsLoading) {
+      _transactionProvider.getRecentTransactions();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    double screenHeight = MediaQuery.of(context).size.height;
-    double screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
     return MerchantScaffold(
       showStoreName: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           defaultHeight(screenHeight * .01),
-          CustomTextWidget(text: "Total Success transactions today", size: 12),
+          const CustomTextWidget(
+              text: "Total Success transactions today", size: 12),
           defaultHeight(screenHeight * .01),
-          _transactionSummaryDetailsHeader(screenHeight, screenWidth),
+          const _TransactionSummaryDetailsHeader(),
           defaultHeight(screenHeight * .01),
-          _tabItems(screenHeight, screenWidth),
-
+          _TabItems(screenHeight: screenHeight, screenWidth: screenWidth),
           defaultHeight(screenHeight * .02),
-
-          // **Dynamic Content Based on Selected Tab**r
-          Expanded(
-            child: Consumer<TransactionProvider>(
-              builder: (context, provider, child) {
-                return getTabContent(
-                    TransactionProvider: provider,
-                    screenWidth: screenWidth,
-                    screenHeight: screenHeight);
-              },
-            ),
-          ),
-          Selector<TransactionProvider, HomeScreenTabItem>(
-              selector: (context, provider) =>
-                  provider.selectedTab, // Listen only to selectedTab
-              builder: (context, selectedTab, child) {
-                return getBottomButton(
-                    selectedTab: selectedTab,
-                    screenHeight: screenHeight,
-                    context: context);
-              })
+          // Dynamic Content Based on Selected Tab
+          const Expanded(child: _TabContent()),
+          const _BottomButton(),
         ],
       ),
       onTapSupport: () {
@@ -99,16 +81,21 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
       },
     );
   }
+}
 
-  Consumer<TransactionProvider> _tabItems(
-      double screenHeight, double screenWidth) {
-    return Consumer<TransactionProvider>(
+class _TabItems extends StatelessWidget {
+  final double screenHeight;
+  final double screenWidth;
+  const _TabItems({required this.screenHeight, required this.screenWidth});
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<HomeScreenProvider>(
       builder: (context, provider, child) {
         return Row(
-          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            homeScreenTab(
-              screenHeight,
+            _HomeScreenTab(
+              screenHeight: screenHeight,
               width: screenWidth * 0.425,
               homeScreenTabItem: HomeScreenTabItem.TransactionHistory,
               selectedTabItem: provider.selectedTab,
@@ -117,8 +104,8 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
               title: "Transaction History",
             ),
             defaultWidth(screenWidth * .05),
-            homeScreenTab(
-              screenHeight,
+            _HomeScreenTab(
+              screenHeight: screenHeight,
               width: screenWidth * 0.425,
               homeScreenTabItem: HomeScreenTabItem.Settlements,
               selectedTabItem: provider.selectedTab,
@@ -131,11 +118,15 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
       },
     );
   }
+}
 
-  Selector<TransactionProvider, HomeScreenTabItem>
-      _transactionSummaryDetailsHeader(
-          double screenHeight, double screenWidth) {
-    return Selector<TransactionProvider, HomeScreenTabItem>(
+class _TransactionSummaryDetailsHeader extends StatelessWidget {
+  const _TransactionSummaryDetailsHeader();
+  @override
+  Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+    return Selector<HomeScreenProvider, HomeScreenTabItem>(
       selector: (context, provider) => provider.selectedTab,
       builder: (context, selectedTab, child) {
         switch (selectedTab) {
@@ -143,23 +134,26 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
             return CustomContainer(
               height: screenHeight * 0.06,
               padding: EdgeInsets.symmetric(horizontal: screenWidth * .025),
-              child: Consumer<TransactionProvider>(
-                  builder: (context, provider, child) {
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CustomTextWidget(
+              child: Consumer<HomeScreenProvider>(
+                builder: (context, provider, child) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CustomTextWidget(
                         color: Colors.white,
                         text: provider.todaysTnxCount.toString(),
-                        size: 18),
-                    CustomTextWidget(
+                        size: 18,
+                      ),
+                      CustomTextWidget(
                         text:
                             "₹ ${provider.getTotalTransactionAmount.toStringAsFixed(2)}",
                         size: 18,
-                        color: Colors.white),
-                  ],
-                );
-              }),
+                        color: Colors.white,
+                      ),
+                    ],
+                  );
+                },
+              ),
             );
           case HomeScreenTabItem.Settlements:
             return CustomContainer(
@@ -168,11 +162,13 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  CustomTextWidget(
-                      text:
-                          "₹ ${context.read<TransactionProvider>().totalSettlementAmount}",
+                  Consumer<HomeScreenProvider>(
+                    builder: (context, provider, child) => CustomTextWidget(
+                      text: "₹ ${provider.totalSettlementAmount}",
                       size: 18,
-                      color: Colors.white), //totalSettlementAmount
+                      color: Colors.white,
+                    ),
+                  ),
                 ],
               ),
             );
@@ -180,69 +176,90 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
       },
     );
   }
+}
 
-  getBottomButton(
-      {required HomeScreenTabItem selectedTab,
-      required double screenHeight,
-      required BuildContext context}) {
-    switch (selectedTab) {
-      case HomeScreenTabItem.TransactionHistory:
-        return CustomContainer(
-          onTap: () {
-            // MerchantTransactionFilterBottomSheet.show(context);
-            Navigator.pushNamed(context, "merchantTransactionFilterScreen");
-          },
-          height: screenHeight * 0.06,
-          child: CustomTextWidget(
-            text: "View All transactions",
-            color: AppColors.gray,
-          ),
-        );
-      case HomeScreenTabItem.Settlements:
-        return CustomContainer(
-          onTap: () {
-            Navigator.pushNamed(context, "merchantStatementFilterScreen");
-          },
-          height: screenHeight * 0.06,
-          child: CustomTextWidget(
-            text: "View All Settlements",
-            color: AppColors.gray,
-          ),
-        );
-    }
+class _BottomButton extends StatelessWidget {
+  const _BottomButton();
+  @override
+  Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    return Selector<HomeScreenProvider, HomeScreenTabItem>(
+      selector: (context, provider) => provider.selectedTab,
+      builder: (context, selectedTab, child) {
+        switch (selectedTab) {
+          case HomeScreenTabItem.TransactionHistory:
+            return CustomContainer(
+              onTap: () {
+                Navigator.pushNamed(context, "merchantTransactionFilterScreen");
+              },
+              height: screenHeight * 0.06,
+              child: const CustomTextWidget(
+                text: "View All transactions",
+                color: AppColors.gray,
+              ),
+            );
+          case HomeScreenTabItem.Settlements:
+            return CustomContainer(
+              onTap: () {
+                Navigator.pushNamed(context, "merchantStatementFilterScreen");
+              },
+              height: screenHeight * 0.06,
+              child: const CustomTextWidget(
+                text: "View All Settlements",
+                color: AppColors.gray,
+              ),
+            );
+        }
+      },
+    );
   }
+}
 
-  /// **Function to Return Content Based on Selected Tab**
-  Widget getTabContent(
-      {required TransactionProvider TransactionProvider,
-      required double screenWidth,
-      required double screenHeight}) {
-    switch (TransactionProvider.selectedTab) {
-      case HomeScreenTabItem.TransactionHistory:
-        return transactionHistoryList(
-            transactionElement: TransactionProvider.transactions,
-            screenWidth: screenWidth,
-            transactionProvider: TransactionProvider,
-            screenHeight: screenHeight);
-      case HomeScreenTabItem.Settlements:
-        return settlementsList(
-            screenWidth: screenWidth, screenHeight: screenHeight);
-    }
+class _TabContent extends StatelessWidget {
+  const _TabContent();
+  @override
+  Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    return Consumer<HomeScreenProvider>(
+      builder: (context, provider, child) {
+        switch (provider.selectedTab) {
+          case HomeScreenTabItem.TransactionHistory:
+            return _TransactionHistoryList(
+              transactionProvider: provider,
+              screenWidth: screenWidth,
+              screenHeight: screenHeight,
+            );
+          case HomeScreenTabItem.Settlements:
+            return _SettlementsList(
+              screenWidth: screenWidth,
+              screenHeight: screenHeight,
+            );
+        }
+      },
+    );
   }
+}
 
-  /// **Transaction History List**
-  Widget transactionHistoryList(
-      {required List<TransactionElement> transactionElement,
-      required TransactionProvider transactionProvider,
-      required double screenWidth,
-      required double screenHeight}) {
+class _TransactionHistoryList extends StatelessWidget {
+  final HomeScreenProvider transactionProvider;
+  final double screenWidth;
+  final double screenHeight;
+  const _TransactionHistoryList({
+    required this.transactionProvider,
+    required this.screenWidth,
+    required this.screenHeight,
+  });
+  @override
+  Widget build(BuildContext context) {
+    final transactionElement = transactionProvider.transactions;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         InkWell(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
+            children: const [
               CustomTextWidget(text: "Recent transactions", size: 14),
               Icon(Icons.sync, color: AppColors.kPrimaryColor, size: 20),
             ],
@@ -254,9 +271,7 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
         Expanded(
           child: (transactionProvider.isDailyTransactionsLoading &&
                   transactionProvider.recentTransactions.isEmpty)
-              ? Center(
-                  child: CircularProgressIndicator(),
-                )
+              ? const Center(child: CircularProgressIndicator())
               : transactionElement.isNotEmpty
                   ? ListView.builder(
                       controller: transactionProvider.recentTransScrollCtrl,
@@ -265,9 +280,7 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
                         if (index < transactionElement.length) {
                           return Column(
                             children: [
-                              SizedBox(
-                                height: screenHeight * .01,
-                              ),
+                              SizedBox(height: screenHeight * .01),
                               TransactionTile(
                                 transaction: transactionElement[index],
                                 width: screenWidth,
@@ -275,121 +288,145 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
                             ],
                           );
                         } else if (transactionProvider.hasMoreTransactions) {
-                          return Padding(
+                          return const Padding(
                             padding: EdgeInsets.symmetric(vertical: 16),
                             child: Center(child: CircularProgressIndicator()),
                           );
                         } else {
                           return Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: EdgeInsets.all(8.0),
                             child: Center(
-                              child: Text("No more transactions to display",
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.grey,
-                                      fontStyle: FontStyle.italic)),
+                              child: Text(
+                                transactionElement.length > 10
+                                    ? "No more transactions to display"
+                                    : '',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey,
+                                  fontStyle: FontStyle.italic,
+                                ),
+                              ),
                             ),
                           );
                         }
                       },
                     )
-                  : Center(
+                  : const Center(
                       child: Text(
                         "No transactions available",
                         style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.grey,
-                            fontStyle: FontStyle.italic),
+                          fontSize: 16,
+                          color: Colors.grey,
+                          fontStyle: FontStyle.italic,
+                        ),
                       ),
                     ),
         ),
       ],
     );
   }
+}
 
-  /// **Settlements List**
-  Widget settlementsList(
-      {required double screenWidth, required double screenHeight}) {
-    return Consumer<TransactionProvider>(builder: (context, provider, child) {
-      return Column(
-        children: [
-          InkWell(
-            onTap: () {
-              provider.fetchDailySettlementTxnSummary();
-            },
-            child: Row(
+class _SettlementsList extends StatelessWidget {
+  final double screenWidth;
+  final double screenHeight;
+  const _SettlementsList(
+      {required this.screenWidth, required this.screenHeight});
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<HomeScreenProvider>(
+      builder: (context, provider, child) {
+        return Column(
+          children: [
+            InkWell(
+              onTap: () {
+                provider.fetchDailySettlementTxnSummary();
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: const [
+                  CustomTextWidget(
+                    text: "Today Settlements",
+                    isBold: true,
+                    size: 14,
+                  ),
+                  Icon(Icons.sync, color: AppColors.kPrimaryColor, size: 20),
+                ],
+              ),
+            ),
+            defaultHeight(screenWidth * 0.05),
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                CustomTextWidget(
-                  text: "Today Settlements",
-                  isBold: true,
-                  size: 14,
+                const CustomTextWidget(
+                  text: "Settled Amount",
+                  isBold: false,
+                  size: 16,
                 ),
-                Icon(Icons.sync, color: AppColors.kPrimaryColor, size: 20),
+                CustomTextWidget(
+                  text: "₹ ${provider.totalSettlementAmount}",
+                  isBold: false,
+                  size: 16,
+                ),
               ],
             ),
-          ),
-          defaultHeight(screenWidth * 0.05),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CustomTextWidget(
-                text: "Settled Amount",
-                isBold: false,
-                size: 16,
-              ),
-              CustomTextWidget(
-                text: "₹ ${provider.totalSettlementAmount}",
-                isBold: false,
-                size: 16,
-              ),
-            ],
-          ),
-          defaultHeight(screenWidth * 0.2),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CustomTextWidget(
-                text: "Deductions",
-                isBold: false,
-                size: 16,
-              ),
-              CustomTextWidget(
-                text: "₹ ${provider.deductionsAmount}",
-                isBold: false,
-                size: 16,
-              ),
-            ],
-          ),
-          Spacer(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CustomTextWidget(
-                text: "Pending Settlements",
-                isBold: false,
-                size: 16,
-              ),
-              CustomTextWidget(
-                text: "₹ ${provider.pendingSettlementAmount}",
-                isBold: false,
-                size: 16,
-              ),
-            ],
-          ),
-          defaultHeight(screenWidth * 0.1),
-        ],
-      );
-    });
+            defaultHeight(screenWidth * 0.2),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const CustomTextWidget(
+                  text: "Deductions",
+                  isBold: false,
+                  size: 16,
+                ),
+                CustomTextWidget(
+                  text: "₹ ${provider.deductionsAmount}",
+                  isBold: false,
+                  size: 16,
+                ),
+              ],
+            ),
+            const Spacer(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const CustomTextWidget(
+                  text: "Pending Settlements",
+                  isBold: false,
+                  size: 16,
+                ),
+                CustomTextWidget(
+                  text: "₹ ${provider.pendingSettlementAmount}",
+                  isBold: false,
+                  size: 16,
+                ),
+              ],
+            ),
+            defaultHeight(screenWidth * 0.1),
+          ],
+        );
+      },
+    );
   }
+}
 
-  /// **Tab Widget**
-  CustomContainer homeScreenTab(double screenHeight,
-      {required double width,
-      required HomeScreenTabItem homeScreenTabItem,
-      required HomeScreenTabItem selectedTabItem,
-      Function()? onTap,
-      required String title}) {
+class _HomeScreenTab extends StatelessWidget {
+  final double screenHeight;
+  final double width;
+  final HomeScreenTabItem homeScreenTabItem;
+  final HomeScreenTabItem selectedTabItem;
+  final Function()? onTap;
+  final String title;
+  const _HomeScreenTab({
+    required this.screenHeight,
+    required this.width,
+    required this.homeScreenTabItem,
+    required this.selectedTabItem,
+    this.onTap,
+    required this.title,
+  });
+  @override
+  Widget build(BuildContext context) {
     return CustomContainer(
       onTap: onTap,
       width: width,

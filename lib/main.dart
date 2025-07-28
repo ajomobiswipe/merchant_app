@@ -17,7 +17,7 @@ import 'package:anet_merchant_app/core/state_key.dart';
 import 'package:anet_merchant_app/data/services/connectivity_service.dart';
 import 'package:anet_merchant_app/presentation/providers/authProvider.dart';
 import 'package:anet_merchant_app/presentation/providers/support_action_provider.dart';
-import 'package:anet_merchant_app/presentation/providers/transactions_provider.dart';
+import 'package:anet_merchant_app/presentation/providers/home_screen_provider.dart';
 import 'package:anet_merchant_app/presentation/providers/merchant_filtered_transaction_provider.dart';
 import 'package:anet_merchant_app/presentation/providers/settlement_provider.dart';
 import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
@@ -56,7 +56,7 @@ void main() {
     runApp(MultiProvider(providers: [
       ChangeNotifierProvider(create: (_) => AuthProvider()),
       // ChangeNotifierProvider(create: (context) => ConnectivityProvider()),
-      ChangeNotifierProvider(create: (_) => TransactionProvider()),
+      ChangeNotifierProvider(create: (_) => HomeScreenProvider()),
       // ChangeNotifierProvider(create: (_) => TidProvider()),
       ChangeNotifierProvider(create: (_) => SettlementProvider()),
       ChangeNotifierProvider(create: (_) => SupportActionProvider()),
