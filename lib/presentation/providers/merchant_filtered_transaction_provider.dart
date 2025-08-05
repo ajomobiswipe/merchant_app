@@ -457,6 +457,7 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
   void resetFilters() {
     _selectedSearchType = SearchType.RRN;
     _searchFilterType = FilterType.DATERANGE;
+    _selectedTerminalType = TerminalType.TID;
     tidSearchController.clear();
     _tidSearchController.clear();
     _selectedDateRange = null;

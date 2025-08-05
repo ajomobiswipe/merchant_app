@@ -15,6 +15,7 @@ import 'package:anet_merchant_app/presentation/pages/merchant_settlements_filter
 import 'package:anet_merchant_app/presentation/pages/settlement_dashboard.dart';
 import 'package:anet_merchant_app/presentation/pages/view_all_transaction_screen.dart';
 import 'package:anet_merchant_app/presentation/pages/view_settlement_info.dart';
+import 'package:anet_merchant_app/presentation/pages/vpa_transactions_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -78,6 +79,8 @@ class CustomRoute {
           return SettlementDashboard();
         case "viewSettlementInfo":
           return ViewSettlementInfo();
+        case "vpaTransactionsScreen":
+          return VpaTransactionsScreen();
       }
       return const Scaffold(
         body: Center(

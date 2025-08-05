@@ -1,4 +1,4 @@
-package com.anet.omamerchant
+package com.alliancenetwork.merchantapp
 
 import io.flutter.embedding.android.FlutterActivity
 

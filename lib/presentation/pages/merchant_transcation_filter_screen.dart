@@ -6,6 +6,7 @@ import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_container.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
 import 'package:anet_merchant_app/presentation/widgets/form_field/custom_dropdown.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -62,6 +63,7 @@ class _MerchantTransactionFilterScreenState
     double screenWidth = MediaQuery.of(context).size.width;
     return Consumer<MerchantFilteredTransactionProvider>(
       builder: (context, provider, child) {
+        final isVpa = provider.selectedTerminalType == TerminalType.VPA;
         return MerchantScaffold(
           showStoreName: true,
           child: Padding(
@@ -92,7 +94,8 @@ class _MerchantTransactionFilterScreenState
                               child: _buildCustomDatePickers(provider, context),
                             ),
                           defaultHeight(screenHeight * .03),
-                          _buildPaymentModeDropdown(provider, screenWidth),
+                          if (!isVpa)
+                            _buildPaymentModeDropdown(provider, screenWidth),
                           defaultHeight(screenHeight * .03),
                         ],
                       )
@@ -518,6 +521,11 @@ class _MerchantTransactionFilterScreenState
           child: CustomContainer(
             height: screenHeight * 0.06,
             onTap: () {
+              if (kDebugMode) {
+                Navigator.pushNamed(context, "vpaTransactionsScreen");
+
+                return;
+              }
               if (provider.selectedSearchFilterType == FilterType.DATERANGE) {
                 // provider.selectedDateRange == 'Custom Date Range' &&
                 if (provider.isDateNotSelected() &&

@@ -6,6 +6,7 @@ import 'package:anet_merchant_app/core/static_functions.dart';
 import 'package:anet_merchant_app/data/services/connection.dart';
 import 'package:anet_merchant_app/domain/datasources/storage/secure_storage.dart';
 import 'package:anet_merchant_app/main.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
 class MerchantServices {
@@ -54,6 +55,15 @@ class MerchantServices {
       {required int pageNumber, required int pageSize}) async {
     final url =
         "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/getPosTxnHistoryReport?page=$pageNumber&size=$pageSize&sort=insertDateTime%2Cdesc";
+    return await DioClient().post(url, requestModel);
+  }
+
+  Future<Response<dynamic>> fetchVpaTransactionHistory(
+      Map<String, dynamic> requestModel,
+      {required int pageNumber,
+      required int pageSize}) async {
+    final url =
+        "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/merchantVpaTxnData?page=$pageNumber&size=$pageSize&sort=insertDateTime%2Cdesc";
     return await DioClient().post(url, requestModel);
   }
 

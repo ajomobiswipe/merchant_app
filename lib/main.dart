@@ -20,6 +20,7 @@ import 'package:anet_merchant_app/presentation/providers/support_action_provider
 import 'package:anet_merchant_app/presentation/providers/home_screen_provider.dart';
 import 'package:anet_merchant_app/presentation/providers/merchant_filtered_transaction_provider.dart';
 import 'package:anet_merchant_app/presentation/providers/settlement_provider.dart';
+import 'package:anet_merchant_app/presentation/providers/vpa_transaction_providerr.dart';
 import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
 import 'package:anet_merchant_app/presentation/widgets/app/custom_alert.dart';
 import 'package:flutter/material.dart';
@@ -60,6 +61,7 @@ void main() {
       // ChangeNotifierProvider(create: (_) => TidProvider()),
       ChangeNotifierProvider(create: (_) => SettlementProvider()),
       ChangeNotifierProvider(create: (_) => SupportActionProvider()),
+      ChangeNotifierProvider(create: (_) => VpaTransactionProvider()),
       ChangeNotifierProvider(
           create: (_) => MerchantFilteredTransactionProvider()),
       // ], child: MainPage()));
