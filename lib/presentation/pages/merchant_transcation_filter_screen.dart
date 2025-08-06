@@ -108,7 +108,7 @@ class _MerchantTransactionFilterScreenState
                 defaultHeight(screenHeight * .05),
 
                 _buildApplyButton(provider,
-                    context: context, screenHeight: screenHeight),
+                    context: context, screenHeight: screenHeight, isVpa: isVpa),
               ],
             ),
           ),
@@ -501,7 +501,9 @@ class _MerchantTransactionFilterScreenState
   }
 
   Widget _buildApplyButton(MerchantFilteredTransactionProvider provider,
-      {required BuildContext context, required double screenHeight}) {
+      {required BuildContext context,
+      required double screenHeight,
+      required bool isVpa}) {
     return Row(
       children: [
         Expanded(
@@ -521,9 +523,8 @@ class _MerchantTransactionFilterScreenState
           child: CustomContainer(
             height: screenHeight * 0.06,
             onTap: () {
-              if (kDebugMode) {
+              if (isVpa) {
                 Navigator.pushNamed(context, "vpaTransactionsScreen");
-
                 return;
               }
               if (provider.selectedSearchFilterType == FilterType.DATERANGE) {

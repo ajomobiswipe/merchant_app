@@ -21,6 +21,9 @@ enum SearchType {
 enum TerminalType { TID, VPA }
 
 class MerchantFilteredTransactionProvider extends ChangeNotifier {
+  MerchantFilteredTransactionProvider() {
+    applyDateToModel();
+  }
   MerchantServices merchantServices = MerchantServices();
   final TextEditingController searchController = TextEditingController();
   // Services

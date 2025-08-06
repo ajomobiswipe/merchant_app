@@ -1,6 +1,9 @@
 import 'package:anet_merchant_app/core/app_color.dart';
+import 'package:anet_merchant_app/core/utils/helpers/default_height.dart';
+import 'package:anet_merchant_app/main.dart';
 import 'package:anet_merchant_app/presentation/pages/merchant_scaffold.dart';
-import 'package:anet_merchant_app/presentation/providers/vpa_transaction_providerr.dart';
+import 'package:anet_merchant_app/presentation/providers/vpa_transaction_provider.dart';
+import 'package:anet_merchant_app/presentation/widgets/custom_container.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
 import 'package:anet_merchant_app/presentation/widgets/transaction_tile.dart';
 import 'package:anet_merchant_app/presentation/widgets/vpa_transaction_tile.dart';
@@ -48,6 +51,7 @@ class _VpaTransactionsScreenState extends State<VpaTransactionsScreen> {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+
     return MerchantScaffold(
       child:
           Consumer<VpaTransactionProvider>(builder: (context, provider, child) {
@@ -66,6 +70,26 @@ class _VpaTransactionsScreenState extends State<VpaTransactionsScreen> {
                 provider.refreshRecentTransactions();
               },
             ),
+            defaultHeight(screenHeight * .01),
+            CustomContainer(
+              height: screenHeight * 0.06,
+              padding: EdgeInsets.symmetric(horizontal: screenWidth * .025),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CustomTextWidget(
+                      color: Colors.white,
+                      text: provider.TnxCount.toString(),
+                      size: 18),
+                  CustomTextWidget(
+                      text:
+                          "₹ ${provider.getSumOfTransactions().toStringAsFixed(2)}",
+                      size: 18,
+                      color: Colors.white),
+                ],
+              ),
+            ),
+            defaultHeight(screenHeight * .01),
             Expanded(
               child: (provider.isDailyTransactionsLoading &&
                       provider.recentTransactions.isEmpty)
@@ -124,6 +148,14 @@ class _VpaTransactionsScreenState extends State<VpaTransactionsScreen> {
           ],
         );
       }),
+      onTapHome: () {
+        NavigationService.navigatorKey.currentState
+            ?.pushNamedAndRemoveUntil('merchantHomeScreen', (route) => false);
+      },
+      onTapSupport: () {
+        Navigator.pop(context);
+        Navigator.pushNamed(context, "merchantHelpScreen");
+      },
     );
   }
 }

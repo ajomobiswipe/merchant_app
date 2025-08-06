@@ -1,7 +1,6 @@
 import 'package:anet_merchant_app/presentation/providers/authProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:anet_merchant_app/core/utils/helpers/default_height.dart';
-import 'package:anet_merchant_app/data/models/transaction_model.dart';
 import 'package:anet_merchant_app/presentation/pages/merchant_scaffold.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_container.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
@@ -18,7 +17,7 @@ class ShowVpaTransactionInvoice extends StatelessWidget {
 
   String getCurrencySymbol(String? code) {
     if (code == "356" || code == "INR") return "INR";
-    return "₹"; // Since it's UPI-based
+    return "INR"; // Since it's UPI-based
   }
 
   @override
@@ -143,27 +142,33 @@ class ShowVpaTransactionInvoice extends StatelessWidget {
                   defaultHeight(mediumPadding),
                 ],
               ),
-            SizedBox(
-              width: screenWidth * 0.9,
+            Center(
               child: CustomTextWidget(
-                textAlign: TextAlign.center,
-                text:
-                    "* I am Satisfied with the goods/Services received and agree to pay as per issuer terms.",
-                size: 14,
-                isBold: false,
-                maxLines: 3,
-              ),
+                  text:
+                      "THANK YOU FOR USING OUR SERVICE\nKeep this receipt for your records."),
             ),
-            SizedBox(
-              width: screenWidth * 0.9,
-              child: CustomTextWidget(
-                textAlign: TextAlign.center,
-                text: "THANK YOU MERCHANT\nPLEASE KEEP THIS COPY",
-                size: 14,
-                isBold: false,
-                maxLines: 3,
-              ),
-            ),
+
+            // SizedBox(
+            //   width: screenWidth * 0.9,
+            //   child: CustomTextWidget(
+            //     textAlign: TextAlign.center,
+            //     text:
+            //         "* I am Satisfied with the goods/Services received and agree to pay as per issuer terms.",
+            //     size: 14,
+            //     isBold: false,
+            //     maxLines: 3,
+            //   ),
+            // ),
+            // SizedBox(
+            //   width: screenWidth * 0.9,
+            //   child: CustomTextWidget(
+            //     textAlign: TextAlign.center,
+            //     text: "THANK YOU MERCHANT\nPLEASE KEEP THIS COPY",
+            //     size: 14,
+            //     isBold: false,
+            //     maxLines: 3,
+            //   ),
+            // ),
             defaultHeight(mediumPadding),
             CustomContainer(
               onTap: () =>
@@ -255,8 +260,7 @@ class ShowVpaTransactionInvoice extends StatelessWidget {
                   ),
                 pw.SizedBox(height: 10),
                 centerText(
-                    "* I am Satisfied with the goods/Services received and agree to pay as per issuer terms."),
-                centerText("THANK YOU MERCHANT\nPLEASE KEEP THIS COPY"),
+                    "THANK YOU FOR USING OUR SERVICE\nKeep this receipt for your records."),
               ],
             ),
           );

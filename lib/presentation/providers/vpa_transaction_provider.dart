@@ -1,7 +1,6 @@
-import 'package:anet_merchant_app/data/models/transaction_history_request_model.dart';
-import 'package:anet_merchant_app/data/models/transaction_model.dart';
 import 'package:anet_merchant_app/data/services/dio_exception_handlers.dart';
 import 'package:anet_merchant_app/data/services/merchant_service.dart';
+import 'package:anet_merchant_app/presentation/providers/merchant_filtered_transaction_provider.dart';
 import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +8,16 @@ import 'package:intl/intl.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+class DummyMerchantProvider extends MerchantFilteredTransactionProvider {}
+
 class VpaTransactionProvider with ChangeNotifier {
+  final MerchantFilteredTransactionProvider transactionProvider;
+
+  VpaTransactionProvider(this.transactionProvider) {
+    // Access fromDate and toDate
+    print("FROM: ${transactionProvider.customStartDate}");
+    print("TO: ${transactionProvider.customEndDate}");
+  }
   // Enums
 
   // Services
@@ -30,17 +38,26 @@ class VpaTransactionProvider with ChangeNotifier {
   final int pageSize = 10;
 
   // Transaction Data
-  int _todaysTnxCount = 0; // Simulate total from API
+  int _TnxCount = 0; // Simulate total from API
   List<dynamic> recentTransactions = [];
+
   double _totalTransactionAmount = 0.0;
+
+  double getSumOfTransactions() {
+    return recentTransactions.fold(0.0, (sum, transaction) {
+      final rawAmount = transaction['transactionAmount'];
+      final parsedAmount = double.tryParse(rawAmount?.toString() ?? '');
+      return sum + (parsedAmount ?? 0.0);
+    });
+  }
 
   double get getTotalTransactionAmount => _totalTransactionAmount;
 
   // Getters
 
-  bool get hasMoreTransactions => recentTransactions.length < _todaysTnxCount;
+  bool get hasMoreTransactions => recentTransactions.length < _TnxCount;
   bool get isDailyTransactionsLoading => _isDailyTransactionsLoading;
-  int get todaysTnxCount => _todaysTnxCount;
+  int get TnxCount => _TnxCount;
 
   List<dynamic> get transactions => recentTransactions;
 
@@ -57,21 +74,26 @@ class VpaTransactionProvider with ChangeNotifier {
   double get pendingSettlementAmount => _pendingSettlement;
   int get totalTransactions => _totalTransactions;
   // Methods
+  String? formatDateOrNull(DateTime? date) {
+    return date != null ? DateFormat('dd-MM-yyyy').format(date) : null;
+  }
 
   Future<void> getRecentTransactions() async {
     print("Current Page: $currentPage");
     print("Page Size: $pageSize");
-    print("Total Items: $_todaysTnxCount");
+    print("Total Items: $_TnxCount");
     print("Recent Transactions Length: ${recentTransactions.length}");
 
-    if (recentTransactions.length >= _todaysTnxCount &&
-        !isRecentTransLoadingFistTime) return;
+    if (recentTransactions.length >= _TnxCount && !isRecentTransLoadingFistTime)
+      return;
 
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String? merchantId = prefs.getString('acqMerchantId');
     print(merchantId);
     print("Inside fetchItems");
     final today = DateFormat('dd-MM-yyyy').format(DateTime.now());
+    final startDate = formatDateOrNull(transactionProvider.customStartDate);
+    final endDate = formatDateOrNull(transactionProvider.customEndDate);
     // _recentTranReqModel
     //   ..acquirerId = "OMAIND"
     //   ..merchantId = merchantId
@@ -90,7 +112,11 @@ class VpaTransactionProvider with ChangeNotifier {
 
     try {
       final response = await _merchantServices.fetchVpaTransactionHistory(
-        {"from": null, "to": null, "creditVpa": "Hardwarisweets.anet@axisbank"},
+        {
+          "from": startDate,
+          "to": endDate,
+          "creditVpa": transactionProvider.tidSearchController.text.trim(),
+        },
         pageNumber: currentPage,
         pageSize: pageSize,
       );
@@ -102,7 +128,7 @@ class VpaTransactionProvider with ChangeNotifier {
         // );// for http
 
         final newItems = decodedData["pageData"]["content"] ?? [];
-        _todaysTnxCount = decodedData["pageData"]["totalElements"] ?? 0;
+        _TnxCount = decodedData["pageData"]["totalElements"] ?? 0;
         print(decodedData["pageData"]["totalElements"]);
         // _totalTransactionAmount = decodedData.totalAmount ?? 0.0;
 
@@ -138,7 +164,7 @@ class VpaTransactionProvider with ChangeNotifier {
     recentTransactions = [];
     currentPage = 0;
     isRecentTransLoadingFistTime = true;
-    _todaysTnxCount = 0;
+    _TnxCount = 0;
     notifyListeners();
     getRecentTransactions();
 
