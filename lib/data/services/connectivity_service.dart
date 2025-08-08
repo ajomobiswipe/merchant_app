@@ -1,4 +1,5 @@
 import 'package:anet_merchant_app/main.dart';
+import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
@@ -82,22 +83,18 @@ class ConnectivityService {
                           size: 60, color: Colors.redAccent),
                     ),
                     const SizedBox(height: 20),
-                    const Text(
-                      'No Internet Connection',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 20,
-                        color: Colors.black87,
-                      ),
+                    const CustomTextWidget(
+                      text: 'No Internet Connection',
+                      fontWeight: FontWeight.w600,
+                      size: 20,
+                      color: Colors.black87,
                     ),
                     const SizedBox(height: 12),
-                    Text(
-                      'Please check your network settings and try again.',
+                    CustomTextWidget(
+                      text: 'Please check your network settings and try again.',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey.shade700,
-                      ),
+                      size: 16,
+                      color: Colors.grey.shade700,
                     ),
                     const SizedBox(height: 24),
                     // ElevatedButton.icon(

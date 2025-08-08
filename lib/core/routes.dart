@@ -16,6 +16,7 @@ import 'package:anet_merchant_app/presentation/pages/settlement_dashboard.dart';
 import 'package:anet_merchant_app/presentation/pages/view_all_transaction_screen.dart';
 import 'package:anet_merchant_app/presentation/pages/view_settlement_info.dart';
 import 'package:anet_merchant_app/presentation/pages/vpa_transactions_screen.dart';
+import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -84,10 +85,8 @@ class CustomRoute {
       }
       return const Scaffold(
         body: Center(
-            child: Text(
-          "404 Page not found",
-          style: TextStyle(color: Colors.red, fontSize: 22),
-        )),
+            child: CustomTextWidget(
+                text: "404 Page not found", color: Colors.red, size: 22)),
       );
     });
   }

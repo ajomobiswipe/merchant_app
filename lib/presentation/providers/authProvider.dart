@@ -173,11 +173,11 @@ class AuthProvider with ChangeNotifier {
       ..merchantId = _merchantIdController.text
       ..emailOtp = _emailOtpController.text;
     // Debug bypass for OTP (should be removed or guarded in production)
-    // if (kDebugMode) {
-    //   await _handleLoginSuccess();
-    //   alertService.success('Bypass opt');
-    //   return;
-    // }
+    if (kDebugMode) {
+      await _handleLoginSuccess();
+      alertService.success('Bypass opt');
+      return;
+    }
     try {
       final res =
           await _merchantServices.verifyOtp(req.validateEmailOtpToJson());

@@ -42,45 +42,65 @@ class ShowVpaTransactionInvoice extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // ---------------- Header Section ----------------
             Center(
-              child: Image.asset(
-                'assets/screen/anet.png',
-                height: screenHeight * .1,
-                width: screenWidth * 0.5,
-              ),
-            ),
-            defaultHeight(basePadding),
-            Row(
-              children: [
-                SizedBox(
-                  width: screenWidth * 0.9,
-                  child: CustomTextWidget(
-                    text: Provider.of<AuthProvider>(context).merchantDbaName,
-                    maxLines: 3,
+              child: Column(
+                children: [
+                  Image.asset(
+                    'assets/screen/anet.png',
+                    height: screenHeight * 0.1,
+                    width: screenWidth * 0.5,
                   ),
-                ),
-              ],
-            ),
-            defaultHeight(basePadding),
-            Center(
-              child: CustomTextWidget(
-                text: transaction["addr"] ?? "N/A",
-                size: 13,
-                maxLines: 3,
-                isBold: false,
+                  defaultHeight(basePadding),
+                  if (Provider.of<AuthProvider>(context)
+                      .merchantDbaName
+                      .isNotEmpty)
+                    SizedBox(
+                      width: screenWidth * 0.9,
+                      child: Center(
+                        child: CustomTextWidget(
+                          text: Provider.of<AuthProvider>(context)
+                              .merchantDbaName,
+                          maxLines: 3,
+                          isBold: true,
+                          size: 15,
+                        ),
+                      ),
+                    ),
+                  defaultHeight(basePadding),
+                  if (transaction["addr"] != null &&
+                      transaction["addr"].toString().isNotEmpty)
+                    Center(
+                      child: CustomTextWidget(
+                        text: transaction["addr"],
+                        size: 13,
+                        maxLines: 3,
+                        isBold: false,
+                      ),
+                    ),
+                ],
               ),
             ),
+
             defaultHeight(basePadding),
+
+            // ---------------- Transaction Date & Time ----------------
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 buildKeyValueRow(
-                    "Date", transaction["ts"]?.split("T").first ?? "N/A"),
+                  "Date",
+                  transaction["ts"]?.split("T").first ?? "N/A",
+                ),
                 buildKeyValueRow(
-                    "Time", transaction["ts"]?.split("T").last ?? "N/A"),
+                  "Time",
+                  transaction["ts"]?.split("T").last ?? "N/A",
+                ),
               ],
             ),
             defaultHeight(basePadding),
+
+            // ---------------- IDs ----------------
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -90,22 +110,32 @@ class ShowVpaTransactionInvoice extends StatelessWidget {
               ],
             ),
             defaultHeight(basePadding),
+
+            // ---------------- Transaction & Account Info ----------------
             buildKeyValueRow(
                 "Transaction Type", getTransactionType(transaction)),
             defaultHeight(basePadding),
+
             buildKeyValueRow(
                 "Account Type", transaction["accountDetailsAccType"] ?? "N/A"),
             defaultHeight(basePadding),
+
+            // ---------------- User Info ----------------
             buildKeyValueRow("Mobile", transaction["mobileNumber"] ?? "N/A"),
             defaultHeight(basePadding),
+
             buildKeyValueRow(
                 "Customer VPA", transaction["customerVpa"] ?? "N/A"),
             defaultHeight(basePadding),
+
             buildKeyValueRow("Payee VPA", transaction["creditVpa"] ?? "N/A"),
             defaultHeight(basePadding),
+
             buildKeyValueRow("RRN", transaction["rrn"] ?? "N/A"),
             defaultHeight(basePadding),
-            Divider(),
+
+            // ---------------- Amount Section ----------------
+            const Divider(),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -128,8 +158,10 @@ class ShowVpaTransactionInvoice extends StatelessWidget {
                 ),
               ],
             ),
-            Divider(),
+            const Divider(),
             defaultHeight(basePadding),
+
+            // ---------------- Registered Name ----------------
             if (transaction["regName"] != null &&
                 transaction["regName"].toString().isNotEmpty)
               Column(
@@ -142,34 +174,19 @@ class ShowVpaTransactionInvoice extends StatelessWidget {
                   defaultHeight(mediumPadding),
                 ],
               ),
+
+            // ---------------- Footer Message ----------------
             Center(
               child: CustomTextWidget(
-                  text:
-                      "THANK YOU FOR USING OUR SERVICE\nKeep this receipt for your records."),
+                text:
+                    "THANK YOU FOR USING OUR SERVICE\nKeep this receipt for your records.",
+                textAlign: TextAlign.center,
+              ),
             ),
 
-            // SizedBox(
-            //   width: screenWidth * 0.9,
-            //   child: CustomTextWidget(
-            //     textAlign: TextAlign.center,
-            //     text:
-            //         "* I am Satisfied with the goods/Services received and agree to pay as per issuer terms.",
-            //     size: 14,
-            //     isBold: false,
-            //     maxLines: 3,
-            //   ),
-            // ),
-            // SizedBox(
-            //   width: screenWidth * 0.9,
-            //   child: CustomTextWidget(
-            //     textAlign: TextAlign.center,
-            //     text: "THANK YOU MERCHANT\nPLEASE KEEP THIS COPY",
-            //     size: 14,
-            //     isBold: false,
-            //     maxLines: 3,
-            //   ),
-            // ),
             defaultHeight(mediumPadding),
+
+            // ---------------- Download Button ----------------
             CustomContainer(
               onTap: () =>
                   generatePDF(context, screenWidth, screenHeight, logoSize),

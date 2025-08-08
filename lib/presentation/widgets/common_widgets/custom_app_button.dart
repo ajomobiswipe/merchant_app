@@ -5,10 +5,10 @@ class CustomAppButton extends StatelessWidget {
   // LOCAL VARIABLE DECLARATION
   final String title;
   final VoidCallback? onPressed;
+  final VoidCallback? onLongPressed;
   final Color? backgroundColor;
   final double width;
   final double height;
-
   final bool fromOtpScreen;
   final bool isOtpVisible;
 
@@ -16,6 +16,7 @@ class CustomAppButton extends StatelessWidget {
       {super.key,
       required this.title,
       this.onPressed,
+      this.onLongPressed,
       this.backgroundColor,
       this.width = 1,
       this.height = 50,
@@ -28,6 +29,7 @@ class CustomAppButton extends StatelessWidget {
       width: MediaQuery.of(context).size.width * width,
       height: height,
       child: ElevatedButton(
+        onLongPress: onLongPressed,
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
             backgroundColor: backgroundColor ??

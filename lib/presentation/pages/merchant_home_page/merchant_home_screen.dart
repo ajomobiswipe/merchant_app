@@ -32,11 +32,12 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
       ConnectivityService().checkConnectivity();
       _transactionProvider.getRecentTransactions();
       _transactionProvider.fetchDailySettlementTxnSummary();
-      _transactionProvider.fetchDailyMerchantTxnSummary();
+      //  _transactionProvider.fetchDailyMerchantTxnSummary();
       _transactionProvider.recentTransScrollCtrl.addListener(_onScroll);
     });
   }
 
+//
   Future<void> _setStoreName() async {
     final pref = await SharedPreferences.getInstance();
     var dbaName = pref.getString("shopName") ?? "N/A";

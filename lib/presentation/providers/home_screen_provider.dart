@@ -137,21 +137,21 @@ class HomeScreenProvider with ChangeNotifier {
   }
 
   void clearTransactions() {
+    currentPage = 0;
     recentTransactions = [];
-
+    isRecentTransLoadingFistTime = true;
+    _todaysTnxCount = 0;
+    _totalTransactionAmount = 0.0;
     notifyListeners();
   }
 
   // Refresh recent transactions
   void refreshRecentTransactions() {
-    recentTransactions = [];
-    currentPage = 0;
-    isRecentTransLoadingFistTime = true;
-    _todaysTnxCount = 0;
-    notifyListeners();
+    clearTransactions();
+
     getRecentTransactions();
-    fetchDailyMerchantTxnSummary();
-    notifyListeners();
+    // fetchDailyMerchantTxnSummary();
+    // notifyListeners();
   }
 
   Future<void> fetchDailySettlementTxnSummary() async {
@@ -176,23 +176,23 @@ class HomeScreenProvider with ChangeNotifier {
     }
   }
 
-  Future<void> fetchDailyMerchantTxnSummary() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? merchantId = prefs.getString('acqMerchantId') ?? '65OMA0000000002';
+  // Future<void> fetchDailyMerchantTxnSummary() async {
+  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   String? merchantId = prefs.getString('acqMerchantId') ?? '65OMA0000000002';
 
-    var reqbody = {
-      "merchantId": merchantId,
-    };
+  //   var reqbody = {
+  //     "merchantId": merchantId,
+  //   };
 
-    final response =
-        await _merchantServices.fetchDailyMerchantTxnSummary(reqbody);
+  //   final response =
+  //       await _merchantServices.fetchDailyMerchantTxnSummary(reqbody);
 
-    if (response.statusCode == 200) {
-      final decodedData = response.data['responseData'];
-      _totalSettlementAmount = decodedData['txnAmount'] ?? 0.0;
-      notifyListeners();
-    }
-  }
+  //   if (response.statusCode == 200) {
+  //     final decodedData = response.data['responseData'];
+  //     _totalSettlementAmount = decodedData['txnAmount'] ?? 0.0;
+  //     notifyListeners();
+  //   }
+  // }
 
   // Update selected tab
   void updateSelectedTab(HomeScreenTabItem tab) {

@@ -174,7 +174,7 @@ class _MerchantTransactionFilterScreenState
           items: [
             DropdownMenuItem<SearchType>(
               value: SearchType.RRN,
-              child: Text("RRN"),
+              child: CustomTextWidget(text: "RRN"),
             ),
             DropdownMenuItem<SearchType>(
               value: SearchType.APP_CODE,

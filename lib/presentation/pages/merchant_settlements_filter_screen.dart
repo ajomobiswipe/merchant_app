@@ -88,7 +88,7 @@ class _MerchantStatementFilterScreenState
             return RadioListTile<String>(
               dense: true,
               contentPadding: EdgeInsets.zero,
-              title: Text(range, style: TextStyle(fontSize: 12)),
+              title: CustomTextWidget(text: range, size: 10),
               value: range,
               groupValue: provider.selectedDateRange,
               onChanged: provider.setSelectedDateRange,

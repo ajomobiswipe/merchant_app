@@ -44,19 +44,19 @@ class MerchantScaffold extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.white,
-        leading: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            IconButton(
-              icon: const Icon(Icons.menu),
-              onPressed: onMenuPressed,
-            ),
-            // IconButton(
-            //   icon: const Icon(Icons.person),
-            //   onPressed: onProfilePressed,
-            // ),
-          ],
-        ),
+        // leading: Row(
+        //   mainAxisSize: MainAxisSize.min,
+        //   children: [
+        //     IconButton(
+        //       icon: const Icon(Icons.menu),
+        //       onPressed: onMenuPressed,
+        //     ),
+        //     // IconButton(
+        //     //   icon: const Icon(Icons.person),
+        //     //   onPressed: onProfilePressed,
+        //     // ),
+        //   ],
+        // ),
         centerTitle: true,
         title: Image.asset(
           "assets/screen/anet_launcher_icon.png",
@@ -77,6 +77,7 @@ class MerchantScaffold extends StatelessWidget {
             },
           ),
         ],
+        automaticallyImplyLeading: true,
       ),
       body: Padding(
         padding: padding ??

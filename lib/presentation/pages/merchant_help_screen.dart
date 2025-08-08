@@ -1,6 +1,7 @@
 import 'package:anet_merchant_app/core/Constants/constants.dart';
 import 'package:anet_merchant_app/core/app_color.dart';
 import 'package:anet_merchant_app/core/utils/helpers/default_height.dart';
+import 'package:anet_merchant_app/main.dart';
 import 'package:anet_merchant_app/presentation/pages/merchant_scaffold.dart';
 import 'package:anet_merchant_app/presentation/providers/authProvider.dart';
 import 'package:anet_merchant_app/presentation/providers/support_action_provider.dart';
@@ -254,7 +255,8 @@ class _MerchantHelpScreenState extends State<MerchantHelpScreen> {
         ],
       ),
       onTapHome: () {
-        Navigator.pop(context);
+        NavigationService.navigatorKey.currentState
+            ?.pushNamedAndRemoveUntil('merchantHomeScreen', (route) => false);
       },
     );
   }

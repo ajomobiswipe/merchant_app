@@ -74,21 +74,17 @@ class TransactionTile extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        const Text(
-                          "₹ ",
-                          style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87,
-                          ),
+                        const CustomTextWidget(
+                          text: "₹ ",
+                          size: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
                         ),
-                        Text(
-                          transaction.amount ?? "0.00",
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black87,
-                          ),
+                        CustomTextWidget(
+                          text: transaction.amount ?? "0.00",
+                          size: 18,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
                         ),
                       ],
                     ),
