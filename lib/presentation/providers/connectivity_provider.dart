@@ -6,7 +6,6 @@ import 'package:shimmer/shimmer.dart';
 class ConnectivityProvider with ChangeNotifier {
   bool _isOnline = false;
   bool get isOnline => _isOnline;
-  bool _internetConnected = true;
 
   ConnectivityProvider() {
     Connectivity connectivity = Connectivity();
@@ -14,7 +13,6 @@ class ConnectivityProvider with ChangeNotifier {
       // if (result == ConnectivityResult.none) {
       if (result[0] == ConnectivityResult.none) {
         _isOnline = false;
-        _internetConnected = false;
         _showNoInternetDialog();
         // StateKey.snackBarKey.currentState?.showSnackBar(
         //   SnackBar(
@@ -60,15 +58,18 @@ class ConnectivityProvider with ChangeNotifier {
     final result = await Connectivity().checkConnectivity();
     if (result[0] == ConnectivityResult.none) {
       _isOnline = false;
-      _internetConnected = false;
       _showNoInternetDialog();
     } else {
       _isOnline = true;
-      _internetConnected = true;
     }
     notifyListeners();
   }
 
+  /// Shows a dialog with a message and a retry button when there is no internet connection.
+  ///
+  /// The dialog is not dismissible and will remain on the screen until the user closes it.
+  /// The retry button will close the dialog and allow the user to try again.
+  ///
   void _showNoInternetDialog() {
     final context = NavigationService.navigatorKey.currentContext;
     if (context == null) return;

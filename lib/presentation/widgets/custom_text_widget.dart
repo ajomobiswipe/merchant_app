@@ -34,7 +34,7 @@ class CustomTextWidget extends StatelessWidget {
       overflow: TextOverflow.ellipsis,
       style: TextStyle(
         color: color,
-        fontSize: isSmallScreen ? size * 0.8 : size,
+        fontSize: isSmallScreen ? size * 0.7 : size,
         fontWeight: fontWeight,
         fontFamily: isBold ? 'Mont' : 'Mont-regular',
       ),

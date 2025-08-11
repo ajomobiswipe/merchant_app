@@ -31,33 +31,6 @@ class CustomRoute {
       //   return const NoInternetPage();
       // }
       switch (settings.name) {
-        // case "login":
-        //   return const LoginPage();
-        // case "userType":
-        //   return const UserTypeSelection();
-        // case "MerchantNumVerify":
-        //   return const MerchantOTPVerifyScreen();
-        // // case "merchantOnboarding":
-        // //   return const MerchantSignup();
-        // case "myApplications":
-        //   return const MyApplications();
-        // case "DeviceDeploymentScreen":
-        //   return DeviceDeploymentScreen(
-        //     deviceInfo: args as Map<String, dynamic>?,
-        //   );
-
-        // case "PaymentPage":
-        //   return PaymentPage(
-        //     merchantDetails: args as Map<String, dynamic>?,
-        //   );
-
-        // case "PaymentSuccessPage":
-        //   return PaymentSuccessPage(
-        //     payAmountAndPackage: args as Map<String, dynamic>,
-        //   );
-        // case "SignUpSuccessScreen":
-        //   return const SignUpSuccessScreen();
-
         case "splash":
           return const SplashScreen();
 

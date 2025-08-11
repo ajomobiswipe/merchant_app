@@ -82,32 +82,26 @@ class SettledTransactionTile extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          const Text(
-                            "₹ ",
-                            style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
-                            ),
+                          const CustomTextWidget(
+                            text: "₹ ",
+                            size: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
                           ),
-                          Text(
-                            transaction.grossTransactionAmount.toString(),
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
-                            ),
+                          CustomTextWidget(
+                            text: transaction.grossTransactionAmount.toString(),
+                            size: 18,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black87,
                           ),
                         ],
                       ),
                       const SizedBox(height: 6),
-                      Text(
-                        formattedDateTime(transaction.tranDate),
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.grey.shade600,
-                        ),
+                      CustomTextWidget(
+                        text: formattedDateTime(transaction.tranDate),
+                        size: 12,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.grey.shade600,
                       ),
                     ],
                   ),

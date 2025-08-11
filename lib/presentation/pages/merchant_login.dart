@@ -28,6 +28,12 @@ class _MerchantLoginState extends State<MerchantLogin> {
   late AuthProvider authProvider;
 
   @override
+
+  /// Initializes the state of the widget, sets up the AuthProvider,
+  /// checks device permissions, and verifies connectivity. It also
+  /// resets the authProvider and checks if the "remember me" option
+  /// is enabled to auto-fill login details.
+
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -40,6 +46,14 @@ class _MerchantLoginState extends State<MerchantLogin> {
   }
 
   @override
+
+  /// Disposes the widget and resets the authentication provider.
+  ///
+  /// This method is called when the widget is removed from the widget tree.
+  /// It ensures that the `authProvider` is reset by calling `resetAll`
+  /// with the `fromDispose` parameter set to true, which prevents
+  /// notification of listeners.
+
   void dispose() {
     super.dispose();
     authProvider.resetAll(fromDispose: true);
@@ -94,17 +108,18 @@ class _MerchantLoginState extends State<MerchantLogin> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          GestureDetector(
-                            child: const Icon(
-                              Icons.arrow_back,
-                              color: Colors.black,
+                          if (authProvider.isOtpSent)
+                            GestureDetector(
+                              child: const Icon(
+                                Icons.arrow_back,
+                                color: Colors.black,
+                              ),
+                              onTap: () {
+                                if (authProvider.isOtpSent) {
+                                  authProvider.clearOtp();
+                                }
+                              },
                             ),
-                            onTap: () {
-                              if (authProvider.isOtpSent) {
-                                authProvider.clearOtp();
-                              }
-                            },
-                          ),
                           gapWidget(screenHeight * .01),
                           Center(
                             child: Image.asset("assets/screen/anet.png",

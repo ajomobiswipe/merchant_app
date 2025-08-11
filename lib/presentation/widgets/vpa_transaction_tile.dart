@@ -86,32 +86,26 @@ class VpaTransactionTile extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        const Text(
-                          "₹ ",
-                          style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87,
-                          ),
+                        const CustomTextWidget(
+                          text: "₹ ",
+                          size: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
                         ),
-                        Text(
-                          amount,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black87,
-                          ),
+                        CustomTextWidget(
+                          text: amount ?? "0.00",
+                          size: 18,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
                         ),
                       ],
                     ),
                     const SizedBox(height: 6),
-                    Text(
-                      formattedDateTime(transactionDateTime),
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.grey.shade600,
-                      ),
+                    CustomTextWidget(
+                      text: formattedDateTime(transactionDateTime),
+                      size: 12,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.grey.shade600,
                     ),
                   ],
                 ),

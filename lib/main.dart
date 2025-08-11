@@ -34,11 +34,13 @@ import 'package:provider/provider.dart';
 CustomAlert customAlert = CustomAlert();
 AlertService alertService = AlertService();
 
-bool isDevWithoutOtp = false;
-
-///setting true for demo purpose or else set to false
-
-// main function - flutter startup function
+/// The main entry point of the application.
+///
+/// This function sets up the necessary configurations and initializes the
+/// application by loading environment variables, initializing Hive for theme
+/// and user storage, and configuring system UI settings. It also initializes
+/// provider instances for state management and runs the main application
+/// widget within a guarded zone to handle any uncaught asynchronous errors.
 void main() {
   runZonedGuarded<Future<void>>(() async {
     // setUpServiceLocator();
@@ -52,6 +54,20 @@ void main() {
     // --- Root
     WidgetsFlutterBinding.ensureInitialized();
     ConnectivityService().initialize();
+
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.white, // Background color
+        statusBarIconBrightness: Brightness.dark, // For Android
+        statusBarBrightness: Brightness.light, // For iOS
+        systemNavigationBarColor: Colors.white, // Navigation bar color
+        systemNavigationBarIconBrightness: Brightness.dark, // For Android
+      ),
+    );
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: [SystemUiOverlay.bottom]);
+    // Optional: Remove top padding if you want immersive look
+    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     runApp(MultiProvider(providers: [
@@ -96,6 +112,12 @@ class MainPage extends StatelessWidget {
   * ConnectivityProvider - for internet check
   */
   @override
+
+  /// Builds the main app widget.
+  ///
+  /// If the app is running in UAT mode, it will show a red banner at the top
+  /// of the screen with the text "UAT".
+  ///
   Widget build(BuildContext context) {
     bool isUAT = EndPoints.baseApiPublic.contains("omasoftposqc");
     return isUAT
@@ -111,6 +133,12 @@ class MainPage extends StatelessWidget {
         : _buildMaterialApp();
   }
 
+  /// Builds the main [MaterialApp] widget.
+  ///
+  /// This widget sets up the app's theme, routes, and navigator key.
+  /// It also sets up the [ScaffoldMessenger] to display snackbars.
+  /// The [MaterialApp] is wrapped in a [SafeArea] to prevent the app from
+  /// being obscured by the status bar.
   Widget _buildMaterialApp() {
     return SafeArea(
       child: MaterialApp(

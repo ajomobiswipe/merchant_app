@@ -178,7 +178,7 @@ class _MerchantTransactionFilterScreenState
             ),
             DropdownMenuItem<SearchType>(
               value: SearchType.APP_CODE,
-              child: Text("App Code"),
+              child: CustomTextWidget(text: "App Code"),
             ),
           ],
           onChanged: (newValue) {

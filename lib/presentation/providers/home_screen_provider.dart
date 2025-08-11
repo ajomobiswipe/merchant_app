@@ -68,6 +68,19 @@ class HomeScreenProvider with ChangeNotifier {
   int get totalTransactions => _totalTransactions;
   // Methods
 
+  /// Fetches recent transactions from the server and updates the transaction list.
+  ///
+  /// This method retrieves the recent transactions based on the current page
+  /// and page size. It checks if the recent transactions list has reached the
+  /// total number of transactions and if it is not loading for the first time,
+  /// then it returns early. If the transactions are still loading, it sets the
+  /// loading flag and notifies listeners. The method fetches transaction history
+  /// from the merchant services using the request model and updates the
+  /// transaction list and total transaction amount if the response is successful.
+  /// The page is incremented, and transactions are added if new items are
+  /// retrieved. Handles exceptions using DioException and alerts the user on
+  /// failure.
+
   Future<void> getRecentTransactions() async {
     print("Current Page: $currentPage");
     print("Page Size: $pageSize");
@@ -136,6 +149,9 @@ class HomeScreenProvider with ChangeNotifier {
     }
   }
 
+  /// Resets the recent transactions data, including the current page, transaction
+  /// list, loading flag, total count, and total transaction amount. Also notifies
+  /// the listeners of the changes.
   void clearTransactions() {
     currentPage = 0;
     recentTransactions = [];
@@ -146,6 +162,9 @@ class HomeScreenProvider with ChangeNotifier {
   }
 
   // Refresh recent transactions
+  /// Refreshes the list of recent transactions by clearing the current transactions,
+  /// resetting the associated state, and fetching the list of recent transactions again.
+
   void refreshRecentTransactions() {
     clearTransactions();
 
@@ -153,6 +172,14 @@ class HomeScreenProvider with ChangeNotifier {
     // fetchDailyMerchantTxnSummary();
     // notifyListeners();
   }
+
+  /// Fetches the daily settlement transaction summary for the merchant.
+  ///
+  /// Retrieves the merchant ID from shared preferences and sends a request
+  /// with necessary parameters to fetch the daily settlement transaction summary.
+  /// Updates the total settlement amount, deductions, and pending settlement
+  /// amounts based on the response data. Notifies listeners upon successful
+  /// data retrieval.
 
   Future<void> fetchDailySettlementTxnSummary() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -195,6 +222,11 @@ class HomeScreenProvider with ChangeNotifier {
   // }
 
   // Update selected tab
+  /// Updates the selected tab on the home screen.
+  ///
+  /// This method changes the current selected tab to the given [tab] and
+  /// notifies listeners about the change.
+
   void updateSelectedTab(HomeScreenTabItem tab) {
     _selectedTab = tab;
     notifyListeners();
