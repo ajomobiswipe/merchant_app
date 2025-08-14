@@ -119,7 +119,7 @@ class AuthProvider with ChangeNotifier {
       password: _passwordController.text,
     );
     loginResponse = null;
-    TokenManager().start(NavigationService.navigatorKey.currentState!.context);
+    // TokenManager().start(NavigationService.navigatorKey.currentState!.context);
     NavigationService.navigatorKey.currentState?.pushNamedAndRemoveUntil(
       'merchantHomeScreen',
       (route) => false,
@@ -129,7 +129,7 @@ class AuthProvider with ChangeNotifier {
   /// Sends merchant login OTP
   Future<void> sendMerchantLoginOtp() async {
     req
-      ..deviceType = "WEB"
+      ..deviceType = "MOBILE"
       ..merchantId = _merchantIdController.text
       ..password = _passwordController.text;
 
@@ -146,9 +146,15 @@ class AuthProvider with ChangeNotifier {
           alertService.success(
               loginResponse['responseMessage'] ?? 'OTP sent successfully');
         } else {
+         
+            /// If two-factor authentication is not required, proceed to login
+            /// Code done by Anas
+          _isLoggedIn = true;
           _isOtpSent = false;
-          alertService
-              .error(loginResponse['responseMessage'] ?? 'Failed to Send OTP');
+          await _handleLoginSuccess();
+
+          // alertService
+          //     .error(loginResponse['responseMessage'] ?? 'Failed to Send OTP');
         }
       } else {
         _isOtpSent = false;

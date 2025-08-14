@@ -17,7 +17,7 @@ class MerchantSelfLoginModel {
     return {
       'userName': merchantId,
       'password': password,
-      'deviceType': "WEB",
+      'deviceType': "MOBILE",
     };
   }
 
@@ -25,7 +25,7 @@ class MerchantSelfLoginModel {
     return {
       'userName': "ausoftposadmin",
       'password': "Admin@1234",
-      'deviceType': "WEB",
+      'deviceType': "MOBILE",
       // 'mobileNumberOtp': mobileNumberOtp,
       // 'emailOtp': emailOtp,
       // 'deviceType': "WEB",

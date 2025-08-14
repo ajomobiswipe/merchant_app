@@ -6,14 +6,14 @@ import 'package:anet_merchant_app/presentation/providers/authProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class TokenManager {
-  static final TokenManager _instance = TokenManager._internal();
+class TokenManager1 {
+  static final TokenManager1 _instance = TokenManager1._internal();
 
-  factory TokenManager() {
+  factory TokenManager1() {
     return _instance;
   }
 
-  TokenManager._internal(); // private constructor
+  TokenManager1._internal(); // private constructor
 
   Timer? _timer;
   MerchantServices merchantServices = MerchantServices();

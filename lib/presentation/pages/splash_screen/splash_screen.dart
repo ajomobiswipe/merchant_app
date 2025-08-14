@@ -65,8 +65,8 @@ class _SplashScreenState extends State<SplashScreen> {
       // var tokenResponse = await MerchantServices().refreshToken();
 
       // if (tokenResponse == null) return;
-      TokenManager()
-          .start(NavigationService.navigatorKey.currentState!.context);
+      // TokenManager()
+      //     .start(NavigationService.navigatorKey.currentState!.context);
       //if (!mounted) return;
       Navigator.pushReplacementNamed(context, 'merchantHomeScreen');
     } else {
