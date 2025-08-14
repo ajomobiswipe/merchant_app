@@ -4,6 +4,8 @@ class MerchantSelfLoginModel {
   String? deviceType;
   String? emailOtp;
   String? mobileNumberOtp;
+  String? confirmPassword;
+  String? currentPassword;
 
   // Constructor
   MerchantSelfLoginModel({
@@ -36,6 +38,16 @@ class MerchantSelfLoginModel {
     return {
       'userName': merchantId,
       'otp': emailOtp,
+    };
+  }
+
+  Map<String, dynamic> resetPasswordToJson() {
+    return {
+      "userName": merchantId,
+      "currentPassword": currentPassword,
+      'password': password,
+      'confirmPassword': confirmPassword,
+      "type": "resetCurrentPassword",
     };
   }
 }

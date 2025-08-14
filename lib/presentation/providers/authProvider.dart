@@ -2,7 +2,6 @@ import 'package:anet_merchant_app/data/models/merchant_self_login_model.dart';
 import 'package:anet_merchant_app/data/services/dio_exception_handlers.dart';
 import 'package:anet_merchant_app/data/services/merchant_service.dart';
 import 'package:anet_merchant_app/data/services/storage_services.dart';
-import 'package:anet_merchant_app/data/services/token_manager.dart';
 import 'package:anet_merchant_app/presentation/pages/merchant_home_page/merchant_info_model.dart';
 import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
 import 'package:dio/dio.dart';
@@ -47,6 +46,9 @@ class AuthProvider with ChangeNotifier {
   bool _isRemember = false;
   bool get isRemember => _isRemember;
   bool get showEmailOtp => _showEmailOtp;
+
+  bool get isResetOtpSent => _isResetOtpSent;
+  bool _isResetOtpSent = false;
 
   bool get isLoggedIn => _isLoggedIn;
   set isLoggedIn(bool value) {
@@ -146,9 +148,8 @@ class AuthProvider with ChangeNotifier {
           alertService.success(
               loginResponse['responseMessage'] ?? 'OTP sent successfully');
         } else {
-         
-            /// If two-factor authentication is not required, proceed to login
-            /// Code done by Anas
+          /// If two-factor authentication is not required, proceed to login
+          /// Code done by Anas
           _isLoggedIn = true;
           _isOtpSent = false;
           await _handleLoginSuccess();
@@ -157,6 +158,13 @@ class AuthProvider with ChangeNotifier {
           //     .error(loginResponse['responseMessage'] ?? 'Failed to Send OTP');
         }
       } else {
+        if (loginResponse['responseCode'] == "04") {
+          NavigationService.navigatorKey.currentState?.pushNamedAndRemoveUntil(
+              'resetPassword', (route) => false,
+              arguments: _merchantIdController.text);
+          return;
+        }
+
         _isOtpSent = false;
         alertService
             .error(loginResponse['responseMessage'] ?? 'Failed to Send OTP');
@@ -174,25 +182,38 @@ class AuthProvider with ChangeNotifier {
   }
 
   /// Validates merchant login OTP
-  Future<void> validateMerchantLoginOtp() async {
+  Future<void> validateMerchantLoginOtp(
+      {bool fromResetPassword = false,String? userName}) async {
+
+
+
     req
-      ..merchantId = _merchantIdController.text
+      ..merchantId = !fromResetPassword?_merchantIdController.text:userName
       ..emailOtp = _emailOtpController.text;
+
+      print('userName is ${req.merchantId}');
     // Debug bypass for OTP (should be removed or guarded in production)
-    if (kDebugMode) {
-      await _handleLoginSuccess();
-      alertService.success('Bypass opt');
-      return;
-    }
+    // if (kDebugMode) {
+    //   await _handleLoginSuccess();
+    //   alertService.success('Bypass opt');
+    //   return;
+    // }
     try {
       final res =
           await _merchantServices.verifyOtp(req.validateEmailOtpToJson());
       final response = res.data;
 
       if (res.statusCode == 200 && response?['errorMessage'] == "Success") {
-        _isLoggedIn = true;
-        _isOtpSent = false;
-        await _handleLoginSuccess();
+
+        /// If OTP verification is successful, proceed to login - From Login Screen
+        if (!fromResetPassword) {
+          _isLoggedIn = true;
+          _isOtpSent = false;
+          await _handleLoginSuccess();
+        } else {
+          _isResetOtpSent = false;
+        }
+
         alertService.success(
             response['successMessage'] ?? 'OTP Verified successfully!');
       } else {
@@ -218,6 +239,31 @@ class AuthProvider with ChangeNotifier {
 
   void _setLoading(bool loading) {
     _isLoading = loading;
+    notifyListeners();
+  }
+
+  Future resetPassword(
+      String userName, passwordValue, String confirmPasswordValue) async {
+    try {
+      req
+        ..merchantId = userName
+        ..password = passwordValue
+        ..confirmPassword = confirmPasswordValue;
+
+      final res =
+          await _merchantServices.restPassword(req.resetPasswordToJson());
+
+      if (res.statusCode == 200) {
+        NavigationService.navigatorKey.currentState?.pushNamedAndRemoveUntil(
+          'login',
+          (route) => false,
+        );
+      }
+    } catch (_) {}
+  }
+
+  void showResetOtp() {
+    _isResetOtpSent = true;
     notifyListeners();
   }
 }
