@@ -50,6 +50,15 @@ class AuthProvider with ChangeNotifier {
   bool get isResetOtpSent => _isResetOtpSent;
   bool _isResetOtpSent = false;
 
+  bool get showCurrentPassword => _showCurrentPassword;
+  bool _showCurrentPassword = false;
+
+  bool get showNewPassword => _showNewPassword;
+  bool _showNewPassword = false;
+
+  bool get showConfirmPassword => _showConfirmPassword;
+  bool _showConfirmPassword = false;
+
   bool get isLoggedIn => _isLoggedIn;
   set isLoggedIn(bool value) {
     _isLoggedIn = value;
@@ -90,6 +99,21 @@ class AuthProvider with ChangeNotifier {
   /// Toggle password field visibility (TODO: Consider ValueNotifier for efficiency)
   void togglePasswordVisibility() {
     _showPassword = !_showPassword;
+    notifyListeners();
+  }
+
+  void toggleResetPasswordVisibility(
+      {bool isCurrentPassword = false,
+      bool isNewPassword = false,
+      bool isConfirmPassword = false}) {
+    if (isCurrentPassword) {
+      _showCurrentPassword = !_showCurrentPassword;
+    } else if (isNewPassword) {
+      _showNewPassword = !_showNewPassword;
+    } else if (isConfirmPassword) {
+      _showConfirmPassword = !_showConfirmPassword;
+    }
+
     notifyListeners();
   }
 
@@ -183,15 +207,12 @@ class AuthProvider with ChangeNotifier {
 
   /// Validates merchant login OTP
   Future<void> validateMerchantLoginOtp(
-      {bool fromResetPassword = false,String? userName}) async {
-
-
-
+      {bool fromResetPassword = false, String? userName}) async {
     req
-      ..merchantId = !fromResetPassword?_merchantIdController.text:userName
+      ..merchantId = !fromResetPassword ? _merchantIdController.text : userName
       ..emailOtp = _emailOtpController.text;
 
-      print('userName is ${req.merchantId}');
+    print('userName is ${req.merchantId}');
     // Debug bypass for OTP (should be removed or guarded in production)
     // if (kDebugMode) {
     //   await _handleLoginSuccess();
@@ -204,7 +225,6 @@ class AuthProvider with ChangeNotifier {
       final response = res.data;
 
       if (res.statusCode == 200 && response?['errorMessage'] == "Success") {
-
         /// If OTP verification is successful, proceed to login - From Login Screen
         if (!fromResetPassword) {
           _isLoggedIn = true;
@@ -242,24 +262,38 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future resetPassword(
-      String userName, passwordValue, String confirmPasswordValue) async {
+  Future resetPassword(String userName, String currentPasswordValue,
+      String newPasswordValue, String confirmPasswordValue) async {
     try {
       req
         ..merchantId = userName
-        ..password = passwordValue
+        ..currentPassword = currentPasswordValue
+        ..password = newPasswordValue
         ..confirmPassword = confirmPasswordValue;
 
       final res =
           await _merchantServices.restPassword(req.resetPasswordToJson());
 
-      if (res.statusCode == 200) {
+      dynamic response = res.data;
+
+      response = response.isEmpty ? null : response;
+
+      if (res.statusCode == 200 && response?['responseMessage'] != null) {
+
+        alertService
+            .success(response?['responseMessage'] ?? 'Password reset successful');  
+
         NavigationService.navigatorKey.currentState?.pushNamedAndRemoveUntil(
           'login',
           (route) => false,
         );
+      } else {
+        alertService
+            .error(response?['responseMessage'] ?? 'Failed to reset password');
       }
-    } catch (_) {}
+    } catch (e) {
+      alertService.error('An error occurred while resetting password');
+    }
   }
 
   void showResetOtp() {

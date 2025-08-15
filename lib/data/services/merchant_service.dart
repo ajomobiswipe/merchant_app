@@ -48,7 +48,7 @@ class MerchantServices {
 
   Future<dynamic> restPassword(Map<String, dynamic> requestModel) async {
     final url = "${EndPoints.baseApiPublicNanoUMS}ResetPassword";
-    return await DioClient().post(url, requestModel);
+    return await DioClient().postWithoutToken(url, requestModel);
   }
 
   Future<dynamic> verifyOtp(Map<String, dynamic> requestModel) async {

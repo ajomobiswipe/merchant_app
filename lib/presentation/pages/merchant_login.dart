@@ -6,6 +6,7 @@ import 'package:anet_merchant_app/presentation/providers/authProvider.dart';
 import 'package:anet_merchant_app/presentation/providers/permission.dart';
 import 'package:anet_merchant_app/presentation/widgets/common_widgets/custom_app_button.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
+import 'package:anet_merchant_app/presentation/widgets/form_field/custom_textform_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -154,6 +155,7 @@ class _MerchantLoginState extends State<MerchantLogin> {
                                   onSaved: (value) {
                                     authProvider.req.merchantId = value;
                                   },
+                                  context: context,
                                   obscureText: false,
                                   inputFormatters: [
                                     FilteringTextInputFormatter.allow(
@@ -176,10 +178,12 @@ class _MerchantLoginState extends State<MerchantLogin> {
                             selector: (_, provider) => provider.isOtpSent,
                             builder: (context, isOtpSent, child) {
                               if (isOtpSent) {
-                                return OtpField(authProvider: authProvider);
+                                return OtpField();
                               } else {
                                 return PasswordField(
-                                    authProvider: authProvider);
+                                  authProvider: authProvider,
+                                  hintText: "Password",
+                                );
                               }
                             },
                           ),
@@ -352,66 +356,6 @@ class _MerchantLoginState extends State<MerchantLogin> {
     );
   }
 
-  Widget buildTextField({
-    required TextEditingController controller,
-    required String hintText,
-    required String labelText,
-    required bool obscureText,
-    required Function(String?) onSaved,
-    required String? Function(String?)? validator,
-    int? maxLength,
-    TextInputType keyboardType = TextInputType.text,
-    bool? isPasswordField,
-    List<TextInputFormatter>? inputFormatters,
-  }) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 5),
-            child: CustomTextWidget(
-              text: labelText,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          TextFormField(
-            controller: controller,
-            style: Theme.of(context)
-                .textTheme
-                .bodyLarge
-                ?.copyWith(fontSize: 13, fontFamily: 'Mont'),
-            obscureText: isPasswordField == true ? obscureText : false,
-            obscuringCharacter: '*',
-            maxLength: maxLength,
-            keyboardType: keyboardType,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            onSaved: onSaved,
-            validator: validator,
-            inputFormatters: inputFormatters,
-            decoration: InputDecoration(
-              hintText: hintText,
-              counterText: '',
-              labelStyle:
-                  Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
-              enabledBorder: InputBorder.none,
-              focusedBorder: InputBorder.none,
-              border: InputBorder.none,
-              errorBorder: InputBorder.none,
-              focusedErrorBorder: InputBorder.none,
-              contentPadding:
-                  const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-              fillColor: AppColors.kTileColor,
-              filled: true,
-              hintStyle: const TextStyle(color: Colors.grey, fontSize: 13),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   forgotPassword() {
     return TextButton(
       onPressed: () {
@@ -427,11 +371,12 @@ class _MerchantLoginState extends State<MerchantLogin> {
 }
 
 class OtpField extends StatelessWidget {
-  final AuthProvider authProvider;
-  const OtpField({super.key, required this.authProvider});
+  const OtpField({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
     return Container(
       padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
       child: Column(
@@ -503,7 +448,9 @@ class OtpField extends StatelessWidget {
 
 class PasswordField extends StatelessWidget {
   final AuthProvider authProvider;
-  const PasswordField({super.key, required this.authProvider});
+  final String hintText;
+  const PasswordField(
+      {super.key, required this.authProvider, required this.hintText});
 
   @override
   Widget build(BuildContext context) {
@@ -512,10 +459,10 @@ class PasswordField extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(bottom: 5),
             child: CustomTextWidget(
-              text: "Password",
+              text: hintText,
               fontWeight: FontWeight.bold,
             ),
           ),
