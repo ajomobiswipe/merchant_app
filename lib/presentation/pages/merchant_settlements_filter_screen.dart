@@ -1,0 +1,165 @@
+import 'package:anet_merchant_app/core/utils/helpers/default_height.dart';
+import 'package:anet_merchant_app/presentation/pages/merchant_scaffold.dart';
+import 'package:anet_merchant_app/presentation/providers/settlement_provider.dart';
+import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
+import 'package:anet_merchant_app/presentation/widgets/custom_container.dart';
+import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+
+class MerchantStatementFilterScreen extends StatefulWidget {
+  const MerchantStatementFilterScreen({super.key});
+
+  @override
+  State<MerchantStatementFilterScreen> createState() =>
+      _MerchantStatementFilterScreenState();
+}
+
+class _MerchantStatementFilterScreenState
+    extends State<MerchantStatementFilterScreen> {
+  late SettlementProvider _settlementProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _settlementProvider =
+          Provider.of<SettlementProvider>(context, listen: false);
+      _settlementProvider.resetFilters();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
+    return Consumer<SettlementProvider>(
+      builder: (context, provider, child) {
+        return MerchantScaffold(
+          showStoreName: true,
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: screenWidth * 0.04,
+              vertical: screenHeight * 0.02,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                defaultHeight(screenHeight * .01),
+                CustomTextWidget(text: "Settlements", size: 12),
+                defaultHeight(screenHeight * .05),
+                CustomTextWidget(
+                  text: "Total Settlements",
+                  size: 12,
+                ),
+                _buildDateRangeSelector(provider),
+                if (provider.selectedDateRange == 'Custom Date Range')
+                  Padding(
+                    padding: EdgeInsets.only(top: screenHeight * 0.02),
+                    child: _buildCustomDatePickers(provider, context),
+                  ),
+                Spacer(flex: 1),
+                Spacer(flex: 2),
+                _buildApplyButton(provider,
+                    context: context, height: screenHeight * .06),
+              ],
+            ),
+          ),
+          onTapHome: () {
+            Navigator.pop(context);
+          },
+          onTapSupport: () {
+            Navigator.pop(context);
+            Navigator.pushNamed(context, "merchantHelpScreen");
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildDateRangeSelector(SettlementProvider provider) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CustomTextWidget(text: "Date", size: 12),
+        Column(
+          children: provider.dateRanges.map((range) {
+            return RadioListTile<String>(
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              title: CustomTextWidget(text: range, size: 10),
+              value: range,
+              groupValue: provider.selectedDateRange,
+              onChanged: provider.setSelectedDateRange,
+            );
+          }).toList(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCustomDatePickers(
+      SettlementProvider provider, BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: _buildDatePicker('Start Date', provider.customStartDate,
+              (picked) {
+            provider.setCustomStartDate(picked);
+          }, context),
+        ),
+        SizedBox(width: 10),
+        Expanded(
+          child: _buildDatePicker('End Date', provider.customEndDate, (picked) {
+            provider.setCustomEndDate(picked);
+          }, context),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDatePicker(String label, DateTime? selectedDate,
+      Function(DateTime) onPicked, BuildContext context) {
+    return ListTile(
+      title: CustomTextWidget(
+          size: 12,
+          isBold: false,
+          text: selectedDate == null
+              ? 'Select $label'
+              : DateFormat.yMMMd().format(selectedDate)),
+      trailing: Icon(Icons.calendar_today),
+      onTap: () async {
+        DateTime? picked = await showDatePicker(
+          context: context,
+          initialDate: DateTime.now(),
+          firstDate: DateTime(2020),
+          lastDate: DateTime.now(),
+        );
+        if (picked != null) {
+          onPicked(picked);
+        }
+      },
+    );
+  }
+
+  Widget _buildApplyButton(SettlementProvider provider,
+      {required BuildContext context, double? height}) {
+    return CustomContainer(
+      height: height ?? 70,
+      onTap: () {
+        if (provider.selectedDateRange == null ||
+            provider.selectedDateRange!.isEmpty ||
+            provider.isDateNotSelected()) {
+          AlertService().error(
+            "Please select a date range",
+          );
+
+          return;
+        }
+        Navigator.pushNamed(context, "settlementDashboard");
+      },
+      child: CustomTextWidget(text: 'Apply', color: Colors.white),
+    );
+  }
+}

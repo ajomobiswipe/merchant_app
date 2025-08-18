@@ -1,0 +1,96 @@
+name: anet_merchant_app
+description: "A new Flutter project."
+publish_to: 'none' 
+
+
+version: 1.0.2+1
+
+environment:
+  sdk: ^3.6.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # State Management
+  provider:
+
+
+  http:
+
+  # Permissions and Device Info
+  permission_handler:
+  device_info_plus:
+
+  # Storage
+  hive_flutter:
+  shared_preferences:
+  path_provider:
+
+  # UI Widgets
+  loading_animation_widget:
+  pinput:
+  flutter_svg: ^2.0.10+1
+  easy_splash_screen:
+
+  # Authentication
+  local_auth: ^2.3.0
+
+  # Encryption and Security
+  aes256gcm:
+  encrypt:
+
+  # PDF and Documents
+  pdf: ^3.11.0
+  file_picker: ^10.1.2
+
+  # Notifications and Messages
+  fluttertoast:
+
+  # App Information
+  package_info_plus:
+
+  # Miscellaneous
+  intl: any
+  flutter_dotenv: ^5.2.1
+  shimmer: ^3.0.0
+  connectivity_plus: ^6.1.4
+  open_file: ^3.5.10
+  url_launcher: ^6.3.1
+  dio: ^5.8.0+1
+  dropdown_search:
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/screen/anet_launcher_icon.png"
+  background_color: "#FFFFFF"
+
+flutter:
+  generate: true
+  uses-material-design: true
+  assets:
+    - assets/
+    - assets/screen/
+    - assets/ca/
+    - assets/fonts/
+    - .env
+
+  fonts:
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/Poppins.ttf
+          weight: 100
+    - family: Mont
+      fonts:
+        - asset: assets/fonts/Mont-Bold.otf
+    - family: Mont-regular
+      fonts:
+        - asset: assets/fonts/Mont-Regular.otf

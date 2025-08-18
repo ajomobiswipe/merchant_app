@@ -1,0 +1,174 @@
+/* ===============================================================
+| Project : MERCHANT ONBOARDING
+| Page    : MAIN.DART
+| Date    : 04-OCT-2024
+*  ===============================================================*/
+
+// Dependencies or Plugins - Models - Services - Global Functions
+import 'dart:async';
+import 'dart:io';
+
+// import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:anet_merchant_app/core/constants/constants.dart';
+import 'package:anet_merchant_app/core/endpoints.dart';
+import 'package:anet_merchant_app/core/routes.dart';
+import 'package:anet_merchant_app/core/state_key.dart';
+import 'package:anet_merchant_app/data/services/connectivity_service.dart';
+import 'package:anet_merchant_app/presentation/providers/authProvider.dart';
+import 'package:anet_merchant_app/presentation/providers/support_action_provider.dart';
+import 'package:anet_merchant_app/presentation/providers/home_screen_provider.dart';
+import 'package:anet_merchant_app/presentation/providers/merchant_filtered_transaction_provider.dart';
+import 'package:anet_merchant_app/presentation/providers/settlement_provider.dart';
+import 'package:anet_merchant_app/presentation/providers/vpa_transaction_provider.dart';
+import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
+import 'package:anet_merchant_app/presentation/widgets/app/custom_alert.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:provider/provider.dart';
+
+// Global Key - unauthorized login
+
+CustomAlert customAlert = CustomAlert();
+AlertService alertService = AlertService();
+
+/// The main entry point of the application.
+///
+/// This function sets up the necessary configurations and initializes the
+/// application by loading environment variables, initializing Hive for theme
+/// and user storage, and configuring system UI settings. It also initializes
+/// provider instances for state management and runs the main application
+/// widget within a guarded zone to handle any uncaught asynchronous errors.
+void main() {
+  runZonedGuarded<Future<void>>(() async {
+    // setUpServiceLocator();
+    // final StorageService storageService = getIt<StorageService>();
+    // await storageService.init();
+
+    await dotenv.load();
+    await Hive.initFlutter(); // THIS IS FOR THEME STORAGE
+    await Hive.openBox(Constants.hiveName); // THIS IS FOR USER STORAGE
+
+    // --- Root
+    WidgetsFlutterBinding.ensureInitialized();
+    ConnectivityService().initialize();
+
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.white, // Background color
+        statusBarIconBrightness: Brightness.dark, // For Android
+        statusBarBrightness: Brightness.light, // For iOS
+        systemNavigationBarColor: Colors.white, // Navigation bar color
+        systemNavigationBarIconBrightness: Brightness.dark, // For Android
+      ),
+    );
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: [SystemUiOverlay.bottom]);
+    // Optional: Remove top padding if you want immersive look
+    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+    runApp(MultiProvider(providers: [
+      ChangeNotifierProvider(create: (_) => AuthProvider()),
+      // ChangeNotifierProvider(create: (context) => ConnectivityProvider()),
+      ChangeNotifierProvider(create: (_) => HomeScreenProvider()),
+      // ChangeNotifierProvider(create: (_) => TidProvider()),
+      ChangeNotifierProvider(create: (_) => SettlementProvider()),
+      ChangeNotifierProvider(create: (_) => SupportActionProvider()),
+      ChangeNotifierProvider(
+          create: (_) => MerchantFilteredTransactionProvider()),
+      ChangeNotifierProxyProvider<MerchantFilteredTransactionProvider,
+          VpaTransactionProvider>(
+        create: (_) =>
+            VpaTransactionProvider(DummyMerchantProvider()), // required dummy
+        update: (_, merchantProvider, __) =>
+            VpaTransactionProvider(merchantProvider),
+      ),
+
+      // ], child: MainPage()));
+    ], child: MainPage()));
+  }, (e, _) => throw e);
+}
+
+// // FCM - Background Services
+// Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+//   await Firebase.initializeApp();
+// }
+
+// Stateless Widget for main page
+class MainPage extends StatelessWidget {
+  // local variable declaration
+  // final StorageService storageService;
+
+  const MainPage({
+    super.key,
+  });
+
+  /*
+  * This is the main page of project. we are using multiple provider.
+  * ThemeProvider - for theme mode & theme color option
+  * ConnectivityProvider - for internet check
+  */
+  @override
+
+  /// Builds the main app widget.
+  ///
+  /// If the app is running in UAT mode, it will show a red banner at the top
+  /// of the screen with the text "UAT".
+  ///
+  Widget build(BuildContext context) {
+    bool isUAT = EndPoints.baseApiPublic.contains("omasoftposqc");
+    return isUAT
+        ? Directionality(
+            textDirection: TextDirection.ltr, // Left-to-right direction
+            child: Banner(
+              message: "UAT",
+              location: BannerLocation.topEnd,
+              color: Colors.red,
+              child: _buildMaterialApp(),
+            ),
+          )
+        : _buildMaterialApp();
+  }
+
+  /// Builds the main [MaterialApp] widget.
+  ///
+  /// This widget sets up the app's theme, routes, and navigator key.
+  /// It also sets up the [ScaffoldMessenger] to display snackbars.
+  /// The [MaterialApp] is wrapped in a [SafeArea] to prevent the app from
+  /// being obscured by the status bar.
+  Widget _buildMaterialApp() {
+    return SafeArea(
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        scaffoldMessengerKey: StateKey.snackBarKey,
+        initialRoute: 'splash',
+        // initialRoute: 'merchantHomeScreen',
+        onGenerateRoute: CustomRoute.allRoutes,
+        navigatorKey: NavigationService.navigatorKey,
+        theme: ThemeData(
+          scaffoldBackgroundColor: Colors.white,
+          fontFamily: "Mont-regular",
+        ),
+      ),
+    );
+  }
+}
+
+class NavigationService {
+  NavigationService._();
+
+  static final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey<NavigatorState>();
+
+  static Future<dynamic> navigateTo(String routeName, {Object? arguments}) {
+    return navigatorKey.currentState!
+        .pushNamed(routeName, arguments: arguments);
+  }
+
+  static void goBack() {
+    navigatorKey.currentState!.pop();
+  }
+}
