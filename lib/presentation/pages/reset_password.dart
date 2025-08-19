@@ -142,8 +142,25 @@ class _MyWidgetState extends State<ResetPassword> {
                                 if (value == null || value.isEmpty) {
                                   return 'Please enter Password!';
                                 }
+
+                                if (!RegExp(r'[A-Z]').hasMatch(value)) {
+                                  return 'Password must contain at least one uppercase letter';
+                                }
+                                if (!RegExp(r'[a-z]').hasMatch(value)) {
+                                  return 'Password must contain at least one lowercase letter';
+                                }
+                                if (!RegExp(r'[0-9]').hasMatch(value)) {
+                                  return 'Password must contain at least one digit';
+                                }
+                                if (!RegExp(r'[!@#\$&*~%^()\-_=+{};:,<.>]')
+                                    .hasMatch(value)) {
+                                  return 'Password must contain at least one special character';
+                                }
                                 if (value.length < 8) {
                                   return 'Minimum character length is 8';
+                                }
+                                if (value.contains(' ')) {
+                                  return 'Password cannot contain spaces';
                                 }
                                 if (value == _currentPasswordController.text) {
                                   return 'New password cannot be the same!';
@@ -184,7 +201,6 @@ class _MyWidgetState extends State<ResetPassword> {
                       _submitForm(isResetOtpSent);
                     },
                   ),
-                
                 ],
               );
             },

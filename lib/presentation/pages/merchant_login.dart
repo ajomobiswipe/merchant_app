@@ -121,10 +121,12 @@ class _MerchantLoginState extends State<MerchantLogin> {
                                 }
                               },
                             ),
-                          gapWidget(screenHeight * .01),
+                          gapWidget(screenHeight * .05),
                           Center(
-                            child: Image.asset("assets/screen/anet.png",
-                                height: 100, fit: BoxFit.fill),
+                            child: Image.asset(
+                              "assets/screen/anet.png",
+                              width: screenWidth * 0.5,
+                            ),
                           ),
                           const Center(
                             child: CustomTextWidget(

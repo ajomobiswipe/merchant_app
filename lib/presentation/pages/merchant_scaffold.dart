@@ -78,7 +78,58 @@ class MerchantScaffold extends StatelessWidget {
           ),
         ],
         automaticallyImplyLeading: true,
+        // leading: Builder(
+        //   builder: (context) {
+        //     return IconButton(
+        //       icon: const Icon(Icons.menu),
+        //       onPressed: () => Scaffold.of(context).openDrawer(),
+        //     );
+        //   },
+        // ),
       ),
+      // drawer: Drawer(
+      //   child: ListView(
+      //     padding: EdgeInsets.zero,
+      //     children: [
+      //       UserAccountsDrawerHeader(
+      //         accountEmail: null,
+      //         accountName: null,
+      //         currentAccountPicture: CircleAvatar(
+      //             // backgroundImage: NetworkImage(
+      //             //   Provider.of<AuthProvider>(context).merchantProfileUrl,
+      //             // ),
+      //             ),
+      //         decoration: BoxDecoration(
+      //           color: Colors.blue,
+      //         ),
+      //       ),
+      //       ListTile(
+      //         title: const Text("Dashboard"),
+      //         onTap: () {
+      //           Navigator.pop(context);
+      //           onTapHome?.call();
+      //         },
+      //       ),
+      //       ListTile(
+      //         title: const Text("Support"),
+      //         onTap: () {
+      //           Navigator.pop(context);
+      //           onTapSupport?.call();
+      //         },
+      //       ),
+      //       ListTile(
+      //         title: const Text("Logout"),
+      //         onTap: () {
+      //           Navigator.pop(context);
+      //           Logout().logoutWarningDialog(
+      //             context: context,
+      //             title: "Logout",
+      //           );
+      //         },
+      //       ),
+      //     ],
+      //   ),
+      // ),
       body: Padding(
         padding: padding ??
             EdgeInsets.symmetric(

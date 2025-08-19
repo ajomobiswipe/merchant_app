@@ -26,125 +26,97 @@ class ShowSettledTransactionInvoice extends StatelessWidget {
     double basePadding = screenHeight * 0.01;
 
     return MerchantScaffold(
-      child: Stack(
-        children: [
-          Positioned(
-            right: 16,
-            top: 16,
-            child: GestureDetector(
-              onTap: () => Navigator.pop(context),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.red,
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
-                      blurRadius: 6,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
-                ),
-                padding: const EdgeInsets.all(8),
-                child: const Icon(Icons.close, color: Colors.white, size: 28),
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        height: screenHeight,
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Image.asset(
+                'assets/screen/anet.png',
+                height: 100,
+                width: screenWidth * 0.5,
               ),
             ),
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: screenHeight,
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Image.asset(
-                    'assets/screen/anet.png',
-                    height: 100,
-                    width: screenWidth * 0.5,
-                  ),
-                ),
-                defaultHeight(basePadding),
-                CustomTextWidget(
-                  text: "Date: ${formatDate(transaction.tranDate)}",
-                  size: 14,
-                ),
-                defaultHeight(basePadding),
-                CustomTextWidget(
-                  text: "RRN: ${transaction.rrn ?? "N/A"}",
-                  size: 14,
-                ),
-                defaultHeight(basePadding),
-                CustomTextWidget(
-                  text: "Approval Code: ${transaction.approveCode ?? "N/A"}",
-                  size: 14,
-                ),
-                defaultHeight(basePadding),
-                CustomTextWidget(
-                  text: "MID: ${transaction.mid ?? "N/A"}",
-                  size: 14,
-                ),
-                defaultHeight(basePadding),
-                CustomTextWidget(
-                  text: "UTR: ${transaction.utr ?? "N/A"}",
-                  size: 14,
-                ),
-                defaultHeight(basePadding),
-                CustomTextWidget(
-                  text:
-                      "Gross Amount: ₹ ${transaction.grossTransactionAmount?.toStringAsFixed(2) ?? "N/A"}",
-                  size: 14,
-                ),
-                defaultHeight(basePadding),
-                CustomTextWidget(
-                  text:
-                      "MDR: ₹ ${transaction.mdrAmount?.toStringAsFixed(2) ?? "N/A"}",
-                  size: 14,
-                ),
-                defaultHeight(basePadding),
-                CustomTextWidget(
-                  text:
-                      "GST: ₹ ${transaction.gst?.toStringAsFixed(2) ?? "N/A"}",
-                  size: 14,
-                ),
-                defaultHeight(basePadding),
-                CustomTextWidget(
-                  text:
-                      "Payable Amount: ₹ ${transaction.totalAmountPayable?.toStringAsFixed(2) ?? "N/A"}",
-                  size: 16,
-                  isBold: true,
-                ),
-                defaultHeight(basePadding),
-                CustomTextWidget(
-                  text:
-                      "Merchant Payment Done: ${transaction.merPayDone == true ? "Yes" : "No"}",
-                  size: 14,
-                ),
-                defaultHeight(basePadding),
-                CustomTextWidget(
-                  text:
-                      "MIS Done: ${transaction.misDone == true ? "Yes" : "No"}",
-                  size: 14,
-                ),
-                defaultHeight(basePadding),
-                CustomTextWidget(
-                  text:
-                      "Reconciled: ${transaction.reconciled == true ? "Yes" : "No"}",
-                  size: 14,
-                ),
-                const Spacer(),
-                CustomContainer(
-                  onTap: () => generatePDF(context),
-                  height: screenHeight * 0.06,
-                  child: const CustomTextWidget(
-                    text: "Download",
-                    color: Colors.white,
-                  ),
-                ),
-              ],
+            defaultHeight(basePadding),
+            CustomTextWidget(
+              text: "Date: ${formatDate(transaction.tranDate)}",
+              size: 14,
             ),
-          ),
-        ],
+            defaultHeight(basePadding),
+            CustomTextWidget(
+              text: "RRN: ${transaction.rrn ?? "N/A"}",
+              size: 14,
+            ),
+            defaultHeight(basePadding),
+            CustomTextWidget(
+              text: "Approval Code: ${transaction.approveCode ?? "N/A"}",
+              size: 14,
+            ),
+            defaultHeight(basePadding),
+            CustomTextWidget(
+              text: "MID: ${transaction.mid ?? "N/A"}",
+              size: 14,
+            ),
+            defaultHeight(basePadding),
+            CustomTextWidget(
+              text: "UTR: ${transaction.utr ?? "N/A"}",
+              size: 14,
+            ),
+            defaultHeight(basePadding),
+            CustomTextWidget(
+              text:
+                  "Gross Amount: ₹ ${transaction.grossTransactionAmount?.toStringAsFixed(2) ?? "N/A"}",
+              size: 14,
+            ),
+            defaultHeight(basePadding),
+            CustomTextWidget(
+              text:
+                  "MDR: ₹ ${transaction.mdrAmount?.toStringAsFixed(2) ?? "N/A"}",
+              size: 14,
+            ),
+            defaultHeight(basePadding),
+            CustomTextWidget(
+              text: "GST: ₹ ${transaction.gst?.toStringAsFixed(2) ?? "N/A"}",
+              size: 14,
+            ),
+            defaultHeight(basePadding),
+            CustomTextWidget(
+              text:
+                  "Payable Amount: ₹ ${transaction.totalAmountPayable?.toStringAsFixed(2) ?? "N/A"}",
+              size: 16,
+              isBold: true,
+            ),
+            defaultHeight(basePadding),
+            CustomTextWidget(
+              text:
+                  "Merchant Payment Done: ${transaction.merPayDone == true ? "Yes" : "No"}",
+              size: 14,
+            ),
+            defaultHeight(basePadding),
+            CustomTextWidget(
+              text: "MIS Done: ${transaction.misDone == true ? "Yes" : "No"}",
+              size: 14,
+            ),
+            defaultHeight(basePadding),
+            CustomTextWidget(
+              text:
+                  "Reconciled: ${transaction.reconciled == true ? "Yes" : "No"}",
+              size: 14,
+            ),
+            const Spacer(),
+            CustomContainer(
+              onTap: () => generatePDF(context),
+              height: screenHeight * 0.06,
+              child: const CustomTextWidget(
+                text: "Download",
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
       ),
       onTapHome: () => Navigator.pop(context),
       onTapSupport: () {

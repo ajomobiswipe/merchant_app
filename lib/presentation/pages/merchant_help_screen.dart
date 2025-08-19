@@ -94,7 +94,7 @@ class _MerchantHelpScreenState extends State<MerchantHelpScreen> {
                 items: provider.supportActionList.map((action) {
                   return DropdownMenuItem<String>(
                     value: action['quickActionMessage'],
-                    child: Text(action['quickActionMessage']),
+                    child: CustomTextWidget(text: action['quickActionMessage']),
                   );
                 }).toList(),
                 onChanged: (newValue) {

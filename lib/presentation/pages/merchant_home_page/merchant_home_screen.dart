@@ -28,7 +28,7 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _transactionProvider =
           Provider.of<HomeScreenProvider>(context, listen: false);
-      _transactionProvider.clearTransactions();
+      _transactionProvider.recentTransactionsPagination.reset();
       ConnectivityService().checkConnectivity();
       _transactionProvider.getRecentTransactions();
       _transactionProvider.fetchDailySettlementTxnSummary();
@@ -50,7 +50,7 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
             _transactionProvider
                     .recentTransScrollCtrl.position.maxScrollExtent -
                 200 &&
-        !_transactionProvider.isDailyTransactionsLoading) {
+        !_transactionProvider.recentTransactionsPagination.isLoading) {
       _transactionProvider.getRecentTransactions();
     }
   }
@@ -142,12 +142,13 @@ class _TransactionSummaryDetailsHeader extends StatelessWidget {
                     children: [
                       CustomTextWidget(
                         color: Colors.white,
-                        text: provider.todaysTnxCount.toString(),
+                        text: provider.recentTransactionsPagination.totalItems
+                            .toString(),
                         size: 18,
                       ),
                       CustomTextWidget(
                         text:
-                            "₹ ${provider.getTotalTransactionAmount.toStringAsFixed(2)}",
+                            "₹ ${provider.totalTransactionAmount.toStringAsFixed(2)}",
                         size: 18,
                         color: Colors.white,
                       ),
@@ -253,7 +254,8 @@ class _TransactionHistoryList extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
-    final transactionElement = transactionProvider.transactions;
+    final transactionElement =
+        transactionProvider.recentTransactionsPagination.items;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -270,8 +272,9 @@ class _TransactionHistoryList extends StatelessWidget {
           },
         ),
         Expanded(
-          child: (transactionProvider.isDailyTransactionsLoading &&
-                  transactionProvider.recentTransactions.isEmpty)
+          child: (transactionProvider.recentTransactionsPagination.isLoading &&
+                  transactionProvider
+                      .recentTransactionsPagination.items.isEmpty)
               ? const Center(child: CircularProgressIndicator())
               : transactionElement.isNotEmpty
                   ? ListView.builder(
@@ -288,7 +291,8 @@ class _TransactionHistoryList extends StatelessWidget {
                               ),
                             ],
                           );
-                        } else if (transactionProvider.hasMoreTransactions) {
+                        } else if (transactionProvider
+                            .recentTransactionsPagination.hasMore) {
                           return const Padding(
                             padding: EdgeInsets.symmetric(vertical: 16),
                             child: Center(child: CircularProgressIndicator()),
