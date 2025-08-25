@@ -20,7 +20,10 @@ InputDecoration commonInputDecoration(IconData? prefixIcon,
   return InputDecoration(
     // label: Text(title),
     helperText: helperText,
-    helperStyle: helperStyle,
+    helperStyle: helperStyle ??
+        TextStyle(
+          fontFamily: 'Mont',
+        ),
     hintText: hintText ?? '',
     fillColor: Colors.grey[300],
     filled: true,

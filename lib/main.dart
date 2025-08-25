@@ -65,7 +65,7 @@ void main() {
       ),
     );
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-        overlays: [SystemUiOverlay.bottom]);
+        overlays: [SystemUiOverlay.top]);
     // Optional: Remove top padding if you want immersive look
     // SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     SystemChrome.setPreferredOrientations(

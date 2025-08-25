@@ -29,15 +29,15 @@ class ShowVpaTransactionInvoice extends StatelessWidget {
     double logoSize = screenHeight * .1;
 
     return MerchantScaffold(
-      floatingActionButton: FloatingActionButton.small(
-        onPressed: () => Navigator.pop(context),
-        backgroundColor: Colors.red,
-        child: Icon(Icons.close, color: Colors.white, size: 20),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30),
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
+      // floatingActionButton: FloatingActionButton.small(
+      //   onPressed: () => Navigator.pop(context),
+      //   backgroundColor: Colors.red,
+      //   child: Icon(Icons.close, color: Colors.white, size: 20),
+      //   shape: RoundedRectangleBorder(
+      //     borderRadius: BorderRadius.circular(30),
+      //   ),
+      // ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

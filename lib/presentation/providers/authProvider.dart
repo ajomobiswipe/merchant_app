@@ -183,8 +183,8 @@ class AuthProvider with ChangeNotifier {
         }
       } else {
         if (loginResponse['responseCode'] == "04") {
-          NavigationService.navigatorKey.currentState?.pushNamedAndRemoveUntil(
-              'resetPassword', (route) => false,
+          NavigationService.navigatorKey.currentState?.pushNamed(
+              'resetPassword',
               arguments: _merchantIdController.text);
           return;
         }
@@ -279,9 +279,8 @@ class AuthProvider with ChangeNotifier {
       response = response.isEmpty ? null : response;
 
       if (res.statusCode == 200 && response?['responseMessage'] != null) {
-
-        alertService
-            .success(response?['responseMessage'] ?? 'Password reset successful');  
+        alertService.success(
+            response?['responseMessage'] ?? 'Password reset successful');
 
         NavigationService.navigatorKey.currentState?.pushNamedAndRemoveUntil(
           'login',

@@ -121,10 +121,12 @@ class _MerchantLoginState extends State<MerchantLogin> {
                                 }
                               },
                             ),
-                          gapWidget(screenHeight * .01),
+                          gapWidget(screenHeight * .05),
                           Center(
-                            child: Image.asset("assets/screen/anet.png",
-                                height: 100, fit: BoxFit.fill),
+                            child: Image.asset(
+                              "assets/screen/anet.png",
+                              width: screenWidth * 0.5,
+                            ),
                           ),
                           const Center(
                             child: CustomTextWidget(
@@ -376,72 +378,76 @@ class OtpField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-
-    return Container(
-      padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Padding(
-            padding: EdgeInsets.only(bottom: 5),
-            child: CustomTextWidget(
-              text: "Enter the OTP sent to your email",
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          TextFormField(
-            controller: authProvider.emailOtpController,
-            style: Theme.of(context)
-                .textTheme
-                .bodyLarge
-                ?.copyWith(fontSize: 13, fontFamily: 'Mont'),
-            obscureText: !authProvider.showEmailOtp,
-            obscuringCharacter: '*',
-            maxLength: 6,
-            keyboardType: TextInputType.number,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            onSaved: (value) {
-              authProvider.req.emailOtp = value;
-            },
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter OTP';
-              }
-              return null;
-            },
-            inputFormatters: [
-              FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
-            ],
-            decoration: InputDecoration(
-              hintText: 'Enter the OTP sent to your email',
-              counterText: '',
-              labelStyle:
-                  Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
-              enabledBorder: InputBorder.none,
-              focusedBorder: InputBorder.none,
-              border: InputBorder.none,
-              errorBorder: InputBorder.none,
-              focusedErrorBorder: InputBorder.none,
-              contentPadding:
-                  const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-              fillColor: AppColors.kTileColor,
-              filled: true,
-              hintStyle: const TextStyle(color: Colors.grey, fontSize: 13),
-              suffixIcon: IconButton(
-                onPressed: () {
-                  authProvider.toggleEmailOtpVisibility();
-                },
-                icon: Icon(
-                  authProvider.showEmailOtp
-                      ? Icons.visibility_off
-                      : Icons.visibility,
-                  color: Theme.of(context).primaryColor,
+    return Selector<AuthProvider, bool>(
+      selector: (_, provider) => provider.showEmailOtp,
+      builder: (context, showEmailOtp, child) {
+        return Container(
+          padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                padding: EdgeInsets.only(bottom: 5),
+                child: CustomTextWidget(
+                  text: "Enter the OTP sent to your email",
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-            ),
+              TextFormField(
+                controller: authProvider.emailOtpController,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge
+                    ?.copyWith(fontSize: 13, fontFamily: 'Mont'),
+                obscureText: !showEmailOtp,
+                obscuringCharacter: '*',
+                maxLength: 6,
+                keyboardType: TextInputType.number,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                onSaved: (value) {
+                  authProvider.req.emailOtp = value;
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter OTP';
+                  }
+                  return null;
+                },
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
+                ],
+                decoration: InputDecoration(
+                  hintText: 'Enter the OTP sent to your email',
+                  counterText: '',
+                  labelStyle: Theme.of(context)
+                      .textTheme
+                      .bodyLarge
+                      ?.copyWith(fontSize: 16),
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  border: InputBorder.none,
+                  errorBorder: InputBorder.none,
+                  focusedErrorBorder: InputBorder.none,
+                  contentPadding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                  fillColor: AppColors.kTileColor,
+                  filled: true,
+                  hintStyle: const TextStyle(color: Colors.grey, fontSize: 13),
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      authProvider.toggleEmailOtpVisibility();
+                    },
+                    icon: Icon(
+                      showEmailOtp ? Icons.visibility_off : Icons.visibility,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
