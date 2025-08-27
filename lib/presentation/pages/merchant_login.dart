@@ -161,7 +161,7 @@ class _MerchantLoginState extends State<MerchantLogin> {
                                   obscureText: false,
                                   inputFormatters: [
                                     FilteringTextInputFormatter.allow(
-                                        RegExp(r'[0-9a-zA-Z ,\-]'))
+                                        RegExp(r'[0-9a-zA-Z.@ ,\-]'))
                                   ],
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
