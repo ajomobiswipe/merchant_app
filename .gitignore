@@ -50,4 +50,3 @@ app.*.map.json
 /windows/
 /windows/flutter/
 /web/
-.env
