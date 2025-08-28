@@ -16,6 +16,7 @@ Widget buildTextField(
     bool? isPasswordField,
     List<TextInputFormatter>? inputFormatters,
     bool isReadModeOnly = false}) {
+  double screenWidth = MediaQuery.of(context).size.width;
   return Container(
     padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
     child: Column(
@@ -30,10 +31,8 @@ Widget buildTextField(
         ),
         TextFormField(
           controller: controller,
-          style: Theme.of(context)
-              .textTheme
-              .bodyLarge
-              ?.copyWith(fontSize: 13, fontFamily: 'Mont'),
+          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              fontSize: screenWidth < 400 ? 10 : 13, fontFamily: 'Mont'),
           obscureText: isPasswordField == true ? obscureText : false,
           obscuringCharacter: '*',
           maxLength: maxLength,

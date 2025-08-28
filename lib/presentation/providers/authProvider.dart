@@ -2,6 +2,7 @@ import 'package:anet_merchant_app/data/models/merchant_self_login_model.dart';
 import 'package:anet_merchant_app/data/services/dio_exception_handlers.dart';
 import 'package:anet_merchant_app/data/services/merchant_service.dart';
 import 'package:anet_merchant_app/data/services/storage_services.dart';
+import 'package:anet_merchant_app/presentation/pages/forgot_password.dart';
 import 'package:anet_merchant_app/presentation/pages/merchant_home_page/merchant_info_model.dart';
 import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
 import 'package:dio/dio.dart';
@@ -245,6 +246,38 @@ class AuthProvider with ChangeNotifier {
     } catch (e) {
       alertService
           .error('An error occurred while verifying OTP: \\${e.toString()}');
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  /// Sends a forgot password request to the server
+  ///
+  /// This will send a forgot password request to the server, which will
+  /// send a reset password link to the registered email address.
+  ///
+  /// If the request is successful, a success message will be displayed
+  /// to the user.
+  ///
+  /// If the request fails, an error message will be displayed to the user.
+  Future<void> forgotPassword() async {
+    try {
+      final res =
+          await _merchantServices.forgotPassword(_merchantIdController.text);
+      final response = res.data;
+
+      if (res.statusCode == 200 && response['responseCode'] == "00") {
+        alertService.success(response['responseMessage'] ??
+            'Forgot Password Link Successfully sent');
+      } else {
+        alertService.error(response['responseMessage'] ??
+            'Failed to send Forgot Password Link');
+      }
+    } on DioException catch (e) {
+      handleDioError(e);
+    } catch (e) {
+      alertService.error(
+          'An error occurred while processing Forgot Password: ${e.toString()}');
     } finally {
       _setLoading(false);
     }

@@ -56,6 +56,11 @@ class MerchantServices {
     return await DioClient().postWithoutToken(url, requestModel);
   }
 
+  Future<dynamic> forgotPassword(String userName) async {
+    final url = "${EndPoints.baseApiPublicNanoUMS}ums/forgotPassword/$userName";
+    return await DioClient().get(url);
+  }
+
   Future<dynamic> fetchTransactionHistory(Map<String, dynamic> requestModel,
       {required int pageNumber, required int pageSize}) async {
     final url =

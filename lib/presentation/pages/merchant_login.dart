@@ -152,8 +152,8 @@ class _MerchantLoginState extends State<MerchantLogin> {
                               if (!isOtpSent) {
                                 return buildTextField(
                                   controller: authProvider.merchantIdController,
-                                  hintText: 'Username',
-                                  labelText: "Username",
+                                  hintText: 'Username or Emai',
+                                  labelText: "Username or Email",
                                   onSaved: (value) {
                                     authProvider.req.merchantId = value;
                                   },
