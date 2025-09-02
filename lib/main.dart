@@ -167,15 +167,18 @@ class NavigationService {
         .pushNamed(routeName, arguments: arguments);
   }
 
-/*************  ✨ Windsurf Command ⭐  *************/
-  /// Pops the current route from the navigator.
+  /// Pops the top-most route off the navigator that most tightly encloses the
+  /// given [BuildContext].
   ///
-  /// This function is equivalent to calling [Navigator.pop] on the navigator
-  /// associated with the [navigatorKey].
+  /// This is equivalent to calling `Navigator.of(context).pop()`.
   ///
-  /// If the navigator is empty, this will do nothing.
+  /// This method is useful when you want to pop the current route, but you don't
+  /// have a `BuildContext` to pass to `Navigator.of`.
   ///
-/*******  136f31d7-7267-4ccd-b3c4-257d49237b36  *******/
+  /// The given [context] must be a descendant of the root navigator.
+  ///
+  /// Returns `true` if a route was popped, and `false` if there was no route to
+  /// pop.
   static void goBack() {
     navigatorKey.currentState!.pop();
   }
