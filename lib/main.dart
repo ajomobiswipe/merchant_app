@@ -33,7 +33,9 @@ import 'package:provider/provider.dart';
 CustomAlert customAlert = CustomAlert();
 AlertService alertService = AlertService();
 
+/// change from office pc
 /// The main entry point of the application.
+///
 ///
 /// This function sets up the necessary configurations and initializes the
 /// application by loading environment variables, initializing Hive for theme
