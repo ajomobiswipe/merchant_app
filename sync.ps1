@@ -4,7 +4,7 @@ Write-Host "🔄 Starting sync process..." -ForegroundColor Cyan
 
 # Step 1: Fetch and pull latest changes from GitHub
 Write-Host "⬇️  Fetching from GitHub..." -ForegroundColor Yellow
-git fetch github --all
+git fetch github
 git pull github main --rebase
 
 # Step 2: Push everything to TFS
