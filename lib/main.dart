@@ -34,18 +34,9 @@ CustomAlert customAlert = CustomAlert();
 AlertService alertService = AlertService();
 
 /// The main entry point of the application.
-///
-/// This function sets up the necessary configurations and initializes the
-/// application by loading environment variables, initializing Hive for theme
-/// and user storage, and configuring system UI settings. It also initializes
-/// provider instances for state management and runs the main application
-/// widget within a guarded zone to handle any uncaught asynchronous errors.
+
 void main() {
   runZonedGuarded<Future<void>>(() async {
-    // setUpServiceLocator();
-    // final StorageService storageService = getIt<StorageService>();
-    // await storageService.init();
-
     await dotenv.load();
     await Hive.initFlutter(); // THIS IS FOR THEME STORAGE
     await Hive.openBox(Constants.hiveName); // THIS IS FOR USER STORAGE
@@ -65,8 +56,7 @@ void main() {
     );
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
         overlays: [SystemUiOverlay.top]);
-    // Optional: Remove top padding if you want immersive look
-    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     runApp(MultiProvider(providers: [
@@ -91,32 +81,13 @@ void main() {
   }, (e, _) => throw e);
 }
 
-// // FCM - Background Services
-// Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-//   await Firebase.initializeApp();
-// }
-
 // Stateless Widget for main page
 class MainPage extends StatelessWidget {
-  // local variable declaration
-  // final StorageService storageService;
-
   const MainPage({
     super.key,
   });
 
-  /*
-  * This is the main page of project. we are using multiple provider.
-  * ThemeProvider - for theme mode & theme color option
-  * ConnectivityProvider - for internet check
-  */
   @override
-
-  /// Builds the main app widget.
-  ///
-  /// If the app is running in UAT mode, it will show a red banner at the top
-  /// of the screen with the text "UAT".
-  ///
   Widget build(BuildContext context) {
     bool isUAT = EndPoints.baseApiPublic.contains("omasoftposqc");
     return isUAT
@@ -132,12 +103,6 @@ class MainPage extends StatelessWidget {
         : _buildMaterialApp();
   }
 
-  /// Builds the main [MaterialApp] widget.
-  ///
-  /// This widget sets up the app's theme, routes, and navigator key.
-  /// It also sets up the [ScaffoldMessenger] to display snackbars.
-  /// The [MaterialApp] is wrapped in a [SafeArea] to prevent the app from
-  /// being obscured by the status bar.
   Widget _buildMaterialApp() {
     return SafeArea(
       child: MaterialApp(
@@ -167,18 +132,6 @@ class NavigationService {
         .pushNamed(routeName, arguments: arguments);
   }
 
-  /// Pops the top-most route off the navigator that most tightly encloses the
-  /// given [BuildContext].
-  ///
-  /// This is equivalent to calling `Navigator.of(context).pop()`.
-  ///
-  /// This method is useful when you want to pop the current route, but you don't
-  /// have a `BuildContext` to pass to `Navigator.of`.
-  ///
-  /// The given [context] must be a descendant of the root navigator.
-  ///
-  /// Returns `true` if a route was popped, and `false` if there was no route to
-  /// pop.
   static void goBack() {
     navigatorKey.currentState!.pop();
   }
