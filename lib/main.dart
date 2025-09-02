@@ -6,7 +6,6 @@
 
 // Dependencies or Plugins - Models - Services - Global Functions
 import 'dart:async';
-import 'dart:io';
 
 // import 'package:firebase_core/firebase_core.dart';
 // import 'package:firebase_messaging/firebase_messaging.dart';
@@ -168,6 +167,15 @@ class NavigationService {
         .pushNamed(routeName, arguments: arguments);
   }
 
+/*************  ✨ Windsurf Command ⭐  *************/
+  /// Pops the current route from the navigator.
+  ///
+  /// This function is equivalent to calling [Navigator.pop] on the navigator
+  /// associated with the [navigatorKey].
+  ///
+  /// If the navigator is empty, this will do nothing.
+  ///
+/*******  136f31d7-7267-4ccd-b3c4-257d49237b36  *******/
   static void goBack() {
     navigatorKey.currentState!.pop();
   }
