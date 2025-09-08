@@ -7,4 +7,4 @@ git pull github master --rebase
 
 
 
-# .\sync.ps1
+# .\pull.ps1
