@@ -5,6 +5,7 @@ import 'package:anet_merchant_app/data/services/storage_services.dart';
 import 'package:anet_merchant_app/presentation/pages/forgot_password.dart';
 import 'package:anet_merchant_app/presentation/pages/merchant_home_page/merchant_info_model.dart';
 import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
+import 'package:anet_merchant_app/presentation/widgets/logout.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +29,7 @@ class AuthProvider with ChangeNotifier {
 
   dynamic loginResponse;
 
-  GlobalKey<FormState> get formKey => _formKey;
+  // GlobalKey<FormState> get formKey => _formKey;
   String get merchantId => _merchantInfo.merchantId ?? 'MER3456789';
   String get merchantDbaName => _merchantDbaName ?? 'N/A';
   String get merchantCity => _merchantInfo.merchantCity ?? 'New York';
@@ -84,17 +85,35 @@ class AuthProvider with ChangeNotifier {
   }
 
   /// Resets all login state and controllers
-  void resetAll({bool fromDispose = false}) {
-    _isLoggedIn = false;
-    _isLoading = false;
-    _isOtpSent = false;
-    _showPassword = false;
-    _showEmailOtp = false;
-    _merchantIdController.clear();
-    _passwordController.clear();
-    _phoneNumberOtpController.clear();
-    _emailOtpController.clear();
-    if (!fromDispose) notifyListeners();
+
+  void resetAllAndCheckRememberMe({bool fromDispose = false}) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      _isLoggedIn = false;
+      _isLoading = false;
+      _isOtpSent = false;
+      _showPassword = false;
+      _showEmailOtp = false;
+
+      _merchantIdController.clear();
+      _passwordController.clear();
+      _phoneNumberOtpController.clear();
+      _emailOtpController.clear();
+
+      if (!fromDispose) notifyListeners();
+
+      // Run rememberMe logic safely AFTER reset
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      bool? rememberMe = pref.getBool('rememberMe');
+      if (rememberMe == null) {
+        setRememberMe(false);
+        return;
+      }
+      setRememberMe(rememberMe);
+      if (rememberMe) {
+        merchantIdController.text = pref.getString('userName') ?? '';
+        passwordController.text = pref.getString('password') ?? '';
+      }
+    });
   }
 
   /// Toggle password field visibility (TODO: Consider ValueNotifier for efficiency)
@@ -125,8 +144,8 @@ class AuthProvider with ChangeNotifier {
   }
 
   /// Handles the login/OTP button press logic
-  void onPresSendButton() async {
-    if (formKey.currentState?.validate() ?? false) {
+  void onPresSendButton(GlobalKey<FormState> formKeys) async {
+    if (formKeys.currentState?.validate() ?? false) {
       _setLoading(true);
       if (!_isOtpSent) {
         await sendMerchantLoginOtp();

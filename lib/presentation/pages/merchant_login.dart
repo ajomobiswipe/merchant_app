@@ -39,8 +39,7 @@ class _MerchantLoginState extends State<MerchantLogin> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       authProvider = Provider.of<AuthProvider>(context, listen: false);
-      authProvider.resetAll();
-      await _checkRememberMe();
+      authProvider.resetAllAndCheckRememberMe();
     });
     DevicePermission().checkPermission();
     ConnectivityService().checkConnectivity();
@@ -57,7 +56,7 @@ class _MerchantLoginState extends State<MerchantLogin> {
 
   void dispose() {
     super.dispose();
-    authProvider.resetAll(fromDispose: true);
+    authProvider.resetAllAndCheckRememberMe(fromDispose: true);
   }
 
   Future<void> _copyToClipboard(String mailId) async {
@@ -68,25 +67,11 @@ class _MerchantLoginState extends State<MerchantLogin> {
         duration: Duration(seconds: 5)));
   }
 
-  Future _checkRememberMe() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    bool? rememberMe = pref.getBool('rememberMe');
-    if (rememberMe == null) {
-      authProvider.setRememberMe(false);
-      return;
-    }
-    authProvider.setRememberMe(rememberMe);
-    if (rememberMe) {
-      authProvider.merchantIdController.text = pref.getString('userName') ?? '';
-      authProvider.passwordController.text = pref.getString('password') ?? '';
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     screenWidth = MediaQuery.of(context).size.width;
     screenHeight = MediaQuery.of(context).size.height;
-
+    final _formKey = GlobalKey<FormState>();
     return Scaffold(
       body: Selector<AuthProvider, bool>(
         selector: (_, provider) => provider.isLoading,
@@ -104,7 +89,7 @@ class _MerchantLoginState extends State<MerchantLogin> {
                 child: Consumer<AuthProvider>(
                   builder: (context, authProvider, snapshot) {
                     return Form(
-                      key: authProvider.formKey,
+                      key: _formKey,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -222,7 +207,9 @@ class _MerchantLoginState extends State<MerchantLogin> {
                           CustomAppButton(
                             title:
                                 authProvider.isOtpSent ? "Verify" : 'Sign In',
-                            onPressed: authProvider.onPresSendButton,
+                            onPressed: () {
+                              authProvider.onPresSendButton(_formKey);
+                            },
                           ),
                           Selector<AuthProvider, bool>(
                             selector: (_, provider) => provider.isOtpSent,

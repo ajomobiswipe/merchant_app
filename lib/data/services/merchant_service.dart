@@ -8,6 +8,7 @@ import 'package:anet_merchant_app/domain/datasources/storage/secure_storage.dart
 import 'package:anet_merchant_app/main.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MerchantServices {
   final BoxStorage boxStorage = BoxStorage();
@@ -59,6 +60,16 @@ class MerchantServices {
   Future<dynamic> forgotPassword(String userName) async {
     final url = "${EndPoints.baseApiPublicNanoUMS}ums/forgotPassword/$userName";
     return await DioClient().getWithoutToken(url);
+  }
+
+  Future<dynamic> logOut() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userName = prefs.getString('userName');
+
+    if (userName == null) return;
+
+    final url = '${EndPoints.baseApiPublic}/NanoPay/v1/logout';
+    return await DioClient().post(url, {'userName': userName});
   }
 
   Future<dynamic> fetchTransactionHistory(Map<String, dynamic> requestModel,
