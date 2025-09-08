@@ -163,3 +163,6 @@ Future<void> main() async {
     exit(1);
   }
 }
+
+
+//  dart run lib\tools\vcsPush.dart -run in cmd to push
