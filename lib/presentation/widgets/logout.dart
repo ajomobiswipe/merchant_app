@@ -11,7 +11,6 @@ import 'dart:convert';
 import 'package:anet_merchant_app/core/app_color.dart';
 import 'package:anet_merchant_app/core/constants/constants.dart';
 import 'package:anet_merchant_app/data/services/merchant_service.dart';
-import 'package:anet_merchant_app/data/services/token_manager.dart';
 import 'package:anet_merchant_app/presentation/widgets/alert_popup.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
 import 'package:flutter/material.dart';
@@ -100,11 +99,14 @@ class Logout {
   }
 
   Future<void> logOutUser(BuildContext context) async {
+    MerchantServices().logOut();
     try {
-      await MerchantServices().logOut();
-
-      await Future.wait(
-          [navigateToUserType(context), Hive.box(Constants.hiveName).clear()]);
+      await Future.delayed(
+          const Duration(seconds: 1),
+          () => Future.wait([
+                navigateToUserType(context),
+                Hive.box(Constants.hiveName).clear()
+              ]));
     } catch (e) {
       clearSharedPref();
       await Hive.box(Constants.hiveName).clear();
