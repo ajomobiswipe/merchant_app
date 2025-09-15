@@ -28,6 +28,8 @@ class _MerchantLoginState extends State<MerchantLogin> {
 
   late AuthProvider authProvider;
 
+   final _formKey = GlobalKey<FormState>();
+
   @override
 
   /// Initializes the state of the widget, sets up the AuthProvider,
@@ -71,7 +73,7 @@ class _MerchantLoginState extends State<MerchantLogin> {
   Widget build(BuildContext context) {
     screenWidth = MediaQuery.of(context).size.width;
     screenHeight = MediaQuery.of(context).size.height;
-    final _formKey = GlobalKey<FormState>();
+   
     return Scaffold(
       body: Selector<AuthProvider, bool>(
         selector: (_, provider) => provider.isLoading,
@@ -327,6 +329,7 @@ class _MerchantLoginState extends State<MerchantLogin> {
         },
       ),
     );
+  
   }
 
   Widget gapWidget(double height) {
