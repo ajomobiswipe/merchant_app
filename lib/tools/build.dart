@@ -11,11 +11,8 @@ Future<void> run(String command, List<String> args) async {
 }
 
 Future<void> main() async {
-  stdout.write("👉 Enter build type (release/debug): ");
-  final input = stdin.readLineSync()?.trim().toLowerCase();
-
   // Default to release if input is empty/invalid
-  final buildType = (input == "debug") ? "debug" : "release";
+  final buildType = "release";
 
   print("🔨 Selected build type: $buildType");
 
