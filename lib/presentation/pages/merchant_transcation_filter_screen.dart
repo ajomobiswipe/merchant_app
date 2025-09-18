@@ -230,7 +230,8 @@ class _MerchantTransactionFilterScreenState
                 enabled: true,
                 readOnly: true,
                 onTap: () {
-                  showTidVpaBottomSheet(screenWidth);
+                  showTidVpaBottomSheet(screenWidth,
+                      selectedType: provider.selectedTerminalType);
                 },
                 style: TextStyle(fontSize: 12),
                 decoration: commonInputDecoration(
@@ -251,7 +252,10 @@ class _MerchantTransactionFilterScreenState
     );
   }
 
-  void showTidVpaBottomSheet(double screenWidth) {
+  void showTidVpaBottomSheet(double screenWidth,
+      {required TerminalType selectedType}) {
+    TerminalType selectedTerminalType = selectedType;
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -276,17 +280,19 @@ class _MerchantTransactionFilterScreenState
                       return Expanded(
                         child: InkWell(
                           onTap: () {
-                            provider.selectedTerminalType =
+                            selectedTerminalType =
                                 type; // Your own provider method
+                            provider.updateUi();
                           },
                           child: Row(
                             children: [
                               Radio<TerminalType>(
                                 value: type,
-                                groupValue: provider.selectedTerminalType,
+                                groupValue: selectedTerminalType,
                                 onChanged: (value) {
                                   if (value != null) {
-                                    provider.selectedTerminalType = value;
+                                    selectedTerminalType = value;
+                                    provider.updateUi();
                                   }
                                 },
                               ),
@@ -305,8 +311,7 @@ class _MerchantTransactionFilterScreenState
                   Expanded(
                     child: Builder(
                       builder: (context) {
-                        final isVpa =
-                            provider.selectedTerminalType == TerminalType.VPA;
+                        final isVpa = selectedTerminalType == TerminalType.VPA;
                         final isLoading = isVpa
                             ? provider.isAllVpaLoading
                             : provider.isAllTidLoading;
@@ -351,6 +356,10 @@ class _MerchantTransactionFilterScreenState
                                 onTap: () {
                                   provider.setTidOrVpa(items[index] ?? '');
                                   Navigator.pop(context);
+                                  isVpa
+                                      ? provider.selectedTerminalType =
+                                          TerminalType.VPA
+                                      : TerminalType.TID;
                                 },
                                 decoration: commonInputDecoration(
                                   hintText: items[index] ?? '',

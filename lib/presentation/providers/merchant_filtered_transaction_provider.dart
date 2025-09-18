@@ -57,6 +57,10 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateUi() {
+    notifyListeners();
+  }
+
   String? _selectedDateRange;
   DateTime? _customStartDate;
   DateTime? _customEndDate;
