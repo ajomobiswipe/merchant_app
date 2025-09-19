@@ -47,7 +47,7 @@ void main() {
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
         statusBarColor: Colors.white, // Background color
-        statusBarIconBrightness: Brightness.dark, // For Android
+        statusBarIconBrightness: Brightness.light, // For Android
         statusBarBrightness: Brightness.light, // For iOS
         systemNavigationBarColor: Colors.white, // Navigation bar color
         systemNavigationBarIconBrightness: Brightness.dark, // For Android

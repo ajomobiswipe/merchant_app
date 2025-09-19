@@ -28,7 +28,7 @@ class _MerchantLoginState extends State<MerchantLogin> {
 
   late AuthProvider authProvider;
 
-   final _formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
 
   @override
 
@@ -61,6 +61,8 @@ class _MerchantLoginState extends State<MerchantLogin> {
     authProvider.resetAllAndCheckRememberMe(fromDispose: true);
   }
 
+  /// Copies the given [mailId] to the clipboard and shows a
+  /// snackbar to let the user know that the copying was successful.
   Future<void> _copyToClipboard(String mailId) async {
     Clipboard.setData(ClipboardData(text: mailId));
     if (!mounted) return;
@@ -73,7 +75,7 @@ class _MerchantLoginState extends State<MerchantLogin> {
   Widget build(BuildContext context) {
     screenWidth = MediaQuery.of(context).size.width;
     screenHeight = MediaQuery.of(context).size.height;
-   
+
     return Scaffold(
       body: Selector<AuthProvider, bool>(
         selector: (_, provider) => provider.isLoading,
@@ -329,7 +331,6 @@ class _MerchantLoginState extends State<MerchantLogin> {
         },
       ),
     );
-  
   }
 
   Widget gapWidget(double height) {

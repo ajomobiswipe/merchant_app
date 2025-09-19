@@ -172,6 +172,12 @@ class AuthProvider with ChangeNotifier {
     );
   }
 
+  bool isNullOrEmpty(dynamic value) {
+    if (value == null) return true; // missing key or null
+    final str = value.toString().trim();
+    return str.isEmpty || str.toLowerCase() == "null";
+  }
+
   /// Sends merchant login OTP
   Future<void> sendMerchantLoginOtp() async {
     req
@@ -194,6 +200,11 @@ class AuthProvider with ChangeNotifier {
         } else {
           /// If two-factor authentication is not required, proceed to login
           /// Code done by Anas
+          if (isNullOrEmpty(loginResponse['merchantId']) ||
+              isNullOrEmpty(loginResponse['acqMerchantId'])) {
+            alertService.error('Invalid Merchant ID');
+            return;
+          }
           _isLoggedIn = true;
           _isOtpSent = false;
           await _handleLoginSuccess();
