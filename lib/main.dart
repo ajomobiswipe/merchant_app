@@ -35,6 +35,12 @@ AlertService alertService = AlertService();
 
 /// The main entry point of the application.
 void main() {
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.white, // set to your desired color
+      statusBarIconBrightness: Brightness.dark, // dark icons for light bg
+    ),
+  );
   runZonedGuarded<Future<void>>(() async {
     await dotenv.load();
     await Hive.initFlutter(); // THIS IS FOR THEME STORAGE
@@ -46,15 +52,12 @@ void main() {
 
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
-        statusBarColor: Colors.white, // Background color
-        statusBarIconBrightness: Brightness.light, // For Android
-        statusBarBrightness: Brightness.light, // For iOS
-        systemNavigationBarColor: Colors.white, // Navigation bar color
-        systemNavigationBarIconBrightness: Brightness.dark, // For Android
-      ),
+          statusBarColor: Colors.transparent, // transparent
+          statusBarIconBrightness: Brightness.dark,
+          systemStatusBarContrastEnforced: true),
     );
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-        overlays: [SystemUiOverlay.top]);
+        overlays: [SystemUiOverlay.bottom]);
 
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
@@ -103,18 +106,16 @@ class MainPage extends StatelessWidget {
   }
 
   Widget _buildMaterialApp() {
-    return SafeArea(
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        scaffoldMessengerKey: StateKey.snackBarKey,
-        initialRoute: 'splash',
-        // initialRoute: 'merchantHomeScreen',
-        onGenerateRoute: CustomRoute.allRoutes,
-        navigatorKey: NavigationService.navigatorKey,
-        theme: ThemeData(
-          scaffoldBackgroundColor: Colors.white,
-          fontFamily: "Mont-regular",
-        ),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      scaffoldMessengerKey: StateKey.snackBarKey,
+      initialRoute: 'splash',
+      // initialRoute: 'merchantHomeScreen',
+      onGenerateRoute: CustomRoute.allRoutes,
+      navigatorKey: NavigationService.navigatorKey,
+      theme: ThemeData(
+        scaffoldBackgroundColor: Colors.white,
+        fontFamily: "Mont-regular",
       ),
     );
   }

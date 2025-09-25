@@ -3,6 +3,7 @@ import 'package:anet_merchant_app/data/services/merchant_service.dart';
 import 'package:anet_merchant_app/presentation/providers/merchant_filtered_transaction_provider.dart';
 import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -79,31 +80,21 @@ class VpaTransactionProvider with ChangeNotifier {
   }
 
   Future<void> getRecentTransactions() async {
-    print("Current Page: $currentPage");
-    print("Page Size: $pageSize");
-    print("Total Items: $_TnxCount");
-    print("Recent Transactions Length: ${recentTransactions.length}");
+    if (kDebugMode) {
+      print("Current Page: $currentPage");
+      print("Page Size: $pageSize");
+      print("Total Items: $_TnxCount");
+      print("Recent Transactions Length: ${recentTransactions.length}");
+    }
 
     if (recentTransactions.length >= _TnxCount && !isRecentTransLoadingFistTime)
       return;
 
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? merchantId = prefs.getString('acqMerchantId');
-    print(merchantId);
-    print("Inside fetchItems");
+
     final today = DateFormat('dd-MM-yyyy').format(DateTime.now());
     final startDate = formatDateOrNull(transactionProvider.customStartDate);
     final endDate = formatDateOrNull(transactionProvider.customEndDate);
-    // _recentTranReqModel
-    //   ..acquirerId = "OMAIND"
-    //   ..merchantId = merchantId
-    //   // ..recordFrom = today
-    //   // ..recordTo = today
-    //   ..recordFrom = "20-05-2025"
-    //   ..recordTo = "20-07-2025"
-    //   ..rrn = null
-    //   ..terminalId = null
-    //   ..sendTxnReportToMail = false;
 
     if (_isDailyTransactionsLoading) return;
 
@@ -121,21 +112,11 @@ class VpaTransactionProvider with ChangeNotifier {
         pageSize: pageSize,
       );
       var decodedData = response.data;
-      print(decodedData["pageData"]["totalElements"]);
-      if (response.statusCode == 200) {
-        // final decodedData = transactionHistoryFromJson(
-        //   jsonEncode(response.data),
-        // );// for http
-
+      if (response.statusCode == 200 && decodedData["statusCode"] == 200) {
         final newItems = decodedData["pageData"]["content"] ?? [];
-        _TnxCount = decodedData["pageData"]["totalElements"] ?? 0;
-        print(decodedData["pageData"]["totalElements"]);
-        // _totalTransactionAmount = decodedData.totalAmount ?? 0.0;
-
-        // print(
-        //     "todays transaction count: ${decodedData.responsePage!.totalElements}");
 
         if (newItems.isNotEmpty) {
+          _TnxCount = decodedData["pageData"]["totalElements"] ?? 0;
           isRecentTransLoadingFistTime = false;
           currentPage++;
           recentTransactions.addAll(newItems);

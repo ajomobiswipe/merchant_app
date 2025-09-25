@@ -1,7 +1,9 @@
 import 'package:anet_merchant_app/presentation/providers/authProvider.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
 import 'package:anet_merchant_app/presentation/widgets/logout.dart';
+import 'package:anet_merchant_app/tools/inapp_update_test.dart';
 import 'package:flutter/material.dart';
+import 'package:in_app_update/in_app_update.dart';
 import 'package:provider/provider.dart';
 
 class MerchantScaffold extends StatelessWidget {
@@ -65,7 +67,16 @@ class MerchantScaffold extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications_none_outlined),
-            onPressed: onNotificationPressed,
+            onPressed: () {},
+            onLongPress: () {
+              Navigator.push<void>(
+                context,
+                MaterialPageRoute<void>(
+                  builder: (BuildContext context) => const InAppUpdateScreen(),
+                ),
+              );
+            },
+            // onPressed: onNotificationPressed,
           ),
           IconButton(
             icon: const Icon(Icons.logout),
