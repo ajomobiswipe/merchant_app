@@ -74,12 +74,6 @@ class BoxStorage {
     return user['terminalId'].toString();
   }
 
-  //Get Kyc Alert
-  getKycAlert() {
-    var user = getUserDetails();
-    return user['kycExpiryAlertMsg'].toString();
-  }
-
   //Get Notification Token
   getNotificationToken() {
     var user = getUserDetails();

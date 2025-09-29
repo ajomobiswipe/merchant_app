@@ -3,6 +3,7 @@ import 'package:anet_merchant_app/data/services/dio_exception_handlers.dart';
 import 'package:anet_merchant_app/data/services/merchant_service.dart';
 import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -202,9 +203,12 @@ class SettlementProvider extends ChangeNotifier {
 
   // Fetch recent transactions
   Future<void> getSettlementDashboardReport() async {
-    print("utrWiseSettlements length: ${_utrWiseSettlements.length}");
-    print("utrWiseSettlementCount: $_utrWiseSettlementCount");
-    print("isAllUtrWiseSettlementFistTime: $isAllUtrWiseSettlementFistTime");
+    if (kDebugMode) {
+      print("utrWiseSettlements length: ${_utrWiseSettlements.length}");
+      print("utrWiseSettlementCount: $_utrWiseSettlementCount");
+      print("isAllUtrWiseSettlementFistTime: $isAllUtrWiseSettlementFistTime");
+    }
+
     if (_utrWiseSettlements.length >= _utrWiseSettlementCount &&
         !isAllUtrWiseSettlementFistTime) {
       return;
@@ -214,7 +218,7 @@ class SettlementProvider extends ChangeNotifier {
     String? merchantId = prefs.getString('acqMerchantId') ?? '651010000022371';
     _isAllUtrWiseSettlementLoading = true;
     notifyListeners();
-    print("selected DateRange ${_selectedDateRange}");
+
     var reqBody = {
       "merchantId": merchantId,
       "fromDate": DateFormat('yyyy-MM-dd').format(_customStartDate!),

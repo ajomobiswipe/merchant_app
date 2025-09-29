@@ -4,6 +4,7 @@ import 'package:anet_merchant_app/data/services/dio_exception_handlers.dart';
 import 'package:anet_merchant_app/data/services/merchant_service.dart';
 import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -52,7 +53,7 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
   //  void setTid(param0) {
 
   //  }
-  setTidOrVpa(tid) {
+  void setTidOrVpa(String tid) {
     _tidSearchController.text = tid;
     notifyListeners();
   }
@@ -156,10 +157,12 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
 
   /// Fetch recent TIDs by Merchant ID
   Future<void> getTidByMerchantId() async {
-    print("Current Page: $currentTidListPageNo");
-    print("Page Size: 10");
-    print("Total tid: $_allTidCount");
-    print("Tid list Length: ${_allTerminalId.length}");
+    if (kDebugMode) {
+      print("Current Page: $currentTidListPageNo");
+      print("Page Size: 10");
+      print("Total tid: $_allTidCount");
+      print("Tid list Length: ${_allTerminalId.length}");
+    }
 
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -168,7 +171,6 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
     }
 
     String? merchantId = prefs.getString('acqMerchantId') ?? '65OMA0000000002';
-    print(merchantId);
 
     if (_isAllTidLoading) return;
 
@@ -187,7 +189,6 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
         var decodedData = response.data;
         var newItems = response.data["content"] ?? [];
         _allTidCount = decodedData["totalElements"] ?? 0;
-        print('_allTidCount is $_allTidCount');
 
         if (newItems.isNotEmpty) {
           currentTidListPageNo++;
@@ -207,10 +208,12 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
 
   /// Fetch recent TIDs by Merchant ID
   Future<void> getVpaByMerchantId() async {
-    print("Current Vpa Page: $currentVpaListPageNo");
-    print("Vpa Page Size: 10");
-    print("Total vpa count : $_allVpaCount");
-    print("Vpa list Length: ${_allVpa.length}");
+    if (kDebugMode) {
+      print("Current Vpa Page: $currentVpaListPageNo");
+      print("Vpa Page Size: 10");
+      print("Total vpa count : $_allVpaCount");
+      print("Vpa list Length: ${_allVpa.length}");
+    }
 
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -219,7 +222,6 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
     }
 
     String? merchantId = prefs.getString('acqMerchantId') ?? '65OMA0000000002';
-    print(merchantId);
 
     if (_isAllVpaLoading) return;
 
@@ -238,7 +240,6 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
         var decodedData = response.data;
         var newItems = response.data["pageData"]["content"] ?? [];
         _allVpaCount = decodedData["pageData"]["totalElements"] ?? 0;
-        print('_allVpaCount is $_allVpaCount');
 
         if (newItems.isNotEmpty) {
           currentVpaListPageNo++;
@@ -275,20 +276,22 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
 
   // Fetch recent transactions
   Future<void> getAllTransactions() async {
-    print(_selectedDateRange);
-    print(_customStartDate);
-    print("Current Page: $currentPage");
-    print("Page Size: $pageSize");
-    print("Total Items: $_allTnxCount");
-    print("Recent Transactions Length: ${_allTransactions.length}");
+    if (kDebugMode) {
+      print(_selectedDateRange);
+      print(_customStartDate);
+      print("Current Page: $currentPage");
+      print("Page Size: $pageSize");
+      print("Total Items: $_allTnxCount");
+      print("Recent Transactions Length: ${_allTransactions.length}");
+    }
 
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    if (_allTransactions.length >= _allTnxCount && !isAllTransLoadingFistTime)
+    if (_allTransactions.length >= _allTnxCount && !isAllTransLoadingFistTime) {
       return;
+    }
 
     String? merchantId = prefs.getString('acqMerchantId') ?? '65OMA0000000002';
-    print(merchantId);
 
     _allTranReqModel.acquirerId = "OMAIND";
     _allTranReqModel.merchantId = merchantId;
@@ -317,10 +320,7 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
         final decodedData = TransactionHistory.fromJson(response.data);
         var newItems = decodedData.responsePage!.content ?? [];
         _allTnxCount = decodedData.responsePage!.totalElements ?? 0;
-        print('_allTnxCount is $_allTnxCount');
         _totalAmountInAllTrans = decodedData.totalAmount ?? 0.0;
-        print(
-            "todays transaction count: ${decodedData.responsePage!.totalElements}");
         if (newItems.isNotEmpty) {
           currentPage++;
 
@@ -348,13 +348,6 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     String? merchantId = prefs.getString('acqMerchantId') ?? '65OMA0000000002';
-    print(merchantId);
-    print(_selectedDateRange);
-    print(_customStartDate);
-    print("Current Page: $currentPage");
-    print("Page Size: $pageSize");
-    print("Total Items: $_allTnxCount");
-    print("Recent Transactions Length: ${_allTransactions.length}");
 
     _allTranReqModel
       ..acquirerId = "OMAIND"
@@ -407,7 +400,7 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
       ? searchController.text
       : '';
 
-  getRecordFrom() {
+  String? getRecordFrom() {
     if (_searchFilterType == FilterType.DATERANGE && _customStartDate != null) {
       return DateFormat('dd-MM-yyyy').format(_customStartDate!);
     }
@@ -531,13 +524,10 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
       _customStartDate = DateTime.now().subtract(Duration(days: 30));
       _customEndDate = DateTime.now();
     } else if (_selectedDateRange == 'Custom Date Range') {
-      print(_customEndDate);
     } else if (_selectedDateRange == 'All') {
       _customStartDate = null;
       _customEndDate = null;
     }
-    print(_customEndDate);
-    print(_customStartDate);
     notifyListeners();
   }
 

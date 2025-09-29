@@ -5,7 +5,6 @@ import 'package:anet_merchant_app/presentation/pages/merchant_scaffold.dart';
 import 'package:anet_merchant_app/presentation/providers/vpa_transaction_provider.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_container.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
-import 'package:anet_merchant_app/presentation/widgets/transaction_tile.dart';
 import 'package:anet_merchant_app/presentation/widgets/vpa_transaction_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -53,6 +52,7 @@ class _VpaTransactionsScreenState extends State<VpaTransactionsScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return MerchantScaffold(
+      showStoreName: true,
       child:
           Consumer<VpaTransactionProvider>(builder: (context, provider, child) {
         return Column(
@@ -80,11 +80,12 @@ class _VpaTransactionsScreenState extends State<VpaTransactionsScreen> {
                   CustomTextWidget(
                       color: Colors.white,
                       text: provider.TnxCount.toString(),
-                      size: 18),
+                      size: 20),
                   CustomTextWidget(
                       text:
-                          "₹ ${provider.getSumOfTransactions().toStringAsFixed(2)}",
-                      size: 18,
+                          // "₹ ${provider.getSumOfTransactions().toStringAsFixed(2)}",
+                          "₹ ${provider.getTotalTransactionAmount.toStringAsFixed(2)}",
+                      size: 20,
                       color: Colors.white),
                 ],
               ),

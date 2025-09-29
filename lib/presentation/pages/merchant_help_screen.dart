@@ -168,7 +168,7 @@ class _MerchantHelpScreenState extends State<MerchantHelpScreen> {
           ),
           Spacer(),
           CustomContainer(
-            padding: EdgeInsets.symmetric(horizontal: 15),
+            padding: EdgeInsets.symmetric(horizontal: 10),
             color: Color.fromARGB(255, 165, 162, 138),
             child: Column(
               children: [
@@ -193,10 +193,10 @@ class _MerchantHelpScreenState extends State<MerchantHelpScreen> {
                           color: Colors.white,
                         ),
                       ),
-                      defaultWidth(20),
+                      defaultWidth(5),
                       CustomTextWidget(
                           text: "+911203584948",
-                          size: 12,
+                          size: 14,
                           color: AppColors.black50,
                           fontWeight: FontWeight.w400),
                       const Spacer(
@@ -236,10 +236,10 @@ class _MerchantHelpScreenState extends State<MerchantHelpScreen> {
                           color: Colors.white,
                         ),
                       ),
-                      defaultWidth(20),
+                      defaultWidth(5),
                       CustomTextWidget(
                           text: Constants.supportEmail,
-                          size: 11,
+                          size: 13,
                           color: AppColors.black50,
                           fontWeight: FontWeight.w400),
                       const Spacer(

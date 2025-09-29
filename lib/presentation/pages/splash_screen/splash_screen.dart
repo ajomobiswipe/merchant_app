@@ -49,7 +49,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   setStoreName() async {
     final pref = await SharedPreferences.getInstance();
-    print("Store Name: ${pref.getString("shopName")}");
+
     var dbaName = pref.getString("shopName") ?? "N/A";
     Provider.of<AuthProvider>(context, listen: false)
         .setMerchantDbaName(dbaName);

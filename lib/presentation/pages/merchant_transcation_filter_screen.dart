@@ -47,12 +47,10 @@ class _MerchantTransactionFilterScreenState
   }
 
   void _onScrollVpaList() {
-    print(!transactionProvider.isAllVpaLoading);
     if (transactionProvider.allVpaScrollCtrl.position.pixels >=
             transactionProvider.allVpaScrollCtrl.position.maxScrollExtent -
                 200 &&
         !transactionProvider.isAllVpaLoading) {
-      print("Fetching VPA list");
       transactionProvider.getVpaByMerchantId();
     }
   }
@@ -243,7 +241,7 @@ class _MerchantTransactionFilterScreenState
                             .toString()
                             .split(".")
                             .last),
-                onChanged: (value) => print("Entered: $value"),
+                onChanged: (value) {},
               ),
             ),
           ],

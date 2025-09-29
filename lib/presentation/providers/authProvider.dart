@@ -243,7 +243,6 @@ class AuthProvider with ChangeNotifier {
       ..merchantId = !fromResetPassword ? _merchantIdController.text : userName
       ..emailOtp = _emailOtpController.text;
 
-    print('userName is ${req.merchantId}');
     // Debug bypass for OTP (should be removed or guarded in production)
     // if (kDebugMode) {
     //   await _handleLoginSuccess();

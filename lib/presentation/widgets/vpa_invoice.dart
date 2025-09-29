@@ -90,11 +90,11 @@ class ShowVpaTransactionInvoice extends StatelessWidget {
               children: [
                 buildKeyValueRow(
                   "Date",
-                  transaction["ts"]?.split("T").first ?? "N/A",
+                  transaction["addedOn"]?.split("T").first ?? "N/A",
                 ),
                 buildKeyValueRow(
                   "Time",
-                  transaction["ts"]?.split("T").last ?? "N/A",
+                  transaction["addedOn"]?.split("T").last ?? "N/A",
                 ),
               ],
             ),
@@ -105,15 +105,15 @@ class ShowVpaTransactionInvoice extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 buildKeyValueRow(
-                    "Merchant ID", transaction["merchantId"] ?? "N/A"),
-                buildKeyValueRow("Ref ID", transaction["refId"] ?? "N/A"),
+                    "Merchant ID ", transaction["merchantId"] ?? "N/A"),
+                buildKeyValueRow("Ref ID ", transaction["refId"] ?? "N/A"),
               ],
             ),
             defaultHeight(basePadding),
 
             // ---------------- Transaction & Account Info ----------------
             buildKeyValueRow(
-                "Transaction Type", getTransactionType(transaction)),
+                "Transaction Type ", getTransactionType(transaction)),
             defaultHeight(basePadding),
 
             buildKeyValueRow(
@@ -161,19 +161,19 @@ class ShowVpaTransactionInvoice extends StatelessWidget {
             const Divider(),
             defaultHeight(basePadding),
 
-            // ---------------- Registered Name ----------------
-            if (transaction["regName"] != null &&
-                transaction["regName"].toString().isNotEmpty)
-              Column(
-                children: [
-                  CustomTextWidget(
-                    text: transaction["regName"],
-                    size: 12,
-                    isBold: true,
-                  ),
-                  defaultHeight(mediumPadding),
-                ],
-              ),
+            // // ---------------- Registered Name ----------------
+            // if (transaction["regName"] != null &&
+            //     transaction["regName"].toString().isNotEmpty)
+            //   Column(
+            //     children: [
+            //       CustomTextWidget(
+            //         text: transaction["regName"],
+            //         size: 12,
+            //         isBold: true,
+            //       ),
+            //       defaultHeight(mediumPadding),
+            //     ],
+            //   ),
 
             // ---------------- Footer Message ----------------
             Center(
@@ -234,8 +234,9 @@ class ShowVpaTransactionInvoice extends StatelessWidget {
                 centerText(transaction["addr"]),
                 pw.SizedBox(height: 10),
                 buildPdfKeyValueRow(
-                    "Date", transaction["ts"]?.split("T").first),
-                buildPdfKeyValueRow("Time", transaction["ts"]?.split("T").last),
+                    "Date", transaction["addedOn"]?.split("T").first),
+                buildPdfKeyValueRow(
+                    "Time", transaction["addedOn"]?.split("T").last),
                 buildPdfKeyValueRow("Merchant ID", transaction["merchantId"]),
                 buildPdfKeyValueRow("Ref ID", transaction["refId"]),
                 buildPdfKeyValueRow(
@@ -266,15 +267,15 @@ class ShowVpaTransactionInvoice extends StatelessWidget {
                   ),
                 ),
                 pw.Divider(),
-                if (transaction["regName"] != null &&
-                    transaction["regName"].toString().isNotEmpty)
-                  pw.Center(
-                    child: pw.Text(
-                      transaction["regName"],
-                      style: pw.TextStyle(
-                          fontSize: 12, fontWeight: pw.FontWeight.bold),
-                    ),
-                  ),
+                // if (transaction["regName"] != null &&
+                //     transaction["regName"].toString().isNotEmpty)
+                //   pw.Center(
+                //     child: pw.Text(
+                //       transaction["regName"],
+                //       style: pw.TextStyle(
+                //           fontSize: 12, fontWeight: pw.FontWeight.bold),
+                //     ),
+                //   ),
                 pw.SizedBox(height: 10),
                 centerText(
                     "THANK YOU FOR USING OUR SERVICE\nKeep this receipt for your records."),

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:anet_merchant_app/data/services/merchant_service.dart';
 import 'package:anet_merchant_app/main.dart';
 import 'package:anet_merchant_app/presentation/providers/authProvider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,7 +20,9 @@ class TokenManager1 {
   MerchantServices merchantServices = MerchantServices();
 
   void start(BuildContext context) {
-    print("token manager started at ${DateTime.now()}");
+    if (kDebugMode) {
+      print("token manager started at ${DateTime.now()}");
+    }
     _timer ??= Timer.periodic(Duration(seconds: 100), (_) {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
@@ -27,7 +30,9 @@ class TokenManager1 {
         try {
           _refreshToken();
         } catch (e) {
-          print("Error occurred while refreshing token: $e");
+          if (kDebugMode) {
+            print("Error occurred while refreshing token: $e");
+          }
           stop();
         }
       }
@@ -45,7 +50,9 @@ class TokenManager1 {
 
   void _refreshToken() {
     merchantServices.refreshToken();
-    print("Token refreshed at ${DateTime.now()}");
+    if (kDebugMode) {
+      print("Token refreshed at ${DateTime.now()}");
+    }
     // Add actual logic here
   }
 }

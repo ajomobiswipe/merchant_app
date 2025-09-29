@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:in_app_update/in_app_update.dart';
 
@@ -32,7 +33,10 @@ class _InAppUpdateScreenState extends State<InAppUpdateScreen> {
       showSnack("Checked for updates successfully");
     } catch (e) {
       showSnack("Error: $e");
-      print(e);
+
+      if (kDebugMode) {
+        print(e);
+      }
     }
   }
 

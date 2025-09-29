@@ -7,8 +7,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import 'package:shared_preferences/shared_preferences.dart';
-
 class DummyMerchantProvider extends MerchantFilteredTransactionProvider {}
 
 class VpaTransactionProvider with ChangeNotifier {
@@ -16,8 +14,10 @@ class VpaTransactionProvider with ChangeNotifier {
 
   VpaTransactionProvider(this.transactionProvider) {
     // Access fromDate and toDate
-    print("FROM: ${transactionProvider.customStartDate}");
-    print("TO: ${transactionProvider.customEndDate}");
+    if (kDebugMode) {
+      print("FROM: ${transactionProvider.customStartDate}");
+      print("TO: ${transactionProvider.customEndDate}");
+    }
   }
   // Enums
 
@@ -63,17 +63,17 @@ class VpaTransactionProvider with ChangeNotifier {
   List<dynamic> get transactions => recentTransactions;
 
 // Getters for settlement data
-  double _totalSettlementAmount = 0;
-  int _totalSettlements = 20;
-  int _totalTransactions = 20;
-  double _deductions = 0;
-  double _pendingSettlement = 0;
+  // double _totalSettlementAmount = 0;
+  // int _totalSettlements = 20;
+  // int _totalTransactions = 20;
+  // double _deductions = 0;
+  // double _pendingSettlement = 0;
 
-  double get totalSettlementAmount => _totalSettlementAmount;
-  int get totalSettlements => _totalSettlements;
-  double get deductionsAmount => _deductions;
-  double get pendingSettlementAmount => _pendingSettlement;
-  int get totalTransactions => _totalTransactions;
+  // double get totalSettlementAmount => _totalSettlementAmount;
+  // int get totalSettlements => _totalSettlements;
+  // double get deductionsAmount => _deductions;
+  // double get pendingSettlementAmount => _pendingSettlement;
+  // int get totalTransactions => _totalTransactions;
   // Methods
   String? formatDateOrNull(DateTime? date) {
     return date != null ? DateFormat('dd-MM-yyyy').format(date) : null;
@@ -89,8 +89,6 @@ class VpaTransactionProvider with ChangeNotifier {
 
     if (recentTransactions.length >= _TnxCount && !isRecentTransLoadingFistTime)
       return;
-
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     final today = DateFormat('dd-MM-yyyy').format(DateTime.now());
     final startDate = formatDateOrNull(transactionProvider.customStartDate);
@@ -117,6 +115,7 @@ class VpaTransactionProvider with ChangeNotifier {
 
         if (newItems.isNotEmpty) {
           _TnxCount = decodedData["pageData"]["totalElements"] ?? 0;
+          _totalTransactionAmount = decodedData["totalAmount"] ?? 0.0;
           isRecentTransLoadingFistTime = false;
           currentPage++;
           recentTransactions.addAll(newItems);

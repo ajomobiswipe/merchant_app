@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:io';
 
 Future<String> runGit(List<String> args, {bool allowFail = false}) async {

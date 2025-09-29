@@ -42,8 +42,7 @@ class MerchantServices {
 
   Future<dynamic> merchantSelfLogin(Map<String, dynamic> requestModel) async {
     final url = "${EndPoints.baseApiPublicNanoUMS}login";
-    print(url);
-    print(jsonEncode(requestModel));
+
     return await DioClient().postWithoutToken(url, requestModel);
   }
 

@@ -1,7 +1,6 @@
 import 'package:anet_merchant_app/core/utils/helpers/default_height.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_container.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
-import 'package:anet_merchant_app/presentation/widgets/transaction_invoice.dart';
 import 'package:anet_merchant_app/presentation/widgets/vpa_invoice.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -25,19 +24,6 @@ class VpaTransactionTile extends StatelessWidget {
       return "$formattedDate | $formattedTime";
     } catch (e) {
       return "N/A";
-    }
-  }
-
-  String getTransactionStatus(String? type) {
-    switch (type) {
-      case "OSAL001":
-        return "Success";
-      case "VSAL001":
-        return "VOID-SALE";
-      case "POS-REVERSAL":
-        return "Reversal";
-      default:
-        return type ?? "N/A";
     }
   }
 
