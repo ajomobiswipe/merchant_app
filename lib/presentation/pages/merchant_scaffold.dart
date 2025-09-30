@@ -40,6 +40,7 @@ class MerchantScaffold extends StatelessWidget {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
+      
       floatingActionButtonLocation: floatingActionButtonLocation,
       resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,

@@ -141,7 +141,7 @@ class _MerchantLoginState extends State<MerchantLogin> {
                               if (!isOtpSent) {
                                 return buildTextField(
                                   controller: authProvider.merchantIdController,
-                                  hintText: 'Username or Emai',
+                                  hintText: 'Username or Email',
                                   labelText: "Username or Email",
                                   onSaved: (value) {
                                     authProvider.req.merchantId = value;
@@ -257,13 +257,13 @@ class _MerchantLoginState extends State<MerchantLogin> {
                               InkWell(
                                 onTap: () async {
                                   final Uri phoneUri =
-                                      Uri(scheme: 'tel', path: '911203584948');
+                                      Uri(scheme: 'tel', path: '911203129301');
                                   if (await canLaunchUrl(phoneUri)) {
                                     await launchUrl(phoneUri);
                                   }
                                 },
                                 child: CustomTextWidget(
-                                    text: "+911203584948",
+                                    text: "+911203129301",
                                     size: 18,
                                     color: AppColors.black50,
                                     fontWeight: FontWeight.w400),
@@ -480,9 +480,9 @@ class PasswordField extends StatelessWidget {
               if (value == null || value.isEmpty) {
                 return 'Please enter Password!';
               }
-              if (value.length < 10) {
-                return 'Minimum character length is 10';
-              }
+              // if (value.length < 10) {
+              //   return 'Minimum character length is 10';
+              // }
               return null;
             },
             decoration: InputDecoration(

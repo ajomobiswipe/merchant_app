@@ -260,149 +260,151 @@ class _MerchantTransactionFilterScreenState
       builder: (context) {
         return Consumer<MerchantFilteredTransactionProvider>(
           builder: (context, provider, _) {
-            return Container(
-              padding: EdgeInsets.all(16.0),
-              height: MediaQuery.of(context).size.height * 0.8,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 16),
-                  CustomTextWidget(
-                    text: "Select TID/VPA",
-                    color: Colors.grey.shade800,
-                    size: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  Row(
-                    children: TerminalType.values.map((type) {
-                      return Expanded(
-                        child: InkWell(
-                          onTap: () {
-                            selectedTerminalType =
-                                type; // Your own provider method
-                            provider.updateUi();
-                          },
-                          child: Row(
-                            children: [
-                              Radio<TerminalType>(
-                                value: type,
-                                groupValue: selectedTerminalType,
-                                onChanged: (value) {
-                                  if (value != null) {
-                                    selectedTerminalType = value;
-                                    provider.updateUi();
-                                  }
-                                },
-                              ),
-                              Text(type
-                                  .toString()
-                                  .split(".")
-                                  .last
-                                  .toUpperCase()),
-                            ],
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                  SizedBox(height: 16),
-                  Expanded(
-                    child: Builder(
-                      builder: (context) {
-                        final isVpa = selectedTerminalType == TerminalType.VPA;
-                        final isLoading = isVpa
-                            ? provider.isAllVpaLoading
-                            : provider.isAllTidLoading;
-                        final items = isVpa ? provider.allVpa : provider.allTid;
-                        final scrollCtrl = isVpa
-                            ? provider.allVpaScrollCtrl
-                            : provider.allTidScrollCtrl;
-                        final hasMore =
-                            isVpa ? provider.hasMoreVpa : provider.hasMoreTid;
-                        final emptyText =
-                            isVpa ? "No Vpa available" : "No Tid available";
-                        final moreText = isVpa ? "No more Vpa" : "No more Tid";
-                        final icon = isVpa
-                            ? Icons.account_balance_wallet_outlined
-                            : Icons.point_of_sale_outlined;
-
-                        if (isLoading && items.isEmpty) {
-                          return Center(child: CircularProgressIndicator());
-                        }
-
-                        if (items.isEmpty) {
-                          return Center(
-                            child: Text(
-                              emptyText,
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.grey,
-                                fontStyle: FontStyle.italic,
-                              ),
-                            ),
-                          );
-                        }
-
-                        return ListView.separated(
-                          controller: scrollCtrl,
-                          itemCount: items.length + 1,
-                          itemBuilder: (context, index) {
-                            if (index < items.length) {
-                              return TextField(
-                                readOnly: true,
-                                style: TextStyle(fontSize: 12),
-                                onTap: () {
-                                  provider.setTidOrVpa(items[index] ?? '');
-                                  Navigator.pop(context);
-                                  isVpa
-                                      ? provider.selectedTerminalType =
-                                          TerminalType.VPA
-                                      : TerminalType.TID;
-                                },
-                                decoration: commonInputDecoration(
-                                  hintText: items[index] ?? '',
-                                  icon,
+            return SafeArea(
+              child: Container(
+                padding: EdgeInsets.all(16.0),
+                height: MediaQuery.of(context).size.height * 0.8,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 16),
+                    CustomTextWidget(
+                      text: "Select TID/VPA",
+                      color: Colors.grey.shade800,
+                      size: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    Row(
+                      children: TerminalType.values.map((type) {
+                        return Expanded(
+                          child: InkWell(
+                            onTap: () {
+                              selectedTerminalType =
+                                  type; // Your own provider method
+                              provider.updateUi();
+                            },
+                            child: Row(
+                              children: [
+                                Radio<TerminalType>(
+                                  value: type,
+                                  groupValue: selectedTerminalType,
+                                  onChanged: (value) {
+                                    if (value != null) {
+                                      selectedTerminalType = value;
+                                      provider.updateUi();
+                                    }
+                                  },
                                 ),
-                              );
-                            } else if (hasMore) {
-                              return Center(child: CircularProgressIndicator());
-                            } else {
-                              return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Center(
-                                  child: Text(
-                                    items.length > 15 ? moreText : '',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.grey,
-                                      fontStyle: FontStyle.italic,
+                                Text(type
+                                    .toString()
+                                    .split(".")
+                                    .last
+                                    .toUpperCase()),
+                              ],
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                    SizedBox(height: 16),
+                    Expanded(
+                      child: Builder(
+                        builder: (context) {
+                          final isVpa = selectedTerminalType == TerminalType.VPA;
+                          final isLoading = isVpa
+                              ? provider.isAllVpaLoading
+                              : provider.isAllTidLoading;
+                          final items = isVpa ? provider.allVpa : provider.allTid;
+                          final scrollCtrl = isVpa
+                              ? provider.allVpaScrollCtrl
+                              : provider.allTidScrollCtrl;
+                          final hasMore =
+                              isVpa ? provider.hasMoreVpa : provider.hasMoreTid;
+                          final emptyText =
+                              isVpa ? "No Vpa available" : "No Tid available";
+                          final moreText = isVpa ? "No more Vpa" : "No more Tid";
+                          final icon = isVpa
+                              ? Icons.account_balance_wallet_outlined
+                              : Icons.point_of_sale_outlined;
+              
+                          if (isLoading && items.isEmpty) {
+                            return Center(child: CircularProgressIndicator());
+                          }
+              
+                          if (items.isEmpty) {
+                            return Center(
+                              child: Text(
+                                emptyText,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.grey,
+                                  fontStyle: FontStyle.italic,
+                                ),
+                              ),
+                            );
+                          }
+              
+                          return ListView.separated(
+                            controller: scrollCtrl,
+                            itemCount: items.length + 1,
+                            itemBuilder: (context, index) {
+                              if (index < items.length) {
+                                return TextField(
+                                  readOnly: true,
+                                  style: TextStyle(fontSize: 12),
+                                  onTap: () {
+                                    provider.setTidOrVpa(items[index] ?? '');
+                                    Navigator.pop(context);
+                                    isVpa
+                                        ? provider.selectedTerminalType =
+                                            TerminalType.VPA
+                                        : TerminalType.TID;
+                                  },
+                                  decoration: commonInputDecoration(
+                                    hintText: items[index] ?? '',
+                                    icon,
+                                  ),
+                                );
+                              } else if (hasMore) {
+                                return Center(child: CircularProgressIndicator());
+                              } else {
+                                return Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Center(
+                                    child: Text(
+                                      items.length > 15 ? moreText : '',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.grey,
+                                        fontStyle: FontStyle.italic,
+                                      ),
                                     ),
                                   ),
-                                ),
-                              );
-                            }
-                          },
-                          separatorBuilder: (context, index) =>
-                              SizedBox(height: 10),
-                        );
-                      },
+                                );
+                              }
+                            },
+                            separatorBuilder: (context, index) =>
+                                SizedBox(height: 10),
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 16),
-                  Center(
-                    child: CustomContainer(
-                      width: screenWidth * 0.85,
-                      height: 40,
-                      onTap: () => Navigator.pop(context),
-                      child: Center(
-                        child: CustomTextWidget(
-                          text: "Close",
-                          color: Colors.white,
+                    SizedBox(height: 16),
+                    Center(
+                      child: CustomContainer(
+                        width: screenWidth * 0.85,
+                        height: 40,
+                        onTap: () => Navigator.pop(context),
+                        child: Center(
+                          child: CustomTextWidget(
+                            text: "Close",
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             );
           },

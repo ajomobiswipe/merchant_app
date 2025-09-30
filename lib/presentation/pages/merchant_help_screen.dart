@@ -177,7 +177,7 @@ class _MerchantHelpScreenState extends State<MerchantHelpScreen> {
                 InkWell(
                   onTap: () async {
                     final Uri phoneUri =
-                        Uri(scheme: 'tel', path: '+911203584948');
+                        Uri(scheme: 'tel', path: '+911203129301');
                     if (await canLaunchUrl(phoneUri)) {
                       await launchUrl(phoneUri);
                     } else {
@@ -195,7 +195,7 @@ class _MerchantHelpScreenState extends State<MerchantHelpScreen> {
                       ),
                       defaultWidth(5),
                       CustomTextWidget(
-                          text: "+911203584948",
+                          text: "+911203129301",
                           size: 14,
                           color: AppColors.black50,
                           fontWeight: FontWeight.w400),
