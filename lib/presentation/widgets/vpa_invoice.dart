@@ -68,16 +68,16 @@ class ShowVpaTransactionInvoice extends StatelessWidget {
                       ),
                     ),
                   defaultHeight(basePadding),
-                  if (transaction["addr"] != null &&
-                      transaction["addr"].toString().isNotEmpty)
-                    Center(
-                      child: CustomTextWidget(
-                        text: transaction["addr"],
-                        size: 13,
-                        maxLines: 3,
-                        isBold: false,
-                      ),
-                    ),
+                  // if (transaction["addr"] != null &&
+                  //     transaction["addr"].toString().isNotEmpty)
+                  //   Center(
+                  //     child: CustomTextWidget(
+                  //       text: transaction["addr"],
+                  //       size: 13,
+                  //       maxLines: 3,
+                  //       isBold: false,
+                  //     ),
+                  //   ),
                 ],
               ),
             ),
@@ -231,7 +231,7 @@ class ShowVpaTransactionInvoice extends StatelessWidget {
                   style: pw.TextStyle(fontSize: 14),
                 ),
                 pw.SizedBox(height: 5),
-                centerText(transaction["addr"]),
+                // centerText(transaction["addr"]),
                 pw.SizedBox(height: 10),
                 buildPdfKeyValueRow(
                     "Date", transaction["addedOn"]?.split("T").first),

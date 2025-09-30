@@ -291,6 +291,7 @@ class _MerchantTransactionFilterScreenState
                                   onChanged: (value) {
                                     if (value != null) {
                                       selectedTerminalType = value;
+
                                       provider.updateUi();
                                     }
                                   },
@@ -310,11 +311,13 @@ class _MerchantTransactionFilterScreenState
                     Expanded(
                       child: Builder(
                         builder: (context) {
-                          final isVpa = selectedTerminalType == TerminalType.VPA;
+                          final isVpa =
+                              selectedTerminalType == TerminalType.VPA;
                           final isLoading = isVpa
                               ? provider.isAllVpaLoading
                               : provider.isAllTidLoading;
-                          final items = isVpa ? provider.allVpa : provider.allTid;
+                          final items =
+                              isVpa ? provider.allVpa : provider.allTid;
                           final scrollCtrl = isVpa
                               ? provider.allVpaScrollCtrl
                               : provider.allTidScrollCtrl;
@@ -322,15 +325,16 @@ class _MerchantTransactionFilterScreenState
                               isVpa ? provider.hasMoreVpa : provider.hasMoreTid;
                           final emptyText =
                               isVpa ? "No Vpa available" : "No Tid available";
-                          final moreText = isVpa ? "No more Vpa" : "No more Tid";
+                          final moreText =
+                              isVpa ? "No more Vpa" : "No more Tid";
                           final icon = isVpa
                               ? Icons.account_balance_wallet_outlined
                               : Icons.point_of_sale_outlined;
-              
+
                           if (isLoading && items.isEmpty) {
                             return Center(child: CircularProgressIndicator());
                           }
-              
+
                           if (items.isEmpty) {
                             return Center(
                               child: Text(
@@ -343,7 +347,7 @@ class _MerchantTransactionFilterScreenState
                               ),
                             );
                           }
-              
+
                           return ListView.separated(
                             controller: scrollCtrl,
                             itemCount: items.length + 1,
@@ -355,9 +359,8 @@ class _MerchantTransactionFilterScreenState
                                   onTap: () {
                                     provider.setTidOrVpa(items[index] ?? '');
                                     Navigator.pop(context);
-                                    isVpa
-                                        ? provider.selectedTerminalType =
-                                            TerminalType.VPA
+                                    provider.selectedTerminalType = isVpa
+                                        ? TerminalType.VPA
                                         : TerminalType.TID;
                                   },
                                   decoration: commonInputDecoration(
@@ -366,7 +369,8 @@ class _MerchantTransactionFilterScreenState
                                   ),
                                 );
                               } else if (hasMore) {
-                                return Center(child: CircularProgressIndicator());
+                                return Center(
+                                    child: CircularProgressIndicator());
                               } else {
                                 return Padding(
                                   padding: const EdgeInsets.all(8.0),
