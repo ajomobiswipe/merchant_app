@@ -1,7 +1,9 @@
+import 'package:anet_merchant_app/core/config.dart';
 import 'package:anet_merchant_app/data/models/merchant_self_login_model.dart';
 import 'package:anet_merchant_app/data/services/dio_exception_handlers.dart';
 import 'package:anet_merchant_app/data/services/merchant_service.dart';
 import 'package:anet_merchant_app/data/services/storage_services.dart';
+import 'package:anet_merchant_app/domain/datasources/storage/secure_storage.dart';
 import 'package:anet_merchant_app/presentation/pages/forgot_password.dart';
 import 'package:anet_merchant_app/presentation/pages/merchant_home_page/merchant_info_model.dart';
 import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
@@ -10,6 +12,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:anet_merchant_app/main.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthProvider with ChangeNotifier {
@@ -21,6 +24,7 @@ class AuthProvider with ChangeNotifier {
 
   final MerchantInfoModel _merchantInfo = MerchantInfoModel();
   String? _merchantDbaName;
+
   final MerchantServices _merchantServices = MerchantServices();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -32,6 +36,8 @@ class AuthProvider with ChangeNotifier {
   // GlobalKey<FormState> get formKey => _formKey;
   String get merchantId => _merchantInfo.merchantId ?? 'MER3456789';
   String get merchantDbaName => _merchantDbaName ?? 'N/A';
+  List<dynamic>? get merchantIds => _merchantIds;
+  List<dynamic>? _merchantIds;
   String get merchantCity => _merchantInfo.merchantCity ?? 'New York';
   String get merchantAddress => _merchantInfo.merchantAddress ?? '123 Main St';
   TextEditingController get passwordController => _passwordController;
@@ -157,6 +163,111 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
+  // void showMerchantIdsPopup(
+  //     BuildContext context, Map<String, dynamic> merchantIds) {
+  //   // Filter out null values if needed
+  //   final validEntries =
+  //       merchantIds.entries.where((entry) => entry.value != null).toList();
+
+  //   if (kDebugMode) {
+  //     print('Valid Merchant IDs: $validEntries');
+  //   }
+
+  //   showDialog(
+  //     context: context,
+  //     barrierDismissible: false,
+  //     builder: (context) {
+  //       return StatefulBuilder(builder: (context, setStateMethod) {
+  //         return AlertDialog(
+  //           shape: RoundedRectangleBorder(
+  //             borderRadius: BorderRadius.circular(12),
+  //           ),
+  //           content: SizedBox(
+  //             width: double.maxFinite,
+  //             child: validEntries.isNotEmpty
+  //                 ? ListView.builder(
+  //                     shrinkWrap: true,
+  //                     itemCount: validEntries.length,
+  //                     itemBuilder: (context, index) {
+  //                       final entry = validEntries[index];
+  //                       return Row(
+  //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                         children: [
+  //                           Expanded(
+  //                             child: ListTile(
+  //                               title: Text(entry.value.toString()),
+  //                               subtitle: Text(entry.key),
+  //                               contentPadding: EdgeInsets.zero,
+  //                             ),
+  //                           ),
+  //                           IconButton(
+  //                             icon: Icon(
+  //                                 _selectedMerchantId != null
+  //                                     ? _selectedMerchantId.key != entry.key
+  //                                         ? Icons.circle_outlined
+  //                                         : Icons.circle
+  //                                     : Icons.circle_outlined,
+  //                                 size: 20),
+  //                             onPressed: () {
+  //                               _selectedMerchantId = entry;
+  //                               setStateMethod(() {});
+  //                             },
+  //                           ),
+  //                         ],
+  //                       );
+  //                     },
+  //                   )
+  //                 : const Text('No valid merchant IDs found.'),
+  //           ),
+  //           actions: [
+  //             TextButton(
+  //               onPressed: () async {
+  //                 final secureStorage = BoxStorage();
+  //                 await secureStorage.saveUserDetails(loginResponse,
+  //                     userName: _merchantIdController.text);
+  //                 await MerchantServices().logOutFromUserAlreadyLogin(
+  //                     userName: _merchantIdController.text);
+
+  //                 Navigator.pop(context);
+
+  //                 Future.delayed(const Duration(milliseconds: 1000), () {
+  //                   Logout().clearSharedPref();
+  //                   Hive.box(Constants.hiveName).clear();
+  //                 });
+  //                 // ignore: use_build_context_synchronously
+  //               },
+  //               child: const Text('Cancel'),
+  //             ),
+  //             ElevatedButton(
+  //               style: ButtonStyle(
+  //                 backgroundColor:
+  //                     WidgetStateProperty.all(AppColors.kPrimaryColor),
+  //               ),
+  //               onPressed: () {
+  //                 if (_selectedMerchantId == null) {
+  //                   alertService
+  //                       .error('Please select a Merchant ID to proceed.');
+  //                   return;
+  //                 }
+
+  //                 loginResponse['acqMerchantId'] = _selectedMerchantId.key;
+  //                 loginResponse['shopName'] = _selectedMerchantId.value;
+
+  //                 _handleLoginSuccess();
+  //                 Navigator.pop(context);
+  //               },
+  //               child: const Text(
+  //                 'Proceed',
+  //                 style: TextStyle(color: Colors.white),
+  //               ),
+  //             ),
+  //           ],
+  //         );
+  //       });
+  //     },
+  //   );
+  // }
+
   /// Helper for post-login success actions
   Future<void> _handleLoginSuccess() async {
     await StorageServices.saveSecureStorage(
@@ -205,6 +316,19 @@ class AuthProvider with ChangeNotifier {
             alertService.error('Invalid Merchant ID');
             return;
           }
+
+          // final merchantIds = loginResponse['merchantIds'];
+          // _selectedMerchantId = null;
+
+          // if (merchantIds != null &&
+          //     ((merchantIds is Map && merchantIds.isNotEmpty) ||
+          //         (merchantIds is List && merchantIds.isNotEmpty))) {
+          //   showMerchantIdsPopup(
+          //       // ignore: use_build_context_synchronously
+          //       NavigationService.navigatorKey.currentState!.context,
+          //       merchantIds);
+          //   return;
+          // }
           _isLoggedIn = true;
           _isOtpSent = false;
           await _handleLoginSuccess();
@@ -359,6 +483,12 @@ class AuthProvider with ChangeNotifier {
 
   void showResetOtp() {
     _isResetOtpSent = true;
+    notifyListeners();
+  }
+
+  void setMerchantIds(List<dynamic> merchantIdList) {
+    _merchantIds = merchantIdList;
+    print(_merchantIds);
     notifyListeners();
   }
 }

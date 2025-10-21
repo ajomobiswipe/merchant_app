@@ -73,6 +73,7 @@ class _MerchantHelpScreenState extends State<MerchantHelpScreen> {
             ],
           ),
           defaultHeight(screenHeight * 0.05),
+          
           Consumer<SupportActionProvider>(
             builder: (context, provider, child) {
               if (provider.supportActionList.isEmpty) {
@@ -107,6 +108,7 @@ class _MerchantHelpScreenState extends State<MerchantHelpScreen> {
               );
             },
           ),
+          
           Spacer(),
           Row(
             children: [

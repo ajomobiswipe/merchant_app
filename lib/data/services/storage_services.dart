@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:anet_merchant_app/domain/datasources/storage/secure_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -33,6 +35,7 @@ class StorageServices {
     pref.setString('shopName', decodeData['shopName'].toString());
 
     pref.setString('acqMerchantId', decodeData['acqMerchantId'].toString());
+    pref.setString('merchantIds', json.encode(decodeData['merchantIds']));
 
     if (isMerchant) {
       pref.setString('merchantId', decodeData['merchantId'].toString());

@@ -1,5 +1,7 @@
+import 'package:anet_merchant_app/core/app_color.dart';
 import 'package:anet_merchant_app/presentation/providers/authProvider.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
+import 'package:anet_merchant_app/presentation/widgets/form_field/custom_dropdown.dart';
 import 'package:anet_merchant_app/presentation/widgets/logout.dart';
 import 'package:anet_merchant_app/tools/inapp_update_test.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +42,6 @@ class MerchantScaffold extends StatelessWidget {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
-      
       floatingActionButtonLocation: floatingActionButtonLocation,
       resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
@@ -151,17 +152,55 @@ class MerchantScaffold extends StatelessWidget {
         child: Column(
           children: [
             if (showStoreName)
-              Row(
-                children: [
-                  SizedBox(
-                    width: screenWidth * 0.6,
-                    child: CustomTextWidget(
-                      size: 14,
-                      text: Provider.of<AuthProvider>(context).merchantDbaName,
-                      maxLines: 3,
-                    ),
-                  ),
-                ],
+              Consumer<AuthProvider>(
+                builder: (context, provider, child) {
+                  if ((provider.merchantIds != null &&
+                          provider.merchantIds!.isNotEmpty) ||
+                      (provider.merchantIds is List &&
+                          provider.merchantIds!.isNotEmpty)) {
+                    print('provider.merchantIds is ${provider.merchantIds}');
+                    return DropdownButtonFormField<dynamic>(
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      isDense: true,
+                      isExpanded: true,
+                      icon: const Icon(
+                        Icons.keyboard_arrow_down,
+                        color: AppColors.kPrimaryColor,
+                      ),
+                      decoration: commonInputDecoration(
+                        hintText: "select one",
+                        Icons.maps_home_work_outlined,
+                      ),
+                      // value: provider.selectedQuickAction,
+                      items: provider.merchantIds!.map((entry) {
+                        return DropdownMenuItem<dynamic>(
+                          value: entry,
+                          child: CustomTextWidget(text: entry['shopName']),
+                        );
+                      }).toList(),
+                      onChanged: (newValue) {
+                        // setState(() {
+                        Provider.of<AuthProvider>(context, listen: false)
+                            .setMerchantDbaName(newValue!['shopName']);
+                        // Update the provider with the selected value
+                        // });
+                      },
+                    );
+                  }
+                  return Row(
+                    children: [
+                      SizedBox(
+                        width: screenWidth * 0.6,
+                        child: CustomTextWidget(
+                          size: 14,
+                          text: Provider.of<AuthProvider>(context)
+                              .merchantDbaName,
+                          maxLines: 3,
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
             Expanded(child: child),
           ],

@@ -146,4 +146,9 @@ class MerchantServices {
         "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/getSettlementHistoryReport?pageNumber=$pageNumber&size=$pageSize&sort=desc";
     return await DioClient().post(url, requestModel);
   }
+
+  // Future<dynamic> logOutFromUserAlreadyLogin({String userName = ""}) async {
+  //   final url = '${EndPoints.baseApiPublic}/NanoPay/v1/logout';
+  //   return await DioClient().post(url, {'userName': userName});
+  // }
 }

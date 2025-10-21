@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:anet_merchant_app/core/app_color.dart';
 import 'package:anet_merchant_app/core/utils/helpers/default_height.dart';
 import 'package:anet_merchant_app/data/services/connectivity_service.dart';
@@ -7,6 +9,7 @@ import 'package:anet_merchant_app/presentation/providers/home_screen_provider.da
 import 'package:anet_merchant_app/presentation/widgets/custom_container.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
 import 'package:anet_merchant_app/presentation/widgets/transaction_tile.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -40,7 +43,30 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
 //
   Future<void> _setStoreName() async {
     final pref = await SharedPreferences.getInstance();
+    var merchantIds = pref.getString("merchantIds");
+
+    var decodedMerchantIds = json.decode(merchantIds ?? "{}");
+
     var dbaName = pref.getString("shopName") ?? "N/A";
+
+    if ((decodedMerchantIds is Map && decodedMerchantIds.isNotEmpty) ||
+        (decodedMerchantIds is List && decodedMerchantIds.isNotEmpty)) {
+      final List<dynamic> merchantIdMapEntries = decodedMerchantIds.entries
+          .where((entry) => entry.value != null)
+          .map((e) => {
+                "merchantId": e.key,
+                "shopName": e.value,
+              })
+          .toList();
+
+          print('merchantIdMapEntries is $merchantIdMapEntries');
+
+      Provider.of<AuthProvider>(context, listen: false)
+          .setMerchantIds(merchantIdMapEntries);
+      dbaName = merchantIdMapEntries[0]['shopName'];
+
+    }
+
     Provider.of<AuthProvider>(context, listen: false)
         .setMerchantDbaName(dbaName);
   }
