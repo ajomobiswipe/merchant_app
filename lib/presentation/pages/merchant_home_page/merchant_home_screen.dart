@@ -27,6 +27,7 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<AuthProvider>(context, listen: false).setMerchantIds([]);
       _transactionProvider =
           Provider.of<HomeScreenProvider>(context, listen: false);
       _transactionProvider.recentTransactionsPagination.reset();
@@ -41,6 +42,8 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
 
 //
   Future<void> _setStoreName() async {
+    Provider.of<AuthProvider>(context, listen: false).setMerchantIds([]);
+
     final pref = await SharedPreferences.getInstance();
     var merchantIds = pref.getString("merchantIds");
 
@@ -51,14 +54,12 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
 
     if ((decodedMerchantIds is Map && decodedMerchantIds.isNotEmpty) ||
         (decodedMerchantIds is List && decodedMerchantIds.isNotEmpty)) {
-
       // var object = {
       //   "merchantId": acquirerMerchantId,
       //   "shopName": dbaName,
       // };
 
       final List<dynamic> merchantIdMapEntries = decodedMerchantIds.entries
-          .where((entry) => entry.value != null)
           .map((e) => {
                 "merchantId": e.key,
                 "shopName": e.value,
@@ -66,8 +67,6 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
           .toList();
 
       // merchantIdMapEntries.insert(0, object);
-
-      print('merchantIdMapEntries is $merchantIdMapEntries');
 
       Provider.of<AuthProvider>(context, listen: false)
           .setMerchantIds(merchantIdMapEntries);

@@ -125,6 +125,9 @@ class Logout {
       await prefs.remove('loggedUserType');
       await prefs.remove('merchantOnboardingValues');
       await prefs.remove('OnboardingValuesRefreshedtime');
+      await prefs.remove('shopName');
+      await prefs.remove('acqMerchantId');
+      await prefs.remove('merchantIds');
     }
   }
 

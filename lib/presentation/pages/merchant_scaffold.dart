@@ -178,10 +178,13 @@ class MerchantScaffold extends StatelessWidget {
                       items: provider.merchantIds!.map((entry) {
                         return DropdownMenuItem<dynamic>(
                           value: entry,
-                          child: CustomTextWidget(text: entry['shopName']),
+                          child: CustomTextWidget(
+                            text: entry['shopName'] ?? 'N/A',
+                          ),
                         );
                       }).toList(),
                       onChanged: (newValue) {
+                        newValue!['shopName'] ??= 'N/A';
                         // setState(() {
                         Provider.of<AuthProvider>(context, listen: false)
                             .setMerchantDbaName(newValue!['shopName']);
