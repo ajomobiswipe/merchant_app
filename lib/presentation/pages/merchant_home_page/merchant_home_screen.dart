@@ -9,7 +9,6 @@ import 'package:anet_merchant_app/presentation/providers/home_screen_provider.da
 import 'package:anet_merchant_app/presentation/widgets/custom_container.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
 import 'package:anet_merchant_app/presentation/widgets/transaction_tile.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,7 +26,6 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
   @override
   void initState() {
     super.initState();
-    _setStoreName();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _transactionProvider =
           Provider.of<HomeScreenProvider>(context, listen: false);
@@ -37,6 +35,7 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
       _transactionProvider.fetchDailySettlementTxnSummary();
       //  _transactionProvider.fetchDailyMerchantTxnSummary();
       _transactionProvider.recentTransScrollCtrl.addListener(_onScroll);
+      _setStoreName();
     });
   }
 
@@ -48,9 +47,16 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
     var decodedMerchantIds = json.decode(merchantIds ?? "{}");
 
     var dbaName = pref.getString("shopName") ?? "N/A";
+    // var acquirerMerchantId = pref.getString("acqMerchantId");
 
     if ((decodedMerchantIds is Map && decodedMerchantIds.isNotEmpty) ||
         (decodedMerchantIds is List && decodedMerchantIds.isNotEmpty)) {
+
+      // var object = {
+      //   "merchantId": acquirerMerchantId,
+      //   "shopName": dbaName,
+      // };
+
       final List<dynamic> merchantIdMapEntries = decodedMerchantIds.entries
           .where((entry) => entry.value != null)
           .map((e) => {
@@ -59,16 +65,34 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
               })
           .toList();
 
-          print('merchantIdMapEntries is $merchantIdMapEntries');
+      // merchantIdMapEntries.insert(0, object);
+
+      print('merchantIdMapEntries is $merchantIdMapEntries');
 
       Provider.of<AuthProvider>(context, listen: false)
           .setMerchantIds(merchantIdMapEntries);
-      dbaName = merchantIdMapEntries[0]['shopName'];
 
+      // dbaName = merchantIdMapEntries[0]['shopName'];
+
+      // pref.setString('shopName', merchantIdMapEntries[0]['shopName'].toString());
+      // pref.setString('acqMerchantId', merchantIdMapEntries[0]['merchantId'].toString());
+
+      // setShopNameAndAcquirerMerchantID(
+      //     merchantIdMapEntries[0]['shopName'].toString(),
+      //     merchantIdMapEntries[0]['merchantId'].toString());
     }
 
     Provider.of<AuthProvider>(context, listen: false)
         .setMerchantDbaName(dbaName);
+  }
+
+  void setShopNameAndAcquirerMerchantID(
+      String shopName, String acqMerchantId) async {
+    final pref = await SharedPreferences.getInstance();
+    pref.setString('shopName', shopName);
+    pref.setString('acqMerchantId', acqMerchantId);
+    _transactionProvider.getRecentTransactions();
+    _transactionProvider.fetchDailySettlementTxnSummary();
   }
 
   void _onScroll() {
@@ -87,6 +111,9 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
     return MerchantScaffold(
       showStoreName: true,
+      isDropDownRequired: true,
+      setShopNameAndAcquirerMerchantIDFunction:
+          setShopNameAndAcquirerMerchantID,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

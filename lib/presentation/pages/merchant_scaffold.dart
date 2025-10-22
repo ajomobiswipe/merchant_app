@@ -5,7 +5,6 @@ import 'package:anet_merchant_app/presentation/widgets/form_field/custom_dropdow
 import 'package:anet_merchant_app/presentation/widgets/logout.dart';
 import 'package:anet_merchant_app/tools/inapp_update_test.dart';
 import 'package:flutter/material.dart';
-import 'package:in_app_update/in_app_update.dart';
 import 'package:provider/provider.dart';
 
 class MerchantScaffold extends StatelessWidget {
@@ -18,9 +17,11 @@ class MerchantScaffold extends StatelessWidget {
   final FloatingActionButtonLocation? floatingActionButtonLocation;
   final Function()? onTapSupport;
   final Function()? onTapHome;
+  final Function? setShopNameAndAcquirerMerchantIDFunction;
 
   final bool canPop;
   final bool showStoreName;
+  final bool isDropDownRequired;
 
   const MerchantScaffold({
     super.key,
@@ -35,6 +36,8 @@ class MerchantScaffold extends StatelessWidget {
     this.onTapHome,
     this.showStoreName = false,
     this.floatingActionButtonLocation,
+    this.setShopNameAndAcquirerMerchantIDFunction,
+    this.isDropDownRequired = false,
   });
 
   @override
@@ -154,24 +157,24 @@ class MerchantScaffold extends StatelessWidget {
             if (showStoreName)
               Consumer<AuthProvider>(
                 builder: (context, provider, child) {
-                  if ((provider.merchantIds != null &&
-                          provider.merchantIds!.isNotEmpty) ||
-                      (provider.merchantIds is List &&
-                          provider.merchantIds!.isNotEmpty)) {
-                    print('provider.merchantIds is ${provider.merchantIds}');
+                  if (((provider.merchantIds != null &&
+                              provider.merchantIds!.isNotEmpty) ||
+                          (provider.merchantIds is List &&
+                              provider.merchantIds!.isNotEmpty)) &&
+                      isDropDownRequired) {
                     return DropdownButtonFormField<dynamic>(
                       autovalidateMode: AutovalidateMode.onUserInteraction,
-                      isDense: true,
-                      isExpanded: true,
+                      // isDense: true,
+                      // isExpanded: true,
                       icon: const Icon(
                         Icons.keyboard_arrow_down,
                         color: AppColors.kPrimaryColor,
                       ),
                       decoration: commonInputDecoration(
-                        hintText: "select one",
+                        hintText: "All Shops",
                         Icons.maps_home_work_outlined,
                       ),
-                      // value: provider.selectedQuickAction,
+                      initialValue: provider.merchantIds![0],
                       items: provider.merchantIds!.map((entry) {
                         return DropdownMenuItem<dynamic>(
                           value: entry,
@@ -182,6 +185,13 @@ class MerchantScaffold extends StatelessWidget {
                         // setState(() {
                         Provider.of<AuthProvider>(context, listen: false)
                             .setMerchantDbaName(newValue!['shopName']);
+
+                        if (setShopNameAndAcquirerMerchantIDFunction == null) {
+                          return;
+                        }
+                        setShopNameAndAcquirerMerchantIDFunction!(
+                            newValue!['shopName'], newValue['merchantId']);
+
                         // Update the provider with the selected value
                         // });
                       },

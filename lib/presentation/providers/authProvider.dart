@@ -35,7 +35,10 @@ class AuthProvider with ChangeNotifier {
 
   // GlobalKey<FormState> get formKey => _formKey;
   String get merchantId => _merchantInfo.merchantId ?? 'MER3456789';
+
   String get merchantDbaName => _merchantDbaName ?? 'N/A';
+
+
   List<dynamic>? get merchantIds => _merchantIds;
   List<dynamic>? _merchantIds;
   String get merchantCity => _merchantInfo.merchantCity ?? 'New York';
@@ -488,8 +491,14 @@ class AuthProvider with ChangeNotifier {
 
   void setMerchantIds(List<dynamic> merchantIdList) {
     _merchantIds = merchantIdList;
-    print(_merchantIds);
+    // _selectedMerchant=merchantIdList[0];
     notifyListeners();
   }
+
+  // void setSelectedMerchant(dynamic selectedMerchantObject) {
+  //   _selectedMerchant = selectedMerchantObject;
+  //   notifyListeners();
+  // }
+
 }
 // All optimizations applied: state management, code duplication, error handling, and code clarity improved.
