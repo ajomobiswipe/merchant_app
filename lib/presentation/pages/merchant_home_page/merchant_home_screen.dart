@@ -2,13 +2,16 @@ import 'dart:convert';
 
 import 'package:anet_merchant_app/core/app_color.dart';
 import 'package:anet_merchant_app/core/utils/helpers/default_height.dart';
+import 'package:anet_merchant_app/data/services/app_update_service.dart';
 import 'package:anet_merchant_app/data/services/connectivity_service.dart';
 import 'package:anet_merchant_app/presentation/pages/merchant_scaffold.dart';
 import 'package:anet_merchant_app/presentation/providers/authProvider.dart';
 import 'package:anet_merchant_app/presentation/providers/home_screen_provider.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_container.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
+import 'package:anet_merchant_app/presentation/widgets/form_field/custom_dropdown.dart';
 import 'package:anet_merchant_app/presentation/widgets/transaction_tile.dart';
+import 'package:anet_merchant_app/presentation/widgets/vpa_transaction_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -33,11 +36,18 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
       _transactionProvider.recentTransactionsPagination.reset();
       ConnectivityService().checkConnectivity();
       _transactionProvider.getRecentTransactions();
+      // _transactionProvider.getRecentVPATransactions();
       _transactionProvider.fetchDailySettlementTxnSummary();
+      _transactionProvider.clearallVpalistPagination();
+      _transactionProvider.getVpaByMerchantId();
       //  _transactionProvider.fetchDailyMerchantTxnSummary();
       _transactionProvider.recentTransScrollCtrl.addListener(_onScroll);
+      _transactionProvider.recentVPATransScrollCtrl
+          .addListener(_onScrollVpaist);
       _setStoreName();
     });
+
+    InAppUpdateService().checkForUpdate();
   }
 
 //
@@ -104,6 +114,16 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
     }
   }
 
+  void _onScrollVpaist() {
+    if (_transactionProvider.recentVPATransScrollCtrl.position.pixels >=
+            _transactionProvider
+                    .recentVPATransScrollCtrl.position.maxScrollExtent -
+                200 &&
+        !_transactionProvider.recentVpaTransactionsPagination.isLoading) {
+      _transactionProvider.getRecentVPATransactions();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -146,20 +166,31 @@ class _TabItems extends StatelessWidget {
     return Consumer<HomeScreenProvider>(
       builder: (context, provider, child) {
         return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             _HomeScreenTab(
               screenHeight: screenHeight,
-              width: screenWidth * 0.425,
+              width: screenWidth * 0.27,
               homeScreenTabItem: HomeScreenTabItem.TransactionHistory,
               selectedTabItem: provider.selectedTab,
               onTap: () => provider
                   .updateSelectedTab(HomeScreenTabItem.TransactionHistory),
-              title: "Transaction History",
+              title: "POS Txns History",
             ),
-            defaultWidth(screenWidth * .05),
+            // defaultWidth(screenWidth * .03),
             _HomeScreenTab(
               screenHeight: screenHeight,
-              width: screenWidth * 0.425,
+              width: screenWidth * 0.27,
+              homeScreenTabItem: HomeScreenTabItem.VpaTransactions,
+              selectedTabItem: provider.selectedTab,
+              onTap: () =>
+                  provider.updateSelectedTab(HomeScreenTabItem.VpaTransactions),
+              title: "QR Txns History",
+            ),
+            // defaultWidth(screenWidth * .03),
+            _HomeScreenTab(
+              screenHeight: screenHeight,
+              width: screenWidth * 0.27,
               homeScreenTabItem: HomeScreenTabItem.Settlements,
               selectedTabItem: provider.selectedTab,
               onTap: () =>
@@ -209,6 +240,35 @@ class _TransactionSummaryDetailsHeader extends StatelessWidget {
                 },
               ),
             );
+          case HomeScreenTabItem.VpaTransactions:
+            {
+              return CustomContainer(
+                height: screenHeight * 0.06,
+                padding: EdgeInsets.symmetric(horizontal: screenWidth * .025),
+                child: Consumer<HomeScreenProvider>(
+                  builder: (context, provider, child) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CustomTextWidget(
+                          color: Colors.white,
+                          text: provider
+                              .recentVpaTransactionsPagination.totalItems
+                              .toString(),
+                          size: 18,
+                        ),
+                        CustomTextWidget(
+                          text:
+                              "₹ ${provider.totalVPATransactionAmount.toStringAsFixed(2)}",
+                          size: 18,
+                          color: Colors.white,
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              );
+            }
           case HomeScreenTabItem.Settlements:
             return CustomContainer(
               height: screenHeight * 0.06,
@@ -241,7 +301,8 @@ class _BottomButton extends StatelessWidget {
       selector: (context, provider) => provider.selectedTab,
       builder: (context, selectedTab, child) {
         switch (selectedTab) {
-          case HomeScreenTabItem.TransactionHistory:
+          case HomeScreenTabItem.TransactionHistory ||
+                HomeScreenTabItem.VpaTransactions:
             return CustomContainer(
               onTap: () {
                 Navigator.pushNamed(context, "merchantTransactionFilterScreen");
@@ -284,6 +345,13 @@ class _TabContent extends StatelessWidget {
               screenWidth: screenWidth,
               screenHeight: screenHeight,
             );
+          case HomeScreenTabItem.VpaTransactions:
+            return _VPATransactionHistoryList(
+              transactionProvider: provider,
+              screenWidth: screenWidth,
+              screenHeight: screenHeight,
+            );
+
           case HomeScreenTabItem.Settlements:
             return _SettlementsList(
               screenWidth: screenWidth,
@@ -371,6 +439,134 @@ class _TransactionHistoryList extends StatelessWidget {
                   : const Center(
                       child: Text(
                         "No transactions available",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                    ),
+        ),
+      ],
+    );
+  }
+}
+
+class _VPATransactionHistoryList extends StatelessWidget {
+  final HomeScreenProvider transactionProvider;
+  final double screenWidth;
+  final double screenHeight;
+  const _VPATransactionHistoryList({
+    required this.transactionProvider,
+    required this.screenWidth,
+    required this.screenHeight,
+  });
+  @override
+  Widget build(BuildContext context) {
+    final transactionElement =
+        transactionProvider.recentVpaTransactionsPagination.items;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Consumer<HomeScreenProvider>(
+          builder: (context, provider, child) {
+            // if (provider.allVpalistPagination.items.isEmpty) {
+            //   return const CircularProgressIndicator();
+            // }
+            return DropdownButtonFormField<dynamic>(
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              isDense: true,
+              isExpanded: true,
+              icon: const Icon(
+                Icons.keyboard_arrow_down,
+                color: AppColors.kPrimaryColor,
+              ),
+              decoration: commonInputDecoration(
+                hintText: provider.allVpalistPagination.items.isEmpty
+                    ? 'No VPA available'
+                    : "select one",
+                Icons.qr_code_2,
+              ),
+              value: provider.selectedVpa,
+              items: provider.allVpalistPagination.items.map((action) {
+                return DropdownMenuItem<String>(
+                  value: action,
+                  child: CustomTextWidget(text: action),
+                );
+              }).toList(),
+              onChanged: (newValue) {
+                provider.changeSelectedVpa(newValue);
+                // setState(() {
+                //   provider.selectedQuickAction = newValue;
+                //   supportActionProvider.selectedSupportAction =
+                //       newValue; // Update the provider with the selected value
+                // });
+              },
+            );
+          },
+        ),
+        defaultHeight(screenHeight * .01),
+        InkWell(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: const [
+              CustomTextWidget(text: "Recent transactions", size: 14),
+              Icon(Icons.sync, color: AppColors.kPrimaryColor, size: 20),
+            ],
+          ),
+          onTap: () {
+            transactionProvider.refreshVpaTransactions();
+          },
+        ),
+        Expanded(
+          child: (transactionProvider
+                      .recentVpaTransactionsPagination.isLoading &&
+                  transactionProvider
+                      .recentVpaTransactionsPagination.items.isEmpty)
+              ? const Center(child: CircularProgressIndicator())
+              : transactionElement.isNotEmpty
+                  ? ListView.builder(
+                      controller: transactionProvider.recentVPATransScrollCtrl,
+                      itemCount: transactionElement.length + 1,
+                      itemBuilder: (context, index) {
+                        if (index < transactionElement.length) {
+                          return Column(
+                            children: [
+                              SizedBox(height: screenHeight * .01),
+                              VpaTransactionTile(
+                                transaction: transactionElement[index],
+                                width: screenWidth,
+                              ),
+                            ],
+                          );
+                        } else if (transactionProvider
+                            .recentVpaTransactionsPagination.hasMore) {
+                          return const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 16),
+                            child: Center(child: CircularProgressIndicator()),
+                          );
+                        } else {
+                          return Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Center(
+                              child: Text(
+                                transactionElement.length > 10
+                                    ? "No more transactions to display"
+                                    : '',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey,
+                                  fontStyle: FontStyle.italic,
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                    )
+                  : const Center(
+                      child: Text(
+                        "No Vpa transactions available",
                         style: TextStyle(
                           fontSize: 16,
                           color: Colors.grey,
@@ -489,11 +685,11 @@ class _HomeScreenTab extends StatelessWidget {
       width: width,
       height: screenHeight * 0.05,
       color: homeScreenTabItem == selectedTabItem
-          ? Colors.grey
+          ? Colors.green
           : AppColors.kPrimaryColor,
       child: CustomTextWidget(
         text: title,
-        size: 12,
+        size: 11,
         color: Colors.white,
       ),
     );

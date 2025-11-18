@@ -8,9 +8,7 @@
 // Dependencies or Plugins - Models - Services - Global Functions
 import 'dart:async';
 
-import 'package:anet_merchant_app/data/services/merchant_service.dart';
-import 'package:anet_merchant_app/data/services/token_manager.dart';
-import 'package:anet_merchant_app/main.dart';
+import 'package:anet_merchant_app/data/services/pref_service%20.dart';
 import 'package:anet_merchant_app/presentation/providers/authProvider.dart';
 import 'package:easy_splash_screen/easy_splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -43,8 +41,13 @@ class _SplashScreenState extends State<SplashScreen> {
     setStoreName();
     Future.delayed(const Duration(seconds: 1), () {
       getValidationData();
+      eneableUpdatcheck();
     });
     super.initState();
+  }
+
+  eneableUpdatcheck() async {
+    PrefService.instance.enableUpdateCheck();
   }
 
   setStoreName() async {

@@ -74,12 +74,12 @@ class MerchantScaffold extends StatelessWidget {
             icon: const Icon(Icons.notifications_none_outlined),
             onPressed: () {},
             onLongPress: () {
-              Navigator.push<void>(
-                context,
-                MaterialPageRoute<void>(
-                  builder: (BuildContext context) => const InAppUpdateScreen(),
-                ),
-              );
+              // Navigator.push<void>(
+              //   context,
+              //   MaterialPageRoute<void>(
+              //     builder: (BuildContext context) => const InAppUpdateScreen(),
+              //   ),
+              // );
             },
             // onPressed: onNotificationPressed,
           ),

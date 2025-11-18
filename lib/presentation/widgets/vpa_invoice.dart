@@ -115,14 +115,17 @@ class ShowVpaTransactionInvoice extends StatelessWidget {
             buildKeyValueRow(
                 "Transaction Type ", getTransactionType(transaction)),
             defaultHeight(basePadding),
+            buildKeyValueRow(
+                "Transaction Status", transaction["status"] ?? "N/A"),
+            defaultHeight(basePadding),
 
             buildKeyValueRow(
                 "Account Type", transaction["accountDetailsAccType"] ?? "N/A"),
             defaultHeight(basePadding),
 
             // ---------------- User Info ----------------
-            buildKeyValueRow("Mobile", transaction["mobileNumber"] ?? "N/A"),
-            defaultHeight(basePadding),
+            // buildKeyValueRow("Mobile", transaction["mobileNumber"] ?? "N/A"),
+            // defaultHeight(basePadding),
 
             buildKeyValueRow(
                 "Customer VPA", transaction["customerVpa"] ?? "N/A"),
@@ -243,7 +246,7 @@ class ShowVpaTransactionInvoice extends StatelessWidget {
                     "Transaction Type", getTransactionType(transaction)),
                 buildPdfKeyValueRow(
                     "Account Type", transaction["accountDetailsAccType"]),
-                buildPdfKeyValueRow("Mobile", transaction["mobileNumber"]),
+                // buildPdfKeyValueRow("Mobile", transaction["mobileNumber"]),
                 buildPdfKeyValueRow("Customer VPA", transaction["customerVpa"]),
                 buildPdfKeyValueRow("Payee VPA", transaction["creditVpa"]),
                 buildPdfKeyValueRow("RRN", transaction["rrn"]),

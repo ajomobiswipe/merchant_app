@@ -30,11 +30,27 @@ class VpaTransactionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final amount = transaction['transactionAmount'] ?? "0.00";
-    final transactionType =
-        transaction['orgStatus'] ?? "N/A"; // assuming this indicates type
-    final transactionDateTime = transaction['addedOn']; // ISO 8601 format
-    final showTransactionStatus =
-        transactionType == "SUCCESS" ? "Success" : transactionType;
+    final transactionDateTime = transaction['addedOn'];
+    final rawStatus =
+        (transaction['status'] ?? '').toString().trim().toUpperCase();
+
+    String mapStatus(String status) {
+      if (status.isEmpty) return "N/A";
+
+      final s = status.toUpperCase();
+
+      if (s == "SUCCESS" || s.contains("APPROVED")) return "Success";
+      if (s == "PENDING") return "Pending";
+
+      if (s.contains("FAILED") ||
+          (s.contains("DEBIT") && s.contains("FAILED"))) {
+        return "Failed";
+      }
+
+      return status;
+    }
+
+    final showTransactionStatus = mapStatus(rawStatus);
 
     return Card(
       elevation: 4,
@@ -110,7 +126,8 @@ class VpaTransactionTile extends StatelessWidget {
                 child: Row(
                   children: [
                     CustomContainer(
-                      color: showTransactionStatus == "Success"
+                      color: showTransactionStatus.toString().toLowerCase() ==
+                              "success"
                           ? Colors.green
                           : Colors.red,
                       width: width * 0.22,

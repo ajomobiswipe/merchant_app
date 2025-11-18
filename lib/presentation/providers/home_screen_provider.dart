@@ -5,6 +5,7 @@ import 'package:anet_merchant_app/data/services/dio_exception_handlers.dart';
 import 'package:anet_merchant_app/data/services/merchant_service.dart';
 import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -13,6 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 // Enums
 enum HomeScreenTabItem {
   TransactionHistory,
+  VpaTransactions,
   Settlements,
 }
 
@@ -22,6 +24,8 @@ class HomeScreenProvider with ChangeNotifier {
   // Controllers
   final ScrollController _recentTransScrollCtrl = ScrollController();
   ScrollController get recentTransScrollCtrl => _recentTransScrollCtrl;
+  final ScrollController _recentVPATransScrollCtrl = ScrollController();
+  ScrollController get recentVPATransScrollCtrl => _recentVPATransScrollCtrl;
 
   // Models
   final TransactionHistoryRequestModel _recentTranReqModel =
@@ -34,6 +38,12 @@ class HomeScreenProvider with ChangeNotifier {
   // Pagination handlers
   final PaginationHandler<TransactionElement> recentTransactionsPagination =
       PaginationHandler<TransactionElement>(pageSize: 10);
+  final PaginationHandler<dynamic> recentVpaTransactionsPagination =
+      PaginationHandler<dynamic>(pageSize: 10);
+  final PaginationHandler<dynamic> allVpalistPagination =
+      PaginationHandler<dynamic>(pageSize: 10);
+  String? _selectedVpa;
+  String? get selectedVpa => _selectedVpa;
 
   // Settlement summary
   double _totalSettlementAmount = 0;
@@ -45,11 +55,128 @@ class HomeScreenProvider with ChangeNotifier {
   double get deductionsAmount => _deductions;
   double get pendingSettlementAmount => _pendingSettlement;
   int get totalTransactions => _totalTransactions;
+  int get totalVPATransactions => _totalTransactions;
 
   double get totalTransactionAmount => _totalTransactionAmount;
   double _totalTransactionAmount = 0.0;
+  double get totalVPATransactionAmount => _totalVPATransactionAmount;
+  double _totalVPATransactionAmount = 0.0;
 
   // Store name
+  void changeSelectedVpa(String? vpa) {
+    if (vpa == _selectedVpa) return;
+    _selectedVpa = vpa;
+    notifyListeners();
+    recentVpaTransactionsPagination.reset();
+    getRecentVPATransactions();
+  }
+
+  Future<void> refreshVpaTransactions() async {
+    _totalVPATransactionAmount = 0.0;
+    recentVpaTransactionsPagination.reset();
+    getRecentVPATransactions();
+  }
+
+  Future<void> getRecentVPATransactions() async {
+    if (!recentVpaTransactionsPagination.hasMore &&
+        !recentVpaTransactionsPagination.isFirstLoad) return;
+
+    // final prefs = await SharedPreferences.getInstance();
+    // String? merchantId = prefs.getString('acqMerchantId');
+
+    final today = DateFormat('dd-MM-yyyy').format(DateTime.now());
+
+    if (recentVpaTransactionsPagination.isLoading) return;
+
+    recentVpaTransactionsPagination.isLoading = true;
+    notifyListeners();
+
+    try {
+      final response = await _merchantServices.fetchVpaTransactionHistory(
+        {
+          "from": today,
+          "to": today,
+          "creditVpa": selectedVpa,
+        },
+        pageNumber: recentVpaTransactionsPagination.currentPage,
+        pageSize: recentVpaTransactionsPagination.pageSize,
+      );
+      var decodedData = response.data;
+      if (response.statusCode == 200 && decodedData["statusCode"] == 200) {
+        final newItems = decodedData["pageData"]["content"] ?? [];
+
+        if (newItems.isNotEmpty) {
+          recentVpaTransactionsPagination.addItems(
+            newItems,
+            decodedData["pageData"]["totalElements"] ?? 0,
+          );
+          _totalVPATransactionAmount = decodedData["totalAmount"] ?? 0.0;
+        }
+      }
+    } on DioException catch (e) {
+      handleDioError(e);
+    } catch (e) {
+      AlertService().error("Error fetching transactions: $e");
+    } finally {
+      recentVpaTransactionsPagination.isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  clearallVpalistPagination() {
+    allVpalistPagination.reset();
+    _totalVPATransactionAmount = 0.0;
+    recentVpaTransactionsPagination.reset();
+  }
+
+  Future<void> getVpaByMerchantId() async {
+    if (!allVpalistPagination.hasMore && !allVpalistPagination.isFirstLoad)
+      return;
+
+    final prefs = await SharedPreferences.getInstance();
+    String? merchantId = prefs.getString('acqMerchantId') ?? '';
+
+    if (allVpalistPagination.isLoading) return;
+
+    allVpalistPagination.isLoading = true;
+    notifyListeners();
+
+    try {
+      final response = await _merchantServices.getVpaByMerchantId(
+        {"merchantId": merchantId},
+        pageNumber: allVpalistPagination.currentPage,
+        pageSize: allVpalistPagination.pageSize,
+        merchantId: merchantId,
+      );
+
+      if (response.statusCode == 200) {
+        var decodedData = response.data;
+        var newItems = decodedData["pageData"]["content"] ?? [];
+        // var newItems = [];
+        // var newItems = [
+        //   "Hardwarisweets.anet@axisbank",
+        //   "vikastraders3.anet@axisbank",
+        //   "shapeshifters.anet@axisbank",
+        // ];
+
+        if (newItems.isNotEmpty) {
+          allVpalistPagination.addItems(
+            newItems,
+            decodedData["pageData"]["totalElements"] ?? 0,
+          );
+          _selectedVpa = newItems[0];
+          getRecentVPATransactions();
+        }
+      }
+    } on DioException catch (e) {
+      handleDioError(e);
+    } catch (e) {
+      AlertService().error("Error fetching VPA list: $e");
+    } finally {
+      allVpalistPagination.isLoading = false;
+      notifyListeners();
+    }
+  }
 
   Future<void> getRecentTransactions() async {
     if (!recentTransactionsPagination.hasMore &&

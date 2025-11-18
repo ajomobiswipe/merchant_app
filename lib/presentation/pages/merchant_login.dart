@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:anet_merchant_app/core/app_color.dart';
 import 'package:anet_merchant_app/core/constants/constants.dart';
+import 'package:anet_merchant_app/data/services/app_update_service.dart';
 import 'package:anet_merchant_app/data/services/connectivity_service.dart';
 import 'package:anet_merchant_app/presentation/providers/authProvider.dart';
 import 'package:anet_merchant_app/presentation/providers/permission.dart';
@@ -45,6 +46,7 @@ class _MerchantLoginState extends State<MerchantLogin> {
     });
     DevicePermission().checkPermission();
     ConnectivityService().checkConnectivity();
+    InAppUpdateService().checkForUpdate();
   }
 
   @override
