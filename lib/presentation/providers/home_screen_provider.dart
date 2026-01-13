@@ -130,8 +130,14 @@ class HomeScreenProvider with ChangeNotifier {
   }
 
   Future<void> getVpaByMerchantId() async {
+
     if (!allVpalistPagination.hasMore && !allVpalistPagination.isFirstLoad)
       return;
+
+    if(allVpalistPagination.isFirstLoad) {
+      allVpalistPagination.currentPage = 0;
+      allVpalistPagination.items.clear();
+    }
 
     final prefs = await SharedPreferences.getInstance();
     String? merchantId = prefs.getString('acqMerchantId') ?? '';

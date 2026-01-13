@@ -12,6 +12,7 @@ import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
 import 'package:anet_merchant_app/presentation/widgets/form_field/custom_dropdown.dart';
 import 'package:anet_merchant_app/presentation/widgets/transaction_tile.dart';
 import 'package:anet_merchant_app/presentation/widgets/vpa_transaction_tile.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -100,6 +101,8 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
     final pref = await SharedPreferences.getInstance();
     pref.setString('shopName', shopName);
     pref.setString('acqMerchantId', acqMerchantId);
+    _transactionProvider.allVpalistPagination.isFirstLoad = true;
+    _transactionProvider.getVpaByMerchantId();
     _transactionProvider.getRecentTransactions();
     _transactionProvider.fetchDailySettlementTxnSummary();
   }
@@ -470,6 +473,9 @@ class _VPATransactionHistoryList extends StatelessWidget {
       children: [
         Consumer<HomeScreenProvider>(
           builder: (context, provider, child) {
+
+         
+            
             // if (provider.allVpalistPagination.items.isEmpty) {
             //   return const CircularProgressIndicator();
             // }
@@ -486,6 +492,9 @@ class _VPATransactionHistoryList extends StatelessWidget {
                     ? 'No VPA available'
                     : "select one",
                 Icons.qr_code_2,
+              ),
+              style: const TextStyle(
+                fontFamily: 'Mont',fontSize: 10
               ),
               value: provider.selectedVpa,
               items: provider.allVpalistPagination.items.map((action) {
