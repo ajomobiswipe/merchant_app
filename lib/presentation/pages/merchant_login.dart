@@ -11,7 +11,6 @@ import 'package:anet_merchant_app/presentation/widgets/form_field/custom_textfor
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../widgets/loading.dart';
 
@@ -152,7 +151,7 @@ class _MerchantLoginState extends State<MerchantLogin> {
                                   obscureText: false,
                                   inputFormatters: [
                                     FilteringTextInputFormatter.allow(
-                                        RegExp(r'[0-9a-zA-Z.@ ,\-]'))
+                                        RegExp(r'[0-9a-zA-Z.@&# ,\-]'))
                                   ],
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {

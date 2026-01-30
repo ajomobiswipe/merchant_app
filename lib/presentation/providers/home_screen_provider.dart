@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:anet_merchant_app/core/utils/pageing_element.dart';
 import 'package:anet_merchant_app/data/models/transaction_history_request_model.dart';
 import 'package:anet_merchant_app/data/models/transaction_model.dart';
@@ -72,8 +74,10 @@ class HomeScreenProvider with ChangeNotifier {
   }
 
   Future<void> refreshVpaTransactions() async {
+    if (recentVpaTransactionsPagination.isLoading) return;
     _totalVPATransactionAmount = 0.0;
     recentVpaTransactionsPagination.reset();
+    recentVpaTransactionsPagination.items = [];
     getRecentVPATransactions();
   }
 
@@ -87,6 +91,7 @@ class HomeScreenProvider with ChangeNotifier {
     final today = DateFormat('dd-MM-yyyy').format(DateTime.now());
 
     if (recentVpaTransactionsPagination.isLoading) return;
+    if (_selectedVpa == null || _selectedVpa!.isEmpty) return;
 
     recentVpaTransactionsPagination.isLoading = true;
     notifyListeners();
@@ -130,11 +135,10 @@ class HomeScreenProvider with ChangeNotifier {
   }
 
   Future<void> getVpaByMerchantId() async {
-
     if (!allVpalistPagination.hasMore && !allVpalistPagination.isFirstLoad)
       return;
 
-    if(allVpalistPagination.isFirstLoad) {
+    if (allVpalistPagination.isFirstLoad) {
       allVpalistPagination.currentPage = 0;
       allVpalistPagination.items.clear();
     }
@@ -265,5 +269,17 @@ class HomeScreenProvider with ChangeNotifier {
   void updateSelectedTab(HomeScreenTabItem tab) {
     _selectedTab = tab;
     notifyListeners();
+  }
+}
+
+class Debouncer {
+  final int milliseconds;
+  Timer? _timer;
+
+  Debouncer({required this.milliseconds});
+
+  void run(VoidCallback action) {
+    _timer?.cancel();
+    _timer = Timer(Duration(milliseconds: milliseconds), action);
   }
 }

@@ -29,7 +29,7 @@ android {
         applicationId = "com.alliancenetwork.merchantapp"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
-        versionCode = 17
+        versionCode = 20
         versionName = "1.0.9"
         // 🚫 No ndk { abiFilters ... } here
     }
