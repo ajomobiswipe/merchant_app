@@ -73,7 +73,16 @@ class _MerchantHelpScreenState extends State<MerchantHelpScreen> {
             ],
           ),
           defaultHeight(screenHeight * 0.05),
-          
+          Row(
+            children: [
+              CustomTextWidget(
+                text: "Quick Actions",
+                size: 18,
+                color: AppColors.kPrimaryColor,
+              ),
+            ],
+          ),
+          defaultHeight(screenHeight * 0.01),
           Consumer<SupportActionProvider>(
             builder: (context, provider, child) {
               if (provider.supportActionList.isEmpty) {
@@ -89,7 +98,7 @@ class _MerchantHelpScreenState extends State<MerchantHelpScreen> {
                 ),
                 decoration: commonInputDecoration(
                   hintText: "select one",
-                  Icons.maps_home_work_outlined,
+                  Icons.support_agent_outlined,
                 ),
                 value: provider.selectedQuickAction,
                 items: provider.supportActionList.map((action) {
@@ -108,7 +117,6 @@ class _MerchantHelpScreenState extends State<MerchantHelpScreen> {
               );
             },
           ),
-          
           Spacer(),
           Row(
             children: [
@@ -253,7 +261,8 @@ class _MerchantHelpScreenState extends State<MerchantHelpScreen> {
                 defaultHeight(10),
               ],
             ),
-          )
+          ),
+          Spacer(),
         ],
       ),
       onTapHome: () {

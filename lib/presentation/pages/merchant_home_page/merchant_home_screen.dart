@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:anet_merchant_app/core/app_color.dart';
 import 'package:anet_merchant_app/core/utils/helpers/default_height.dart';
 import 'package:anet_merchant_app/data/services/app_update_service.dart';
@@ -12,7 +11,6 @@ import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
 import 'package:anet_merchant_app/presentation/widgets/form_field/custom_dropdown.dart';
 import 'package:anet_merchant_app/presentation/widgets/transaction_tile.dart';
 import 'package:anet_merchant_app/presentation/widgets/vpa_transaction_tile.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -473,9 +471,6 @@ class _VPATransactionHistoryList extends StatelessWidget {
       children: [
         Consumer<HomeScreenProvider>(
           builder: (context, provider, child) {
-
-         
-            
             // if (provider.allVpalistPagination.items.isEmpty) {
             //   return const CircularProgressIndicator();
             // }
@@ -493,9 +488,7 @@ class _VPATransactionHistoryList extends StatelessWidget {
                     : "select one",
                 Icons.qr_code_2,
               ),
-              style: const TextStyle(
-                fontFamily: 'Mont',fontSize: 10
-              ),
+              style: const TextStyle(fontFamily: 'Mont', fontSize: 10),
               value: provider.selectedVpa,
               items: provider.allVpalistPagination.items.map((action) {
                 return DropdownMenuItem<String>(
