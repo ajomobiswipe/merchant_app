@@ -6,6 +6,7 @@
 *  ===============================================================*/
 
 // Dependencies or Plugins - Models - Services - Global Functions
+import 'package:anet_merchant_app/presentation/pages/dashboard_screen.dart';
 import 'package:anet_merchant_app/presentation/pages/forgot_password.dart';
 import 'package:anet_merchant_app/presentation/pages/reset_password.dart';
 import 'package:anet_merchant_app/presentation/pages/splash_screen/splash_screen.dart';
@@ -59,6 +60,8 @@ class CustomRoute {
           return VpaTransactionsScreen();
         case "forgotPassword":
           return ForgotPassword();
+        case "dashboardScreen":
+          return const DashboardScreen();
         case "resetPassword":
           String userName = settings.arguments as String;
           return ResetPassword(

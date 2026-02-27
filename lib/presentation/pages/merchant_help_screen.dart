@@ -73,7 +73,6 @@ class _MerchantHelpScreenState extends State<MerchantHelpScreen> {
             ],
           ),
           defaultHeight(screenHeight * 0.05),
-          
           Consumer<SupportActionProvider>(
             builder: (context, provider, child) {
               if (provider.supportActionList.isEmpty) {
@@ -108,7 +107,6 @@ class _MerchantHelpScreenState extends State<MerchantHelpScreen> {
               );
             },
           ),
-          
           Spacer(),
           Row(
             children: [
@@ -259,6 +257,10 @@ class _MerchantHelpScreenState extends State<MerchantHelpScreen> {
       onTapHome: () {
         NavigationService.navigatorKey.currentState
             ?.pushNamedAndRemoveUntil('merchantHomeScreen', (route) => false);
+      },
+      onTapDashboard: () {
+        NavigationService.navigatorKey.currentState
+            ?.pushNamedAndRemoveUntil('dashboardScreen', (route) => false);
       },
     );
   }
