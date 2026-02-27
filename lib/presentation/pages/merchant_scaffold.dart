@@ -16,6 +16,7 @@ class MerchantScaffold extends StatelessWidget {
   final FloatingActionButton? floatingActionButton;
   final FloatingActionButtonLocation? floatingActionButtonLocation;
   final Function()? onTapSupport;
+  final Function()? onTapDashboard;
   final Function()? onTapHome;
   final Function? setShopNameAndAcquirerMerchantIDFunction;
 
@@ -35,9 +36,11 @@ class MerchantScaffold extends StatelessWidget {
     this.onTapSupport,
     this.onTapHome,
     this.showStoreName = false,
+    b,
     this.floatingActionButtonLocation,
     this.setShopNameAndAcquirerMerchantIDFunction,
     this.isDropDownRequired = false,
+    this.onTapDashboard,
   });
 
   @override
@@ -58,7 +61,7 @@ class MerchantScaffold extends StatelessWidget {
         //       icon: const Icon(Icons.menu),
         //       onPressed: onMenuPressed,
         //     ),
-        //     // IconButton(
+        //     // IconButton(+
         //     //   icon: const Icon(Icons.person),
         //     //   onPressed: onProfilePressed,
         //     // ),
@@ -244,6 +247,16 @@ class MerchantScaffold extends StatelessWidget {
                 children: [
                   Icon(Icons.support_agent),
                   CustomTextWidget(text: "Support", size: 12),
+                ],
+              ),
+            ),
+            SizedBox(width: 48), // Space between the icons
+            InkWell(
+              onTap: onTapDashboard,
+              child: Column(
+                children: [
+                  Icon(Icons.bar_chart),
+                  CustomTextWidget(text: "Dashboard", size: 12),
                 ],
               ),
             ),
