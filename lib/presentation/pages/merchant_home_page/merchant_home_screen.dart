@@ -56,6 +56,10 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
     final pref = await SharedPreferences.getInstance();
     var merchantIds = pref.getString("merchantIds");
 
+    bool isTerminalUser = pref.getString('role') == "TERMINAL USER";
+
+    if (isTerminalUser) return;
+
     var decodedMerchantIds = json.decode(merchantIds ?? "{}");
 
     var dbaName = pref.getString("shopName") ?? "N/A";

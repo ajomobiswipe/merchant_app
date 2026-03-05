@@ -194,6 +194,7 @@ class HomeScreenProvider with ChangeNotifier {
 
     final prefs = await SharedPreferences.getInstance();
     String? merchantId = prefs.getString('acqMerchantId');
+    bool isTerminalUser = prefs.getString('role') == "TERMINAL USER";
 
     final today = DateFormat('dd-MM-yyyy').format(DateTime.now());
     _recentTranReqModel
@@ -202,7 +203,7 @@ class HomeScreenProvider with ChangeNotifier {
       ..recordFrom = today
       ..recordTo = today
       ..rrn = null
-      ..terminalId = null
+      ..terminalId = isTerminalUser ? prefs.getString('terminalId') : null
       ..sendTxnReportToMail = false;
 
     if (recentTransactionsPagination.isLoading) return;

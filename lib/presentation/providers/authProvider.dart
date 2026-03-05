@@ -38,7 +38,6 @@ class AuthProvider with ChangeNotifier {
 
   String get merchantDbaName => _merchantDbaName ?? 'N/A';
 
-
   List<dynamic>? get merchantIds => _merchantIds;
   List<dynamic>? _merchantIds;
   String get merchantCity => _merchantInfo.merchantCity ?? 'New York';
@@ -425,6 +424,14 @@ class AuthProvider with ChangeNotifier {
       if (res.statusCode == 200 && response['responseCode'] == "00") {
         alertService.success(response['responseMessage'] ??
             'Forgot Password Link Successfully sent');
+
+        Future.delayed(Duration(seconds: 1), () {
+          Navigator.pushNamedAndRemoveUntil(
+            NavigationService.navigatorKey.currentContext!,
+            'merchantLogin',
+            (route) => false,
+          );
+        });
       } else {
         alertService.error(response['responseMessage'] ??
             'Failed to send Forgot Password Link');
@@ -499,6 +506,5 @@ class AuthProvider with ChangeNotifier {
   //   _selectedMerchant = selectedMerchantObject;
   //   notifyListeners();
   // }
-
 }
 // All optimizations applied: state management, code duplication, error handling, and code clarity improved.
