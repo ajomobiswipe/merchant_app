@@ -11,6 +11,7 @@ class CustomAppButton extends StatelessWidget {
   final double height;
   final bool fromOtpScreen;
   final bool isOtpVisible;
+  final double? fontSize;
 
   const CustomAppButton(
       {super.key,
@@ -21,7 +22,8 @@ class CustomAppButton extends StatelessWidget {
       this.width = 1,
       this.height = 50,
       this.fromOtpScreen = false,
-      this.isOtpVisible = false});
+      this.isOtpVisible = false,
+      this.fontSize = 20});
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +45,7 @@ class CustomAppButton extends StatelessWidget {
                         ? Colors.white.withValues(alpha: .5)
                         : Colors.white
                     : Colors.white,
-                fontSize: 20,
+                fontSize: fontSize,
                 fontWeight: FontWeight.bold,
                 fontFamily: 'Mont')),
       ),

@@ -1,4 +1,7 @@
+import 'package:anet_merchant_app/core/app_color.dart';
 import 'package:anet_merchant_app/data/models/transaction_models.dart';
+import 'package:anet_merchant_app/presentation/widgets/common_widgets/custom_app_button.dart';
+import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
 import 'package:flutter/material.dart';
 
 enum Period { today, week, month, custom }
@@ -105,7 +108,7 @@ class TransactionProvider extends ChangeNotifier {
 
   List<HourlyTransaction> get chartData => _chartData;
 
-  void changePeriod(Period period) {
+  void changePeriod(Period period, BuildContext context) {
     selectedPeriod = period;
     switch (period) {
       case Period.today:
@@ -126,9 +129,121 @@ class TransactionProvider extends ChangeNotifier {
         _chartData = monthData;
         break;
       case Period.custom:
-        _chartData = customData;
+        showCustomDateDialog(context);
         break;
     }
     notifyListeners();
+  }
+
+  Future<void> showCustomDateDialog(BuildContext context) async {
+    DateTime? startDate;
+    DateTime? endDate;
+
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: const CustomTextWidget(
+                color: Colors.black87,
+                text: "Select Report period",
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ListTile(
+                    title: CustomTextWidget(
+                      color: Colors.black54,
+                      text: startDate == null
+                          ? "Start Date"
+                          : startDate.toString().split(" ")[0],
+                    ),
+                    trailing: const Icon(
+                      Icons.calendar_today,
+                      color: AppColors.kPrimaryColor,
+                    ),
+                    onTap: () async {
+                      final picked = await showDatePicker(
+                        context: context,
+                        firstDate: DateTime(2020),
+                        lastDate: DateTime.now(),
+                        initialDate: startDate ?? DateTime.now(),
+                      );
+
+                      if (picked != null) {
+                        setState(() {
+                          startDate = picked;
+                        });
+                      }
+                    },
+                  ),
+                  ListTile(
+                    title: CustomTextWidget(
+                      color: Colors.black54,
+                      text: endDate == null
+                          ? "End Date"
+                          : endDate.toString().split(" ")[0],
+                    ),
+                    trailing: const Icon(
+                      Icons.calendar_today,
+                      color: AppColors.kPrimaryColor,
+                    ),
+                    onTap: () async {
+                      final picked = await showDatePicker(
+                        context: context,
+                        firstDate: startDate ?? DateTime(2020),
+                        lastDate: DateTime.now(),
+                        initialDate: endDate ?? DateTime.now(),
+                      );
+
+                      if (picked != null) {
+                        setState(() {
+                          endDate = picked;
+                        });
+                      }
+                    },
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CustomAppButton(
+                        backgroundColor: Colors.redAccent,
+                        width: .25,
+                        fontSize: 12,
+                        title: "Cancel",
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                      CustomAppButton(
+                        fontSize: 12,
+                        width: 0.25,
+                        title: "Apply",
+                        onPressed: () {
+                          if (startDate != null && endDate != null) {
+                            final diff = endDate!.difference(startDate!).inDays;
+
+                            if (diff > 90) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Range must be within 90 days"),
+                                ),
+                              );
+                              return;
+                            }
+                            print(startDate);
+                            print(endDate);
+                            Navigator.pop(context);
+                          }
+                        },
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 }
