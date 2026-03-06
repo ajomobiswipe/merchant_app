@@ -29,7 +29,7 @@ class DashboardScreen extends StatelessWidget {
                 final selected = provider.selectedPeriod == period;
                 return Expanded(
                   child: GestureDetector(
-                    onTap: () => provider.changePeriod(period),
+                    onTap: () => provider.changePeriod(period, context),
                     child: Container(
                       margin: const EdgeInsets.symmetric(horizontal: 4),
                       padding: const EdgeInsets.symmetric(vertical: 10),
@@ -73,10 +73,6 @@ class DashboardScreen extends StatelessWidget {
       onTapHome: () {
         NavigationService.navigatorKey.currentState
             ?.pushNamedAndRemoveUntil('merchantHomeScreen', (route) => false);
-      },
-      onTapSupport: () {
-        NavigationService.navigatorKey.currentState
-            ?.pushNamedAndRemoveUntil('support', (route) => false);
       },
     );
   }

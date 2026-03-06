@@ -269,10 +269,6 @@ class _MerchantHelpScreenState extends State<MerchantHelpScreen> {
         NavigationService.navigatorKey.currentState
             ?.pushNamedAndRemoveUntil('merchantHomeScreen', (route) => false);
       },
-      onTapDashboard: () {
-        NavigationService.navigatorKey.currentState
-            ?.pushNamedAndRemoveUntil('dashboardScreen', (route) => false);
-      },
     );
   }
 

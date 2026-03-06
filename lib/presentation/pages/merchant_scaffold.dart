@@ -242,7 +242,10 @@ class MerchantScaffold extends StatelessWidget {
             ),
             SizedBox(width: 48), // Space between the icons
             InkWell(
-              onTap: onTapSupport,
+              onTap: onTapSupport ??
+                  () {
+                    Navigator.pushNamed(context, "merchantHelpScreen");
+                  },
               child: Column(
                 children: [
                   Icon(Icons.support_agent),
@@ -252,7 +255,10 @@ class MerchantScaffold extends StatelessWidget {
             ),
             SizedBox(width: 48), // Space between the icons
             InkWell(
-              onTap: onTapDashboard,
+              onTap: onTapDashboard ??
+                  () {
+                    Navigator.pushNamed(context, "dashboardScreen");
+                  },
               child: Column(
                 children: [
                   Icon(Icons.bar_chart),
