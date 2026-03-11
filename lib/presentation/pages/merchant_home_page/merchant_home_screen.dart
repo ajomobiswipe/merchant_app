@@ -11,6 +11,7 @@ import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
 import 'package:anet_merchant_app/presentation/widgets/form_field/custom_dropdown.dart';
 import 'package:anet_merchant_app/presentation/widgets/transaction_tile.dart';
 import 'package:anet_merchant_app/presentation/widgets/vpa_transaction_tile.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -58,11 +59,18 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
 
     bool isTerminalUser = pref.getString('role') == "TERMINAL USER";
 
+    var dbaName = pref.getString("shopName") ?? "N/A";
+    Provider.of<AuthProvider>(context, listen: false)
+        .setMerchantDbaName(dbaName);
+
+    if (kDebugMode) {
+      print("dbaName $dbaName");
+    }
+
     if (isTerminalUser) return;
 
     var decodedMerchantIds = json.decode(merchantIds ?? "{}");
 
-    var dbaName = pref.getString("shopName") ?? "N/A";
     // var acquirerMerchantId = pref.getString("acqMerchantId");
 
     if ((decodedMerchantIds is Map && decodedMerchantIds.isNotEmpty) ||
@@ -93,9 +101,6 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
       //     merchantIdMapEntries[0]['shopName'].toString(),
       //     merchantIdMapEntries[0]['merchantId'].toString());
     }
-
-    Provider.of<AuthProvider>(context, listen: false)
-        .setMerchantDbaName(dbaName);
   }
 
   void setShopNameAndAcquirerMerchantID(
