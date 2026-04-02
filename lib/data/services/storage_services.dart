@@ -14,8 +14,8 @@ class StorageServices {
     final secureStorage = BoxStorage();
 
     final role = decodeData['role']?.toString();
-    final isMerchant = role == "MERCHANT";
     final isTerminalMerchant = role == "TERMINAL USER";
+    final isMerchant = role == "MERCHANT" || role == "MERCHANT USER";
 
     // Secure (Hive) Storage
     secureStorage.saveUserDetails(decodeData, userName: userName);
@@ -37,11 +37,17 @@ class StorageServices {
 
     pref.setString('acqMerchantId', decodeData['acqMerchantId'].toString());
     pref.setString('merchantIds', json.encode(decodeData['merchantIds']));
-
+    pref.setString('merchantId', decodeData['merchantId'].toString());
     if (isMerchant || isTerminalMerchant) {
-      String terminalId = isMerchant?decodeData['terminalId']?.toString() ?? '':userName.toString();
-      pref.setString('merchantId', decodeData['merchantId'].toString());
+      String terminalId = isMerchant
+          ? decodeData['terminalId']?.toString() ?? ''
+          : userName.toString();
+      // pref.setString('merchantId', decodeData['merchantId'].toString());
       pref.setString('terminalId', terminalId);
     }
+    // if (isMerchant) {
+
+    // pref.setString('terminalId', decodeData['terminalId'].toString());
+    // }
   }
 }

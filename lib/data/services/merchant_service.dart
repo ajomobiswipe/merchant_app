@@ -81,9 +81,20 @@ class MerchantServices {
   Future<Response<dynamic>> fetchVpaTransactionHistory(
       Map<String, dynamic> requestModel,
       {required int pageNumber,
-      required int pageSize}) async {
+      required int pageSize,
+      bool forMonthyValues = false,
+      String? merchantId}) async {
+    String merchantIdQuery = "";
+
+    print(forMonthyValues);
+    print(merchantId);
+
+    if (forMonthyValues && merchantId != null) {
+      merchantIdQuery = "&mappedMerchantId=$merchantId";
+    }
+
     final url =
-        "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/merchantVpaTxnData?page=$pageNumber&size=$pageSize&sort=insertDateTime%2Cdesc";
+        "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/merchantVpaTxnData?page=$pageNumber&size=$pageSize&sort=insertDateTime%2Cdesc$merchantIdQuery";
     return await DioClient().post(url, requestModel);
   }
 
