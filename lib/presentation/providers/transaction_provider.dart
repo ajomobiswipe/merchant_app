@@ -1,13 +1,25 @@
+import 'dart:convert';
+
 import 'package:anet_merchant_app/core/app_color.dart';
+import 'package:anet_merchant_app/data/models/transaction_history_request_model.dart';
+import 'package:anet_merchant_app/data/models/transaction_model.dart';
 import 'package:anet_merchant_app/data/models/transaction_models.dart';
+import 'package:anet_merchant_app/data/services/dio_exception_handlers.dart';
+import 'package:anet_merchant_app/data/services/merchant_service.dart';
+import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
 import 'package:anet_merchant_app/presentation/widgets/common_widgets/custom_app_button.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:month_year_picker/month_year_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 enum Period { today, week, month, custom }
 
 class TransactionProvider extends ChangeNotifier {
-  Period selectedPeriod = Period.today;
+  // Period selectedPeriod = Period.today;
+  Period selectedPeriod = Period.month;
   String selectedScheme = "All";
 
   // void changePeriod(Period period) {
@@ -18,7 +30,8 @@ class TransactionProvider extends ChangeNotifier {
   double get maxY {
     if (chartData.isEmpty) return 10; // default fallback height
 
-    final values = chartData.expand((e) => [e.success, e.failed]).toList();
+    final values =
+        chartData.expand((e) => [e.posSuccess, e.upiSuccess ?? 0]).toList();
 
     final maxValue = values.reduce((a, b) => a > b ? a : b);
 
@@ -80,60 +93,60 @@ class TransactionProvider extends ChangeNotifier {
   double get totalAmount =>
       filteredSchemes.fold(0, (s, e) => s + e.successAmount);
 
-  List<HourlyTransaction> weekData = [
-    HourlyTransaction(label: "Mon", success: 120, failed: 30),
-    HourlyTransaction(label: "Tue", success: 150, failed: 20),
-    HourlyTransaction(label: "Wed", success: 180, failed: 25),
-    HourlyTransaction(label: "Thu", success: 200, failed: 35),
-    HourlyTransaction(label: "Fri", success: 170, failed: 40),
-    HourlyTransaction(label: "Sat", success: 190, failed: 30),
-    HourlyTransaction(label: "Sun", success: 210, failed: 50),
-  ];
+  // List<HourlyTransaction> weekData = [
+  //   HourlyTransaction(label: "Mon", success: 120, failed: 30),
+  //   HourlyTransaction(label: "Tue", success: 150, failed: 20),
+  //   HourlyTransaction(label: "Wed", success: 180, failed: 25),
+  //   HourlyTransaction(label: "Thu", success: 200, failed: 35),
+  //   HourlyTransaction(label: "Fri", success: 170, failed: 40),
+  //   HourlyTransaction(label: "Sat", success: 190, failed: 30),
+  //   HourlyTransaction(label: "Sun", success: 210, failed: 50),
+  // ];
 
-  List<HourlyTransaction> monthData = [
-    HourlyTransaction(label: "NOV", success: 50, failed: 10),
-    HourlyTransaction(label: "DEC", success: 70, failed: 15),
-    HourlyTransaction(label: "JAN", success: 90, failed: 20),
-    HourlyTransaction(label: "FEB", success: 120, failed: 30),
-  ];
+  // List<HourlyTransaction> _monthData = [
+  //   HourlyTransaction(label: "NOV", success: 50, failed: 10),
+  //   HourlyTransaction(label: "DEC", success: 70, failed: 15),
+  //   HourlyTransaction(label: "JAN", success: 90, failed: 20),
+  //   HourlyTransaction(label: "FEB", success: 120, failed: 30),
+  // ];
 
-  List<HourlyTransaction> customData = [
-    HourlyTransaction(label: "Custom 1", success: 50, failed: 10),
-    HourlyTransaction(label: "Custom 2", success: 70, failed: 15),
-    HourlyTransaction(label: "Custom 3", success: 90, failed: 20),
-    HourlyTransaction(label: "Custom 4", success: 120, failed: 30),
-  ];
+  // List<HourlyTransaction> customData = [
+  //   HourlyTransaction(label: "Custom 1", success: 50, failed: 10),
+  //   HourlyTransaction(label: "Custom 2", success: 70, failed: 15),
+  //   HourlyTransaction(label: "Custom 3", success: 90, failed: 20),
+  //   HourlyTransaction(label: "Custom 4", success: 120, failed: 30),
+  // ];
 
   List<HourlyTransaction> _chartData = [];
 
   List<HourlyTransaction> get chartData => _chartData;
 
-  void changePeriod(Period period, BuildContext context) {
-    selectedPeriod = period;
-    switch (period) {
-      case Period.today:
-        _chartData = [
-          HourlyTransaction(label: "5AM", success: 3, failed: 1),
-          HourlyTransaction(label: "8AM", success: 8, failed: 2),
-          HourlyTransaction(label: "11AM", success: 16, failed: 4),
-          HourlyTransaction(label: "1PM", success: 24, failed: 6),
-          HourlyTransaction(label: "3PM", success: 35, failed: 8),
-          HourlyTransaction(label: "6PM", success: 28, failed: 5),
-          HourlyTransaction(label: "9PM", success: 18, failed: 4),
-        ];
-        break;
-      case Period.week:
-        _chartData = weekData;
-        break;
-      case Period.month:
-        _chartData = monthData;
-        break;
-      case Period.custom:
-        showCustomDateDialog(context);
-        break;
-    }
-    notifyListeners();
-  }
+  // void changePeriod(Period period, BuildContext context) {
+  //   selectedPeriod = period;
+  //   switch (period) {
+  //     case Period.today:
+  //       _chartData = [
+  //         HourlyTransaction(label: "5AM", success: 3, failed: 1),
+  //         HourlyTransaction(label: "8AM", success: 8, failed: 2),
+  //         HourlyTransaction(label: "11AM", success: 16, failed: 4),
+  //         HourlyTransaction(label: "1PM", success: 24, failed: 6),
+  //         HourlyTransaction(label: "3PM", success: 35, failed: 8),
+  //         HourlyTransaction(label: "6PM", success: 28, failed: 5),
+  //         HourlyTransaction(label: "9PM", success: 18, failed: 4),
+  //       ];
+  //       break;
+  //     case Period.week:
+  //       _chartData = weekData;
+  //       break;
+  //     case Period.month:
+  //       _chartData = _monthData;
+  //       break;
+  //     case Period.custom:
+  //       showCustomDateDialog(context);
+  //       break;
+  //   }
+  //   notifyListeners();
+  // }
 
   Future<void> showCustomDateDialog(BuildContext context) async {
     DateTime? startDate;
@@ -245,5 +258,158 @@ class TransactionProvider extends ChangeNotifier {
         );
       },
     );
+  }
+
+  final TransactionHistoryRequestModel _recentTranReqModel =
+      TransactionHistoryRequestModel();
+
+  final MerchantServices _merchantServices = MerchantServices();
+
+  Future<void> setMonthRange({DateTime? startDate, DateTime? endDate}) async {
+    _chartData = [];
+
+    if (startDate == null || endDate == null) {
+      DateTime now = DateTime.now();
+      // 2 months back - first day
+      startDate = DateTime(now.year, now.month - 2, 1);
+      // DateTime middleDate = DateTime(now.year, now.month - 1);
+      // current month - last day
+      endDate = DateTime(now.year, now.month + 1, 0);
+    }
+
+    var monthlyPosValues = await getPosTxnMonthlyValues(
+        DateFormat('dd-MM-yyyy').format(startDate),
+        DateFormat('dd-MM-yyyy').format(endDate));
+
+    var monthlyUpiValues = await getUpiTxnMonthlyValues(
+        DateFormat('dd-MM-yyyy').format(startDate),
+        DateFormat('dd-MM-yyyy').format(endDate));
+
+    if (monthlyPosValues == null || monthlyPosValues['monthlyValues'] == null)
+      return;
+    if (monthlyUpiValues == null) return;
+
+    monthlyPosValues['monthlyValues'].entries.forEach((entry) {
+      _chartData.add(HourlyTransaction(
+          label: entry.key, posSuccess: entry.value.toDouble(), upiSuccess: 0));
+    });
+
+    monthlyPosValues['monthlyEmiMdrAmount'].entries.forEach((entry) {
+      bool isExisting = _chartData.any((e) => e.label == entry.key);
+      if (isExisting) {
+        _chartData[_chartData.indexWhere((e) => e.label == entry.key)]
+            .emiMdrAmount = entry.value.toDouble();
+      }
+    });
+
+    monthlyUpiValues.entries.forEach((entry) {
+      bool isExisting = _chartData.any((e) => e.label == entry.key);
+      if (isExisting) {
+        _chartData[_chartData.indexWhere((e) => e.label == entry.key)]
+            .upiSuccess = entry.value.toDouble();
+      }
+    });
+
+    print(' Chart Data: $_chartData');
+    notifyListeners();
+  }
+
+  /// Pos Txn monthlyrange
+  Future<Map<String, dynamic>?> getPosTxnMonthlyValues(
+      String recordFromData, String recordToData) async {
+    final prefs = await SharedPreferences.getInstance();
+    String? merchantId = prefs.getString('acqMerchantId');
+    _recentTranReqModel
+      ..acquirerId = "OMAIND"
+      ..merchantId = merchantId
+      ..recordFrom = recordFromData
+      ..recordTo = recordToData
+      ..rrn = null
+      ..terminalId = null
+      ..sendTxnReportToMail = false;
+
+    try {
+      final response = await _merchantServices.fetchTransactionHistory(
+        _recentTranReqModel.toJson(),
+        pageNumber: 0,
+        pageSize: 1,
+      );
+
+      if (response.statusCode == 200) {
+        final decodedData = TransactionHistory.fromJson(response.data);
+        return {
+          "monthlyValues": decodedData.monthlyValues,
+          "monthlyEmiMdrAmount": decodedData.monthlyEmiMdrAmount
+        };
+      }
+    } on DioException catch (e) {
+      handleDioError(e);
+    } catch (e) {
+      AlertService().error("Error fetching transactions: $e");
+      return null;
+    } finally {}
+    return null;
+  }
+
+  /// UPI Txn monthlyrange
+  Future<Map<String, dynamic>?> getUpiTxnMonthlyValues(
+      String recordFrom, String recordTo) async {
+    final prefs = await SharedPreferences.getInstance();
+    String? merchantId = prefs.getString('merchantId');
+
+    try {
+      final response = await _merchantServices.fetchVpaTransactionHistory({
+        "from": recordFrom,
+        "to": recordTo,
+        // "creditVpa": selectedVpa,
+      },
+          pageNumber: 0,
+          pageSize: 1,
+          forMonthyValues: true,
+          merchantId: merchantId);
+      var decodedData = response.data;
+      if (response.statusCode == 200 && decodedData["statusCode"] == 200) {
+        return decodedData['monthlyupiTxnAmount'] ?? [];
+      }
+    } on DioException catch (e) {
+      handleDioError(e);
+    } catch (e) {
+      AlertService().error("Error fetching transactions: $e");
+      return null;
+    } finally {}
+
+    return null;
+  }
+
+  DateTime? fromMonth;
+  DateTime? toMonth;
+
+  String formatMonth(DateTime? date) {
+    if (date == null) return "Select Month";
+    return DateFormat('MMMM yyyy').format(date);
+  }
+
+  Future<void> pickMonth(bool isFrom, context) async {
+    final picked = await showMonthYearPicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(DateTime.now().year - 5, DateTime.now().month),
+      lastDate: DateTime.now(),
+    );
+
+    if (picked != null) {
+      if (isFrom) {
+        fromMonth = DateTime(picked.year, picked.month, 1);
+        final tempTo = DateTime(picked.year, picked.month + 3, 0);
+        toMonth = tempTo;
+      } else {
+        toMonth = DateTime(picked.year, picked.month + 1, 0);
+        final tempFrom = DateTime(picked.year, picked.month - 2, 1);
+        fromMonth = tempFrom;
+      }
+    }
+
+    setMonthRange(startDate: fromMonth, endDate: toMonth);
+    notifyListeners();
   }
 }

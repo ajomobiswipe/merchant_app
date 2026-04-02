@@ -5,8 +5,23 @@ import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../providers/transaction_provider.dart';
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
+
+  @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final provider = Provider.of<TransactionProvider>(context, listen: false);
+      provider.setMonthRange();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,59 +30,63 @@ class DashboardScreen extends StatelessWidget {
     return MerchantScaffold(
       //  backgroundColor: const Color(0xFFF2F3F7),
       child: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text("Transactions Report",
-                style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 20),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text("Transactions Report",
+                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 20),
 
-            // Period selector
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: Period.values.map((period) {
-                final selected = provider.selectedPeriod == period;
-                return Expanded(
-                  child: GestureDetector(
-                    onTap: () => provider.changePeriod(period, context),
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 4),
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      decoration: BoxDecoration(
-                        color: selected ? Colors.white : Colors.transparent,
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      child: Center(
-                        child: Text(
-                          period.name.toUpperCase(),
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            color: selected ? Colors.black : Colors.grey,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              }).toList(),
-            ),
+              // Period selector
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: Period.values.map((period) {
+              //     final selected = provider.selectedPeriod == period;
+              //     return Expanded(
+              //       child: GestureDetector(
+              //         onTap: () => provider.changePeriod(period, context),
+              //         child: Container(
+              //           margin: const EdgeInsets.symmetric(horizontal: 4),
+              //           padding: const EdgeInsets.symmetric(vertical: 10),
+              //           decoration: BoxDecoration(
+              //             color: selected ? Colors.white : Colors.transparent,
+              //             borderRadius: BorderRadius.circular(14),
+              //           ),
+              //           child: Center(
+              //             child: Text(
+              //               period.name.toUpperCase(),
+              //               style: TextStyle(
+              //                 fontWeight: FontWeight.w600,
+              //                 color: selected ? Colors.black : Colors.grey,
+              //               ),
+              //             ),
+              //           ),
+              //         ),
+              //       ),
+              //     );
+              //   }).toList(),
+              // ),
 
-            const SizedBox(height: 20),
+              monthSelectionWidget(provider),
 
-            _chartCard(provider),
+              const SizedBox(height: 20),
 
-            const SizedBox(height: 20),
+              _chartCard(provider),
 
-            _summaryCard(provider),
+              const SizedBox(height: 20),
 
-            const SizedBox(height: 20),
+              _summaryCard(provider),
 
-            _schemeFilter(provider),
+              const SizedBox(height: 20),
 
-            const SizedBox(height: 16),
+              // _schemeFilter(provider),
 
-            _schemeCards(provider),
-          ],
+              // const SizedBox(height: 16),
+
+              // _schemeCards(provider),
+            ],
+          ),
         ),
       ),
       onTapHome: () {
@@ -84,7 +103,7 @@ class DashboardScreen extends StatelessWidget {
             .width;
 
     /// width per group (adjust if needed)
-    const double groupWidth = 70;
+    const double groupWidth = 100;
 
     /// dynamic width
     final double chartWidth =
@@ -93,7 +112,7 @@ class DashboardScreen extends StatelessWidget {
             : provider.chartData.length * groupWidth;
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      // padding: const EdgeInsets.all(16),
       height: 300,
       decoration: _card(),
       child: SingleChildScrollView(
@@ -103,13 +122,12 @@ class DashboardScreen extends StatelessWidget {
           width: chartWidth,
           child: BarChart(
             BarChartData(
-              alignment: BarChartAlignment.spaceBetween,
               maxY: provider.maxY,
 
               /// GRID
               gridData: FlGridData(
                 show: true,
-                horizontalInterval: provider.maxY / 5,
+                horizontalInterval: provider.maxY / 3,
                 getDrawingHorizontalLine: (value) {
                   return FlLine(
                     color: Colors.grey.withOpacity(0.2),
@@ -154,7 +172,7 @@ class DashboardScreen extends StatelessWidget {
                   ),
                 ),
                 topTitles: const AxisTitles(
-                  sideTitles: SideTitles(showTitles: false),
+                  sideTitles: SideTitles(showTitles: true),
                 ),
                 rightTitles:
                     const AxisTitles(sideTitles: SideTitles(showTitles: false)),
@@ -170,8 +188,8 @@ class DashboardScreen extends StatelessWidget {
 
                     return BarTooltipItem(
                       isSuccess
-                          ? "Success: ${data.success}"
-                          : "Failed: ${data.failed}",
+                          ? "Success: ${data.posSuccess}"
+                          : "Failed: ${data.upiSuccess}",
                       const TextStyle(color: Colors.white),
                     );
                   },
@@ -187,13 +205,13 @@ class DashboardScreen extends StatelessWidget {
                   barsSpace: 10,
                   barRods: [
                     BarChartRodData(
-                      toY: e.success,
+                      toY: e.posSuccess,
                       width: 5,
                       borderRadius: BorderRadius.circular(6),
                       color: const Color(0xFF2ECC71),
                     ),
                     BarChartRodData(
-                      toY: e.failed,
+                      toY: e.upiSuccess!,
                       width: 5,
                       borderRadius: BorderRadius.circular(6),
                       color: const Color(0xFFE74C3C),
@@ -218,10 +236,10 @@ class DashboardScreen extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Success ${provider.totalSuccess}",
+              Text("POS ${provider.totalSuccess}",
                   style: const TextStyle(color: Colors.green, fontSize: 16)),
               const SizedBox(height: 6),
-              Text("Failed ${provider.totalFailed}",
+              Text("UPI ${provider.totalFailed}",
                   style: const TextStyle(color: Colors.red, fontSize: 16)),
             ],
           ),
@@ -229,6 +247,43 @@ class DashboardScreen extends StatelessWidget {
               style:
                   const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
         ],
+      ),
+    );
+  }
+
+  Widget monthSelectionWidget(TransactionProvider provider) {
+    return Row(
+      children: [
+        buildCard("From Month", provider.fromMonth, true),
+        SizedBox(width: 10),
+        buildCard("To Month", provider.toMonth, false),
+      ],
+    );
+  }
+
+  Widget buildCard(String title, DateTime? value, bool fromMonth) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => Provider.of<TransactionProvider>(context, listen: false)
+            .pickMonth(fromMonth, context),
+        child: Card(
+          elevation: 4,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: Column(
+            children: [
+               SizedBox(height: 8),
+              Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
+              Text(
+                Provider.of<TransactionProvider>(context, listen: false)
+                    .formatMonth(value),
+                style: TextStyle(color: Colors.blue, fontSize: 16),
+              ),
+               SizedBox(height: 8),
+            ],
+          ),
+        ),
       ),
     );
   }
