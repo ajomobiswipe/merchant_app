@@ -1,16 +1,14 @@
-
 class HourlyTransaction {
   final String label;
   final double posSuccess;
-  double? upiSuccess;
-  double? emiMdrAmount;
- 
+  double upiSuccess;
+  double emiMdrAmount;
+
   HourlyTransaction({
     required this.label,
     required this.posSuccess,
-    this.upiSuccess=0,
-    this.emiMdrAmount=0,
-
+    this.upiSuccess = 0,
+    this.emiMdrAmount = 0,
   });
 }
 

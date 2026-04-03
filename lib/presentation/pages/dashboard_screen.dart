@@ -13,6 +13,10 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  Color posColor = Color.fromARGB(255, 80, 150, 241);
+  Color emiMdrColor = const Color.fromARGB(255, 235, 123, 48);
+  Color upiColor = const Color.fromARGB(255, 88, 224, 9);
+
   @override
   void initState() {
     // TODO: implement initState
@@ -76,9 +80,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
               const SizedBox(height: 20),
 
-              _summaryCard(provider),
+              _summaryCard(),
 
-              const SizedBox(height: 20),
+              // const SizedBox(height: 20),
 
               // _schemeFilter(provider),
 
@@ -128,12 +132,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
               gridData: FlGridData(
                 show: true,
                 horizontalInterval: provider.maxY / 3,
-                getDrawingHorizontalLine: (value) {
-                  return FlLine(
-                    color: Colors.grey.withOpacity(0.2),
-                    strokeWidth: 1,
-                  );
-                },
+                // getDrawingHorizontalLine: (value) {
+                //   return FlLine(
+                //     color: Colors.grey.withOpacity(0.2),
+                //     strokeWidth: 1,
+                //   );
+                // },
               ),
 
               borderData: FlBorderData(show: false),
@@ -208,13 +212,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       toY: e.posSuccess,
                       width: 5,
                       borderRadius: BorderRadius.circular(6),
-                      color: const Color(0xFF2ECC71),
+                      color: posColor,
+                    ),
+                    BarChartRodData(
+                      toY: e.emiMdrAmount!,
+                      width: 5,
+                      borderRadius: BorderRadius.circular(6),
+                      color: emiMdrColor,
                     ),
                     BarChartRodData(
                       toY: e.upiSuccess!,
                       width: 5,
                       borderRadius: BorderRadius.circular(6),
-                      color: const Color(0xFFE74C3C),
+                      color: upiColor,
                     ),
                   ],
                 );
@@ -226,7 +236,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _summaryCard(TransactionProvider provider) {
+  Widget _summaryCard() {
+    Widget legendItem(String text, Color color) {
+      return Row(
+        children: [
+          Container(
+            width: 16,
+            height: 4,
+            decoration: BoxDecoration(
+              color: color,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Text(
+            text,
+            style: TextStyle(color: color, fontSize: 16),
+          ),
+        ],
+      );
+    }
+
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: _card(),
@@ -236,16 +266,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("POS ${provider.totalSuccess}",
-                  style: const TextStyle(color: Colors.green, fontSize: 16)),
+              legendItem("POS", posColor),
               const SizedBox(height: 6),
-              Text("UPI ${provider.totalFailed}",
-                  style: const TextStyle(color: Colors.red, fontSize: 16)),
+              legendItem("Emi MDR", emiMdrColor),
+              const SizedBox(height: 6),
+              legendItem("UPI", upiColor),
             ],
           ),
-          Text("₹${provider.totalAmount.toStringAsFixed(0)}",
-              style:
-                  const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
         ],
       ),
     );
@@ -273,14 +300,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
           child: Column(
             children: [
-               SizedBox(height: 8),
-              Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
+              SizedBox(height: 8),
+              // Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
               Text(
                 Provider.of<TransactionProvider>(context, listen: false)
                     .formatMonth(value),
-                style: TextStyle(color: Colors.blue, fontSize: 16),
+                style: TextStyle(fontSize: 16),
               ),
-               SizedBox(height: 8),
+              SizedBox(height: 8),
             ],
           ),
         ),
