@@ -30,8 +30,9 @@ class TransactionProvider extends ChangeNotifier {
   double get maxY {
     if (chartData.isEmpty) return 10; // default fallback height
 
-    final values =
-        chartData.expand((e) => [e.posSuccess, e.upiSuccess ?? 0]).toList();
+    final values = chartData
+        .expand((e) => [e.posSuccess, e.upiSuccess, e.emiMdrAmount ?? 0])
+        .toList();
 
     final maxValue = values.reduce((a, b) => a > b ? a : b);
 
@@ -271,10 +272,12 @@ class TransactionProvider extends ChangeNotifier {
     if (startDate == null || endDate == null) {
       DateTime now = DateTime.now();
       // 2 months back - first day
-      startDate = DateTime(now.year, now.month - 2, 1);
+      startDate = fromMonth = DateTime(now.year, now.month - 2, 1);
       // DateTime middleDate = DateTime(now.year, now.month - 1);
       // current month - last day
-      endDate = DateTime(now.year, now.month + 1, 0);
+      endDate = toMonth = DateTime(now.year, now.month + 1, 0);
+
+      notifyListeners();
     }
 
     var monthlyPosValues = await getPosTxnMonthlyValues(
@@ -291,14 +294,16 @@ class TransactionProvider extends ChangeNotifier {
 
     monthlyPosValues['monthlyValues'].entries.forEach((entry) {
       _chartData.add(HourlyTransaction(
-          label: entry.key, posSuccess: entry.value.toDouble(), upiSuccess: 0));
+          label: entry.key,
+          posSuccess: double.parse(entry.value.toStringAsFixed(2)),
+          upiSuccess: 0));
     });
 
     monthlyPosValues['monthlyEmiMdrAmount'].entries.forEach((entry) {
       bool isExisting = _chartData.any((e) => e.label == entry.key);
       if (isExisting) {
         _chartData[_chartData.indexWhere((e) => e.label == entry.key)]
-            .emiMdrAmount = entry.value.toDouble();
+            .emiMdrAmount = double.parse(entry.value.toStringAsFixed(2));
       }
     });
 
@@ -306,7 +311,7 @@ class TransactionProvider extends ChangeNotifier {
       bool isExisting = _chartData.any((e) => e.label == entry.key);
       if (isExisting) {
         _chartData[_chartData.indexWhere((e) => e.label == entry.key)]
-            .upiSuccess = entry.value.toDouble();
+            .upiSuccess = double.parse(entry.value.toStringAsFixed(2));
       }
     });
 
