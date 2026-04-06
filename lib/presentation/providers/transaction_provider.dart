@@ -336,57 +336,57 @@ class TransactionProvider extends ChangeNotifier {
       ..sendTxnReportToMail = false;
 
     try {
-      var dummydata = {
-        "responsePage": {
-          "content": [],
-          "pageable": {
-            "sort": {"unsorted": false, "sorted": true, "empty": false},
-            "offset": 0,
-            "pageSize": 1,
-            "pageNumber": 0,
-            "paged": true,
-            "unpaged": false
-          },
-          "last": false,
-          "totalElements": 1816,
-          "totalPages": 1816,
-          "size": 1,
-          "number": 0,
-          "sort": {"unsorted": false, "sorted": true, "empty": false},
-          "first": true,
-          "numberOfElements": 1,
-          "empty": false
-        },
-        "totalAmount": 8368267.33,
-        "count": 650,
-        "monthlyValues": {
-          "February": 564567.000000,
-          "March": 658267.330000,
-          "April": 465571.000000
-        },
-        "sumEmiMdrValues": {
-          "February": 548874.00,
-          "March": 488746.00,
-          "April": 887458.00
-        },
-        "sendMailResponse": {
-          "responseCode": null,
-          "responseMessage": null,
-          "userName": null,
-          "mailId": null,
-          "twoFAOTPTimer": 0
-        }
-      };
+      // var dummydata = {
+      //   "responsePage": {
+      //     "content": [],
+      //     "pageable": {
+      //       "sort": {"unsorted": false, "sorted": true, "empty": false},
+      //       "offset": 0,
+      //       "pageSize": 1,
+      //       "pageNumber": 0,
+      //       "paged": true,
+      //       "unpaged": false
+      //     },
+      //     "last": false,
+      //     "totalElements": 1816,
+      //     "totalPages": 1816,
+      //     "size": 1,
+      //     "number": 0,
+      //     "sort": {"unsorted": false, "sorted": true, "empty": false},
+      //     "first": true,
+      //     "numberOfElements": 1,
+      //     "empty": false
+      //   },
+      //   "totalAmount": 8368267.33,
+      //   "count": 650,
+      //   "monthlyValues": {
+      //     "February": 564567.000000,
+      //     "March": 658267.330000,
+      //     "April": 465571.000000
+      //   },
+      //   "sumEmiMdrValues": {
+      //     "February": 548874.00,
+      //     "March": 488746.00,
+      //     "April": 887458.00
+      //   },
+      //   "sendMailResponse": {
+      //     "responseCode": null,
+      //     "responseMessage": null,
+      //     "userName": null,
+      //     "mailId": null,
+      //     "twoFAOTPTimer": 0
+      //   }
+      // };
 
-      Response response = Response(
-          requestOptions: RequestOptions(path: ''),
-          data: dummydata,
-          statusCode: 200);
-      // final response = await _merchantServices.fetchTransactionHistory(
-      //   _recentTranReqModel.toJson(),
-      //   pageNumber: 0,
-      //   pageSize: 1,
-      // );
+      // Response response = Response(
+      //     requestOptions: RequestOptions(path: ''),
+      //     data: dummydata,
+      //     statusCode: 200);
+      final response = await _merchantServices.fetchTransactionHistory(
+        _recentTranReqModel.toJson(),
+        pageNumber: 0,
+        pageSize: 1,
+      );
 
       if (response.statusCode == 200) {
         final decodedData = TransactionHistory.fromJson(response.data);
@@ -412,50 +412,51 @@ class TransactionProvider extends ChangeNotifier {
     String? merchantId = prefs.getString('merchantId');
 
     try {
-      Map<String, dynamic> decodedData = {
-        "successMessage": "Success",
-        "statusCode": 200,
-        "pageData": {
-          "content": [],
-          "pageable": {
-            "sort": {"unsorted": false, "sorted": true, "empty": false},
-            "offset": 0,
-            "pageSize": 1,
-            "pageNumber": 0,
-            "paged": true,
-            "unpaged": false
-          },
-          "last": false,
-          "totalElements": 2,
-          "totalPages": 2,
-          "size": 1,
-          "number": 0,
-          "sort": {"unsorted": false, "sorted": true, "empty": false},
-          "first": true,
-          "numberOfElements": 1,
-          "empty": false
-        },
-        "monthlyupiTxnAmount": {
-          "February": 564567.000000,
-          "March": 658267.330000,
-          "April": 465571.000000
-        },
-        "totalAmount": 2.22
-      };
-      // final response = await _merchantServices.fetchVpaTransactionHistory({
-      //   "from": recordFrom,
-      //   "to": recordTo,
-      //   // "creditVpa": selectedVpa,
-      // },
-      //     pageNumber: 0,
-      //     pageSize: 1,
-      //     forMonthyValues: true,
-      //     merchantId: merchantId);
-      // var decodedData = response.data;
-      Response response = Response(
-          requestOptions: RequestOptions(path: ''),
-          data: decodedData,
-          statusCode: 200);
+      // Map<String, dynamic> decodedData = {
+      //   "successMessage": "Success",
+      //   "statusCode": 200,
+      //   "pageData": {
+      //     "content": [],
+      //     "pageable": {
+      //       "sort": {"unsorted": false, "sorted": true, "empty": false},
+      //       "offset": 0,
+      //       "pageSize": 1,
+      //       "pageNumber": 0,
+      //       "paged": true,
+      //       "unpaged": false
+      //     },
+      //     "last": false,
+      //     "totalElements": 2,
+      //     "totalPages": 2,
+      //     "size": 1,
+      //     "number": 0,
+      //     "sort": {"unsorted": false, "sorted": true, "empty": false},
+      //     "first": true,
+      //     "numberOfElements": 1,
+      //     "empty": false
+      //   },
+      //   "monthlyupiTxnAmount": {
+      //     "February": 564567.000000,
+      //     "March": 658267.330000,
+      //     "April": 465571.000000
+      //   },
+      //   "totalAmount": 2.22
+      // };
+      //   Response response = Response(
+      // requestOptions: RequestOptions(path: ''),
+      // data: decodedData,
+      // statusCode: 200);
+      final response = await _merchantServices.fetchVpaTransactionHistory({
+        "from": recordFrom,
+        "to": recordTo,
+        // "creditVpa": selectedVpa,
+      },
+          pageNumber: 0,
+          pageSize: 1,
+          forMonthyValues: true,
+          merchantId: merchantId);
+      var decodedData = response.data;
+
       if (response.statusCode == 200 && decodedData["statusCode"] == 200) {
         return Map<String, dynamic>.from(
             decodedData['monthlyupiTxnAmount'] ?? {});
