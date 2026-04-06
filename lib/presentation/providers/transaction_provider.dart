@@ -338,54 +338,7 @@ class TransactionProvider extends ChangeNotifier {
     try {
       var dummydata = {
         "responsePage": {
-          "content": [
-            {
-              "merchantId": "65OMA0000000002",
-              "acquirerId": "OMAIND",
-              "terminalId": "OM000002",
-              "transactionDate": "05/09/2026",
-              "transactionTime": "19:23:37",
-              "stan": "000185",
-              "rrn": "424919510280",
-              "amount": "385.00",
-              "authCode": "192343",
-              "responseCode": "000",
-              "responseDesc": null,
-              "transactionType": "OSAL001",
-              "mcc": null,
-              "cardNo": "608326******0066",
-              "merReceiptLink": null,
-              "custReceiptLink": null,
-              "acquirerName": null,
-              "mti": "1210",
-              "currency": "356",
-              "terminalGuid": 0,
-              "txnGuid": 0,
-              "insertDateTime": "25/03/2026 13:45:00",
-              "batchNo": "001",
-              "traceNumber": "000185",
-              "terminalLocation": "TEST MERCHANT         SHARJAH      SHJAE",
-              "de_7": "0905152329",
-              "acquiringBIN": "OMAIND",
-              "schemeName": null,
-              "processCode": "000000",
-              "p2pRequestId": null,
-              "posEntryMode": "071",
-              "deviceType": null,
-              "txnSource": null,
-              "nameOnCard": null,
-              "batchClosedOn": null,
-              "settledOn": null,
-              "processAck": false,
-              "txnResponse": null,
-              "txnAckResponse": null,
-              "terminalAddress": "TEST MERCHANT         SHARJAH      SHJAE",
-              "reverse": false,
-              "settled": false,
-              "voided": false,
-              "batchClosed": false
-            }
-          ],
+          "content": [],
           "pageable": {
             "sort": {"unsorted": false, "sorted": true, "empty": false},
             "offset": 0,
@@ -407,11 +360,15 @@ class TransactionProvider extends ChangeNotifier {
         "totalAmount": 8368267.33,
         "count": 650,
         "monthlyValues": {
-          "February": 0.000000,
-          "March": 8368267.330000,
-          "April": 0.000000
+          "February": 564567.000000,
+          "March": 658267.330000,
+          "April": 465571.000000
         },
-        "sumEmiMdrValues": {"February": 0.00, "March": 6.00, "April": 0.00},
+        "sumEmiMdrValues": {
+          "February": 548874.00,
+          "March": 488746.00,
+          "April": 887458.00
+        },
         "sendMailResponse": {
           "responseCode": null,
           "responseMessage": null,
@@ -420,7 +377,7 @@ class TransactionProvider extends ChangeNotifier {
           "twoFAOTPTimer": 0
         }
       };
-      //  final res = jsonEncode(dummydata);
+
       Response response = Response(
           requestOptions: RequestOptions(path: ''),
           data: dummydata,
@@ -459,64 +416,7 @@ class TransactionProvider extends ChangeNotifier {
         "successMessage": "Success",
         "statusCode": 200,
         "pageData": {
-          "content": [
-            {
-              "refId": "OMAAXIS10030",
-              "transactionInfoType": "UPI",
-              "accountDetailsType": "SAVINGS",
-              "payerDetailsType": "PAYER",
-              "accountDetailsAccType": "SAVINGS",
-              "payerDetailsAccType": "SAVINGS",
-              "name": "Amit Sharma",
-              "payerVPA": null,
-              "mobileNumber": "9867093454",
-              "acNum": "2201201144299621",
-              "addr": "1234, Main Street, City",
-              "code": "220",
-              "orgAmount": "1000",
-              "regName": "Amit Sharma",
-              "seqNum": "001",
-              "setAmount": "0",
-              "transactionInfoNote": null,
-              "txnConfirmationNote": null,
-              "orgStatus": "SUCCESS",
-              "custRef": "CUST12345",
-              "orgId": "AXIS-BANK",
-              "initiationMode": "UPI",
-              "orgTxnId": "AXIS1234567890",
-              "purpose": "UPI Transaction",
-              "refUrl": "https://www.axisbank.com",
-              "ts": "2023-09-06T11:42:52+05:30",
-              "msgId": "MSG123456",
-              "version": "1.0",
-              "addedOn": "2025-10-15T18:57:31.687",
-              "updatedOn": "2025-10-15T18:57:31.687",
-              "addedBy": "AXIS-BANK",
-              "updatedBy": "AXIS-BANK",
-              "status": "SUCCESS",
-              "deviceId": "9222105983",
-              "requestData": null,
-              "customerVpa": null,
-              "merchantId": "merchant123",
-              "merchantChannelId": "collect123",
-              "merchantTransactionId": "734613572371",
-              "transactionTimestamp": 20260316114100,
-              "transactionAmount": "1.11",
-              "gatewayTransactionId": "AXI0367c9065cb94106868287161a7d8201",
-              "gatewayResponseCode": "00",
-              "gatewayResponseMessage": "SUCCESS",
-              "rrn": "OMAAXIS10030",
-              "creditVpa": "zxpay@anet",
-              "checksum": "",
-              "channelType": "POS",
-              "dqrRequestId": "OMAAXIS10030",
-              "qrCodeTransactionId": "vpa0000102",
-              "reconciledTime": null,
-              "ifsc": "IUBL0002012",
-              "hts": "2023-09-06T11:42:52+05:30",
-              "horgId": "AXIS-BANK"
-            }
-          ],
+          "content": [],
           "pageable": {
             "sort": {"unsorted": false, "sorted": true, "empty": false},
             "offset": 0,
@@ -536,9 +436,9 @@ class TransactionProvider extends ChangeNotifier {
           "empty": false
         },
         "monthlyupiTxnAmount": {
-          "January": 0.00,
-          "February": 0.00,
-          "March": 2.22
+          "February": 564567.000000,
+          "March": 658267.330000,
+          "April": 465571.000000
         },
         "totalAmount": 2.22
       };

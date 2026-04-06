@@ -150,7 +150,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 sideTitles: SideTitles(
                   reservedSize: 50,
                   showTitles: true,
-                   interval: provider.maxY / 5,
+                  interval: provider.maxY / 5,
                   getTitlesWidget: (value, meta) {
                     return Text(
                       value.toInt().toString(),
@@ -248,44 +248,45 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _summaryCard() {
-    Widget legendItem(String text, Color color) {
-      return Row(
-        children: [
-          Container(
-            width: 16,
-            height: 4,
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: BorderRadius.circular(2),
+    Widget legendItem(String text, Color color, {EdgeInsetsGeometry? padding}) {
+      return Padding(
+        padding: padding ?? EdgeInsetsGeometry.symmetric(horizontal: 10),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              width: 16,
+              height: 4,
+              decoration: BoxDecoration(
+                color: color,
+                borderRadius: BorderRadius.circular(2),
+              ),
             ),
-          ),
-          const SizedBox(width: 8),
-          Text(
-            text,
-            style: TextStyle(color: color, fontSize: 12),
-          ),
-        ],
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                text,
+                maxLines: 2,
+                overflow: TextOverflow.visible,
+                style: TextStyle(color: color, fontSize: 12),
+              ),
+            ),
+          ],
+        ),
       );
     }
 
-    return Container(
-      padding: const EdgeInsets.all(18),
-      decoration: _card(),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              legendItem("POS Transactions - Sum of Total Amount Payable to Merchant", posColor),      
-              const SizedBox(height: 6),
-              legendItem("Sum of Emi MDR", emiMdrColor),
-              const SizedBox(height: 6),
-              legendItem("UPI Transactions - Sum of Total Amount Payable to Merchant", upiColor),
-            ],
-          ),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        legendItem("POS Transactions - Sum of Total Amount Payable to Merchant",
+            posColor),
+        const SizedBox(height: 10),
+        legendItem("Sum of Emi MDR", emiMdrColor),
+        const SizedBox(height: 10),
+        legendItem("UPI Transactions - Sum of Total Amount Payable to Merchant",
+            upiColor),
+      ],
     );
   }
 
