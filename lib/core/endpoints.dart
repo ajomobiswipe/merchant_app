@@ -3,7 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 enum Environment { UAT, PROD, Local }
 
 class EndPoints {
-  static final Environment environment = Environment.Local; // Change as needed
+  static final Environment environment = Environment.PROD; // Change as needed
 
   static String get baseApiPublic {
     switch (environment) {

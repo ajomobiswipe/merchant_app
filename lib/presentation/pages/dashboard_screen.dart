@@ -192,8 +192,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
                     return BarTooltipItem(
                       isSuccess
-                          ? "Success: ${data.posSuccess}"
-                          : "Failed: ${data.upiSuccess}",
+                          ? "POS: ${data.posSuccess}"
+                          : "UPI: ${data.upiSuccess}",
                       const TextStyle(color: Colors.white),
                     );
                   },
