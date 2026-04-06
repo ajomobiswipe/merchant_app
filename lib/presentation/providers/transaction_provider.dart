@@ -299,13 +299,15 @@ class TransactionProvider extends ChangeNotifier {
           upiSuccess: 0));
     });
 
-    monthlyPosValues['monthlyEmiMdrAmount'].entries.forEach((entry) {
-      bool isExisting = _chartData.any((e) => e.label == entry.key);
-      if (isExisting) {
-        _chartData[_chartData.indexWhere((e) => e.label == entry.key)]
-            .emiMdrAmount = double.parse(entry.value.toStringAsFixed(2));
-      }
-    });
+    if (monthlyPosValues['monthlyEmiMdrAmount'] != null) {
+      monthlyPosValues['monthlyEmiMdrAmount'].entries.forEach((entry) {
+        bool isExisting = _chartData.any((e) => e.label == entry.key);
+        if (isExisting) {
+          _chartData[_chartData.indexWhere((e) => e.label == entry.key)]
+              .emiMdrAmount = double.parse(entry.value.toStringAsFixed(2));
+        }
+      });
+    }
 
     monthlyUpiValues.entries.forEach((entry) {
       bool isExisting = _chartData.any((e) => e.label == entry.key);
@@ -334,11 +336,100 @@ class TransactionProvider extends ChangeNotifier {
       ..sendTxnReportToMail = false;
 
     try {
-      final response = await _merchantServices.fetchTransactionHistory(
-        _recentTranReqModel.toJson(),
-        pageNumber: 0,
-        pageSize: 1,
-      );
+      var dummydata = {
+        "responsePage": {
+          "content": [
+            {
+              "merchantId": "65OMA0000000002",
+              "acquirerId": "OMAIND",
+              "terminalId": "OM000002",
+              "transactionDate": "05/09/2026",
+              "transactionTime": "19:23:37",
+              "stan": "000185",
+              "rrn": "424919510280",
+              "amount": "385.00",
+              "authCode": "192343",
+              "responseCode": "000",
+              "responseDesc": null,
+              "transactionType": "OSAL001",
+              "mcc": null,
+              "cardNo": "608326******0066",
+              "merReceiptLink": null,
+              "custReceiptLink": null,
+              "acquirerName": null,
+              "mti": "1210",
+              "currency": "356",
+              "terminalGuid": 0,
+              "txnGuid": 0,
+              "insertDateTime": "25/03/2026 13:45:00",
+              "batchNo": "001",
+              "traceNumber": "000185",
+              "terminalLocation": "TEST MERCHANT         SHARJAH      SHJAE",
+              "de_7": "0905152329",
+              "acquiringBIN": "OMAIND",
+              "schemeName": null,
+              "processCode": "000000",
+              "p2pRequestId": null,
+              "posEntryMode": "071",
+              "deviceType": null,
+              "txnSource": null,
+              "nameOnCard": null,
+              "batchClosedOn": null,
+              "settledOn": null,
+              "processAck": false,
+              "txnResponse": null,
+              "txnAckResponse": null,
+              "terminalAddress": "TEST MERCHANT         SHARJAH      SHJAE",
+              "batchClosed": false,
+              "reverse": false,
+              "settled": false,
+              "voided": false
+            }
+          ],
+          "pageable": {
+            "sort": {"unsorted": false, "sorted": true, "empty": false},
+            "offset": 0,
+            "pageNumber": 0,
+            "pageSize": 1,
+            "paged": true,
+            "unpaged": false
+          },
+          "last": false,
+          "totalElements": 1816,
+          "totalPages": 1816,
+          "size": 1,
+          "number": 0,
+          "sort": {"unsorted": false, "sorted": true, "empty": false},
+          "first": true,
+          "numberOfElements": 1,
+          "empty": false
+        },
+        "totalAmount": 8368267.33,
+        "count": 650,
+        "monthlyValues": {
+          "February": 0.000000,
+          "March": 8368267.330000,
+          "April": 0.000000
+        },
+        "sumEmiMdrValues": {},
+        "sendMailResponse": {
+          "responseCode": null,
+          "responseMessage": null,
+          "userName": null,
+          "mailId": null,
+          "twoFAOTPTimer": 0
+        }
+      };
+      //  final res = jsonEncode(dummydata);
+      Response response = Response(
+          requestOptions: RequestOptions(path: ''),
+          data: dummydata,
+          statusCode: 200);
+      // final response = await _merchantServices.fetchTransactionHistory(
+      //   _recentTranReqModel.toJson(),
+      //   pageNumber: 0,
+      //   pageSize: 1,
+      // );
 
       if (response.statusCode == 200) {
         final decodedData = TransactionHistory.fromJson(response.data);
@@ -351,6 +442,7 @@ class TransactionProvider extends ChangeNotifier {
       handleDioError(e);
     } catch (e) {
       AlertService().error("Error fetching transactions: $e");
+
       return null;
     } finally {}
     return null;
@@ -363,18 +455,110 @@ class TransactionProvider extends ChangeNotifier {
     String? merchantId = prefs.getString('merchantId');
 
     try {
-      final response = await _merchantServices.fetchVpaTransactionHistory({
-        "from": recordFrom,
-        "to": recordTo,
-        // "creditVpa": selectedVpa,
-      },
-          pageNumber: 0,
-          pageSize: 1,
-          forMonthyValues: true,
-          merchantId: merchantId);
-      var decodedData = response.data;
+      Map<String, dynamic> decodedData = {
+        "successMessage": "Success",
+        "statusCode": 200,
+        "pageData": {
+          "content": [
+            {
+              "refId": "OMAAXIS10030",
+              "transactionInfoType": "UPI",
+              "accountDetailsType": "SAVINGS",
+              "payerDetailsType": "PAYER",
+              "accountDetailsAccType": "SAVINGS",
+              "payerDetailsAccType": "SAVINGS",
+              "name": "Amit Sharma",
+              "payerVPA": null,
+              "mobileNumber": "9867093454",
+              "acNum": "2201201144299621",
+              "addr": "1234, Main Street, City",
+              "code": "220",
+              "orgAmount": "1000",
+              "regName": "Amit Sharma",
+              "seqNum": "001",
+              "setAmount": "0",
+              "transactionInfoNote": null,
+              "txnConfirmationNote": null,
+              "orgStatus": "SUCCESS",
+              "custRef": "CUST12345",
+              "orgId": "AXIS-BANK",
+              "initiationMode": "UPI",
+              "orgTxnId": "AXIS1234567890",
+              "purpose": "UPI Transaction",
+              "refUrl": "https://www.axisbank.com",
+              "ts": "2023-09-06T11:42:52+05:30",
+              "msgId": "MSG123456",
+              "version": "1.0",
+              "addedOn": "2025-10-15T18:57:31.687",
+              "updatedOn": "2025-10-15T18:57:31.687",
+              "addedBy": "AXIS-BANK",
+              "updatedBy": "AXIS-BANK",
+              "status": "SUCCESS",
+              "deviceId": "9222105983",
+              "requestData": null,
+              "customerVpa": null,
+              "merchantId": "merchant123",
+              "merchantChannelId": "collect123",
+              "merchantTransactionId": "734613572371",
+              "transactionTimestamp": 20260316114100,
+              "transactionAmount": "1.11",
+              "gatewayTransactionId": "AXI0367c9065cb94106868287161a7d8201",
+              "gatewayResponseCode": "00",
+              "gatewayResponseMessage": "SUCCESS",
+              "rrn": "OMAAXIS10030",
+              "creditVpa": "zxpay@anet",
+              "checksum": "",
+              "channelType": "POS",
+              "dqrRequestId": "OMAAXIS10030",
+              "qrCodeTransactionId": "vpa0000102",
+              "reconciledTime": null,
+              "ifsc": "IUBL0002012",
+              "hts": "2023-09-06T11:42:52+05:30",
+              "horgId": "AXIS-BANK"
+            }
+          ],
+          "pageable": {
+            "sort": {"unsorted": false, "sorted": true, "empty": false},
+            "offset": 0,
+            "pageSize": 1,
+            "pageNumber": 0,
+            "paged": true,
+            "unpaged": false
+          },
+          "last": false,
+          "totalElements": 2,
+          "totalPages": 2,
+          "size": 1,
+          "number": 0,
+          "sort": {"unsorted": false, "sorted": true, "empty": false},
+          "first": true,
+          "numberOfElements": 1,
+          "empty": false
+        },
+        "monthlyupiTxnAmount": {
+          "January": 0.00,
+          "February": 0.00,
+          "March": 2.22
+        },
+        "totalAmount": 2.22
+      };
+      // final response = await _merchantServices.fetchVpaTransactionHistory({
+      //   "from": recordFrom,
+      //   "to": recordTo,
+      //   // "creditVpa": selectedVpa,
+      // },
+      //     pageNumber: 0,
+      //     pageSize: 1,
+      //     forMonthyValues: true,
+      //     merchantId: merchantId);
+      // var decodedData = response.data;
+      Response response = Response(
+          requestOptions: RequestOptions(path: ''),
+          data: decodedData,
+          statusCode: 200);
       if (response.statusCode == 200 && decodedData["statusCode"] == 200) {
-        return decodedData['monthlyupiTxnAmount'] ?? [];
+        return Map<String, dynamic>.from(
+            decodedData['monthlyupiTxnAmount'] ?? {});
       }
     } on DioException catch (e) {
       handleDioError(e);
