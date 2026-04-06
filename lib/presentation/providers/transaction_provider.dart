@@ -380,17 +380,17 @@ class TransactionProvider extends ChangeNotifier {
               "txnResponse": null,
               "txnAckResponse": null,
               "terminalAddress": "TEST MERCHANT         SHARJAH      SHJAE",
-              "batchClosed": false,
               "reverse": false,
               "settled": false,
-              "voided": false
+              "voided": false,
+              "batchClosed": false
             }
           ],
           "pageable": {
             "sort": {"unsorted": false, "sorted": true, "empty": false},
             "offset": 0,
-            "pageNumber": 0,
             "pageSize": 1,
+            "pageNumber": 0,
             "paged": true,
             "unpaged": false
           },
@@ -411,7 +411,7 @@ class TransactionProvider extends ChangeNotifier {
           "March": 8368267.330000,
           "April": 0.000000
         },
-        "sumEmiMdrValues": {},
+        "sumEmiMdrValues": {"February": 0.00, "March": 6.00, "April": 0.00},
         "sendMailResponse": {
           "responseCode": null,
           "responseMessage": null,
@@ -435,7 +435,7 @@ class TransactionProvider extends ChangeNotifier {
         final decodedData = TransactionHistory.fromJson(response.data);
         return {
           "monthlyValues": decodedData.monthlyValues,
-          "monthlyEmiMdrAmount": decodedData.monthlyEmiMdrAmount
+          "monthlyEmiMdrAmount": decodedData.sumEmiMdrValues
         };
       }
     } on DioException catch (e) {

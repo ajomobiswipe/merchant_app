@@ -119,120 +119,131 @@ class _DashboardScreenState extends State<DashboardScreen> {
       // padding: const EdgeInsets.all(16),
       height: 300,
       decoration: _card(),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        physics: const BouncingScrollPhysics(),
-        child: SizedBox(
-          width: chartWidth,
-          child: BarChart(
-            BarChartData(
-              maxY: provider.maxY,
+      child:
+          // SingleChildScrollView(
+          //   scrollDirection: Axis.horizontal,
+          //   physics: const BouncingScrollPhysics(),
+          //   child:
+          SizedBox(
+        width: chartWidth,
+        child: BarChart(
+          BarChartData(
+            maxY: provider.maxY,
 
-              /// GRID
-              gridData: FlGridData(
-                show: true,
-                horizontalInterval: provider.maxY / 3,
-                // getDrawingHorizontalLine: (value) {
-                //   return FlLine(
-                //     color: Colors.grey.withOpacity(0.2),
-                //     strokeWidth: 1,
-                //   );
-                // },
-              ),
+            /// GRID
+            // gridData: FlGridData(
+            //   show: true,
+            //   horizontalInterval: provider.maxY / 3,
+            //   // getDrawingHorizontalLine: (value) {
+            //   //   return FlLine(
+            //   //     color: Colors.grey.withOpacity(0.2),
+            //   //     strokeWidth: 1,
+            //   //   );
+            //   // },
+            // ),
 
-              borderData: FlBorderData(show: false),
+            borderData: FlBorderData(show: false),
 
-              /// TITLES
-              titlesData: FlTitlesData(
-                leftTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    reservedSize: 40,
-                    interval: provider.maxY / 5,
-                    getTitlesWidget: (value, meta) {
-                      return Text(
-                        value.toInt().toString(),
-                        style: const TextStyle(fontSize: 10),
-                      );
-                    },
-                  ),
-                ),
-                bottomTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    getTitlesWidget: (value, meta) {
-                      final index = value.toInt();
-                      if (index >= provider.chartData.length) {
-                        return const SizedBox();
-                      }
-                      return Padding(
-                        padding: const EdgeInsets.only(top: 8),
-                        child: Text(
-                          provider.chartData[index].label,
-                          style: const TextStyle(fontSize: 11),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                topTitles: const AxisTitles(
-                  sideTitles: SideTitles(showTitles: true),
-                ),
-                rightTitles:
-                    const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-              ),
-
-              /// TOOLTIP
-              barTouchData: BarTouchData(
-                touchTooltipData: BarTouchTooltipData(
-                  // tooltipBgColor: Colors.black87,
-                  getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                    final data = provider.chartData[group.x.toInt()];
-                    final isSuccess = rodIndex == 0;
-
-                    return BarTooltipItem(
-                      isSuccess
-                          ? "POS: ${data.posSuccess}"
-                          : "UPI: ${data.upiSuccess}",
-                      const TextStyle(color: Colors.white),
+            /// TITLES
+            titlesData: FlTitlesData(
+              leftTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  reservedSize: 50,
+                  showTitles: true,
+                   interval: provider.maxY / 5,
+                  getTitlesWidget: (value, meta) {
+                    return Text(
+                      value.toInt().toString(),
+                      style: const TextStyle(fontSize: 8),
                     );
                   },
                 ),
               ),
-
-              /// BARS
-              barGroups: List.generate(provider.chartData.length, (i) {
-                final e = provider.chartData[i];
-
-                return BarChartGroupData(
-                  x: i,
-                  barsSpace: 10,
-                  barRods: [
-                    BarChartRodData(
-                      toY: e.posSuccess,
-                      width: 5,
-                      borderRadius: BorderRadius.circular(6),
-                      color: posColor,
-                    ),
-                    BarChartRodData(
-                      toY: e.emiMdrAmount!,
-                      width: 5,
-                      borderRadius: BorderRadius.circular(6),
-                      color: emiMdrColor,
-                    ),
-                    BarChartRodData(
-                      toY: e.upiSuccess!,
-                      width: 5,
-                      borderRadius: BorderRadius.circular(6),
-                      color: upiColor,
-                    ),
-                  ],
-                );
-              }),
+              bottomTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  getTitlesWidget: (value, meta) {
+                    final index = value.toInt();
+                    if (index >= provider.chartData.length) {
+                      return const SizedBox();
+                    }
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Text(
+                        provider.chartData[index].label,
+                        style: const TextStyle(fontSize: 11),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              topTitles: const AxisTitles(
+                sideTitles: SideTitles(showTitles: false),
+              ),
+              rightTitles:
+                  const AxisTitles(sideTitles: SideTitles(showTitles: false)),
             ),
+
+            /// TOOLTIP
+            // barTouchData: BarTouchData(
+            //   touchTooltipData: BarTouchTooltipData(
+            //     // tooltipBgColor: Colors.black87,
+            //     getTooltipItem: (group, groupIndex, rod, rodIndex) {
+            //       final data = provider.chartData[group.x.toInt()];
+            //       final isSuccess = rodIndex == 0;
+
+            //       return BarTooltipItem(
+            //         isSuccess
+            //             ? "POS: ${data.posSuccess}"
+            //             : "UPI: ${data.upiSuccess}",
+            //         const TextStyle(color: Colors.white),
+            //       );
+            //     },
+            //   ),
+            // ),
+
+            /// BARS
+            barGroups: List.generate(provider.chartData.length, (i) {
+              final e = provider.chartData[i];
+
+              return BarChartGroupData(
+                x: i,
+                barsSpace: 10,
+                barRods: [
+                  BarChartRodData(
+                      toY: e.posSuccess,
+                      width: 10,
+                      // borderRadius: BorderRadius.circular(6),
+                      color: posColor,
+                      label: BarChartRodLabel(
+                          show: e.posSuccess > 0,
+                          text: e.posSuccess.toString(),
+                          style: TextStyle(fontSize: 8, color: posColor))),
+                  BarChartRodData(
+                      toY: e.emiMdrAmount,
+                      width: 10,
+                      // borderRadius: BorderRadius.circular(6),
+                      color: emiMdrColor,
+                      label: BarChartRodLabel(
+                          show: e.emiMdrAmount > 0,
+                          text: e.emiMdrAmount.toString(),
+                          style: TextStyle(fontSize: 8, color: emiMdrColor))),
+                  BarChartRodData(
+                      toY: e.upiSuccess,
+                      width: 10,
+                      // borderRadius: BorderRadius.circular(6),
+                      color: upiColor,
+                      label: BarChartRodLabel(
+                          show: e.upiSuccess > 0,
+                          text: e.upiSuccess.toString(),
+                          style: TextStyle(fontSize: 8, color: upiColor))),
+                ],
+              );
+            }),
           ),
         ),
       ),
+      // ),
     );
   }
 
@@ -251,7 +262,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           const SizedBox(width: 8),
           Text(
             text,
-            style: TextStyle(color: color, fontSize: 16),
+            style: TextStyle(color: color, fontSize: 12),
           ),
         ],
       );
@@ -266,11 +277,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              legendItem("POS", posColor),
+              legendItem("POS Transactions - Sum of Total Amount Payable to Merchant", posColor),      
               const SizedBox(height: 6),
-              legendItem("Emi MDR", emiMdrColor),
+              legendItem("Sum of Emi MDR", emiMdrColor),
               const SizedBox(height: 6),
-              legendItem("UPI", upiColor),
+              legendItem("UPI Transactions - Sum of Total Amount Payable to Merchant", upiColor),
             ],
           ),
         ],
@@ -380,7 +391,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   BoxDecoration _card() {
     return BoxDecoration(
       color: Colors.white,
-      borderRadius: BorderRadius.circular(22),
+      borderRadius: BorderRadius.circular(5),
       boxShadow: [
         BoxShadow(
           color: Colors.black.withOpacity(0.05),
