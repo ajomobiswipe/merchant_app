@@ -337,7 +337,7 @@ class TransactionHistory {
   int? count;
   SendMailResponse? sendMailResponse;
   Map<String, dynamic>? monthlyValues;
-  Map<String, dynamic>? monthlyEmiMdrAmount;
+  Map<String, dynamic>? sumEmiMdrValues;
 
   TransactionHistory(
       {this.responsePage,
@@ -345,7 +345,7 @@ class TransactionHistory {
       this.count,
       this.sendMailResponse,
       this.monthlyValues,
-      this.monthlyEmiMdrAmount});
+      this.sumEmiMdrValues});
 
   factory TransactionHistory.fromJson(Map<String, dynamic> json) =>
       TransactionHistory(
@@ -364,9 +364,9 @@ class TransactionHistory {
             : Map<String, dynamic>.from(
                 json["monthlyValues"],
               ),
-        monthlyEmiMdrAmount: json["monthlyEmiMdrAmount"] == null
+        sumEmiMdrValues: json["sumEmiMdrValues"] == null
             ? null
-            : Map<String, dynamic>.from(json["monthlyEmiMdrAmount"]),
+            : Map<String, dynamic>.from(json["sumEmiMdrValues"]),
       );
 
   Map<String, dynamic> toJson() => {
