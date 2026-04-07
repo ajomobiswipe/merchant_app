@@ -3,6 +3,7 @@ import 'package:anet_merchant_app/presentation/pages/merchant_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:shimmer/shimmer.dart';
 import '../providers/transaction_provider.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -29,6 +30,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print("DashboardScreen build called");
     final provider = context.watch<TransactionProvider>();
 
     return MerchantScaffold(
@@ -76,7 +78,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
               const SizedBox(height: 20),
 
-              _chartCard(provider),
+              provider.isLoadingData ? _loadingShimmer() : _chartCard(provider),
 
               const SizedBox(height: 20),
 
@@ -247,6 +249,66 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
+  Widget _loadingShimmer() {
+    return Container(
+      height: 300,
+      decoration: _card(),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            height: 200,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: 8,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Shimmer.fromColors(
+                        baseColor: Colors.grey[300]!,
+                        highlightColor: Colors.grey[100]!,
+                        child: Container(
+                          width: 20,
+                          height: (index + 1) * 20.0 + 20,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[300],
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Shimmer.fromColors(
+                        baseColor: Colors.grey[300]!,
+                        highlightColor: Colors.grey[100]!,
+                        child: Container(
+                          width: 30,
+                          height: 10,
+                          color: Colors.grey[300],
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 10),
+          Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Text(
+              "Loading...",
+              style: TextStyle(color: Colors.grey[800], fontSize: 14),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _summaryCard() {
     Widget legendItem(String text, Color color, {EdgeInsetsGeometry? padding}) {
       return Padding(
@@ -323,68 +385,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _schemeFilter(TransactionProvider provider) {
-    final schemes = ["All", "Visa", "Mastercard", "UPI"];
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: schemes.map((scheme) {
-        final selected = provider.selectedScheme == scheme;
-        return Expanded(
-          child: GestureDetector(
-            onTap: () => provider.changeScheme(scheme),
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 4),
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              decoration: BoxDecoration(
-                color: selected ? Colors.white : Colors.transparent,
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: Center(
-                child: Text(
-                  scheme,
-                  style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      color: selected ? Colors.black : Colors.grey),
-                ),
-              ),
-            ),
-          ),
-        );
-      }).toList(),
-    );
-  }
-
-  Widget _schemeCards(TransactionProvider provider) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: provider.filteredSchemes.map((scheme) {
-          return Container(
-            margin: const EdgeInsets.only(bottom: 12),
-            padding: const EdgeInsets.all(16),
-            decoration: _card(),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(scheme.name,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 16)),
-                const SizedBox(height: 8),
-                Text("${scheme.totalTxns} txns"),
-                const SizedBox(height: 6),
-                Text("Success ₹${scheme.successAmount}",
-                    style: const TextStyle(color: Colors.green)),
-                Text("Failed ₹${scheme.failedAmount}",
-                    style: const TextStyle(color: Colors.red)),
-              ],
-            ),
-          );
-        }).toList(),
       ),
     );
   }
