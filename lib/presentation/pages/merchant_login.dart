@@ -75,6 +75,7 @@ class _MerchantLoginState extends State<MerchantLogin> {
   @override
   Widget build(BuildContext context) {
     screenWidth = MediaQuery.of(context).size.width;
+
     screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
@@ -82,253 +83,259 @@ class _MerchantLoginState extends State<MerchantLogin> {
         selector: (_, provider) => provider.isLoading,
         builder: (context, isLoading, child) {
           if (isLoading) return const LoadingWidget();
-          return SizedBox(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.only(
-                top: MediaQuery.of(context).padding.top,
-                bottom: MediaQuery.of(context).padding.bottom,
-                left: MediaQuery.of(context).size.width * .05,
-                right: MediaQuery.of(context).size.width * .05,
-              ),
-              child: Center(
-                child: Consumer<AuthProvider>(
-                  builder: (context, authProvider, snapshot) {
-                    return Form(
-                      key: _formKey,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          if (authProvider.isOtpSent)
-                            GestureDetector(
-                              child: const Icon(
-                                Icons.arrow_back,
-                                color: Colors.black,
+
+          return LayoutBuilder(builder: (context, constraints) {
+            final isWeb = constraints.maxWidth > 600;
+            return SizedBox(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.symmetric(
+                  vertical: MediaQuery.of(context).padding.top,
+                  horizontal:
+                      isWeb ? constraints.maxWidth * 0.25 : screenWidth * 0.05,
+                ),
+                child: Center(
+                  child: Consumer<AuthProvider>(
+                    builder: (context, authProvider, snapshot) {
+                      return Form(
+                        key: _formKey,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            if (authProvider.isOtpSent)
+                              GestureDetector(
+                                child: const Icon(
+                                  Icons.arrow_back,
+                                  color: Colors.black,
+                                ),
+                                onTap: () {
+                                  if (authProvider.isOtpSent) {
+                                    authProvider.clearOtp();
+                                  }
+                                },
                               ),
-                              onTap: () {
-                                if (authProvider.isOtpSent) {
-                                  authProvider.clearOtp();
+                            gapWidget(screenHeight * .05),
+                            Center(
+                              child: Image.asset(
+                                "assets/screen/anet.png",
+                                width: isWeb
+                                    ? screenWidth * 0.2
+                                    : screenWidth * 0.5,
+                              ),
+                            ),
+                            const Center(
+                              child: CustomTextWidget(
+                                text: 'Before Continue, please sign in first',
+                                size: 12,
+                                color: AppColors.black50,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            gapWidget(screenHeight * .02),
+                            const Center(
+                              child: CustomTextWidget(
+                                text: 'Merchant Sign In',
+                                size: 18,
+                                color: AppColors.kPrimaryColor,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            gapWidget(screenHeight * .01),
+                            Selector<AuthProvider, bool>(
+                              selector: (_, provider) => provider.isOtpSent,
+                              builder: (context, isOtpSent, child) {
+                                if (!isOtpSent) {
+                                  return buildTextField(
+                                    controller:
+                                        authProvider.merchantIdController,
+                                    hintText: 'Username/Email/Terminal ID',
+                                    labelText: "Username/Email/Terminal ID",
+                                    onSaved: (value) {
+                                      authProvider.req.merchantId = value;
+                                    },
+                                    context: context,
+                                    obscureText: false,
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.allow(
+                                          RegExp(r'[0-9a-zA-Z.@&# ,\-]'))
+                                    ],
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Please enter Username!';
+                                      }
+                                      return null;
+                                    },
+                                  );
+                                } else {
+                                  return const SizedBox.shrink();
                                 }
                               },
                             ),
-                          gapWidget(screenHeight * .05),
-                          Center(
-                            child: Image.asset(
-                              "assets/screen/anet.png",
-                              width: screenWidth * 0.5,
-                            ),
-                          ),
-                          const Center(
-                            child: CustomTextWidget(
-                              text: 'Before Continue, please sign in first',
-                              size: 12,
-                              color: AppColors.black50,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          gapWidget(screenHeight * .02),
-                          const Center(
-                            child: CustomTextWidget(
-                              text: 'Merchant Sign In',
-                              size: 18,
-                              color: AppColors.kPrimaryColor,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          gapWidget(screenHeight * .01),
-                          Selector<AuthProvider, bool>(
-                            selector: (_, provider) => provider.isOtpSent,
-                            builder: (context, isOtpSent, child) {
-                              if (!isOtpSent) {
-                                return buildTextField(
-                                  controller: authProvider.merchantIdController,
-                                  hintText: 'Username/Email/Terminal ID',
-                                  labelText: "Username/Email/Terminal ID",
-                                  onSaved: (value) {
-                                    authProvider.req.merchantId = value;
-                                  },
-                                  context: context,
-                                  obscureText: false,
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.allow(
-                                        RegExp(r'[0-9a-zA-Z.@&# ,\-]'))
-                                  ],
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter Username!';
-                                    }
-                                    return null;
-                                  },
-                                );
-                              } else {
-                                return const SizedBox.shrink();
-                              }
-                            },
-                          ),
-                          gapWidget(screenHeight * .01),
-                          Selector<AuthProvider, bool>(
-                            selector: (_, provider) => provider.isOtpSent,
-                            builder: (context, isOtpSent, child) {
-                              if (isOtpSent) {
-                                return OtpField();
-                              } else {
-                                return PasswordField(
-                                  authProvider: authProvider,
-                                  hintText: "Password",
-                                );
-                              }
-                            },
-                          ),
-                          gapWidget(screenHeight * .01),
-                          Selector<AuthProvider, bool>(
-                            selector: (_, provider) => provider.isOtpSent,
-                            builder: (context, isOtpSent, child) {
-                              if (!isOtpSent) {
-                                return Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Checkbox(
-                                      value: authProvider.isRemember,
-                                      onChanged: (value) {
-                                        if (value != null) {
-                                          authProvider.setRememberMe(value);
-                                        }
-                                      },
-                                    ),
-                                    const CustomTextWidget(
-                                      text: "Remember me",
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    const Spacer(),
-                                  ],
-                                );
-                              } else {
-                                return gapWidget(screenHeight * .04);
-                              }
-                            },
-                          ),
-                          gapWidget(screenHeight * .01),
-                          CustomAppButton(
-                            title:
-                                authProvider.isOtpSent ? "Verify" : 'Sign In',
-                            onPressed: () {
-                              authProvider.onPresSendButton(_formKey);
-                            },
-                          ),
-                          Selector<AuthProvider, bool>(
-                            selector: (_, provider) => provider.isOtpSent,
-                            builder: (context, isOtpSent, child) {
-                              if (!isOtpSent) {
-                                return Center(child: forgotPassword());
-                              } else {
-                                return gapWidget(screenHeight * .01);
-                              }
-                            },
-                          ),
-                          gapWidget(screenHeight * .01),
-                          const Center(
-                            child: CustomTextWidget(
-                              text: '--- Or ---',
-                              size: 18,
-                            ),
-                          ),
-                          gapWidget(screenHeight * .01),
-                          const Center(
-                            child: CustomTextWidget(
-                              text: 'Connect With Us',
-                              size: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          gapWidget(screenHeight * .02),
-                          Row(
-                            children: [
-                              const Expanded(
-                                flex: 4,
-                                child: SizedBox(),
-                              ),
-                              connectWithOptions(
-                                icon: const Icon(
-                                  Icons.phone,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              const Spacer(),
-                              InkWell(
-                                onTap: () async {
-                                  final Uri phoneUri =
-                                      Uri(scheme: 'tel', path: '911203129301');
-                                  if (await canLaunchUrl(phoneUri)) {
-                                    await launchUrl(phoneUri);
-                                  }
-                                },
-                                child: CustomTextWidget(
-                                    text: "+911203129301",
-                                    size: 18,
-                                    color: AppColors.black50,
-                                    fontWeight: FontWeight.w400),
-                              ),
-                              const Expanded(
-                                flex: 4,
-                                child: SizedBox(),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              const Expanded(
-                                flex: 4,
-                                child: SizedBox(),
-                              ),
-                              connectWithOptions(
-                                icon: const Icon(
-                                  Icons.email_outlined,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              const Spacer(),
-                              InkWell(
-                                onTap: () async {
-                                  final mail = Constants.supportEmail;
-                                  final Uri emailUri = Uri(
-                                    scheme: 'mailto',
-                                    path: mail,
-                                    query: 'subject=Support Request',
+                            gapWidget(screenHeight * .01),
+                            Selector<AuthProvider, bool>(
+                              selector: (_, provider) => provider.isOtpSent,
+                              builder: (context, isOtpSent, child) {
+                                if (isOtpSent) {
+                                  return OtpField();
+                                } else {
+                                  return PasswordField(
+                                    authProvider: authProvider,
+                                    hintText: "Password",
                                   );
-                                  if (await canLaunchUrl(emailUri)) {
-                                    try {
-                                      await launchUrl(emailUri);
-                                    } catch (error) {
+                                }
+                              },
+                            ),
+                            gapWidget(screenHeight * .01),
+                            Selector<AuthProvider, bool>(
+                              selector: (_, provider) => provider.isOtpSent,
+                              builder: (context, isOtpSent, child) {
+                                if (!isOtpSent) {
+                                  return Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Checkbox(
+                                        value: authProvider.isRemember,
+                                        onChanged: (value) {
+                                          if (value != null) {
+                                            authProvider.setRememberMe(value);
+                                          }
+                                        },
+                                      ),
+                                      const CustomTextWidget(
+                                        text: "Remember me",
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      const Spacer(),
+                                    ],
+                                  );
+                                } else {
+                                  return gapWidget(screenHeight * .04);
+                                }
+                              },
+                            ),
+                            gapWidget(screenHeight * .01),
+                            CustomAppButton(
+                              title:
+                                  authProvider.isOtpSent ? "Verify" : 'Sign In',
+                              onPressed: () {
+                                authProvider.onPresSendButton(_formKey);
+                              },
+                            ),
+                            Selector<AuthProvider, bool>(
+                              selector: (_, provider) => provider.isOtpSent,
+                              builder: (context, isOtpSent, child) {
+                                if (!isOtpSent) {
+                                  return Center(child: forgotPassword());
+                                } else {
+                                  return gapWidget(screenHeight * .01);
+                                }
+                              },
+                            ),
+                            gapWidget(screenHeight * .01),
+                            const Center(
+                              child: CustomTextWidget(
+                                text: '--- Or ---',
+                                size: 18,
+                              ),
+                            ),
+                            gapWidget(screenHeight * .01),
+                            const Center(
+                              child: CustomTextWidget(
+                                text: 'Connect With Us',
+                                size: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            gapWidget(screenHeight * .02),
+                            Row(
+                              children: [
+                                const Expanded(
+                                  flex: 4,
+                                  child: SizedBox(),
+                                ),
+                                connectWithOptions(
+                                  icon: const Icon(
+                                    Icons.phone,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                const Spacer(),
+                                InkWell(
+                                  onTap: () async {
+                                    final Uri phoneUri = Uri(
+                                        scheme: 'tel', path: '911203129301');
+                                    if (await canLaunchUrl(phoneUri)) {
+                                      await launchUrl(phoneUri);
+                                    }
+                                  },
+                                  child: CustomTextWidget(
+                                      text: "+911203129301",
+                                      size: 18,
+                                      color: AppColors.black50,
+                                      fontWeight: FontWeight.w400),
+                                ),
+                                const Expanded(
+                                  flex: 4,
+                                  child: SizedBox(),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                const Expanded(
+                                  flex: 4,
+                                  child: SizedBox(),
+                                ),
+                                connectWithOptions(
+                                  icon: const Icon(
+                                    Icons.email_outlined,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                const Spacer(),
+                                InkWell(
+                                  onTap: () async {
+                                    final mail = Constants.supportEmail;
+                                    final Uri emailUri = Uri(
+                                      scheme: 'mailto',
+                                      path: mail,
+                                      query: 'subject=Support Request',
+                                    );
+                                    if (await canLaunchUrl(emailUri)) {
+                                      try {
+                                        await launchUrl(emailUri);
+                                      } catch (error) {
+                                        _copyToClipboard(mail);
+                                      }
+                                    } else {
                                       _copyToClipboard(mail);
                                     }
-                                  } else {
-                                    _copyToClipboard(mail);
-                                  }
-                                },
-                                child: CustomTextWidget(
-                                    text: Constants.supportEmail,
-                                    size: 12,
-                                    color: AppColors.black50,
-                                    fontWeight: FontWeight.w400),
-                              ),
-                              const Expanded(
-                                flex: 4,
-                                child: SizedBox(),
-                              ),
-                            ],
-                          ),
+                                  },
+                                  child: CustomTextWidget(
+                                      text: Constants.supportEmail,
+                                      size: 12,
+                                      color: AppColors.black50,
+                                      fontWeight: FontWeight.w400),
+                                ),
+                                const Expanded(
+                                  flex: 4,
+                                  child: SizedBox(),
+                                ),
+                              ],
+                            ),
 
-                          // copyRightWidget(packageInfoVersion: _packageInfo.version),
-                          gapWidget(screenHeight * .02),
-                        ],
-                      ),
-                    );
-                  },
+                            // copyRightWidget(packageInfoVersion: _packageInfo.version),
+                            gapWidget(screenHeight * .02),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
-            ),
-          );
+            );
+          });
         },
       ),
     );

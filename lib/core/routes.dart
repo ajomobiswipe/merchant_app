@@ -21,58 +21,107 @@ import 'package:anet_merchant_app/presentation/pages/view_settlement_info.dart';
 import 'package:anet_merchant_app/presentation/pages/vpa_transactions_screen.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 // Custom route Class
 class CustomRoute {
   static Route<dynamic> allRoutes(RouteSettings settings) {
     //var args = settings.arguments;
+    if (kIsWeb) {
+      return MaterialPageRoute(builder: (context) {
+        // final isOnline = Provider.of<ConnectivityProvider>(context).isOnline;
+        // if (!isOnline) {
+        //   return const NoInternetPage();
+        // }
+        switch (settings.name) {
+          case "splash":
+            return const SplashScreen();
 
-    return CupertinoPageRoute(builder: (context) {
-      // final isOnline = Provider.of<ConnectivityProvider>(context).isOnline;
-      // if (!isOnline) {
-      //   return const NoInternetPage();
-      // }
-      switch (settings.name) {
-        case "splash":
-          return const SplashScreen();
+          // Merchant Routes
+          case "merchantLogin":
+            return const MerchantLogin();
+          case "login":
+            return const MerchantLogin();
+          case "merchantHomeScreen":
+            return const MerchantHomeScreen();
+          case "merchantHelpScreen":
+            return const MerchantHelpScreen();
+          case "merchantTransactionFilterScreen":
+            return MerchantTransactionFilterScreen();
+          case "merchantStatementFilterScreen":
+            return MerchantStatementFilterScreen();
+          case "viewAllTransaction":
+            return ViewAllTransactionScreen();
+          case "settlementDashboard":
+            return SettlementDashboard();
+          case "viewSettlementInfo":
+            return ViewSettlementInfo();
+          case "vpaTransactionsScreen":
+            return VpaTransactionsScreen();
+          case "forgotPassword":
+            return ForgotPassword();
+          case "dashboardScreen":
+            return const DashboardScreen();
+          case "resetPassword":
+            String userName = settings.arguments as String;
+            return ResetPassword(
+              userName: userName,
+            );
+        }
+        return const Scaffold(
+          body: Center(
+              child: CustomTextWidget(
+                  text: "404 Page not found", color: Colors.red, size: 22)),
+        );
+      });
+    } else {
+      return CupertinoPageRoute(builder: (context) {
+        // final isOnline = Provider.of<ConnectivityProvider>(context).isOnline;
+        // if (!isOnline) {
+        //   return const NoInternetPage();
+        // }
+        switch (settings.name) {
+          case "splash":
+            return const SplashScreen();
 
-        // Merchant Routes
-        case "merchantLogin":
-          return const MerchantLogin();
-        case "login":
-          return const MerchantLogin();
-        case "merchantHomeScreen":
-          return const MerchantHomeScreen();
-        case "merchantHelpScreen":
-          return const MerchantHelpScreen();
-        case "merchantTransactionFilterScreen":
-          return MerchantTransactionFilterScreen();
-        case "merchantStatementFilterScreen":
-          return MerchantStatementFilterScreen();
-        case "viewAllTransaction":
-          return ViewAllTransactionScreen();
-        case "settlementDashboard":
-          return SettlementDashboard();
-        case "viewSettlementInfo":
-          return ViewSettlementInfo();
-        case "vpaTransactionsScreen":
-          return VpaTransactionsScreen();
-        case "forgotPassword":
-          return ForgotPassword();
-        case "dashboardScreen":
-          return const DashboardScreen();
-        case "resetPassword":
-          String userName = settings.arguments as String;
-          return ResetPassword(
-            userName: userName,
-          );
-      }
-      return const Scaffold(
-        body: Center(
-            child: CustomTextWidget(
-                text: "404 Page not found", color: Colors.red, size: 22)),
-      );
-    });
+          // Merchant Routes
+          case "merchantLogin":
+            return const MerchantLogin();
+          case "login":
+            return const MerchantLogin();
+          case "merchantHomeScreen":
+            return const MerchantHomeScreen();
+          case "merchantHelpScreen":
+            return const MerchantHelpScreen();
+          case "merchantTransactionFilterScreen":
+            return MerchantTransactionFilterScreen();
+          case "merchantStatementFilterScreen":
+            return MerchantStatementFilterScreen();
+          case "viewAllTransaction":
+            return ViewAllTransactionScreen();
+          case "settlementDashboard":
+            return SettlementDashboard();
+          case "viewSettlementInfo":
+            return ViewSettlementInfo();
+          case "vpaTransactionsScreen":
+            return VpaTransactionsScreen();
+          case "forgotPassword":
+            return ForgotPassword();
+          case "dashboardScreen":
+            return const DashboardScreen();
+          case "resetPassword":
+            String userName = settings.arguments as String;
+            return ResetPassword(
+              userName: userName,
+            );
+        }
+        return const Scaffold(
+          body: Center(
+              child: CustomTextWidget(
+                  text: "404 Page not found", color: Colors.red, size: 22)),
+        );
+      });
+    }
   }
 }

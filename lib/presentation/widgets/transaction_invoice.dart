@@ -1,4 +1,5 @@
 import 'package:anet_merchant_app/presentation/providers/authProvider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:anet_merchant_app/core/utils/helpers/default_height.dart';
 import 'package:anet_merchant_app/data/models/transaction_model.dart';
@@ -7,6 +8,7 @@ import 'package:anet_merchant_app/presentation/widgets/custom_container.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
 import 'dart:io';
 import 'package:flutter/services.dart';
+import 'dart:html' as html;
 import 'package:pdf/widgets.dart' as pw;
 import 'package:path_provider/path_provider.dart';
 import 'package:open_file/open_file.dart';
@@ -585,11 +587,22 @@ class ShowTransactionInvoice extends StatelessWidget {
         },
       ),
     );
+    final pdfBytes = await pdf.save();
+    if (kIsWeb) {
+      // 🌐 WEB: open in browser
 
-    final dir = await getApplicationDocumentsDirectory();
-    final file = File('${dir.path}/invoice.pdf');
-    await file.writeAsBytes(await pdf.save());
-    OpenFile.open(file.path);
+      final blob = html.Blob([pdfBytes], 'application/pdf');
+      final url = html.Url.createObjectUrlFromBlob(blob);
+      html.window.open(url, "_blank");
+    } else {
+      // 📱 MOBILE
+      final dir = await getApplicationDocumentsDirectory();
+      final file = File('${dir.path}/invoice.pdf');
+
+      await file.writeAsBytes(pdfBytes);
+
+      await OpenFile.open(file.path);
+    }
   }
 
   pw.Widget rowText(String label, String value) {

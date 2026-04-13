@@ -618,7 +618,7 @@ class _SettlementsList extends StatelessWidget {
                 ],
               ),
             ),
-            defaultHeight(screenWidth * 0.05),
+            const Spacer(), // defaultHeight(screenWidth * 0.05),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -634,7 +634,7 @@ class _SettlementsList extends StatelessWidget {
                 ),
               ],
             ),
-            defaultHeight(screenWidth * 0.2),
+            const Spacer(), // defaultHeight(screenWidth * 0.2),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -666,7 +666,7 @@ class _SettlementsList extends StatelessWidget {
                 ),
               ],
             ),
-            defaultHeight(screenWidth * 0.1),
+            const Spacer(),
           ],
         );
       },
