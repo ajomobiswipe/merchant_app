@@ -27,101 +27,52 @@ import 'package:flutter/material.dart';
 // Custom route Class
 class CustomRoute {
   static Route<dynamic> allRoutes(RouteSettings settings) {
-    //var args = settings.arguments;
-    if (kIsWeb) {
-      return MaterialPageRoute(builder: (context) {
-        // final isOnline = Provider.of<ConnectivityProvider>(context).isOnline;
-        // if (!isOnline) {
-        //   return const NoInternetPage();
-        // }
-        switch (settings.name) {
-          case "splash":
-            return const SplashScreen();
+    final Widget page = _getPage(settings);
+    return kIsWeb
+        ? MaterialPageRoute(builder: (context) => page)
+        : CupertinoPageRoute(builder: (context) => page);
+  }
 
-          // Merchant Routes
-          case "merchantLogin":
-            return const MerchantLogin();
-          case "login":
-            return const MerchantLogin();
-          case "merchantHomeScreen":
-            return const MerchantHomeScreen();
-          case "merchantHelpScreen":
-            return const MerchantHelpScreen();
-          case "merchantTransactionFilterScreen":
-            return MerchantTransactionFilterScreen();
-          case "merchantStatementFilterScreen":
-            return MerchantStatementFilterScreen();
-          case "viewAllTransaction":
-            return ViewAllTransactionScreen();
-          case "settlementDashboard":
-            return SettlementDashboard();
-          case "viewSettlementInfo":
-            return ViewSettlementInfo();
-          case "vpaTransactionsScreen":
-            return VpaTransactionsScreen();
-          case "forgotPassword":
-            return ForgotPassword();
-          case "dashboardScreen":
-            return const DashboardScreen();
-          case "resetPassword":
-            String userName = settings.arguments as String;
-            return ResetPassword(
-              userName: userName,
-            );
-        }
+  static Widget _getPage(RouteSettings settings) {
+    switch (settings.name) {
+      case "splash":
+        return const SplashScreen();
+      case "merchantLogin":
+      case "login":
+        return const MerchantLogin();
+      case "merchantHomeScreen":
+        return const MerchantHomeScreen();
+      case "merchantHelpScreen":
+        return const MerchantHelpScreen();
+      case "merchantTransactionFilterScreen":
+        return MerchantTransactionFilterScreen();
+      case "merchantStatementFilterScreen":
+        return MerchantStatementFilterScreen();
+      case "viewAllTransaction":
+        return ViewAllTransactionScreen();
+      case "settlementDashboard":
+        return SettlementDashboard();
+      case "viewSettlementInfo":
+        return ViewSettlementInfo();
+      case "vpaTransactionsScreen":
+        return VpaTransactionsScreen();
+      case "forgotPassword":
+        return ForgotPassword();
+      case "dashboardScreen":
+        return const DashboardScreen();
+      case "resetPassword":
+        final String userName = settings.arguments as String;
+        return ResetPassword(userName: userName);
+      default:
         return const Scaffold(
           body: Center(
-              child: CustomTextWidget(
-                  text: "404 Page not found", color: Colors.red, size: 22)),
+            child: CustomTextWidget(
+              text: "404 Page not found",
+              color: Colors.red,
+              size: 22,
+            ),
+          ),
         );
-      });
-    } else {
-      return CupertinoPageRoute(builder: (context) {
-        // final isOnline = Provider.of<ConnectivityProvider>(context).isOnline;
-        // if (!isOnline) {
-        //   return const NoInternetPage();
-        // }
-        switch (settings.name) {
-          case "splash":
-            return const SplashScreen();
-
-          // Merchant Routes
-          case "merchantLogin":
-            return const MerchantLogin();
-          case "login":
-            return const MerchantLogin();
-          case "merchantHomeScreen":
-            return const MerchantHomeScreen();
-          case "merchantHelpScreen":
-            return const MerchantHelpScreen();
-          case "merchantTransactionFilterScreen":
-            return MerchantTransactionFilterScreen();
-          case "merchantStatementFilterScreen":
-            return MerchantStatementFilterScreen();
-          case "viewAllTransaction":
-            return ViewAllTransactionScreen();
-          case "settlementDashboard":
-            return SettlementDashboard();
-          case "viewSettlementInfo":
-            return ViewSettlementInfo();
-          case "vpaTransactionsScreen":
-            return VpaTransactionsScreen();
-          case "forgotPassword":
-            return ForgotPassword();
-          case "dashboardScreen":
-            return const DashboardScreen();
-          case "resetPassword":
-            String userName = settings.arguments as String;
-            return ResetPassword(
-              userName: userName,
-            );
-        }
-        return const Scaffold(
-          body: Center(
-              child: CustomTextWidget(
-                  text: "404 Page not found", color: Colors.red, size: 22)),
-        );
-      });
     }
   }
 }
