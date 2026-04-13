@@ -26,7 +26,9 @@ class DioClient {
         HttpHeaders.contentTypeHeader: 'application/json',
       },
     ));
-    _initSSL();
+    if (!kIsWeb) {
+      _initSSL();
+    }
     _addAuthInterceptor();
   }
 
@@ -129,14 +131,14 @@ class DioClient {
       receiveTimeout: const Duration(seconds: 30),
       headers: {'Content-Type': 'application/json'},
     ));
-
+if (!kIsWeb) {
     dio.httpClientAdapter = IOHttpClientAdapter(
       createHttpClient: () {
         return HttpClient(context: _context!)
           ..badCertificateCallback = (cert, host, port) => true;
       },
     );
-
+}
     final response = await dio.get(url);
     if (kDebugMode) {
       print('Response: ${response.data}');
@@ -145,7 +147,7 @@ class DioClient {
     return response;
   }
 
-  Future<Response> postWithoutToken(String url, dynamic data) async {
+  Future<Response?> postWithoutToken(String url, dynamic data) async {
     if (kDebugMode) {
       print("Post without Token");
       print('Request URL: $url');
@@ -158,18 +160,28 @@ class DioClient {
       headers: {'Content-Type': 'application/json'},
     ));
 
-    dio.httpClientAdapter = IOHttpClientAdapter(
-      createHttpClient: () {
-        return HttpClient(context: _context!)
-          ..badCertificateCallback = (cert, host, port) => true;
-      },
-    );
-
-    final response = await dio.post(url, data: data);
-    if (kDebugMode) {
-      print('Response: ${response.data}');
-      print('Status code: ${response.statusCode}');
+    if (!kIsWeb) {
+      dio.httpClientAdapter = IOHttpClientAdapter(
+        createHttpClient: () {
+          return HttpClient(context: _context!)
+            ..badCertificateCallback = (cert, host, port) => true;
+        },
+      );
     }
-    return response;
+
+    try {
+      final response = await dio.post(url, data: data);
+      if (kDebugMode) {
+        print('Response: ${response.data}');
+        print('Status code: ${response.statusCode}');
+      }
+      return response;
+    } on DioException catch (e) {
+      print("ERROR TYPE: ${e.type}");
+      print("MESSAGE: ${e.message}");
+      print("RESPONSE: ${e.response?.data}");
+    }
+
+    return null;
   }
 }
