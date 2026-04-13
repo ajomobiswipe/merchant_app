@@ -17,6 +17,11 @@ class StorageServices {
     final isTerminalMerchant = role == "TERMINAL USER";
     final isMerchant = role == "MERCHANT" || role == "MERCHANT USER";
 
+    final isDashboardVisible=decodeData['dashboardEnabled'] == "true";
+
+    print('Is Dashboard Visible: $isDashboardVisible');
+
+
     // Secure (Hive) Storage
     secureStorage.saveUserDetails(decodeData, userName: userName);
     secureStorage.save('lastLogin', dateStr);
@@ -38,7 +43,10 @@ class StorageServices {
     pref.setString('acqMerchantId', decodeData['acqMerchantId'].toString());
     pref.setString('merchantIds', json.encode(decodeData['merchantIds']));
     pref.setString('merchantId', decodeData['merchantId'].toString());
-    if (isMerchant || isTerminalMerchant) {
+
+    pref.setBool('isDashboardVisible', isDashboardVisible);
+
+    if (isTerminalMerchant) {
       String terminalId = isMerchant
           ? decodeData['terminalId']?.toString() ?? ''
           : userName.toString();

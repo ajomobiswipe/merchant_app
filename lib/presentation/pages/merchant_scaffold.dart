@@ -254,18 +254,23 @@ class MerchantScaffold extends StatelessWidget {
               ),
             ),
             SizedBox(width: 48), // Space between the icons
-            InkWell(
-              onTap: onTapDashboard ??
-                  () {
-                    Navigator.pushNamed(context, "dashboardScreen");
-                  },
-              child: Column(
-                children: [
-                  Icon(Icons.bar_chart),
-                  CustomTextWidget(text: "Dashboard", size: 12),
-                ],
-              ),
-            ),
+
+            Consumer<AuthProvider>(builder: (context, provider, child) {
+              return provider.isDashboardVisible
+                  ? InkWell(
+                      onTap: onTapDashboard ??
+                          () {
+                            Navigator.pushNamed(context, "dashboardScreen");
+                          },
+                      child: Column(
+                        children: [
+                          Icon(Icons.bar_chart),
+                          CustomTextWidget(text: "Dashboard", size: 12),
+                        ],
+                      ),
+                    )
+                  : Container();
+            })
           ],
         ),
       ),

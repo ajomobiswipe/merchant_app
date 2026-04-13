@@ -60,6 +60,11 @@ class AuthProvider with ChangeNotifier {
   bool get isResetOtpSent => _isResetOtpSent;
   bool _isResetOtpSent = false;
 
+
+
+   bool get isDashboardVisible => _isDashboardVisible;
+   bool _isDashboardVisible = false;
+
   bool get showCurrentPassword => _showCurrentPassword;
   bool _showCurrentPassword = false;
 
@@ -499,6 +504,12 @@ class AuthProvider with ChangeNotifier {
   void setMerchantIds(List<dynamic> merchantIdList) {
     _merchantIds = merchantIdList;
     // _selectedMerchant=merchantIdList[0];
+    notifyListeners();
+  }
+
+  Future<void> getIsDashboardVisible() async {
+    final pref = await SharedPreferences.getInstance();
+    _isDashboardVisible = pref.getBool('isDashboardVisible') ?? false;
     notifyListeners();
   }
 

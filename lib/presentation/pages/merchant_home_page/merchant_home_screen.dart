@@ -24,12 +24,15 @@ class MerchantHomeScreen extends StatefulWidget {
 }
 
 class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
+
   late HomeScreenProvider _transactionProvider;
+  bool isDashboardVisible=false;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<AuthProvider>(context, listen: false).getIsDashboardVisible();
       Provider.of<AuthProvider>(context, listen: false).setMerchantIds([]);
       _transactionProvider =
           Provider.of<HomeScreenProvider>(context, listen: false);
@@ -49,6 +52,8 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
 
     InAppUpdateService().checkForUpdate();
   }
+
+
 
 //
   Future<void> _setStoreName() async {
