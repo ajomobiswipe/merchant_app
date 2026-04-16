@@ -184,38 +184,36 @@ class TransactionProvider extends ChangeNotifier {
         DateFormat('dd-MM-yyyy').format(startDate),
         DateFormat('dd-MM-yyyy').format(endDate));
 
-    if (monthlyPosValues == null || monthlyPosValues['monthlyValues'] == null) {
-      return;
+    if (monthlyPosValues != null) {
+      if (monthlyPosValues['monthlyValues'] != null) {
+        monthlyPosValues['monthlyValues'].entries.forEach((entry) {
+          _chartData.add(HourlyTransaction(
+              label: entry.key,
+              posSuccess: double.parse(entry.value.toStringAsFixed(2)),
+              upiSuccess: 0));
+        });
+      }
+      if (monthlyPosValues['monthlyEmiMdrAmount'] != null) {
+        monthlyPosValues['monthlyEmiMdrAmount'].entries.forEach((entry) {
+          bool isExisting = _chartData.any((e) => e.label == entry.key);
+          if (isExisting) {
+            _chartData[_chartData.indexWhere((e) => e.label == entry.key)]
+                .emiMdrAmount = double.parse(entry.value.toStringAsFixed(2));
+          }
+        });
+      }
     }
 
-    monthlyPosValues['monthlyValues'].entries.forEach((entry) {
-      _chartData.add(HourlyTransaction(
-          label: entry.key,
-          posSuccess: double.parse(entry.value.toStringAsFixed(2)),
-          upiSuccess: 0));
-    });
-
-    if (monthlyPosValues['monthlyEmiMdrAmount'] != null) {
-      monthlyPosValues['monthlyEmiMdrAmount'].entries.forEach((entry) {
+    if (monthlyUpiValues != null) {
+      // monthlyUpiValues.entries.forEach((entry) {
+      for (var entry in monthlyUpiValues.entries) {
         bool isExisting = _chartData.any((e) => e.label == entry.key);
         if (isExisting) {
           _chartData[_chartData.indexWhere((e) => e.label == entry.key)]
-              .emiMdrAmount = double.parse(entry.value.toStringAsFixed(2));
+              .upiSuccess = double.parse(entry.value.toStringAsFixed(2));
         }
-      });
-    }
-
-    notifyListeners();
-
-    if (monthlyUpiValues == null) return;
-
-    monthlyUpiValues.entries.forEach((entry) {
-      bool isExisting = _chartData.any((e) => e.label == entry.key);
-      if (isExisting) {
-        _chartData[_chartData.indexWhere((e) => e.label == entry.key)]
-            .upiSuccess = double.parse(entry.value.toStringAsFixed(2));
       }
-    });
+    }
 
     notifyListeners();
   }
