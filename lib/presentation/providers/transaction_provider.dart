@@ -184,9 +184,9 @@ class TransactionProvider extends ChangeNotifier {
         DateFormat('dd-MM-yyyy').format(startDate),
         DateFormat('dd-MM-yyyy').format(endDate));
 
-    if (monthlyPosValues == null || monthlyPosValues['monthlyValues'] == null)
+    if (monthlyPosValues == null || monthlyPosValues['monthlyValues'] == null) {
       return;
-    if (monthlyUpiValues == null) return;
+    }
 
     monthlyPosValues['monthlyValues'].entries.forEach((entry) {
       _chartData.add(HourlyTransaction(
@@ -205,6 +205,10 @@ class TransactionProvider extends ChangeNotifier {
       });
     }
 
+    notifyListeners();
+
+    if (monthlyUpiValues == null) return;
+
     monthlyUpiValues.entries.forEach((entry) {
       bool isExisting = _chartData.any((e) => e.label == entry.key);
       if (isExisting) {
@@ -213,7 +217,6 @@ class TransactionProvider extends ChangeNotifier {
       }
     });
 
-    print(' Chart Data: $_chartData');
     notifyListeners();
   }
 

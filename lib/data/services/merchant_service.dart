@@ -86,8 +86,7 @@ class MerchantServices {
       String? merchantId}) async {
     String merchantIdQuery = "";
 
-    print(forMonthyValues);
-    print(merchantId);
+
 
     if (forMonthyValues && merchantId != null) {
       merchantIdQuery = "&mappedMerchantId=$merchantId";
