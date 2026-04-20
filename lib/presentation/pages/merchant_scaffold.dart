@@ -17,7 +17,7 @@ class MerchantScaffold extends StatelessWidget {
   final FloatingActionButtonLocation? floatingActionButtonLocation;
   final Function()? onTapSupport;
   final Function()? onTapDashboard;
-  final Function()? onTapHome;
+  final VoidCallback? onTapHome;
   final Function? setShopNameAndAcquirerMerchantIDFunction;
 
   final bool canPop;
@@ -224,57 +224,62 @@ class MerchantScaffold extends StatelessWidget {
       ),
       bottomNavigationBar: BottomAppBar(
         color: Colors.white,
-        padding: EdgeInsets.all(0),
+        padding: EdgeInsets.zero,
         shape: CircularNotchedRectangle(),
         notchMargin: 0,
-        height: 50,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            InkWell(
-              onTap: onTapHome,
-              child: Column(
-                children: [
-                  Icon(Icons.home),
-                  CustomTextWidget(text: "Home", size: 12),
-                ],
+        height: 60,
+        child: Consumer<AuthProvider>(
+          builder: (context, provider, child) {
+            final items = <Widget>[
+              _buildItem(
+                icon: Icons.home,
+                label: "Home",
+                onTap: onTapHome,
               ),
-            ),
-            SizedBox(width: 48), // Space between the icons
-            InkWell(
-              onTap: onTapSupport ??
-                  () {
-                    Navigator.pushNamed(context, "merchantHelpScreen");
-                  },
-              child: Column(
-                children: [
-                  Icon(Icons.support_agent),
-                  CustomTextWidget(text: "Support", size: 12),
-                ],
+              _buildItem(
+                icon: Icons.support_agent,
+                label: "Support",
+                onTap: onTapSupport ??
+                    () => Navigator.pushNamed(context, "merchantHelpScreen"),
               ),
-            ),
-            SizedBox(width: 48), // Space between the icons
+            ];
 
-            Consumer<AuthProvider>(builder: (context, provider, child) {
-              return provider.isDashboardVisible
-                  ? InkWell(
-                      onTap: onTapDashboard ??
-                          () {
-                            Navigator.pushNamed(context, "dashboardScreen");
-                          },
-                      child: Column(
-                        children: [
-                          Icon(Icons.bar_chart),
-                          CustomTextWidget(text: "Dashboard", size: 12),
-                        ],
-                      ),
-                    )
-                  : Container();
-            })
-          ],
+            if (provider.isDashboardVisible) {
+              items.add(
+                _buildItem(
+                  icon: Icons.bar_chart,
+                  label: "Dashboard",
+                  onTap: onTapDashboard ??
+                      () => Navigator.pushNamed(context, "dashboardScreen"),
+                ),
+              );
+            }
+
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: items,
+            );
+          },
         ),
       ),
       floatingActionButton: floatingActionButton,
+    );
+  }
+
+  Widget _buildItem({
+    required IconData icon,
+    required String label,
+    required VoidCallback? onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon),
+          CustomTextWidget(text: label, size: 12),
+        ],
+      ),
     );
   }
 }
