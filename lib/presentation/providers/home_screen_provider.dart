@@ -102,6 +102,7 @@ class HomeScreenProvider with ChangeNotifier {
           "from": today,
           "to": today,
           "creditVpa": selectedVpa,
+          "gatewayResponseCode": "00"
         },
         pageNumber: recentVpaTransactionsPagination.currentPage,
         pageSize: recentVpaTransactionsPagination.pageSize,

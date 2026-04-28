@@ -114,6 +114,7 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
     pref.setString('shopName', shopName);
     pref.setString('acqMerchantId', acqMerchantId);
     _transactionProvider.allVpalistPagination.isFirstLoad = true;
+    _transactionProvider.recentTransactionsPagination.reset();
     _transactionProvider.getVpaByMerchantId();
     _transactionProvider.getRecentTransactions();
     _transactionProvider.fetchDailySettlementTxnSummary();

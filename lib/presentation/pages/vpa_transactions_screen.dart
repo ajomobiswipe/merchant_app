@@ -62,7 +62,7 @@ class _VpaTransactionsScreenState extends State<VpaTransactionsScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: const [
-                  CustomTextWidget(text: "Vpa transactions", size: 14),
+                  CustomTextWidget(text: "Success Vpa transactions", size: 14),
                   Icon(Icons.sync, color: AppColors.kPrimaryColor, size: 20),
                 ],
               ),

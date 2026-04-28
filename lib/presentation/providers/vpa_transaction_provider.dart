@@ -105,6 +105,7 @@ class VpaTransactionProvider with ChangeNotifier {
           "from": startDate,
           "to": endDate,
           "creditVpa": transactionProvider.tidSearchController.text.trim(),
+          "gatewayResponseCode":"00"
         },
         pageNumber: currentPage,
         pageSize: pageSize,
