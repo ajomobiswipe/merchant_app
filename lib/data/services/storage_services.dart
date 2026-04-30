@@ -42,6 +42,7 @@ class StorageServices {
 
     pref.setString('acqMerchantId', decodeData['acqMerchantId'].toString());
     pref.setString('merchantIds', json.encode(decodeData['merchantIds']));
+    pref.setString('merchantInfoForDashboard', json.encode(decodeData['merchantInfoForDashboard']));
     pref.setString('merchantId', decodeData['merchantId'].toString());
 
     pref.setBool('isDashboardVisible', isDashboardVisible);

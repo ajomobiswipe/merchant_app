@@ -1,5 +1,6 @@
 import 'package:anet_merchant_app/core/app_color.dart';
 import 'package:anet_merchant_app/core/utils/helpers/default_height.dart';
+import 'package:anet_merchant_app/presentation/pages/merchant_home_page/merchant_home_screen.dart';
 import 'package:anet_merchant_app/presentation/pages/merchant_scaffold.dart';
 import 'package:anet_merchant_app/presentation/providers/merchant_filtered_transaction_provider.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_container.dart';
@@ -7,6 +8,7 @@ import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
 import 'package:anet_merchant_app/presentation/widgets/transaction_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 
 class ViewAllTransactionScreen extends StatefulWidget {
@@ -28,12 +30,27 @@ class _ViewAllTransactionScreenState extends State<ViewAllTransactionScreen> {
           context,
           listen: false);
       transactionProvider.refreshAllTransactions();
-      transactionProvider.getAllTransactions();
+
+      checkForAllTxnCountAndTotal(transactionProvider);
 
       transactionProvider.allTransScrollCtrl.addListener(_onScroll);
     });
   }
 
+  Future<void> checkForAllTxnCountAndTotal(
+      MerchantFilteredTransactionProvider transactionProvider) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    String? merchantId = prefs.getString('acqMerchantId');
+
+    debugPrint("Merchant ID from SharedPreferences: $merchantId");
+
+    if (merchantId == "0") {
+      await transactionProvider.getAllTxnsTotalAndCount();
+    } else {
+      await transactionProvider.getAllTransactions();
+    }
+  }
   // @override
   // void dispose() {
   //   transactionProvider.recentTransScrollCtrl.removeListener(_onScroll);
@@ -85,75 +102,83 @@ class _ViewAllTransactionScreenState extends State<ViewAllTransactionScreen> {
                 ),
               ),
               // defaultHeight(20),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: (transactionProvider.isAllTransactionsLoading &&
-                              transactionProvider.allTransactions.isEmpty)
-                          ? Center(
-                              child: CircularProgressIndicator(),
-                            )
-                          : transactionProvider.allTransactions.isNotEmpty
-                              ? ListView.builder(
-                                  controller:
-                                      transactionProvider.allTransScrollCtrl,
-                                  itemCount: transactionProvider
-                                          .allTransactions.length +
-                                      1,
-                                  itemBuilder: (context, index) {
-                                    if (index <
-                                        transactionProvider
-                                            .allTransactions.length) {
-                                      return Column(
-                                        children: [
-                                          SizedBox(
-                                            height: screenHeight * .01,
-                                          ),
-                                          TransactionTile(
-                                            transaction: transactionProvider
-                                                .allTransactions[index],
-                                            width: screenWidth,
-                                          ),
-                                        ],
-                                      );
-                                    } else if (transactionProvider
-                                        .hasMoreTransactions) {
-                                      return Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: screenHeight * .025),
-                                        child: Center(
-                                            child: CircularProgressIndicator()),
-                                      );
-                                    } else {
-                                      return Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Center(
-                                            child: Text(
-                                                "No more transactions to display",
-                                                style: TextStyle(
-                                                    fontSize: 14,
-                                                    color: Colors.grey,
-                                                    fontStyle:
-                                                        FontStyle.italic))),
-                                      );
-                                    }
-                                  },
-                                )
-                              : Center(
-                                  child: Text(
-                                    "No transactions available",
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        color: Colors.grey,
-                                        fontStyle: FontStyle.italic),
+              if (transactionProvider.allTerminalsTxn.isEmpty)
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: (transactionProvider.isAllTransactionsLoading ||
+                                transactionProvider.isAllTerminalTxnLoading)
+                            ? Center(
+                                child: CircularProgressIndicator(),
+                              )
+                            : transactionProvider.allTransactions.isNotEmpty
+                                ? ListView.builder(
+                                    controller:
+                                        transactionProvider.allTransScrollCtrl,
+                                    itemCount: transactionProvider
+                                            .allTransactions.length +
+                                        1,
+                                    itemBuilder: (context, index) {
+                                      if (index <
+                                          transactionProvider
+                                              .allTransactions.length) {
+                                        return Column(
+                                          children: [
+                                            SizedBox(
+                                              height: screenHeight * .01,
+                                            ),
+                                            TransactionTile(
+                                              transaction: transactionProvider
+                                                  .allTransactions[index],
+                                              width: screenWidth,
+                                            ),
+                                          ],
+                                        );
+                                      } else if (transactionProvider
+                                          .hasMoreTransactions) {
+                                        return Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: screenHeight * .025),
+                                          child: Center(
+                                              child:
+                                                  CircularProgressIndicator()),
+                                        );
+                                      } else {
+                                        return Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Center(
+                                              child: Text(
+                                                  "No more transactions to display",
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      color: Colors.grey,
+                                                      fontStyle:
+                                                          FontStyle.italic))),
+                                        );
+                                      }
+                                    },
+                                  )
+                                : Center(
+                                    child: Text(
+                                      "No transactions available",
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.grey,
+                                          fontStyle: FontStyle.italic),
+                                    ),
                                   ),
-                                ),
-                    ),
-                  ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+
+              if (transactionProvider.allTerminalsTxn.isNotEmpty)
+                Expanded(
+                    child: AllTerminalsTxnWidget(
+                        transactionProvider.allTerminalsTxn, null)),
+
               transactionProvider.isEmailSending
                   ? Shimmer.fromColors(
                       baseColor: Colors.grey[300]!,
@@ -166,16 +191,18 @@ class _ViewAllTransactionScreenState extends State<ViewAllTransactionScreen> {
                         ),
                       ),
                     )
-                  : CustomContainer(
-                      onTap: () {
-                        transactionProvider.sendAllTransactionsToEmail();
-                      },
-                      height: screenHeight * 0.06,
-                      child: CustomTextWidget(
-                        text: "Send By Email",
-                        color: AppColors.gray,
-                      ),
-                    ),
+                  : (transactionProvider.allTerminalsTxn.isEmpty)
+                      ? CustomContainer(
+                          onTap: () {
+                            transactionProvider.sendAllTransactionsToEmail();
+                          },
+                          height: screenHeight * 0.06,
+                          child: CustomTextWidget(
+                            text: "Send By Email",
+                            color: AppColors.gray,
+                          ),
+                        )
+                      : SizedBox(),
             ],
           );
         },

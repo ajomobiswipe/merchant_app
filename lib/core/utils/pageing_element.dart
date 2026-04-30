@@ -26,7 +26,7 @@ class PaginationHandler<T> {
   }
 
   void addItems(List<T> newItems, int total) {
-    if (newItems.isNotEmpty) {
+    if (newItems.isNotEmpty || total > 0) {
       items.addAll(newItems);
       currentPage++;
       totalItems = total;

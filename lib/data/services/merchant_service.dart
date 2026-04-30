@@ -78,6 +78,13 @@ class MerchantServices {
     return await DioClient().post(url, requestModel);
   }
 
+    Future<dynamic> fetchTransactionHistoryGetPosTxnHistoryReportbyMid(Map<String, dynamic> requestModel,
+      {required int pageNumber, required int pageSize}) async {
+    final url =
+        "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/getPosTxnHistoryReportbyMid?page=$pageNumber&size=$pageSize&sort=insertDateTime%2Cdesc";
+    return await DioClient().post(url, requestModel);
+  }
+
   Future<Response<dynamic>> fetchVpaTransactionHistory(
       Map<String, dynamic> requestModel,
       {required int pageNumber,

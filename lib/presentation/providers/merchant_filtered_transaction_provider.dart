@@ -1,3 +1,4 @@
+import 'package:anet_merchant_app/data/models/all_transaction_list.dart';
 import 'package:anet_merchant_app/data/models/transaction_history_request_model.dart';
 import 'package:anet_merchant_app/data/models/transaction_model.dart';
 import 'package:anet_merchant_app/data/services/dio_exception_handlers.dart';
@@ -50,6 +51,9 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
   ScrollController get allTidScrollCtrl => _allTidScrollCtrl;
   ScrollController get allVpaScrollCtrl => _allVpaScrollCtrl;
   TextEditingController get tidSearchController => _tidSearchController;
+
+  List<AllTerminalsTxn> _allTerminalsTxn = [];
+  List<AllTerminalsTxn> get allTerminalsTxn => _allTerminalsTxn;
   //  void setTid(param0) {
 
   //  }
@@ -129,6 +133,9 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
   int get todaysTnxCount => _allTnxCount;
   List<TransactionElement> get allTransactions => _allTransactions;
   bool get isEmailSending => _isEmailSending;
+
+  bool get isAllTerminalTxnLoading => _isAllTerminalTxnLoading;
+  bool _isAllTerminalTxnLoading = false;
 
   // Methods
 
@@ -276,6 +283,7 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
 
   // Fetch recent transactions
   Future<void> getAllTransactions() async {
+    _allTerminalsTxn = [];
     if (kDebugMode) {
       print(_selectedDateRange);
       print(_customStartDate);
@@ -335,6 +343,85 @@ class MerchantFilteredTransactionProvider extends ChangeNotifier {
       AlertService().error("Error fetching transactions: $e");
     } finally {
       _isAllTransactionsLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> getAllTxnsTotalAndCount() async {
+    _allTerminalsTxn = [];
+    if (kDebugMode) {
+      print(_selectedDateRange);
+      print(_customStartDate);
+      print("Current Page: $currentPage");
+      print("Page Size: $pageSize");
+      print("Total Items: $_allTnxCount");
+      print("Recent Transactions Length: ${_allTransactions.length}");
+    }
+
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    // String? merchantId = prefs.getString('acqMerchantId') ?? '65OMA0000000002';
+    String? axisMerchantId = prefs.getString('merchantId') ?? '';
+
+    _allTranReqModel.acquirerId = "OMAIND";
+    _allTranReqModel.merchantId = "";
+    _allTranReqModel.mid = axisMerchantId;
+    _allTranReqModel.rrn = getRRn();
+    _allTranReqModel.authCode = getAuthCode();
+    _allTranReqModel.recordFrom = getRecordFrom();
+    _allTranReqModel.recordTo = getRecordTo();
+    _allTranReqModel.terminalId = getTid();
+    _allTranReqModel.creditVpa = getVpa();
+    _allTranReqModel.sendTxnReportToMail = false;
+    _allTranReqModel.sourceOftxn = getPaymentMode();
+
+    // if (_isAllTransactionsLoading) return;
+
+    _isAllTerminalTxnLoading = true;
+    notifyListeners();
+
+    try {
+      final response = await _merchantServices
+          .fetchTransactionHistoryGetPosTxnHistoryReportbyMid(
+        _allTranReqModel.toJson(),
+        pageNumber: 0,
+        pageSize: 1,
+      );
+
+      if (response.statusCode == 200) {
+        var decodedData = response.data;
+
+        if (decodedData is List) {
+          for (var item in decodedData) {
+            _allTnxCount += (item["count"] as num).toInt();
+            _totalAmountInAllTrans += item["totalAmount"] ?? 0.0;
+          }
+        }
+
+        _allTerminalsTxn = decodedData
+            .map<AllTerminalsTxn>((item) => AllTerminalsTxn.fromJson(item))
+            .toList();
+      }
+
+      // if (response.statusCode == 200) {
+      //   final decodedData = TransactionHistory.fromJson(response.data);
+      //   var newItems = decodedData.responsePage!.content ?? [];
+      //   _allTnxCount = decodedData.responsePage!.totalElements ?? 0;
+      //   _totalAmountInAllTrans = decodedData.totalAmount ?? 0.0;
+      //   if (newItems.isNotEmpty) {
+      //     currentPage++;
+
+      // isAllTransLoadingFistTime = false;
+
+      //     _allTransactions.addAll(newItems);
+      //   }
+      // }
+    } on DioException catch (e) {
+      handleDioError(e);
+    } catch (e) {
+      AlertService().error("Error fetching transactions: $e");
+    } finally {
+      _isAllTerminalTxnLoading = false;
       notifyListeners();
     }
   }

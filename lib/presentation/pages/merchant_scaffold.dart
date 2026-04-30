@@ -182,21 +182,25 @@ class MerchantScaffold extends StatelessWidget {
                         return DropdownMenuItem<dynamic>(
                           value: entry,
                           child: CustomTextWidget(
-                            text: entry['shopName'] ?? 'N/A',
+                            text: '${entry['shopName'] ?? 'N/A'}'
+                                '${entry['serialNo'] != null ? ' - ID ${entry['serialNo']}' : ''}',
                           ),
                         );
                       }).toList(),
                       onChanged: (newValue) {
-                        newValue!['shopName'] ??= 'N/A';
+                        String selectedShopName = "";
+
+                        selectedShopName = '${newValue['shopName'] ?? 'N/A'}'
+                            '${newValue['serialNo'] != null ? ' - ID ${newValue['serialNo']}' : ''}';
                         // setState(() {
                         Provider.of<AuthProvider>(context, listen: false)
-                            .setMerchantDbaName(newValue!['shopName']);
+                            .setMerchantDbaName(selectedShopName);
 
                         if (setShopNameAndAcquirerMerchantIDFunction == null) {
                           return;
                         }
                         setShopNameAndAcquirerMerchantIDFunction!(
-                            newValue!['shopName'], newValue['merchantId']);
+                            selectedShopName, newValue['merchantId']);
 
                         // Update the provider with the selected value
                         // });

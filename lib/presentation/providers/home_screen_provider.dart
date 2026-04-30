@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:anet_merchant_app/core/utils/pageing_element.dart';
+import 'package:anet_merchant_app/data/models/all_transaction_list.dart';
 import 'package:anet_merchant_app/data/models/transaction_history_request_model.dart';
 import 'package:anet_merchant_app/data/models/transaction_model.dart';
 import 'package:anet_merchant_app/data/services/dio_exception_handlers.dart';
@@ -64,6 +65,12 @@ class HomeScreenProvider with ChangeNotifier {
   double get totalVPATransactionAmount => _totalVPATransactionAmount;
   double _totalVPATransactionAmount = 0.0;
 
+  String _selectedAcquirerMerchantId = "0";
+  String get selectedAcquirerMerchantId => _selectedAcquirerMerchantId;
+
+  List<AllTerminalsTxn> _allTerminalsTxn = [];
+  List<AllTerminalsTxn> get allTerminalsTxn => _allTerminalsTxn;
+
   // Store name
   void changeSelectedVpa(String? vpa) {
     if (vpa == _selectedVpa) return;
@@ -71,6 +78,11 @@ class HomeScreenProvider with ChangeNotifier {
     notifyListeners();
     recentVpaTransactionsPagination.reset();
     getRecentVPATransactions();
+  }
+
+  void setSelectedAcquirerMerchantId(String merchantId) {
+    _selectedAcquirerMerchantId = merchantId;
+    notifyListeners();
   }
 
   Future<void> refreshVpaTransactions() async {
@@ -185,6 +197,66 @@ class HomeScreenProvider with ChangeNotifier {
       AlertService().error("Error fetching VPA list: $e");
     } finally {
       allVpalistPagination.isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future getAllTxnsTotalAndCount() async {
+    _allTerminalsTxn = [];
+    final prefs = await SharedPreferences.getInstance();
+    String? axisMerchantId = prefs.getString('merchantId') ?? '';
+    _totalTransactions = 0;
+    _totalTransactionAmount = 0;
+
+    try {
+      final today = DateFormat('dd-MM-yyyy').format(DateTime.now());
+      _recentTranReqModel
+        ..acquirerId = "OMAIND"
+        ..merchantId = ""
+        ..mid = axisMerchantId
+        ..recordFrom = today
+        ..recordTo = today
+        ..rrn = null
+        ..terminalId = null
+        ..sendTxnReportToMail = false;
+
+      recentTransactionsPagination.isLoading = true;
+      notifyListeners();
+
+      final response = await _merchantServices
+          .fetchTransactionHistoryGetPosTxnHistoryReportbyMid(
+        _recentTranReqModel.toJson(),
+        pageNumber: 0,
+        pageSize: 1,
+      );
+
+      if (response.statusCode == 200) {
+        var decodedData = response.data;
+
+        if (decodedData is List) {
+          for (var item in decodedData) {
+            _totalTransactions += (item["count"] as num).toInt();
+            _totalTransactionAmount += item["totalAmount"] ?? 0.0;
+          }
+
+          _allTerminalsTxn = decodedData
+              .map<AllTerminalsTxn>((item) => AllTerminalsTxn.fromJson(item))
+              .toList();
+        }
+
+        recentTransactionsPagination.addItems(
+          [],
+          _totalTransactions,
+        );
+      }
+
+      notifyListeners();
+    } on DioException catch (e) {
+      handleDioError(e);
+    } catch (e) {
+      AlertService().error("Error fetching transaction summary: $e");
+    } finally {
+      recentTransactionsPagination.isLoading = false;
       notifyListeners();
     }
   }

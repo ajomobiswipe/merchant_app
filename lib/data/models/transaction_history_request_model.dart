@@ -1,5 +1,6 @@
 class TransactionHistoryRequestModel {
   String? merchantId;
+  String? mid;
   String? recordFrom;
   String? recordTo;
   String? acquirerId;
@@ -12,6 +13,7 @@ class TransactionHistoryRequestModel {
 
   TransactionHistoryRequestModel({
     this.merchantId,
+    this.mid,
     this.recordFrom,
     this.recordTo,
     this.acquirerId,
@@ -25,6 +27,7 @@ class TransactionHistoryRequestModel {
 
   Map<String, dynamic> toJson() => {
         "merchantId": merchantId,
+        "mid": mid,
         "recordFrom": recordFrom,
         "recordTo": recordTo,
         "acquirerId": acquirerId,

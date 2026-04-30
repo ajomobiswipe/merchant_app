@@ -163,6 +163,10 @@ class TransactionProvider extends ChangeNotifier {
   final MerchantServices _merchantServices = MerchantServices();
 
   Future<void> setMonthRange({DateTime? startDate, DateTime? endDate}) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? axisMerchantId = prefs.getString('merchantId') ?? '';
+    String? acquirerMerchantId = prefs.getString('acqMerchantId');
+
     _chartData = [];
 
     if (startDate == null || endDate == null) {
@@ -178,7 +182,8 @@ class TransactionProvider extends ChangeNotifier {
 
     var monthlyPosValues = await getPosTxnMonthlyValues(
         DateFormat('dd-MM-yyyy').format(startDate),
-        DateFormat('dd-MM-yyyy').format(endDate));
+        DateFormat('dd-MM-yyyy').format(endDate),
+        axisMerchantId: acquirerMerchantId == "0" ? axisMerchantId : null);
 
     var monthlyUpiValues = await getUpiTxnMonthlyValues(
         DateFormat('dd-MM-yyyy').format(startDate),
@@ -220,7 +225,8 @@ class TransactionProvider extends ChangeNotifier {
 
   /// Pos Txn monthlyrange
   Future<Map<String, dynamic>?> getPosTxnMonthlyValues(
-      String recordFromData, String recordToData) async {
+      String recordFromData, String recordToData,
+      {String? axisMerchantId}) async {
     final prefs = await SharedPreferences.getInstance();
     String? merchantId = prefs.getString('acqMerchantId');
     _recentTranReqModel
@@ -281,18 +287,63 @@ class TransactionProvider extends ChangeNotifier {
       //     statusCode: 200);
       isLoading = true;
       notifyListeners();
-      final response = await _merchantServices.fetchTransactionHistory(
-        _recentTranReqModel.toJson(),
-        pageNumber: 0,
-        pageSize: 1,
-      );
 
-      if (response.statusCode == 200) {
-        final decodedData = TransactionHistory.fromJson(response.data);
-        return {
-          "monthlyValues": decodedData.monthlyValues,
-          "monthlyEmiMdrAmount": decodedData.sumEmiMdrValues
-        };
+      if (axisMerchantId != null) {
+        _recentTranReqModel.mid = axisMerchantId;
+
+        final response = await _merchantServices
+            .fetchTransactionHistoryGetPosTxnHistoryReportbyMid(
+          _recentTranReqModel.toJson(),
+          pageNumber: 0,
+          pageSize: 1,
+        );
+
+        if (response.statusCode == 200) {
+          final decodedData = response.data;
+
+          if (decodedData is List) {
+            final Map<String, double> monthlyTotals = {};
+            final Map<String, double> emiMdrTotals = {};
+
+            for (var item in decodedData) {
+              final monthlyValues =
+                  item['monthlyValues'] as Map<String, dynamic>?;
+              final emiValues =
+                  item['sumEmiMdrValues'] as Map<String, dynamic>?;
+
+              // Sum monthlyValues
+              monthlyValues?.entries.forEach((entry) {
+                monthlyTotals[entry.key] = (monthlyTotals[entry.key] ?? 0) +
+                    (entry.value as num).toDouble();
+              });
+
+              // Sum sumEmiMdrValues
+              emiValues?.entries.forEach((entry) {
+                emiMdrTotals[entry.key] = (emiMdrTotals[entry.key] ?? 0) +
+                    (entry.value as num).toDouble();
+              });
+            }
+
+            return {
+              "monthlyValues": monthlyTotals,
+              "monthlyEmiMdrAmount": emiMdrTotals
+            };
+          }
+        }
+      } else {
+        final response = await _merchantServices.fetchTransactionHistory(
+          _recentTranReqModel.toJson(),
+          pageNumber: 0,
+          pageSize: 1,
+        );
+
+        if (response.statusCode == 200) {
+          final decodedData = TransactionHistory.fromJson(response.data);
+          return {
+            "monthlyValues": decodedData.monthlyValues,
+            "monthlyEmiMdrAmount": decodedData.sumEmiMdrValues
+          };
+        }
       }
     } on DioException catch (e) {
       handleDioError(e);
@@ -352,7 +403,7 @@ class TransactionProvider extends ChangeNotifier {
         "from": recordFrom,
         "to": recordTo,
         // "creditVpa": selectedVpa,
-          // "gatewayResponseCode":"00"
+        // "gatewayResponseCode":"00"
       },
           pageNumber: 0,
           pageSize: 1,

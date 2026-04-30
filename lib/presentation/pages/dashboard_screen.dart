@@ -20,7 +20,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
+    
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final provider = Provider.of<TransactionProvider>(context, listen: false);
@@ -30,7 +30,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("DashboardScreen build called");
+   
     final provider = context.watch<TransactionProvider>();
 
     return MerchantScaffold(
