@@ -108,8 +108,10 @@ class _ViewAllTransactionScreenState extends State<ViewAllTransactionScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
-                        child: (transactionProvider.isAllTransactionsLoading ||
-                                transactionProvider.isAllTerminalTxnLoading)
+                        child: ((transactionProvider.isAllTransactionsLoading ||
+                                    transactionProvider
+                                        .isAllTerminalTxnLoading) &&
+                                (!transactionProvider.hasMoreTransactions))
                             ? Center(
                                 child: CircularProgressIndicator(),
                               )

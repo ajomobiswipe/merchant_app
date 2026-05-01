@@ -32,10 +32,12 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<AuthProvider>(context, listen: false).getIsDashboardVisible();
+      Provider.of<AuthProvider>(context, listen: false).setMerchantDbaName("");
       Provider.of<AuthProvider>(context, listen: false).setMerchantIds([]);
       _transactionProvider =
           Provider.of<HomeScreenProvider>(context, listen: false);
       _transactionProvider.recentTransactionsPagination.reset();
+      _transactionProvider.setAllTerminalTxnEmpty();
       ConnectivityService().checkConnectivity();
       // _transactionProvider.getRecentTransactions();
       checkForCallingGetRecentTransactions(_transactionProvider);
@@ -56,20 +58,34 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
   Future<void> checkForCallingGetRecentTransactions(
       dynamic transactionProvider) async {
     final pref = await SharedPreferences.getInstance();
+
+    bool isTerminalUser = pref.getString('role') == "TERMINAL USER";
+
+    if (isTerminalUser) {
+      return getRecentTransactions(transactionProvider);
+    }
+
     // var merchantIds = pref.getString("merchantIds");
     var merchantIds = pref.getString("merchantInfoForDashboard");
-    var decodedMerchantIds = json.decode(merchantIds ?? "{}");
+    var decodedMerchantIds = json.decode(merchantIds ?? "{}") ?? {};
 
     var allMerchantIds = pref.getString("merchantIds");
-    Map<String, dynamic> decodedAllMerchantIds =
-        json.decode(allMerchantIds ?? "{}");
+    var decodedAllMerchantIds = json.decode(allMerchantIds ?? "{}") ?? {};
 
     if (((decodedMerchantIds is Map && decodedMerchantIds.isEmpty) ||
             (decodedMerchantIds is List && decodedMerchantIds.isEmpty)) &&
-        ((decodedAllMerchantIds.isEmpty) ||
+        ((decodedAllMerchantIds.isEmpty && decodedAllMerchantIds is Map) ||
             (decodedAllMerchantIds is List && decodedAllMerchantIds.isEmpty))) {
-      await transactionProvider.getRecentTransactions();
+      await getRecentTransactions(transactionProvider);
     }
+  }
+
+  Future getRecentTransactions(transactionProvider) async {
+    final pref = await SharedPreferences.getInstance();
+    var dbaName = pref.getString("shopName") ?? "N/A";
+    Provider.of<AuthProvider>(context, listen: false)
+        .setMerchantDbaName(dbaName);
+    await transactionProvider.getRecentTransactions();
   }
 
 //
@@ -79,15 +95,15 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
     final pref = await SharedPreferences.getInstance();
     // var merchantIds = pref.getString("merchantIds");
     var merchantInfoForDashboard = pref.getString("merchantInfoForDashboard");
-    var decodedMerchantIds = json.decode(merchantInfoForDashboard ?? "{}");
+    var decodedMerchantIds =
+        json.decode(merchantInfoForDashboard ?? "{}") ?? {};
 
     bool isTerminalUser = pref.getString('role') == "TERMINAL USER";
 
     if (isTerminalUser) return;
 
     var merchantIds = pref.getString("merchantIds");
-    Map<String, dynamic> decodedAllMerchantIds =
-        json.decode(merchantIds ?? "{}");
+    var decodedAllMerchantIds = json.decode(merchantIds ?? "{}") ?? {};
 
     List<dynamic> merchantIdMapEntries = [
       {
@@ -127,8 +143,8 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
       // Combine and remove duplicates based on 'merchantId'
       // Step 1: Extract acqid list
 
-      final acqIds =
-          decodedMerchantIds.map((e) => e['acqid'] as String).toSet();
+      final List acqIds =
+          decodedMerchantIds.map((e) => e['acqid'].toString()).toList();
 
       // Step 2: Remove matching keys from map
       decodedAllMerchantIds.removeWhere((key, value) => acqIds.contains(key));
@@ -167,7 +183,7 @@ class _MerchantHomeScreenState extends State<MerchantHomeScreen> {
         .setSelectedAcquirerMerchantId(acqMerchantId);
     final pref = await SharedPreferences.getInstance();
 
-    //  var dbaName = pref.getString("shopName") ?? "N/A";
+    //  var dbaName = pref.getString("shopName") ?? "N/A";S
     var dbaName = shopName;
     Provider.of<AuthProvider>(context, listen: false)
         .setMerchantDbaName(dbaName);
@@ -484,7 +500,7 @@ class _TransactionHistoryList extends StatelessWidget {
         Expanded(
           child: (transactionProvider.recentTransactionsPagination.isLoading &&
                   transactionProvider
-                      .recentTransactionsPagination.items.isEmpty)
+                      .recentTransactionsPagination.items.isEmpty )
               ? const Center(child: CircularProgressIndicator())
               : transactionElement.isNotEmpty
                   ? ListView.builder(

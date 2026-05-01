@@ -19,9 +19,7 @@ class StorageServices {
 
     final isDashboardVisible=decodeData['dashboardEnabled'] == "true";
 
-    print('Is Dashboard Visible: $isDashboardVisible');
-
-
+    
     // Secure (Hive) Storage
     secureStorage.saveUserDetails(decodeData, userName: userName);
     secureStorage.save('lastLogin', dateStr);

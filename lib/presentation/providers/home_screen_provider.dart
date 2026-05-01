@@ -70,6 +70,7 @@ class HomeScreenProvider with ChangeNotifier {
 
   List<AllTerminalsTxn> _allTerminalsTxn = [];
   List<AllTerminalsTxn> get allTerminalsTxn => _allTerminalsTxn;
+   
 
   // Store name
   void changeSelectedVpa(String? vpa) {
@@ -199,6 +200,11 @@ class HomeScreenProvider with ChangeNotifier {
       allVpalistPagination.isLoading = false;
       notifyListeners();
     }
+  }
+
+  void setAllTerminalTxnEmpty() {
+    _allTerminalsTxn = [];
+    notifyListeners();
   }
 
   Future getAllTxnsTotalAndCount() async {
