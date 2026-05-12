@@ -65,8 +65,8 @@ class HomeScreenProvider with ChangeNotifier {
   double get totalVPATransactionAmount => _totalVPATransactionAmount;
   double _totalVPATransactionAmount = 0.0;
 
-  String _selectedAcquirerMerchantId = "0";
-  String get selectedAcquirerMerchantId => _selectedAcquirerMerchantId;
+  String? _selectedAcquirerMerchantId;
+  String? get selectedAcquirerMerchantId => _selectedAcquirerMerchantId;
 
   List<AllTerminalsTxn> _allTerminalsTxn = [];
   List<AllTerminalsTxn> get allTerminalsTxn => _allTerminalsTxn;
