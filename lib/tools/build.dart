@@ -38,3 +38,4 @@ Future<void> main() async {
 
   print("✅ Build completed successfully!");
 }
+//dart run lib\tools\build.dart
