@@ -55,6 +55,9 @@ void handleDioError(DioException e) {
         message = "Unexpected error occurred: ${e.message ?? e.error}";
       }
       break;
+    case DioExceptionType.transformTimeout:
+      // TODO: Handle this case.
+      throw UnimplementedError();
   }
 
   AlertService().error(message);

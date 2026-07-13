@@ -118,7 +118,7 @@ class MerchantServices {
       required int pageSize,
       required String merchantId}) async {
     final url =
-        "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/getListOfSoundBoxDevices?pageNumber=$pageNumber&size=$pageSize&sort=insertDateTime%2Cdesc";
+        "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/getListOfSoundBoxDevices?page=$pageNumber&size=500&sort=insertDateTime%2Cdesc";
     return await DioClient().getWithReqBody(url, requestModel);
   }
 

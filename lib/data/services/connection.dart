@@ -31,14 +31,15 @@ class DioClient {
   }
 
   Future<void> _initSSL() async {
-    final sslCert = await rootBundle.load('assets/ca/certificate.pem');
+    // final sslCert = await rootBundle.load('assets/ca/certificate.pem');
+    final sslCert = await rootBundle.load('assets/ca/fullchain.crt');
     _context = SecurityContext(withTrustedRoots: false);
     _context!.setTrustedCertificatesBytes(sslCert.buffer.asInt8List());
 
     _dio.httpClientAdapter = IOHttpClientAdapter(
       createHttpClient: () {
         return HttpClient(context: _context!)
-          ..badCertificateCallback = (cert, host, port) => true;
+          ..badCertificateCallback = (cert, host, port) => false;
       },
     );
   }
@@ -87,6 +88,7 @@ class DioClient {
     dynamic data,
   ) async {
     if (kDebugMode) print('Request URL: $url');
+    if (kDebugMode) print('Request data: $data');
     final response = await _dio.get(url, data: data);
     if (kDebugMode) {
       print('Response: ${response.data}');
