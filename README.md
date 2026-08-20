@@ -1,20 +1,64 @@
-# Introduction 
-TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
+# Flutter Clean Architecture Bloc News App
 
-# Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
+This Flutter application follows the Clean Architecture principles and utilizes the Bloc pattern for state management. The app fetches daily news from the News API, displays them, and provides the option to save news articles to a local SQLite database.
 
-# Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+## Architecture Overview
 
-# Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
+The project follows the Clean Architecture principles, separating the app into different layers:
 
-If you want to learn more about creating good readme files then refer the following [guidelines](https://www.visualstudio.com/en-us/docs/git/create-a-readme). You can also seek inspiration from the below readme files:
-- [ASP.NET Core](https://github.com/aspnet/Home)
-- [Visual Studio Code](https://github.com/Microsoft/vscode)
-- [Chakra Core](https://github.com/Microsoft/ChakraCore)
+- **Presentation Layer**: Contains the Flutter widgets, Blocs, and UI-related logic.
+- **Domain Layer**: Contains business logic and use cases.
+- **Data Layer**: Manages data sources such as APIs and local databases.
+
+## State Management
+
+The app uses the Bloc pattern for state management. Blocs are responsible for managing the application's state and business logic.
+
+## Service Locator
+
+The `get_it` package is used as a service locator for dependency injection. It helps manage the app's dependencies in a clean and organized way.
+
+## API Requests
+
+Retrofit is used for making API requests to the News API. It provides a type-safe way to interact with RESTful APIs.
+
+## Dart Object Comparison
+
+The `equatable` package is employed for efficient comparison of Dart objects. This is particularly useful when working with Blocs and state changes.
+
+## Local Database
+
+The app uses the Floor library to interact with a local SQLite database. News articles can be saved to the local database for offline access.
+
+## Getting Started
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/yunus6116/Flutter-Bloc-Clean-Architecture.git
+
+2. Navigate to the project directory:
+    ```bash
+    cd your-repo
+3. Add your News API key:
+   <br>
+   Open the lib/core/constants/constants.dart file and locate the newsAPIKey variable. Replace 'your_api_key_here' with your actual News API key. If you don't have an API key, you can obtain one by signing up on the News API website.
+   <br>
+   <br>
+   // lib/core/constants/constants.dart
+   <br>
+   const String newsAPIKey = 'your_actual_api_key';
+   <br>
+   <br>
+   Note: Keep your API key secure and do not share it publicly. Consider using environment variables or other secure methods to manage sensitive information in a production environment.
+
+5. Install dependencies:
+   
+   ```bash
+   flutter pub get
+
+6. Run the app:
+   
+   ```bash
+   flutter run
+   

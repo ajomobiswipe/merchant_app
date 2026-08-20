@@ -1,146 +1,129 @@
-/* ===============================================================
-| Project : MERCHANT ONBOARDING
-| Page    : MAIN.DART
-| Date    : 04-OCT-2024
-*  ===============================================================*/
-
-// Dependencies or Plugins - Models - Services - Global Functions
 import 'dart:async';
 
-// import 'package:firebase_core/firebase_core.dart';
-// import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:anet_merchant_app/core/constants/constants.dart';
-import 'package:anet_merchant_app/core/endpoints.dart';
-import 'package:anet_merchant_app/core/routes.dart';
-import 'package:anet_merchant_app/core/state_key.dart';
-import 'package:anet_merchant_app/data/services/connectivity_service.dart';
-import 'package:anet_merchant_app/presentation/providers/authProvider.dart';
-import 'package:anet_merchant_app/presentation/providers/support_action_provider.dart';
-import 'package:anet_merchant_app/presentation/providers/home_screen_provider.dart';
-import 'package:anet_merchant_app/presentation/providers/merchant_filtered_transaction_provider.dart';
-import 'package:anet_merchant_app/presentation/providers/settlement_provider.dart';
-import 'package:anet_merchant_app/presentation/providers/transaction_provider.dart';
-import 'package:anet_merchant_app/presentation/providers/vpa_transaction_provider.dart';
-import 'package:anet_merchant_app/presentation/widgets/app/alert_service.dart';
-import 'package:anet_merchant_app/presentation/widgets/app/custom_alert.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/services.dart';
+import 'package:anet_merchants/config/routes/routes.dart';
+import 'package:anet_merchants/config/theme/app_theme_controller.dart';
+import 'package:anet_merchants/config/theme/app_themes.dart';
+import 'package:anet_merchants/core/common/app_colors.dart';
+import 'package:anet_merchants/core/localization/app_language.dart';
+import 'package:anet_merchants/core/services/connectivity_controller.dart';
+import 'package:anet_merchants/core/utils/browser_history.dart';
+import 'package:anet_merchants/core/utils/unauthorized_session_handler.dart';
+import 'package:anet_merchants/core/widgets/app_update_gate.dart';
+import 'package:anet_merchants/core/widgets/connectivity_blocker.dart';
+import 'package:anet_merchants/features/auth/auth.dart';
+import 'package:anet_merchants/features/devices/devices.dart';
+import 'package:anet_merchants/features/settlements/settlements.dart';
+import 'package:anet_merchants/features/support/support.dart';
+import 'package:anet_merchants/features/transactions/transactions.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:month_year_picker/month_year_picker.dart';
-import 'package:provider/provider.dart';
 
-// Global Key - unauthorized login
+import 'core/di/injection_container.dart';
 
-CustomAlert customAlert = CustomAlert();
-AlertService alertService = AlertService();
-
-/// The main entry point of the application.
-void main() {
-  SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
-      statusBarColor: Colors.white, // set to your desired color
-      statusBarIconBrightness: Brightness.dark, // dark icons for light bg
-    ),
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
+  await dotenv.load(fileName: '.env');
+  await appThemeController.loadThemePreference();
+  await appColorPaletteController.loadPreference();
+  await appLanguageController.loadLanguagePreference();
+  await connectivityController.start();
+  await initializeDependencies();
+  UnauthorizedSessionHandler.configure(
+    onUnauthorized: () => AppRoutes.router.go(AppRoutes.login),
   );
-  runZonedGuarded<Future<void>>(() async {
-    await dotenv.load();
-    await Hive.initFlutter(); // THIS IS FOR THEME STORAGE
-    await Hive.openBox(Constants.hiveName); // THIS IS FOR USER STORAGE
-
-    // --- Root
-    WidgetsFlutterBinding.ensureInitialized();
-    ConnectivityService().initialize();
-
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent, // transparent
-          statusBarIconBrightness: Brightness.dark,
-          systemStatusBarContrastEnforced: true),
-    );
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-        overlays: [SystemUiOverlay.bottom]);
-
-    SystemChrome.setPreferredOrientations(
-        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-    runApp(MultiProvider(providers: [
-      ChangeNotifierProvider(create: (_) => AuthProvider()),
-      // ChangeNotifierProvider(create: (context) => ConnectivityProvider()),
-      ChangeNotifierProvider(create: (_) => HomeScreenProvider()),
-      // ChangeNotifierProvider(create: (_) => TidProvider()),
-      ChangeNotifierProvider(create: (_) => SettlementProvider()),
-      ChangeNotifierProvider(create: (_) => SupportActionProvider()),
-      ChangeNotifierProvider(create: (_) => TransactionProvider()),
-      ChangeNotifierProvider(
-          create: (_) => MerchantFilteredTransactionProvider()),
-      ChangeNotifierProxyProvider<MerchantFilteredTransactionProvider,
-          VpaTransactionProvider>(
-        create: (_) =>
-            VpaTransactionProvider(DummyMerchantProvider()), // required dummy
-        update: (_, merchantProvider, __) =>
-            VpaTransactionProvider(merchantProvider),
-      ),
-
-      // ], child: MainPage()));
-    ], child: MainPage()));
-  }, (e, _) => throw e);
+  runApp(const MyApp());
 }
 
-// Stateless Widget for main page
-class MainPage extends StatelessWidget {
-  const MainPage({
-    super.key,
-  });
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void dispose() {
+    // The connectivity controller is process-scoped, so stop its stream when
+    // the root widget is removed. It remains restartable for widget tests and
+    // app reattachment instead of disposing the global singleton itself.
+    unawaited(connectivityController.stop());
+    disposeBrowserHistoryGuard();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    bool isUAT = EndPoints.baseApiPublic.contains("omasoftposqc");
-    return isUAT
-        ? Directionality(
-            textDirection: TextDirection.ltr, // Left-to-right direction
-            child: Banner(
-              message: "UAT",
-              location: BannerLocation.topEnd,
-              color: Colors.red,
-              child: _buildMaterialApp(),
-            ),
-          )
-        : _buildMaterialApp();
-  }
-
-  Widget _buildMaterialApp() {
-    return MaterialApp(
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        MonthYearPickerLocalizations.delegate,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<AuthBloc>(
+          create: (context) => sl(),
+        ),
+        BlocProvider<SoundBoxBloc>(
+          create: (context) => sl(),
+        ),
+        BlocProvider<MerchantVpaTxnBloc>(
+          create: (context) => sl(),
+        ),
+        BlocProvider<PosTransactionBloc>(
+          create: (context) => sl(),
+        ),
+        BlocProvider<SettlementBloc>(
+          create: (context) => sl(),
+        ),
+        BlocProvider<SupportActionBloc>(
+          create: (context) => sl(),
+        ),
       ],
-      debugShowCheckedModeBanner: false,
-      scaffoldMessengerKey: StateKey.snackBarKey,
-      initialRoute: 'splash',
-      // initialRoute: 'merchantHomeScreen',
-      onGenerateRoute: CustomRoute.allRoutes,
-      navigatorKey: NavigationService.navigatorKey,
-      theme: ThemeData(
-        scaffoldBackgroundColor: Colors.white,
-        fontFamily: "Mont-regular",
+      child: AppLanguageScope(
+        controller: appLanguageController,
+        child: ListenableBuilder(
+          listenable: Listenable.merge([
+            appThemeController,
+            appColorPaletteController,
+            appLanguageController,
+          ]),
+          builder: (context, _) {
+            return MaterialApp.router(
+              debugShowCheckedModeBanner: false,
+              scrollBehavior: const _AppScrollBehavior(),
+              theme: theme(),
+              darkTheme: darkTheme(),
+              themeMode: appThemeController.themeMode,
+              locale: appLanguageController.locale,
+              title: 'ANET Merchants',
+              routerConfig: AppRoutes.router,
+              builder: (context, child) {
+                return AppUpdateGate(
+                  child: ConnectivityBlocker(
+                    child: child ?? const SizedBox.shrink(),
+                  ),
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }
 }
 
-class NavigationService {
-  NavigationService._();
+/// Enables the same direct scrolling gestures on web and native platforms.
+/// Individual pages keep ownership of their existing scroll views.
+class _AppScrollBehavior extends MaterialScrollBehavior {
+  const _AppScrollBehavior();
 
-  static final GlobalKey<NavigatorState> navigatorKey =
-      GlobalKey<NavigatorState>();
-
-  static Future<dynamic> navigateTo(String routeName, {Object? arguments}) {
-    return navigatorKey.currentState!
-        .pushNamed(routeName, arguments: arguments);
-  }
-
-  static void goBack() {
-    navigatorKey.currentState!.pop();
-  }
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+        PointerDeviceKind.trackpad,
+        PointerDeviceKind.stylus,
+      };
 }

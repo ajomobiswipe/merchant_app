@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android 12 applies a circular mask to splash icons.  The inset keeps the
+     full ANET mark inside that safe area instead of clipping its outer edges. -->
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:inset="24dp">
+    <bitmap
+        android:gravity="center"
+        android:src="@drawable/android12splash" />
+</inset>
