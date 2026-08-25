@@ -56,6 +56,8 @@ void main() {
               'transactionType': 'UPI',
               'accountDetailsAccType': 'SAVINGS',
               'code': '356',
+              'payerName': 'Amit Sharma',
+              'payeeName': 'Hardwari Sweets',
               'customerVpa': '965008427@ybl',
               'creditVpa': 'hardwarisweets.anet@axisbank',
               'rrn': '023060385758',
@@ -84,6 +86,8 @@ void main() {
       expect(txn.refId, '023060385758');
       expect(txn.transactionAmount, '100.00');
       expect(txn.accountDetailsAccType, 'SAVINGS');
+      expect(txn.payerName, 'Amit Sharma');
+      expect(txn.payeeName, 'Hardwari Sweets');
       expect(txn.creditVpa, 'hardwarisweets.anet@axisbank');
       expect(txn.merchantId, 'ALLIANCE10118254');
     });
@@ -334,4 +338,3 @@ void main() {
     });
   });
 }
-

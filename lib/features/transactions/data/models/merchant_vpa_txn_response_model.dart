@@ -89,6 +89,8 @@ class MerchantVpaTransactionModel {
   final String transactionType;
   final String accountDetailsAccType;
   final String code;
+  final String payerName;
+  final String payeeName;
   final String customerVpa;
   final String creditVpa;
   final String rrn;
@@ -104,6 +106,8 @@ class MerchantVpaTransactionModel {
     required this.transactionType,
     required this.accountDetailsAccType,
     required this.code,
+    required this.payerName,
+    required this.payeeName,
     required this.customerVpa,
     required this.creditVpa,
     required this.rrn,
@@ -121,6 +125,8 @@ class MerchantVpaTransactionModel {
       transactionType: json['transactionType'] ?? '',
       accountDetailsAccType: json['accountDetailsAccType'] ?? '',
       code: json['code'] ?? '',
+      payerName: json['payerName'] ?? '',
+      payeeName: json['payeeName'] ?? '',
       customerVpa: json['customerVpa'] ?? '',
       creditVpa: json['creditVpa'] ?? '',
       rrn: json['rrn'] ?? '',

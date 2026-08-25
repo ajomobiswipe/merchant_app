@@ -106,6 +106,14 @@ class _VpaInvoicePageState extends State<VpaInvoicePage> {
               label: 'Account Type',
               value: transaction.accountDetailsAccType,
             ),
+            _InvoiceLine(
+              label: 'Customer Name',
+              value: transaction.payerName,
+            ),
+            _InvoiceLine(
+              label: 'Payee Name',
+              value: transaction.payeeName,
+            ),
             _InvoiceLine(label: 'Customer VPA', value: transaction.customerVpa),
             _InvoiceLine(label: 'Payee VPA', value: transaction.creditVpa),
             _InvoiceLine(label: 'RRN', value: transaction.rrn),
@@ -234,6 +242,18 @@ class _VpaInvoicePageState extends State<VpaInvoicePage> {
             _pdfLine(
               'Account Type',
               transaction.accountDetailsAccType,
+              regularFont: regularFont,
+              boldFont: boldFont,
+            ),
+            _pdfLine(
+              'Customer Name',
+              transaction.payerName,
+              regularFont: regularFont,
+              boldFont: boldFont,
+            ),
+            _pdfLine(
+              'Payee Name',
+              transaction.payeeName,
               regularFont: regularFont,
               boldFont: boldFont,
             ),
