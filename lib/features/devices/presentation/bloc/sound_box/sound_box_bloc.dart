@@ -51,4 +51,3 @@ class SoundBoxBloc extends Bloc<SoundBoxEvent, SoundBoxState> {
     });
   }
 }
-

@@ -8,6 +8,7 @@ class WebHomeDashboard extends StatelessWidget {
   final List<MerchantDropdownItem> merchantItems;
   final String selectedMerchantId;
   final ValueChanged<String?> onMerchantChanged;
+  final bool isAllMerchantSelection;
   final TransactionTab selectedTab;
   final ValueChanged<TransactionTab> onTabSelected;
   final ValueChanged<int> onNavigationSelected;
@@ -26,6 +27,7 @@ class WebHomeDashboard extends StatelessWidget {
     required this.merchantItems,
     required this.selectedMerchantId,
     required this.onMerchantChanged,
+    required this.isAllMerchantSelection,
     required this.selectedTab,
     required this.onTabSelected,
     required this.onNavigationSelected,
@@ -105,22 +107,30 @@ class WebHomeDashboard extends StatelessWidget {
                                         selectedTab: selectedTab,
                                       ),
                                       const SizedBox(height: 12),
-                                      _WebTransactionTabs(
-                                        selected: selectedTab,
-                                        onSelected: onTabSelected,
-                                      ),
-                                      const SizedBox(height: 12),
-                                      _WebRecentTransactions(
-                                        selectedTab: selectedTab,
-                                        onViewAll: onViewAll,
-                                        onRefresh: onRefresh,
-                                        onPosPageRequested: onPosPageRequested,
-                                        onQrPageRequested: onQrPageRequested,
-                                        onSettlementPageRequested:
-                                            onSettlementPageRequested,
-                                        selectedVpa: selectedVpa,
-                                        onVpaChanged: onVpaChanged,
-                                      ),
+                                      if (isAllMerchantSelection)
+                                        _WebAllMerchantSummary(
+                                          onViewAll: onViewAll,
+                                          onRefresh: onRefresh,
+                                        )
+                                      else ...[
+                                        _WebTransactionTabs(
+                                          selected: selectedTab,
+                                          onSelected: onTabSelected,
+                                        ),
+                                        const SizedBox(height: 12),
+                                        _WebRecentTransactions(
+                                          selectedTab: selectedTab,
+                                          onViewAll: onViewAll,
+                                          onRefresh: onRefresh,
+                                          onPosPageRequested:
+                                              onPosPageRequested,
+                                          onQrPageRequested: onQrPageRequested,
+                                          onSettlementPageRequested:
+                                              onSettlementPageRequested,
+                                          selectedVpa: selectedVpa,
+                                          onVpaChanged: onVpaChanged,
+                                        ),
+                                      ],
                                     ],
                                   ),
                                 ),
@@ -133,6 +143,135 @@ class WebHomeDashboard extends StatelessWidget {
                   },
                 ),
               ),
+            ],
+          ),
+        ),
+      );
+}
+
+class _WebAllMerchantSummary extends StatelessWidget {
+  final VoidCallback onViewAll;
+  final VoidCallback onRefresh;
+
+  const _WebAllMerchantSummary({
+    required this.onViewAll,
+    required this.onRefresh,
+  });
+
+  @override
+  Widget build(BuildContext context) => Container(
+        decoration: _webSurface(),
+        child: BlocBuilder<PosTransactionBloc, PosTransactionState>(
+          builder: (context, state) => Column(
+            children: [
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                child: Row(
+                  children: [
+                    Text(
+                      context.tr('all_merchants'),
+                      style: AppTextStyle.h4.copyWith(
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                    const Spacer(),
+                    _WebRefreshButton(
+                      onPressed: state.transactionsLoading ? null : onRefresh,
+                    ),
+                    const SizedBox(width: 8),
+                    TextButton.icon(
+                      onPressed: onViewAll,
+                      icon: const Icon(Icons.format_list_bulleted_rounded),
+                      label: Text(context.tr('view_all_transactions')),
+                    ),
+                  ],
+                ),
+              ),
+              const Divider(height: 1),
+              if (state.transactionsLoading && state.terminalSummaries.isEmpty)
+                const Padding(
+                  padding: EdgeInsets.all(60),
+                  child: CircularProgressIndicator(),
+                )
+              else if (state.terminalSummaries.isEmpty)
+                _WebEmptyState(
+                  icon: Icons.storefront_outlined,
+                  message: context.tr('no_transactions'),
+                )
+              else ...[
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 13),
+                  decoration: BoxDecoration(
+                    color: context.isDarkMode
+                        ? context.appElevatedSurface
+                        : AppColors.primaryPurple.withValues(alpha: .10),
+                    border: Border(
+                      bottom: BorderSide(color: context.appBorder),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(child: _WebColumnLabel(context.tr('terminals'))),
+                      Expanded(
+                        child: _WebColumnLabel(
+                          context.tr('total_transactions'),
+                        ),
+                      ),
+                      Expanded(
+                        child: _WebColumnLabel(context.tr('total_amount')),
+                      ),
+                    ],
+                  ),
+                ),
+                ...state.terminalSummaries.map(
+                  (summary) => Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 17,
+                    ),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(color: context.appBorder),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            summary.serialNumber.isEmpty
+                                ? context.tr('not_available')
+                                : summary.serialNumber,
+                            style: AppTextStyle.h5.copyWith(
+                              color: context.appTextPrimary,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            '${summary.count}',
+                            style: AppTextStyle.h5.copyWith(
+                              color: context.appTextPrimary,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            'Rs. ${summary.totalAmount.toStringAsFixed(2)}',
+                            style: AppTextStyle.h5.copyWith(
+                              color: context.appTextPrimary,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ],
           ),
         ),
@@ -238,27 +377,27 @@ class _WebDashboardMetrics extends StatelessWidget {
       case TransactionTab.qr:
         return BlocBuilder<MerchantVpaTxnBloc, MerchantVpaTxnState>(
           builder: (context, state) => _buildMetrics(
-            transactionLabel: 'QR Transactions Today',
+            transactionLabel: context.tr('qr_transactions_today'),
             transactionCount: state.totalElements,
-            amountLabel: 'QR Amount Today',
+            amountLabel: context.tr('qr_amount_today'),
             amount: state.totalAmount,
           ),
         );
       case TransactionTab.settlements:
         return BlocBuilder<SettlementBloc, SettlementState>(
           builder: (context, state) => _buildMetrics(
-            transactionLabel: 'Settlements Today',
+            transactionLabel: context.tr('settlements_today'),
             transactionCount: state.totalElements,
-            amountLabel: 'Amount Settled Today',
+            amountLabel: context.tr('amount_settled_today'),
             amount: state.totalAmount,
           ),
         );
       case TransactionTab.pos:
         return BlocBuilder<PosTransactionBloc, PosTransactionState>(
           builder: (context, state) => _buildMetrics(
-            transactionLabel: 'Transactions Today',
+            transactionLabel: context.tr('transactions_today'),
             transactionCount: state.totalElements,
-            amountLabel: 'Amount Today',
+            amountLabel: context.tr('amount_today'),
             amount: state.totalAmount,
           ),
         );
@@ -329,17 +468,17 @@ class _WebTransactionTabs extends StatelessWidget {
       child: Row(children: [
         _WebTab(
             icon: Icons.credit_card_rounded,
-            label: 'POS Transactions',
+            label: context.tr('pos_transactions'),
             selected: selected == TransactionTab.pos,
             onTap: () => onSelected(TransactionTab.pos)),
         _WebTab(
             icon: Icons.qr_code_rounded,
-            label: 'QR Transactions',
+            label: context.tr('qr_transactions'),
             selected: selected == TransactionTab.qr,
             onTap: () => onSelected(TransactionTab.qr)),
         _WebTab(
             icon: Icons.receipt_long_rounded,
-            label: 'Settlement Summary',
+            label: context.tr('settlement_summary'),
             selected: selected == TransactionTab.settlements,
             onTap: () => onSelected(TransactionTab.settlements)),
       ]));
@@ -428,9 +567,9 @@ class _WebRecentTransactions extends StatelessWidget {
               child: CircularProgressIndicator(),
             )
           else if (state.transactions.isEmpty)
-            const _WebEmptyState(
+            _WebEmptyState(
               icon: Icons.receipt_long_outlined,
-              message: 'No POS transactions available',
+              message: context.tr('no_pos_transactions'),
             )
           else ...[
             _WebHomeTransactionTable(
@@ -486,16 +625,16 @@ class _WebRecentTransactions extends StatelessWidget {
             }
 
             if (state is MerchantVpaTxnFailure && state.transactions.isEmpty) {
-              return const _WebEmptyState(
+              return _WebEmptyState(
                 icon: Icons.error_outline_rounded,
-                message: 'Unable to load QR transactions. Please try again.',
+                message: context.tr('unable_load_qr_transactions'),
               );
             }
 
             if (state.transactions.isEmpty) {
-              return const _WebEmptyState(
+              return _WebEmptyState(
                 icon: Icons.qr_code_rounded,
-                message: 'No QR transactions available for this VPA',
+                message: context.tr('no_qr_transactions_for_vpa'),
               );
             }
 
@@ -545,9 +684,9 @@ class _WebRecentTransactions extends StatelessWidget {
               const Divider(height: 1),
               _WebSettlementSummary(state: state),
               const Divider(height: 1),
-              const _WebEmptyState(
+              _WebEmptyState(
                 icon: Icons.error_outline_rounded,
-                message: 'Unable to load settlements. Please try again.',
+                message: context.tr('unable_load_settlements'),
               ),
             ]);
           }
@@ -561,9 +700,9 @@ class _WebRecentTransactions extends StatelessWidget {
               const Divider(height: 1),
               _WebSettlementSummary(state: state),
               const Divider(height: 1),
-              const _WebEmptyState(
+              _WebEmptyState(
                 icon: Icons.account_balance_outlined,
-                message: 'No settlements available today',
+                message: context.tr('no_settlements_today'),
               ),
             ]);
           }
@@ -646,7 +785,7 @@ class _WebTableHeader extends StatelessWidget {
   Widget build(BuildContext context) => Padding(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       child: Row(children: [
-        Text('Recent POS Transactions',
+        Text(context.tr('recent_pos_transactions'),
             style: AppTextStyle.h4.copyWith(fontWeight: FontWeight.w900)),
         const Spacer(),
         _WebRefreshButton(onPressed: onRefresh),
@@ -654,7 +793,7 @@ class _WebTableHeader extends StatelessWidget {
         TextButton.icon(
             onPressed: onViewAll,
             icon: const Icon(Icons.format_list_bulleted_rounded),
-            label: const Text('View All Transactions'))
+            label: Text(context.tr('view_all_transactions')))
       ]));
 }
 
@@ -670,7 +809,7 @@ class _WebQrTableHeader extends StatelessWidget {
   Widget build(BuildContext context) => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         child: Row(children: [
-          Text('Recent QR Transactions',
+          Text(context.tr('recent_qr_transactions'),
               style: AppTextStyle.h4.copyWith(fontWeight: FontWeight.w900)),
           const Spacer(),
           _WebRefreshButton(onPressed: onRefresh),
@@ -678,7 +817,7 @@ class _WebQrTableHeader extends StatelessWidget {
           TextButton.icon(
               onPressed: onViewAll,
               icon: const Icon(Icons.format_list_bulleted_rounded),
-              label: const Text('View All Transactions')),
+              label: Text(context.tr('view_all_transactions'))),
         ]),
       );
 }
@@ -694,7 +833,7 @@ class _WebSettlementTableHeader extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         child: Row(children: [
           Text(
-            'Today\'s Settlements',
+            context.tr('todays_settlements'),
             style: AppTextStyle.h4.copyWith(fontWeight: FontWeight.w900),
           ),
           const Spacer(),
@@ -704,7 +843,7 @@ class _WebSettlementTableHeader extends StatelessWidget {
             TextButton.icon(
               onPressed: onViewAll,
               icon: const Icon(Icons.format_list_bulleted_rounded),
-              label: const Text('View All Settlements'),
+              label: Text(context.tr('view_all_settlements')),
             ),
         ]),
       );
@@ -743,20 +882,24 @@ class _WebTransactionColumnLabels extends StatelessWidget {
           border: Border(bottom: BorderSide(color: context.appBorder)),
         ),
         child: Row(children: [
-          const Expanded(flex: 15, child: _WebColumnLabel('AMOUNT')),
-          const Expanded(flex: 18, child: _WebColumnLabel('DATE & TIME')),
-          if (isPos) ...const [
-            Expanded(flex: 16, child: _WebColumnLabel('TID')),
-            Expanded(flex: 15, child: _WebColumnLabel('CARD TYPE')),
-            Expanded(flex: 16, child: _WebColumnLabel('TRANSACTION TYPE')),
-            Expanded(flex: 15, child: _WebColumnLabel('ENTRY MODE')),
-          ] else ...const [
-            Expanded(flex: 18, child: _WebColumnLabel('CUSTOMER NAME')),
-            Expanded(flex: 20, child: _WebColumnLabel('CUSTOMER VPA')),
-            Expanded(flex: 14, child: _WebColumnLabel('RRN')),
-            Expanded(flex: 14, child: _WebColumnLabel('REF ID')),
+          Expanded(flex: 15, child: _WebColumnLabel(context.tr('amount'))),
+          Expanded(flex: 18, child: _WebColumnLabel(context.tr('date_time'))),
+          if (isPos) ...[
+            Expanded(flex: 16, child: _WebColumnLabel(context.tr('tid'))),
+            Expanded(flex: 15, child: _WebColumnLabel(context.tr('card_type'))),
+            Expanded(
+                flex: 16,
+                child: _WebColumnLabel(context.tr('transaction_type'))),
+            Expanded(flex: 15, child: _WebColumnLabel(context.tr('entry_mode'))),
+          ] else ...[
+            Expanded(
+                flex: 18, child: _WebColumnLabel(context.tr('customer_name'))),
+            Expanded(
+                flex: 20, child: _WebColumnLabel(context.tr('customer_vpa'))),
+            Expanded(flex: 14, child: _WebColumnLabel(context.tr('rrn'))),
+            Expanded(flex: 14, child: _WebColumnLabel(context.tr('ref_id'))),
           ],
-          const SizedBox(width: 112, child: _WebColumnLabel('STATUS')),
+          SizedBox(width: 112, child: _WebColumnLabel(context.tr('status'))),
           const SizedBox(width: 32),
         ]),
       );
@@ -943,14 +1086,16 @@ class _WebSettlementColumnLabels extends StatelessWidget {
               : AppColors.primaryPurple.withValues(alpha: .10),
           border: Border(bottom: BorderSide(color: context.appBorder)),
         ),
-        child: const Row(children: [
-          SizedBox(width: 60),
-          Expanded(flex: 2, child: _WebColumnLabel('SETTLEMENT DATE')),
-          Expanded(flex: 2, child: _WebColumnLabel('UTR / TRANSACTIONS')),
-          Expanded(flex: 2, child: _WebColumnLabel('GROSS AMOUNT')),
-          Expanded(flex: 2, child: _WebColumnLabel('NET PAYABLE')),
-          SizedBox(width: 98, child: _WebColumnLabel('STATUS')),
-          SizedBox(width: 50),
+        child: Row(children: [
+          const SizedBox(width: 60),
+          Expanded(
+              flex: 2, child: _WebColumnLabel(context.tr('settlement_date'))),
+          Expanded(
+              flex: 2, child: _WebColumnLabel(context.tr('utr_transactions'))),
+          Expanded(flex: 2, child: _WebColumnLabel(context.tr('gross_amount'))),
+          Expanded(flex: 2, child: _WebColumnLabel(context.tr('net_payable'))),
+          SizedBox(width: 98, child: _WebColumnLabel(context.tr('status'))),
+          const SizedBox(width: 50),
         ]),
       );
 }
@@ -1115,7 +1260,7 @@ class _WebSettlementRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'UTR: $utr',
+                  '${context.tr('utr')}: $utr',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: AppTextStyle.h5.copyWith(fontWeight: FontWeight.w900),

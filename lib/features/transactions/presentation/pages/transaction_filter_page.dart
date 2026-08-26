@@ -65,24 +65,21 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
       return;
     }
 
-    final currentState = context.read<SoundBoxBloc>().state;
-
-    if (currentState.devices.isNotEmpty) {
-      _syncSelectedVpa(currentState.devices);
-      return;
-    }
-
     final bearerToken = await _sessionStorage.bearerToken;
     final merchantId = await _sessionStorage.merchantId;
+    final acqMerchantId = await _sessionStorage.activeAcqMerchantId;
+    final deviceMerchantId = acqMerchantId.isEmpty || acqMerchantId == '0'
+        ? merchantId
+        : acqMerchantId;
     final email = await _sessionStorage.email;
 
-    if (!mounted || bearerToken.isEmpty || merchantId.isEmpty) {
+    if (!mounted || bearerToken.isEmpty || deviceMerchantId.isEmpty) {
       return;
     }
 
     context.read<SoundBoxBloc>().add(
           GetSoundBoxDevicesRequested(
-            merchantId: merchantId,
+            merchantId: deviceMerchantId,
             bearerToken: bearerToken,
             clientUniqueId: email,
           ),
@@ -90,13 +87,6 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
   }
 
   Future<void> _loadPosTerminals() async {
-    final currentState = context.read<PosTransactionBloc>().state;
-
-    if (currentState.terminals.isNotEmpty) {
-      _syncSelectedTerminal(currentState.terminals);
-      return;
-    }
-
     final bearerToken = await _sessionStorage.bearerToken;
     final merchantId = await _sessionStorage.merchantId;
     final acqMerchantId = await _sessionStorage.activeAcqMerchantId;
@@ -1110,7 +1100,7 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
       case _DateFilter.lastMonth:
         return context.tr('last_1_month');
       case _DateFilter.last3Years:
-        return 'Last 3 Years';
+        return context.tr('last_3_years');
       case _DateFilter.custom:
         if (_customDateRange == null) {
           return context.tr('custom_date_range');

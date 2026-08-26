@@ -132,23 +132,23 @@ class _TransactionInvoicePageState extends State<TransactionInvoicePage> {
                 ),
                 SizedBox(height: compact ? 18 : 22),
                 _TwoColumnRow(
-                  leftLabel: 'Date',
+                  leftLabel: context.tr('date'),
                   leftValue: transaction.transactionDate,
-                  rightLabel: 'Time',
+                  rightLabel: context.tr('time'),
                   rightValue: transaction.transactionTime,
                   compact: compact,
                 ),
                 _TwoColumnRow(
-                  leftLabel: 'TID',
+                  leftLabel: context.tr('tid'),
                   leftValue: transaction.terminalId,
-                  rightLabel: 'MID',
+                  rightLabel: context.tr('mid'),
                   rightValue: transaction.merchantId,
                   compact: compact,
                 ),
                 _TwoColumnRow(
-                  leftLabel: 'BATCH NO',
+                  leftLabel: context.tr('batch_no'),
                   leftValue: transaction.batchNo,
-                  rightLabel: 'INVOICE',
+                  rightLabel: context.tr('invoice'),
                   rightValue: transaction.stan,
                   compact: compact,
                 ),
@@ -165,16 +165,16 @@ class _TransactionInvoicePageState extends State<TransactionInvoicePage> {
                 ),
                 SizedBox(height: compact ? 10 : 14),
                 _TwoColumnRow(
-                  leftLabel: 'CARD TYPE',
+                  leftLabel: context.tr('card_type'),
                   leftValue: transaction.schemeName.isEmpty
                       ? _schemeFromCard(transaction.cardNo)
                       : transaction.schemeName.toUpperCase(),
-                  rightLabel: 'EXP',
+                  rightLabel: context.tr('exp'),
                   rightValue: 'XX/XX',
                   compact: compact,
                 ),
                 _TwoColumnRow(
-                  leftLabel: 'CARD NO',
+                  leftLabel: context.tr('card_no'),
                   leftValue: transaction.cardNo,
                   rightLabel: '',
                   rightValue: _posEntryMode(transaction.posEntryMode),
@@ -183,9 +183,9 @@ class _TransactionInvoicePageState extends State<TransactionInvoicePage> {
                   compact: compact,
                 ),
                 _TwoColumnRow(
-                  leftLabel: 'AUTH CODE',
+                  leftLabel: context.tr('auth_code'),
                   leftValue: transaction.authCode,
-                  rightLabel: 'RRN',
+                  rightLabel: context.tr('rrn'),
                   rightValue: transaction.rrn,
                   compact: compact,
                 ),
@@ -221,7 +221,7 @@ class _TransactionInvoicePageState extends State<TransactionInvoicePage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'AMOUNT',
+                      context.tr('amount'),
                       style: AppTextStyle.h4.copyWith(
                         color: context.appTextPrimary,
                         fontWeight: FontWeight.w900,
@@ -271,7 +271,7 @@ class _TransactionInvoicePageState extends State<TransactionInvoicePage> {
                 ],
                 const SizedBox(height: 18),
                 Text(
-                  '* I am Satisfied with the goods/Services received and agree to pay as per issuer terms.',
+                  context.tr('merchant_satisfied_terms'),
                   textAlign: TextAlign.center,
                   style: AppTextStyle.h5.copyWith(
                     color: context.appTextSecondary,
@@ -282,7 +282,7 @@ class _TransactionInvoicePageState extends State<TransactionInvoicePage> {
                 const SizedBox(height: 12),
                 Center(
                   child: Text(
-                    'THANK YOU MERCHANT\nPLEASE KEEP THIS COPY',
+                    context.tr('thank_you_merchant_copy'),
                     textAlign: TextAlign.center,
                     style: AppTextStyle.h5.copyWith(
                       color: context.appTextPrimary,
@@ -314,12 +314,12 @@ class _TransactionInvoicePageState extends State<TransactionInvoicePage> {
       );
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Invoice is ready.')),
+        SnackBar(content: Text(context.tr('invoice_ready'))),
       );
     } catch (_) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Unable to prepare the invoice.')),
+        SnackBar(content: Text(context.tr('invoice_prepare_failed'))),
       );
     } finally {
       if (mounted) setState(() => _isDownloading = false);

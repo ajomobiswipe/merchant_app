@@ -105,7 +105,10 @@ class _PaymentIllustration extends StatelessWidget {
               width: 33,
               height: 43,
               decoration: BoxDecoration(
-                color: const Color(0xffF6EDFF),
+                color: Color.alphaBlend(
+                  AppColors.primaryPurple.withValues(alpha: .08),
+                  context.appSurface,
+                ),
                 borderRadius: BorderRadius.circular(6),
                 border: Border.all(color: AppColors.primaryPurple, width: 2.5),
               ),
@@ -134,8 +137,8 @@ class _PaymentIllustration extends StatelessWidget {
             child: Container(
               width: 28,
               height: 28,
-              decoration: const BoxDecoration(
-                color: Color(0xff7B36D8),
+              decoration: BoxDecoration(
+                color: AppColors.primaryPurple,
                 shape: BoxShape.circle,
               ),
               child: const Icon(

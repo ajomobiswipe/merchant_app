@@ -22,23 +22,17 @@ class SuccessSummaryCard extends StatelessWidget {
         final isTight = constraints.maxWidth < 340;
         final iconSize = isTight ? 38.0 : 46.0;
         final horizontalGap = isTight ? 7.0 : 10.0;
+        final primary = AppColors.primaryPurple;
+        final isDark = Theme.of(context).brightness == Brightness.dark;
 
         return Container(
           height: 112,
           decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Color(0xffA263EA),
-                Color(0xff6D35D5),
-                Color(0xff4829A5),
-              ],
-            ),
+            color: primary,
             borderRadius: BorderRadius.circular(14),
             boxShadow: [
               BoxShadow(
-                color: AppColors.primaryPurple.withValues(alpha: .24),
+                color: primary.withValues(alpha: isDark ? .34 : .24),
                 blurRadius: 14,
                 offset: const Offset(0, 8),
               ),

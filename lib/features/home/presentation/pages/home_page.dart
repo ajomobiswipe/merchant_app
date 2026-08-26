@@ -43,7 +43,7 @@ class _HomePageState extends State<HomePage> {
   final SessionStorage _sessionStorage = SessionStorage();
 
   int _selectedBottomIndex = 0;
-  TransactionTab _selectedTransactionTab = TransactionTab.qr;
+  TransactionTab _selectedTransactionTab = TransactionTab.pos;
   String? _selectedVpa;
   String _bearerToken = '';
   String _merchantId = '';
@@ -59,11 +59,18 @@ class _HomePageState extends State<HomePage> {
   // the POS flow because QR/VPA history depends on a single mapped merchant.
   bool get _isAllMerchantSelection => !_isTerminalUser && _acqMerchantId == '0';
 
+  DateTime get _homeTransactionStartDate {
+    final today = DateTime.now();
+    final targetYear = today.year - 2;
+    final lastDayOfTargetMonth = DateTime(targetYear, today.month + 1, 0).day;
+    final targetDay =
+        today.day > lastDayOfTargetMonth ? lastDayOfTargetMonth : today.day;
+
+    return DateTime(targetYear, today.month, targetDay);
+  }
+
   String get _homeTransactionFromDate {
-    final now = DateTime.now();
-    return DateFormat('dd-MM-yyyy').format(
-      DateTime(now.year - 2, now.month, now.day),
-    );
+    return DateFormat('dd-MM-yyyy').format(_homeTransactionStartDate);
   }
 
   String get _homeTransactionToDate {
@@ -74,7 +81,6 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _selectedBottomIndex = widget.initialBottomIndex;
-    if (kIsWeb) _selectedTransactionTab = TransactionTab.pos;
     _loadSavedSession();
   }
 
@@ -89,18 +95,18 @@ class _HomePageState extends State<HomePage> {
     final isDashboardEnabled = await _sessionStorage.isDashboardEnabled;
     final isTerminalUser = userType == 'terminal';
 
-    // For multi-merchant users we restore the last selected acquiring merchant.
-    // If that saved selection no longer exists in the latest login payload,
-    // fall back to the first valid item so downstream API calls stay consistent.
-    if (!isTerminalUser &&
-        merchantDropdownItems.isNotEmpty &&
-        !merchantDropdownItems
-            .any((item) => item.merchantId == acqMerchantId)) {
-      final selectedMerchant = merchantDropdownItems.first;
+    // Match the production mobile flow: a multi-store merchant always enters
+    // Home at the aggregate "All" option. Terminal users retain their own
+    // single terminal identity.
+    if (!isTerminalUser && merchantDropdownItems.isNotEmpty) {
+      final selectedMerchant = merchantDropdownItems.firstWhere(
+        (item) => item.isAll,
+        orElse: () => merchantDropdownItems.first,
+      );
       acqMerchantId = selectedMerchant.merchantId;
       await _sessionStorage.setActiveMerchantSelection(
         acqMerchantId: selectedMerchant.merchantId,
-        shopName: selectedMerchant.shopName,
+        shopName: selectedMerchant.displayLabel,
       );
     }
 
@@ -123,20 +129,24 @@ class _HomePageState extends State<HomePage> {
       }
     });
 
-    if (_isAllMerchantSelection) {
-      _loadPosTransactions(page: 0);
-      return;
-    }
+    _resetStoreScopedState();
+    _loadSelectedMerchantData();
+  }
 
-    if (kIsWeb && _selectedTransactionTab == TransactionTab.pos) {
-      // The desktop dashboard starts on POS, but QR history still depends on
-      // the merchant's VPA devices. Load them eagerly so the QR tab is ready
-      // as soon as it is selected.
-      _loadSoundBoxDevices();
-      _loadPosTransactions(page: 0);
-      return;
-    }
+  void _resetStoreScopedState() {
+    context.read<SoundBoxBloc>().add(const ResetSoundBoxRequested());
+    context
+        .read<MerchantVpaTxnBloc>()
+        .add(const ResetMerchantVpaTxnRequested());
+    context.read<SettlementBloc>().add(const ResetSettlementRequested());
+  }
 
+  void _loadSelectedMerchantData() {
+    _loadPosTransactions(page: 0);
+
+    if (_isAllMerchantSelection) return;
+
+    _loadSettlements(page: 0);
     _loadSoundBoxDevices();
   }
 
@@ -157,7 +167,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _onSoundBoxStateChanged(BuildContext context, SoundBoxState state) {
-    if (state is! SoundBoxSuccess || state.devices.isEmpty) {
+    if (_isAllMerchantSelection ||
+        state is! SoundBoxSuccess ||
+        state.devices.isEmpty) {
       return;
     }
 
@@ -188,6 +200,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _onTransactionTabSelected(TransactionTab tab) {
+    if (_isAllMerchantSelection && tab != TransactionTab.pos) return;
+
     if (_selectedTransactionTab == tab) {
       return;
     }
@@ -240,10 +254,12 @@ class _HomePageState extends State<HomePage> {
 
     await _sessionStorage.setActiveMerchantSelection(
       acqMerchantId: selectedMerchant.merchantId,
-      shopName: selectedMerchant.shopName,
+      shopName: selectedMerchant.displayLabel,
     );
 
     if (!mounted) return;
+
+    _resetStoreScopedState();
 
     setState(() {
       _acqMerchantId = selectedMerchant.merchantId;
@@ -255,21 +271,7 @@ class _HomePageState extends State<HomePage> {
       }
     });
 
-    if (selectedMerchant.merchantId == '0') {
-      _loadPosTransactions(page: 0);
-      return;
-    }
-
-    _loadSoundBoxDevices();
-
-    if (_selectedTransactionTab == TransactionTab.pos) {
-      _loadPosTransactions(page: 0);
-      return;
-    }
-
-    if (_selectedTransactionTab == TransactionTab.settlements) {
-      _loadSettlements(page: 0);
-    }
+    _loadSelectedMerchantData();
   }
 
   void _openTransactionFilter() {
@@ -366,14 +368,16 @@ class _HomePageState extends State<HomePage> {
       return;
     }
 
-    final today = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    final formatter = DateFormat('yyyy-MM-dd');
+    final fromDate = formatter.format(_homeTransactionStartDate);
+    final toDate = formatter.format(DateTime.now());
 
     context.read<SettlementBloc>().add(
           GetSettlementHistoryRequested(
             bearerToken: _bearerToken,
             merchantId: settlementMerchantId,
-            fromDate: today,
-            toDate: today,
+            fromDate: fromDate,
+            toDate: toDate,
             page: page,
             size: _transactionPageSize,
           ),
@@ -424,6 +428,7 @@ class _HomePageState extends State<HomePage> {
           merchantItems: _merchantDropdownItems,
           selectedMerchantId: _acqMerchantId,
           onMerchantChanged: _onMerchantChanged,
+          isAllMerchantSelection: _isAllMerchantSelection,
           selectedTab: _selectedTransactionTab,
           selectedVpa: _selectedVpa,
           onTabSelected: _onTransactionTabSelected,
@@ -529,8 +534,14 @@ class _HomePageState extends State<HomePage> {
                 onRefresh: _refreshSelectedTransactions,
               ),
               const SizedBox(height: 10),
-            ] else
+            ] else ...[
               const SizedBox(height: 12),
+              RecentTransactionsHeader(
+                title: context.tr('all_merchants'),
+                onRefresh: _refreshSelectedTransactions,
+              ),
+              const SizedBox(height: 10),
+            ],
             _buildSelectedTransactionList(),
           ],
         ),

@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:anet_merchants/config/theme/app_theme_controller.dart';
 import 'package:anet_merchants/core/common/app_colors.dart';
 import 'package:anet_merchants/core/common/app_text_style.dart';
@@ -9,9 +8,7 @@ import 'package:anet_merchants/core/services/app_update_service.dart';
 import 'package:anet_merchants/core/services/device_app_info_service.dart';
 import 'package:anet_merchants/core/storage/session_storage.dart';
 import 'package:anet_merchants/features/auth/auth.dart';
-import 'package:anet_merchants/features/devices/devices.dart';
 import 'package:anet_merchants/features/shared/shared.dart';
-import 'package:anet_merchants/features/transactions/transactions.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -30,37 +27,6 @@ class _ProfilePageState extends State<ProfilePage> {
     super.initState();
     _userInfoFuture = _sessionStorage.userInfo;
     _deviceAppInfoFuture = DeviceAppInfoService().getInfo();
-    _loadMerchantDevices();
-  }
-
-  Future<void> _loadMerchantDevices() async {
-    final bearerToken = await _sessionStorage.bearerToken;
-    final merchantId = await _sessionStorage.merchantId;
-    final acqMerchantId = await _sessionStorage.activeAcqMerchantId;
-    final email = await _sessionStorage.email;
-
-    if (!mounted || bearerToken.isEmpty || merchantId.isEmpty) {
-      return;
-    }
-
-    context.read<SoundBoxBloc>().add(
-          GetSoundBoxDevicesRequested(
-            merchantId: merchantId,
-            bearerToken: bearerToken,
-            clientUniqueId: email,
-          ),
-        );
-
-    final terminalMerchantId = acqMerchantId.isEmpty || acqMerchantId == '0'
-        ? merchantId
-        : acqMerchantId;
-
-    context.read<PosTransactionBloc>().add(
-          GetPosTerminalsRequested(
-            bearerToken: bearerToken,
-            merchantId: terminalMerchantId,
-          ),
-        );
   }
 
   @override
@@ -87,8 +53,6 @@ class _ProfilePageState extends State<ProfilePage> {
               _ProfileHeader(userInfo: userInfo),
               const SizedBox(height: 20),
               _InfoSection(userInfo: userInfo),
-              const SizedBox(height: 20),
-              const _MerchantDevicesSection(),
               const SizedBox(height: 20),
               _DeviceAppDetailsSection(infoFuture: _deviceAppInfoFuture),
               const SizedBox(height: 20),
@@ -145,20 +109,7 @@ class _WebProfileLayout extends StatelessWidget {
                     const SizedBox(height: 20),
                     _WebProfileSummary(userInfo: userInfo),
                     const SizedBox(height: 20),
-                    if (twoColumns)
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(child: _InfoSection(userInfo: userInfo)),
-                          const SizedBox(width: 20),
-                          const Expanded(child: _MerchantDevicesSection()),
-                        ],
-                      )
-                    else ...[
-                      _InfoSection(userInfo: userInfo),
-                      const SizedBox(height: 20),
-                      const _MerchantDevicesSection(),
-                    ],
+                    _InfoSection(userInfo: userInfo),
                     const SizedBox(height: 20),
                     if (twoColumns)
                       Row(
@@ -213,42 +164,6 @@ class _WebProfileSummary extends StatelessWidget {
         ],
       ),
       child: _ProfileHeader(userInfo: userInfo),
-    );
-  }
-}
-
-class _MerchantDevicesSection extends StatelessWidget {
-  const _MerchantDevicesSection();
-
-  @override
-  Widget build(BuildContext context) {
-    return _ProfileCard(
-      title: context.tr('terminals_vpas'),
-      children: [
-        BlocBuilder<PosTransactionBloc, PosTransactionState>(
-          builder: (context, state) {
-            return _InfoTile(
-              icon: Icons.point_of_sale_rounded,
-              label: context.tr('terminals'),
-              value: state.terminalsLoading
-                  ? context.tr('loading')
-                  : _listValue(state.terminals, context.tr('not_available')),
-            );
-          },
-        ),
-        BlocBuilder<SoundBoxBloc, SoundBoxState>(
-          builder: (context, state) {
-            return _InfoTile(
-              icon: Icons.qr_code_2_rounded,
-              label: context.tr('vpas'),
-              value: state is SoundBoxLoading
-                  ? context.tr('loading')
-                  : _listValue(state.devices, context.tr('not_available')),
-              showDivider: false,
-            );
-          },
-        ),
-      ],
     );
   }
 }
@@ -498,46 +413,49 @@ class _SettingsSection extends StatelessWidget {
         const _LanguageSelector(),
         const SizedBox(height: 14),
         const _ColorSchemeSelector(),
-        AnimatedBuilder(
-          animation: appThemeController,
-          builder: (context, _) {
-            return Padding(
-              padding: const EdgeInsets.only(top: 14),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      const _IconBubble(icon: Icons.palette_rounded),
-                      const SizedBox(width: 12),
-                      Text(
-                        context.tr('theme'),
-                        style: AppTextStyle.h4.copyWith(
-                          color: context.appTextPrimary,
-                          fontWeight: FontWeight.w900,
+        // Theme (system / light / dark) is native-only. Web, including
+        // mobile browsers, always uses the light brand theme.
+        if (!kIsWeb)
+          AnimatedBuilder(
+            animation: appThemeController,
+            builder: (context, _) {
+              return Padding(
+                padding: const EdgeInsets.only(top: 14),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const _IconBubble(icon: Icons.palette_rounded),
+                        const SizedBox(width: 12),
+                        Text(
+                          context.tr('theme'),
+                          style: AppTextStyle.h4.copyWith(
+                            color: context.appTextPrimary,
+                            fontWeight: FontWeight.w900,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Wrap(
-                    spacing: 10,
-                    runSpacing: 10,
-                    children: AppThemePreference.values.map((preference) {
-                      return _ThemeChip(
-                        label: _themeLabel(context, preference),
-                        selected:
-                            appThemeController.themePreference == preference,
-                        onTap: () =>
-                            appThemeController.setThemePreference(preference),
-                      );
-                    }).toList(),
-                  ),
-                ],
-              ),
-            );
-          },
-        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Wrap(
+                      spacing: 10,
+                      runSpacing: 10,
+                      children: AppThemePreference.values.map((preference) {
+                        return _ThemeChip(
+                          label: _themeLabel(context, preference),
+                          selected:
+                              appThemeController.themePreference == preference,
+                          onTap: () =>
+                              appThemeController.setThemePreference(preference),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
       ],
     );
   }
@@ -953,16 +871,6 @@ class _ThemeChip extends StatelessWidget {
 String _fallback(String? value, String fallback) {
   final normalized = value?.trim() ?? '';
   return normalized.isEmpty ? fallback : normalized;
-}
-
-String _listValue(List<String> values, String fallback) {
-  final normalized =
-      values.map((value) => value.trim()).where((value) => value.isNotEmpty);
-  if (normalized.isEmpty) {
-    return fallback;
-  }
-
-  return normalized.join(', ');
 }
 
 String _initials(String displayName, String shopName) {

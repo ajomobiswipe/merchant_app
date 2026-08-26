@@ -327,7 +327,7 @@ class _SettlementDetailPageState extends State<SettlementDetailPage> {
                 },
                 icon: const Icon(Icons.keyboard_arrow_down_rounded),
                 label: Text(
-                  'View all transactions (${widget.data.settlement.transactionCount})',
+                  '${context.tr('view_all_transactions')} (${widget.data.settlement.transactionCount})',
                 ),
               ),
           ],
@@ -388,19 +388,27 @@ class _WebSettlementActivityTableHeader extends StatelessWidget {
               : AppColors.primaryPurple.withValues(alpha: .10),
           border: Border(bottom: BorderSide(color: context.appBorder)),
         ),
-        child: const Row(
+        child: Row(
           children: [
-            Expanded(flex: 14, child: _WebActivityColumnLabel('AMOUNT')),
-            Expanded(flex: 17, child: _WebActivityColumnLabel('DATE')),
-            Expanded(flex: 18, child: _WebActivityColumnLabel('RRN')),
+            Expanded(
+                flex: 14,
+                child: _WebActivityColumnLabel(context.tr('amount'))),
+            Expanded(
+                flex: 17, child: _WebActivityColumnLabel(context.tr('date'))),
+            Expanded(
+                flex: 18, child: _WebActivityColumnLabel(context.tr('rrn'))),
             Expanded(
               flex: 18,
-              child: _WebActivityColumnLabel('APPROVAL CODE'),
+              child: _WebActivityColumnLabel(context.tr('approval_code')),
             ),
-            Expanded(flex: 15, child: _WebActivityColumnLabel('MID')),
-            Expanded(flex: 18, child: _WebActivityColumnLabel('UTR')),
-            SizedBox(width: 104, child: _WebActivityColumnLabel('STATUS')),
-            SizedBox(width: 32),
+            Expanded(
+                flex: 15, child: _WebActivityColumnLabel(context.tr('mid'))),
+            Expanded(
+                flex: 18, child: _WebActivityColumnLabel(context.tr('utr'))),
+            SizedBox(
+                width: 104,
+                child: _WebActivityColumnLabel(context.tr('status'))),
+            const SizedBox(width: 32),
           ],
         ),
       );
@@ -594,7 +602,7 @@ class _SettlementHeroCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Settled to: N/A',
+                  context.tr('settled_to_na'),
                   style: AppTextStyle.h5WhiteColor.copyWith(
                     fontWeight: FontWeight.w800,
                   ),

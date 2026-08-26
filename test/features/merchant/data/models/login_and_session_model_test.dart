@@ -80,7 +80,7 @@ void main() {
       );
       expect(
         userInfo.merchantDropdownItems[2].displayLabel,
-        'Hardwari Sweets - ID 651010000022371',
+        'Hardwari Sweets',
       );
       expect(userInfo.toJson()['emailId'], 'merchant@example.com');
       expect(userInfo.toJson()['userName'], 'hardwarisweets');
@@ -110,7 +110,7 @@ void main() {
       );
       expect(
         userInfo.merchantDropdownItems[2].displayLabel,
-        'ZXPAY - ID AXISM0000002031',
+        'ZXPAY',
       );
     });
 
@@ -154,4 +154,3 @@ void main() {
     });
   });
 }
-

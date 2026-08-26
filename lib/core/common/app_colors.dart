@@ -99,7 +99,8 @@ class AppColors {
   AppColors._();
 
   static Color get primaryPurple => appColorPaletteController.palette.primary;
-  static Color get successGreen => appColorPaletteController.palette.success;
+  // Success is a semantic state, not the palette's decorative accent.
+  static const Color successGreen = Color(0xFF10B981);
   static Color get headlineBlack => appColorPaletteController.palette.headline;
   static const Color lightGrey = Color(0xffE3E3E3);
   static const Color mutedGrey = Color(0xff9E9E9E);
@@ -115,11 +116,19 @@ extension AppThemeColors on BuildContext {
 
   Color get appSurface => isDarkMode ? const Color(0xff1A1A22) : Colors.white;
 
-  Color get appSurfaceAlt =>
-      isDarkMode ? const Color(0xff242331) : const Color(0xffF5F0FB);
+  Color get appSurfaceAlt => isDarkMode
+      ? const Color(0xff242331)
+      : Color.alphaBlend(
+          AppColors.primaryPurple.withValues(alpha: .07),
+          Colors.white,
+        );
 
-  Color get appElevatedSurface =>
-      isDarkMode ? const Color(0xff202938) : const Color(0xffEAF6FF);
+  Color get appElevatedSurface => isDarkMode
+      ? const Color(0xff202938)
+      : Color.alphaBlend(
+          AppColors.primaryPurple.withValues(alpha: .055),
+          Colors.white,
+        );
 
   Color get appTextPrimary =>
       isDarkMode ? const Color(0xffF7F4FC) : Colors.black;
@@ -130,8 +139,12 @@ extension AppThemeColors on BuildContext {
   Color get appIconColor =>
       isDarkMode ? const Color(0xffD8D2E4) : AppColors.iconGrey;
 
-  Color get appBorder =>
-      isDarkMode ? const Color(0xff343141) : const Color(0xffEEE7F8);
+  Color get appBorder => isDarkMode
+      ? const Color(0xff343141)
+      : Color.alphaBlend(
+          AppColors.primaryPurple.withValues(alpha: .14),
+          Colors.white,
+        );
 
   Color get appShadow => isDarkMode
       ? Colors.black.withValues(alpha: .34)

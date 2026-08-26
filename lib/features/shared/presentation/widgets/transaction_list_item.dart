@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:anet_merchants/core/common/app_colors.dart';
 import 'package:anet_merchants/core/common/app_text_style.dart';
+import 'package:anet_merchants/core/localization/app_language.dart';
 import 'package:anet_merchants/features/transactions/data/models/merchant_vpa_txn_response_model.dart';
 import 'package:anet_merchants/features/transactions/data/models/pos_txn_history_response_model.dart';
 import 'package:anet_merchants/features/settlements/data/models/settlement_history_response_model.dart';
@@ -104,13 +105,14 @@ class TransactionListItem extends StatelessWidget {
           width: compact ? 44 : 58,
           height: compact ? 44 : 58,
           decoration: BoxDecoration(
-            color:
-                cardStyle ? const Color(0xffEAF4FF) : const Color(0xffB995E3),
+            color: cardStyle
+                ? AppColors.primaryPurple.withValues(alpha: .10)
+                : AppColors.primaryPurple,
             shape: BoxShape.circle,
           ),
           child: Icon(
             leadingIcon,
-            color: cardStyle ? const Color(0xff438BF7) : Colors.white,
+            color: cardStyle ? AppColors.primaryPurple : Colors.white,
             size: compact ? 25 : 34,
           ),
         ),
@@ -178,14 +180,14 @@ class TransactionListItem extends StatelessWidget {
         IconButton(
           onPressed: onInfoPressed,
           icon: const Icon(Icons.info_outline_rounded),
-          color: const Color(0xff438BF7),
+          color: AppColors.primaryPurple,
           iconSize: compact ? 27 : 32,
           constraints: BoxConstraints.tightFor(
             width: compact ? 38 : 48,
             height: compact ? 38 : 48,
           ),
           padding: EdgeInsets.zero,
-          tooltip: 'Transaction details',
+          tooltip: context.tr('transaction_details'),
         ),
       ],
     );
@@ -255,4 +257,3 @@ class TransactionListItem extends StatelessWidget {
     return 'RRN: $rrn | App Code: $appCode';
   }
 }
-

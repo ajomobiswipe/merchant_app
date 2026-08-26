@@ -582,22 +582,22 @@ class _DashboardLegend extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _LegendItem(
-          color: Color(0xff5096F1),
-          label: 'POS Amount',
+          color: const Color(0xff5096F1),
+          label: context.tr('pos_amount'),
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         _LegendItem(
-          color: Color(0xffEB7B30),
-          label: 'EMI / MDR',
+          color: const Color(0xffEB7B30),
+          label: context.tr('emi_mdr'),
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         _LegendItem(
-          color: Color(0xff58E009),
-          label: 'UPI Amount',
+          color: const Color(0xff58E009),
+          label: context.tr('upi_amount'),
         ),
       ],
     );

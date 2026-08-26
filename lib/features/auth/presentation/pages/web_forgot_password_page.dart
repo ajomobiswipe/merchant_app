@@ -46,9 +46,9 @@ class WebForgotPasswordPage extends StatelessWidget {
                 },
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.only(bottom: 18),
-              child: Text('© 2026 Alliance Network™. All rights reserved.'),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 18),
+              child: Text(context.tr('all_rights_reserved')),
             ),
           ],
         ),
@@ -212,7 +212,7 @@ class _WebForgotRequestColumn extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Enter Your Details',
+                              context.tr('enter_your_details'),
                               style: AppTextStyle.h2.copyWith(
                                   color: AppColors.primaryPurple,
                                   fontWeight: FontWeight.w900),

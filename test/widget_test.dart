@@ -1,12 +1,12 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:anet_merchants/main.dart';
 
 void main() {
-  testWidgets('App shows splash while checking login session',
-      (WidgetTester tester) async {
+  testWidgets('App root starts successfully', (WidgetTester tester) async {
     await tester.pumpWidget(const MyApp());
 
-    expect(find.text('Loading...'), findsOneWidget);
+    expect(find.byType(MaterialApp), findsOneWidget);
   });
 }

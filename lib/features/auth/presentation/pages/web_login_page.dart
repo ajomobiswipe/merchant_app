@@ -158,7 +158,7 @@ class _WelcomePanel extends StatelessWidget {
           ),
           const SizedBox(height: 62),
           Text(
-            'Welcome Back!',
+            context.tr('login_welcome_title'),
             style: AppTextStyle.h2.copyWith(
               color: const Color(0xff202331),
               fontWeight: FontWeight.w900,
@@ -166,7 +166,7 @@ class _WelcomePanel extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Text(
-            'Sign in to access your merchant dashboard\nand manage your business securely.',
+            context.tr('login_web_hero_message'),
             style: AppTextStyle.h4.copyWith(
               color: const Color(0xff65708E),
               height: 1.6,
@@ -192,15 +192,13 @@ class _WebPromoCarouselState extends State<_WebPromoCarousel> {
   static const _slides = [
     _WebPromoSlide(
       image: AppAssets.webPromoSecurity,
-      title: 'Fintech Security',
-      caption:
-          'End-to-end security helps protect every digital financial transaction.',
+      titleKey: 'promo_security_title',
+      captionKey: 'promo_security_caption',
     ),
     _WebPromoSlide(
       image: AppAssets.webPromoDashboard,
-      title: 'Manage your business securely online',
-      caption:
-          'Track payments, settlements and business performance from one place.',
+      titleKey: 'promo_dashboard_title',
+      captionKey: 'promo_dashboard_caption',
     ),
   ];
 
@@ -243,7 +241,7 @@ class _WebPromoCarouselState extends State<_WebPromoCarousel> {
             itemBuilder: (context, index) => Image.asset(
               _slides[index].image,
               fit: BoxFit.contain,
-              semanticLabel: _slides[index].title,
+              semanticLabel: context.tr(_slides[index].titleKey),
             ),
           ),
         ),
@@ -254,7 +252,7 @@ class _WebPromoCarouselState extends State<_WebPromoCarousel> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                _slides[_currentPage].title,
+                context.tr(_slides[_currentPage].titleKey),
                 style: AppTextStyle.h3.copyWith(
                   color: const Color(0xff202331),
                   fontWeight: FontWeight.w900,
@@ -262,7 +260,7 @@ class _WebPromoCarouselState extends State<_WebPromoCarousel> {
               ),
               const SizedBox(height: 6),
               Text(
-                _slides[_currentPage].caption,
+                context.tr(_slides[_currentPage].captionKey),
                 style: AppTextStyle.h4.copyWith(
                   color: const Color(0xff65708E),
                   height: 1.45,
@@ -297,13 +295,13 @@ class _WebPromoCarouselState extends State<_WebPromoCarousel> {
 
 class _WebPromoSlide {
   final String image;
-  final String title;
-  final String caption;
+  final String titleKey;
+  final String captionKey;
 
   const _WebPromoSlide({
     required this.image,
-    required this.title,
-    required this.caption,
+    required this.titleKey,
+    required this.captionKey,
   });
 }
 

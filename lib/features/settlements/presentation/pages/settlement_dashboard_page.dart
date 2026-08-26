@@ -684,23 +684,26 @@ class _WebSettlementTableColumnLabels extends StatelessWidget {
               : AppColors.primaryPurple.withValues(alpha: .10),
           border: Border(bottom: BorderSide(color: context.appBorder)),
         ),
-        child: const Row(
+        child: Row(
           children: [
-            Expanded(flex: 18, child: _WebSettlementColumnLabel('AMOUNT')),
+            Expanded(
+                flex: 18,
+                child: _WebSettlementColumnLabel(context.tr('amount'))),
             Expanded(
               flex: 20,
-              child: _WebSettlementColumnLabel('SETTLEMENT DATE'),
+              child: _WebSettlementColumnLabel(context.tr('settlement_date')),
             ),
-            Expanded(flex: 25, child: _WebSettlementColumnLabel('UTR')),
+            Expanded(
+                flex: 25, child: _WebSettlementColumnLabel(context.tr('utr'))),
             Expanded(
               flex: 17,
-              child: _WebSettlementColumnLabel('TRANSACTIONS'),
+              child: _WebSettlementColumnLabel(context.tr('transactions')),
             ),
             SizedBox(
               width: 142,
-              child: _WebSettlementColumnLabel('STATUS'),
+              child: _WebSettlementColumnLabel(context.tr('status')),
             ),
-            SizedBox(width: 32),
+            const SizedBox(width: 32),
           ],
         ),
       );

@@ -86,10 +86,6 @@ class PosTransactionBloc
       ),
     );
 
-    if (requestGeneration != _transactionRequestGeneration || emit.isDone) {
-      return;
-    }
-
     final dataState = await _getPosTransactions(
       params: GetPosTransactionsParams(
         bearerToken: event.bearerToken,
@@ -110,6 +106,10 @@ class PosTransactionBloc
         sendTxnReportToMail: event.sendTxnReportToMail,
       ),
     );
+
+    if (requestGeneration != _transactionRequestGeneration || emit.isDone) {
+      return;
+    }
 
     if (dataState is DataSuccess<PosTxnHistoryResponseModel>) {
       final page = dataState.data!.responsePage;

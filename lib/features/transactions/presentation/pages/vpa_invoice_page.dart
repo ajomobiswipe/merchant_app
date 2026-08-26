@@ -73,7 +73,7 @@ class _VpaInvoicePageState extends State<VpaInvoicePage> {
             const SizedBox(height: 24),
             Text(
               _shopName.trim().isEmpty
-                  ? 'MERCHANT NAME'
+                  ? context.tr('merchant_name')
                   : _shopName.toUpperCase(),
               textAlign: TextAlign.center,
               maxLines: 3,
@@ -85,38 +85,42 @@ class _VpaInvoicePageState extends State<VpaInvoicePage> {
             ),
             const SizedBox(height: 28),
             _TwoColumnRow(
-              leftLabel: 'Date',
+              leftLabel: context.tr('date'),
               leftValue: _dateText(transaction.addedOn),
-              rightLabel: 'Time',
+              rightLabel: context.tr('time'),
               rightValue: _timeText(transaction.addedOn),
             ),
             _TwoColumnRow(
-              leftLabel: 'Merchant ID',
+              leftLabel: context.tr('merchant_id'),
               leftValue: transaction.merchantId,
-              rightLabel: 'Ref ID',
+              rightLabel: context.tr('ref_id'),
               rightValue: transaction.refId,
             ),
             _InvoiceLine(
-              label: 'Transaction Type',
-              value: _transactionType(transaction.transactionType),
+              label: context.tr('transaction_type'),
+              value: _transactionType(context, transaction.transactionType),
             ),
             _InvoiceLine(
-                label: 'Transaction Status', value: transaction.status),
+                label: context.tr('transaction_status'),
+                value: transaction.status),
             _InvoiceLine(
-              label: 'Account Type',
+              label: context.tr('account_type'),
               value: transaction.accountDetailsAccType,
             ),
             _InvoiceLine(
-              label: 'Customer Name',
+              label: context.tr('customer_name'),
               value: transaction.payerName,
             ),
             _InvoiceLine(
-              label: 'Payee Name',
+              label: context.tr('payee_name'),
               value: transaction.payeeName,
             ),
-            _InvoiceLine(label: 'Customer VPA', value: transaction.customerVpa),
-            _InvoiceLine(label: 'Payee VPA', value: transaction.creditVpa),
-            _InvoiceLine(label: 'RRN', value: transaction.rrn),
+            _InvoiceLine(
+                label: context.tr('customer_vpa'),
+                value: transaction.customerVpa),
+            _InvoiceLine(
+                label: context.tr('payee_vpa'), value: transaction.creditVpa),
+            _InvoiceLine(label: context.tr('rrn'), value: transaction.rrn),
             const SizedBox(height: 12),
             Divider(color: context.appBorder),
             _AmountRow(
@@ -126,7 +130,7 @@ class _VpaInvoicePageState extends State<VpaInvoicePage> {
             Divider(color: context.appBorder),
             const SizedBox(height: 24),
             Text(
-              'THANK YOU FOR USING OUR SERVICE',
+              context.tr('thank_you_service'),
               textAlign: TextAlign.center,
               style: AppTextStyle.h3.copyWith(
                 color: context.appTextPrimary,
@@ -135,7 +139,7 @@ class _VpaInvoicePageState extends State<VpaInvoicePage> {
             ),
             const SizedBox(height: 8),
             Text(
-              'Keep this receipt for your records.',
+              context.tr('keep_receipt'),
               textAlign: TextAlign.center,
               style: AppTextStyle.h4.copyWith(
                 color: context.appTextPrimary,
@@ -164,12 +168,12 @@ class _VpaInvoicePageState extends State<VpaInvoicePage> {
       );
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Invoice is ready.')),
+        SnackBar(content: Text(context.tr('invoice_ready'))),
       );
     } catch (_) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Unable to prepare the invoice.')),
+        SnackBar(content: Text(context.tr('invoice_prepare_failed'))),
       );
     } finally {
       if (mounted) setState(() => _isDownloading = false);
@@ -229,7 +233,7 @@ class _VpaInvoicePageState extends State<VpaInvoicePage> {
             ),
             _pdfLine(
               'Transaction Type',
-              _transactionType(transaction.transactionType),
+              _transactionTypeLabel(transaction.transactionType),
               regularFont: regularFont,
               boldFont: boldFont,
             ),
@@ -324,7 +328,16 @@ class _VpaInvoicePageState extends State<VpaInvoicePage> {
     return code == '356' || code.toUpperCase() == 'INR' ? 'INR' : 'INR';
   }
 
-  static String _transactionType(String value) {
+  static String _transactionType(BuildContext context, String value) {
+    if (value == '00' || value == 'TRANSFER') {
+      return context.tr('cash_withdrawal');
+    }
+    if (value == '21') return context.tr('balance_enquiry');
+    if (value == '22') return context.tr('mini_statement');
+    return value.isEmpty ? context.tr('not_available') : value;
+  }
+
+  static String _transactionTypeLabel(String value) {
     if (value == '00' || value == 'TRANSFER') return 'Cash Withdrawal';
     if (value == '21') return 'Balance Enquiry';
     if (value == '22') return 'Mini Statement';

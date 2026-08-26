@@ -530,18 +530,19 @@ class _RaiseRequestButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final primary = AppColors.primaryPurple;
+
     return SizedBox(
       width: double.infinity,
       height: 64,
       child: ElevatedButton(
         onPressed: selectedAction == null || isSubmitting ? null : onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primaryPurple,
-          disabledBackgroundColor:
-              AppColors.primaryPurple.withValues(alpha: .45),
+          backgroundColor: primary,
+          disabledBackgroundColor: primary.withValues(alpha: .45),
           foregroundColor: Colors.white,
           elevation: 8,
-          shadowColor: AppColors.primaryPurple.withValues(alpha: .25),
+          shadowColor: primary.withValues(alpha: .25),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
           ),

@@ -190,7 +190,7 @@ class _QuickActionText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final subtitle = _quickActionSubtitle(action);
+    final subtitle = _quickActionSubtitle(context, action);
     if (primaryOnly || subtitle == null) {
       return Text(
         action.quickActionMessage,
@@ -222,16 +222,16 @@ class _QuickActionText extends StatelessWidget {
     );
   }
 
-  String? _quickActionSubtitle(SupportActionModel action) {
+  String? _quickActionSubtitle(BuildContext context, SupportActionModel action) {
     if (action.quickActionStatus.trim().isNotEmpty) {
       return action.quickActionStatus;
     }
 
     if (action.quickActionMessage.toLowerCase().contains('paper roll')) {
-      return 'Request for new paper roll';
+      return context.tr('request_paper_roll');
     }
 
-    return 'Submit a support request';
+    return context.tr('submit_support_request');
   }
 }
 
@@ -361,6 +361,8 @@ class _WebRaiseRequestCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final enabled = isEnabled && !isSubmitting;
+    final primary = AppColors.primaryPurple;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Semantics(
       button: true,
@@ -377,15 +379,13 @@ class _WebRaiseRequestCard extends StatelessWidget {
             child: Ink(
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: enabled
-                      ? const [Color(0xff8B29EA), Color(0xff6513D3)]
-                      : const [Color(0xffB9A1DD), Color(0xffA387CF)],
-                ),
+                color: enabled
+                    ? primary
+                    : primary.withValues(alpha: isDark ? .46 : .45),
                 borderRadius: BorderRadius.circular(11),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.primaryPurple.withValues(alpha: .22),
+                    color: primary.withValues(alpha: isDark ? .32 : .22),
                     blurRadius: 16,
                     offset: const Offset(0, 8),
                   ),
@@ -422,7 +422,7 @@ class _WebRaiseRequestCard extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          'Submit a new support request',
+                          context.tr('submit_new_support_request'),
                           style: AppTextStyle.h5.copyWith(
                             color: Colors.white.withValues(alpha: .88),
                             fontWeight: FontWeight.w600,

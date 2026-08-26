@@ -43,6 +43,8 @@ class _TransactionListPageState extends State<TransactionListPage> {
   bool _isSendingEmail = false;
 
   bool get _supportsEmailReport => widget.filter.tab != TransactionTab.qr;
+  bool get _isAllMerchantSelection =>
+      widget.filter.tab == TransactionTab.pos && _acqMerchantId == '0';
 
   @override
   void initState() {
@@ -412,9 +414,22 @@ class _TransactionListPageState extends State<TransactionListPage> {
   Widget _buildWebPosTransactionTable() {
     return BlocBuilder<PosTransactionBloc, PosTransactionState>(
       builder: (context, state) {
-        if (state.transactionsLoading && state.transactions.isEmpty) {
+        if (state.transactionsLoading &&
+            state.transactions.isEmpty &&
+            state.terminalSummaries.isEmpty) {
           return const _LoadingTransactions();
         }
+
+        if (_isAllMerchantSelection) {
+          if (state.terminalSummaries.isEmpty) {
+            return const _EmptyTransactions();
+          }
+
+          return _WebTerminalSummaryTable(
+            summaries: state.terminalSummaries,
+          );
+        }
+
         if (state.transactions.isEmpty) return const _EmptyTransactions();
 
         return Column(
@@ -837,8 +852,18 @@ class _TransactionListPageState extends State<TransactionListPage> {
   Widget _buildPosTransactionList() {
     return BlocBuilder<PosTransactionBloc, PosTransactionState>(
       builder: (context, state) {
-        if (state.transactionsLoading && state.transactions.isEmpty) {
+        if (state.transactionsLoading &&
+            state.transactions.isEmpty &&
+            state.terminalSummaries.isEmpty) {
           return const _LoadingTransactions();
+        }
+
+        if (_isAllMerchantSelection) {
+          if (state.terminalSummaries.isEmpty) {
+            return const _EmptyTransactions();
+          }
+
+          return _TerminalSummaryList(summaries: state.terminalSummaries);
         }
 
         if (state.transactions.isEmpty) {
@@ -984,6 +1009,168 @@ class _WebResultEntry {
   });
 }
 
+class _WebTerminalSummaryTable extends StatelessWidget {
+  final List<PosTerminalSummaryModel> summaries;
+
+  const _WebTerminalSummaryTable({required this.summaries});
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) => SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: SizedBox(
+          width: constraints.maxWidth < 720 ? 720 : constraints.maxWidth,
+          child: Column(
+            children: [
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                decoration: BoxDecoration(
+                  color: context.isDarkMode
+                      ? context.appElevatedSurface
+                      : AppColors.primaryPurple.withValues(alpha: .10),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Row(
+                  children: [
+                    _TerminalSummaryCell(
+                      label: context.tr('terminals'),
+                      header: true,
+                    ),
+                    _TerminalSummaryCell(
+                      label: context.tr('total_transactions'),
+                      header: true,
+                    ),
+                    _TerminalSummaryCell(
+                      label: context.tr('total_amount'),
+                      header: true,
+                    ),
+                  ],
+                ),
+              ),
+              for (var index = 0; index < summaries.length; index++)
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 17,
+                  ),
+                  decoration: BoxDecoration(
+                    color: index.isOdd
+                        ? context.appSurfaceAlt
+                        : context.appSurface,
+                    border: Border(
+                      bottom: BorderSide(color: context.appBorder),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      _TerminalSummaryCell(
+                        label: summaries[index].serialNumber.isEmpty
+                            ? context.tr('not_available')
+                            : summaries[index].serialNumber,
+                        bold: true,
+                      ),
+                      _TerminalSummaryCell(
+                        label: '${summaries[index].count}',
+                      ),
+                      _TerminalSummaryCell(
+                        label:
+                            'Rs. ${summaries[index].totalAmount.toStringAsFixed(2)}',
+                        bold: true,
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _TerminalSummaryCell extends StatelessWidget {
+  final String label;
+  final bool header;
+  final bool bold;
+
+  const _TerminalSummaryCell({
+    required this.label,
+    this.header = false,
+    this.bold = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Text(
+        label,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: AppTextStyle.h5.copyWith(
+          color: context.appTextPrimary,
+          fontWeight: header || bold ? FontWeight.w900 : FontWeight.w700,
+        ),
+      ),
+    );
+  }
+}
+
+class _TerminalSummaryList extends StatelessWidget {
+  final List<PosTerminalSummaryModel> summaries;
+
+  const _TerminalSummaryList({required this.summaries});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: summaries
+          .map(
+            (summary) => Container(
+              width: double.infinity,
+              margin: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
+              decoration: BoxDecoration(
+                color: context.appElevatedSurface,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: context.appBorder),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${context.tr('terminals')}: ${summary.serialNumber.isEmpty ? context.tr('not_available') : summary.serialNumber}',
+                    style: AppTextStyle.h4.copyWith(
+                      color: context.appTextPrimary,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    '${context.tr('total_transactions')}: ${summary.count}',
+                    style: AppTextStyle.h5.copyWith(
+                      color: context.appTextPrimary,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    '${context.tr('total_amount')}: Rs. ${summary.totalAmount.toStringAsFixed(2)}',
+                    style: AppTextStyle.h5.copyWith(
+                      color: context.appTextPrimary,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
+          .toList(),
+    );
+  }
+}
+
 /// Browser-only table styling. The entries themselves continue to come from
 /// the same mobile blocs and use the same detail/invoice navigation.
 class _WebResultTable extends StatelessWidget {
@@ -1048,30 +1235,49 @@ class _WebResultTableHeader extends StatelessWidget {
       ),
       child: Row(
         children: [
-          if (isPosTable) ...const [
-            _WebResultTableCell(label: 'Amount', flex: 12, header: true),
-            _WebResultTableCell(label: 'Date & Time', flex: 16, header: true),
-            _WebResultTableCell(label: 'TID', flex: 13, header: true),
-            _WebResultTableCell(label: 'Card Type', flex: 15, header: true),
+          if (isPosTable) ...[
             _WebResultTableCell(
-                label: 'Transaction Type', flex: 16, header: true),
-            _WebResultTableCell(label: 'Entry Mode', flex: 14, header: true),
-            _WebResultTableCell(label: 'Status', flex: 14, header: true),
-          ] else if (isQrTable) ...const [
-            _WebResultTableCell(label: 'Amount', flex: 13, header: true),
-            _WebResultTableCell(label: 'Date & Time', flex: 16, header: true),
-            _WebResultTableCell(label: 'Customer Name', flex: 18, header: true),
-            _WebResultTableCell(label: 'Customer VPA', flex: 20, header: true),
-            _WebResultTableCell(label: 'RRN', flex: 14, header: true),
-            _WebResultTableCell(label: 'Ref ID', flex: 14, header: true),
-            _WebResultTableCell(label: 'Status', flex: 14, header: true),
-          ] else ...const [
-            _WebResultTableCell(label: 'Date', flex: 12, header: true),
-            _WebResultTableCell(label: 'Amount', flex: 12, header: true),
-            _WebResultTableCell(label: 'Payment Name', flex: 20, header: true),
-            _WebResultTableCell(label: 'Method', flex: 15, header: true),
-            _WebResultTableCell(label: 'Category', flex: 16, header: true),
-            _WebResultTableCell(label: 'Status', flex: 15, header: true),
+                label: context.tr('amount'), flex: 12, header: true),
+            _WebResultTableCell(
+                label: context.tr('date_time'), flex: 16, header: true),
+            _WebResultTableCell(
+                label: context.tr('tid'), flex: 13, header: true),
+            _WebResultTableCell(
+                label: context.tr('card_type'), flex: 15, header: true),
+            _WebResultTableCell(
+                label: context.tr('transaction_type'), flex: 16, header: true),
+            _WebResultTableCell(
+                label: context.tr('entry_mode'), flex: 14, header: true),
+            _WebResultTableCell(
+                label: context.tr('status'), flex: 14, header: true),
+          ] else if (isQrTable) ...[
+            _WebResultTableCell(
+                label: context.tr('amount'), flex: 13, header: true),
+            _WebResultTableCell(
+                label: context.tr('date_time'), flex: 16, header: true),
+            _WebResultTableCell(
+                label: context.tr('customer_name'), flex: 18, header: true),
+            _WebResultTableCell(
+                label: context.tr('customer_vpa'), flex: 20, header: true),
+            _WebResultTableCell(
+                label: context.tr('rrn'), flex: 14, header: true),
+            _WebResultTableCell(
+                label: context.tr('ref_id'), flex: 14, header: true),
+            _WebResultTableCell(
+                label: context.tr('status'), flex: 14, header: true),
+          ] else ...[
+            _WebResultTableCell(
+                label: context.tr('date'), flex: 12, header: true),
+            _WebResultTableCell(
+                label: context.tr('amount'), flex: 12, header: true),
+            _WebResultTableCell(
+                label: context.tr('payment_name'), flex: 20, header: true),
+            _WebResultTableCell(
+                label: context.tr('method'), flex: 15, header: true),
+            _WebResultTableCell(
+                label: context.tr('category'), flex: 16, header: true),
+            _WebResultTableCell(
+                label: context.tr('status'), flex: 15, header: true),
           ],
         ],
       ),

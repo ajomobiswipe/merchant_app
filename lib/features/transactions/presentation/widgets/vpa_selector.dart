@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:anet_merchants/core/common/app_colors.dart';
 import 'package:anet_merchants/core/common/app_text_style.dart';
+import 'package:anet_merchants/core/localization/app_language.dart';
 
 class VpaSelector extends StatelessWidget {
   final List<String> vpas;
@@ -38,7 +39,7 @@ class VpaSelector extends StatelessWidget {
           Expanded(
             child: isLoading
                 ? Text(
-                    'Loading VPA devices...',
+                    context.tr('loading_vpa_devices'),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: AppTextStyle.h4.copyWith(
@@ -52,7 +53,7 @@ class VpaSelector extends StatelessWidget {
                       isExpanded: true,
                       icon: const SizedBox.shrink(),
                       hint: Text(
-                        'No VPA devices available',
+                        context.tr('no_vpa_devices'),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: AppTextStyle.h4.copyWith(

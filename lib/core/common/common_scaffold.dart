@@ -405,7 +405,7 @@ class WebHelpCard extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            'Need Help?',
+            context.tr('need_help'),
             style: AppTextStyle.h4.copyWith(
               color: const Color(0xff201D27),
               fontWeight: FontWeight.w900,
@@ -413,7 +413,7 @@ class WebHelpCard extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            'Our support team\nis here to assist you.',
+            context.tr('support_team_assist'),
             textAlign: TextAlign.center,
             style: AppTextStyle.h5.copyWith(
               color: const Color(0xff6E6880),
@@ -430,12 +430,12 @@ class WebHelpCard extends StatelessWidget {
                 side: const BorderSide(color: Color(0xffD8BEFF)),
                 padding: const EdgeInsets.symmetric(vertical: 10),
               ),
-              child: const Row(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Contact Support'),
-                  SizedBox(width: 8),
-                  Icon(Icons.arrow_forward_rounded, size: 18),
+                  Text(context.tr('contact_support')),
+                  const SizedBox(width: 8),
+                  const Icon(Icons.arrow_forward_rounded, size: 18),
                 ],
               ),
             ),

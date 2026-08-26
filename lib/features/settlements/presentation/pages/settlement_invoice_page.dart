@@ -78,7 +78,7 @@ class _SettlementInvoicePageState extends State<SettlementInvoicePage> {
             const SizedBox(height: 18),
             Text(
               _shopName.trim().isEmpty
-                  ? 'MERCHANT NAME'
+                  ? context.tr('merchant_name')
                   : _shopName.toUpperCase(),
               textAlign: TextAlign.center,
               maxLines: 3,
@@ -93,17 +93,17 @@ class _SettlementInvoicePageState extends State<SettlementInvoicePage> {
               label: context.tr('date'),
               value: _formatDate(transaction.tranDate),
             ),
-            _InvoiceLine(label: 'RRN', value: transaction.rrn),
+            _InvoiceLine(label: context.tr('rrn'), value: transaction.rrn),
             _InvoiceLine(
-              label: 'Approval Code',
+              label: context.tr('approval_code'),
               value: transaction.approveCode,
             ),
-            _InvoiceLine(label: 'MID', value: transaction.mid),
-            _InvoiceLine(label: 'UTR', value: transaction.utr),
+            _InvoiceLine(label: context.tr('mid'), value: transaction.mid),
+            _InvoiceLine(label: context.tr('utr'), value: transaction.utr),
             const SizedBox(height: 8),
             Divider(color: context.appBorder),
             _AmountLine(
-              label: 'Gross Amount',
+              label: context.tr('gross_amount'),
               amount: transaction.grossTransactionAmount,
             ),
             _AmountLine(label: 'MDR', amount: transaction.mdrAmount),
@@ -113,17 +113,19 @@ class _SettlementInvoicePageState extends State<SettlementInvoicePage> {
             Divider(color: context.appBorder),
             const SizedBox(height: 12),
             _InvoiceLine(
-              label: 'Merchant Payment Done',
-              value: _yesNo(transaction.merPayDone),
+              label: context.tr('merchant_payment_done'),
+              value: _yesNo(context, transaction.merPayDone),
             ),
-            _InvoiceLine(label: 'MIS Done', value: _yesNo(transaction.misDone)),
             _InvoiceLine(
-              label: 'Reconciled',
-              value: _yesNo(transaction.reconciled),
+                label: context.tr('mis_done'),
+                value: _yesNo(context, transaction.misDone)),
+            _InvoiceLine(
+              label: context.tr('reconciled'),
+              value: _yesNo(context, transaction.reconciled),
             ),
             const SizedBox(height: 30),
             Text(
-              'THANK YOU FOR USING OUR SERVICE',
+              context.tr('thank_you_service'),
               textAlign: TextAlign.center,
               style: AppTextStyle.h3.copyWith(
                 color: context.appTextPrimary,
@@ -132,7 +134,7 @@ class _SettlementInvoicePageState extends State<SettlementInvoicePage> {
             ),
             const SizedBox(height: 8),
             Text(
-              'Keep this receipt for your records.',
+              context.tr('keep_receipt'),
               textAlign: TextAlign.center,
               style: AppTextStyle.h4.copyWith(
                 color: context.appTextPrimary,
@@ -161,12 +163,12 @@ class _SettlementInvoicePageState extends State<SettlementInvoicePage> {
       );
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Invoice is ready.')),
+        SnackBar(content: Text(context.tr('invoice_ready'))),
       );
     } catch (_) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Unable to prepare the invoice.')),
+        SnackBar(content: Text(context.tr('invoice_prepare_failed'))),
       );
     } finally {
       if (mounted) setState(() => _isDownloading = false);
@@ -264,19 +266,19 @@ class _SettlementInvoicePageState extends State<SettlementInvoicePage> {
             pw.SizedBox(height: 12),
             _pdfLine(
               'Merchant Payment Done',
-              _yesNo(transaction.merPayDone),
+              _yesNoLabel(transaction.merPayDone),
               regularFont: regularFont,
               boldFont: boldFont,
             ),
             _pdfLine(
               'MIS Done',
-              _yesNo(transaction.misDone),
+              _yesNoLabel(transaction.misDone),
               regularFont: regularFont,
               boldFont: boldFont,
             ),
             _pdfLine(
               'Reconciled',
-              _yesNo(transaction.reconciled),
+              _yesNoLabel(transaction.reconciled),
               regularFont: regularFont,
               boldFont: boldFont,
             ),
@@ -434,7 +436,7 @@ class _DownloadButton extends StatelessWidget {
                 )
               : const Icon(Icons.download_rounded, size: 26),
           label: Text(
-            isDownloading ? 'Preparing...' : context.tr('download'),
+            isDownloading ? context.tr('preparing') : context.tr('download'),
             style: AppTextStyle.h4WhiteColor.copyWith(
               fontWeight: FontWeight.w900,
             ),
@@ -460,7 +462,10 @@ String _formatDate(DateTime? date) {
 
 String _fallback(String value) => value.trim().isEmpty ? 'N/A' : value;
 
-String _yesNo(bool value) => value ? 'Yes' : 'No';
+String _yesNo(BuildContext context, bool value) =>
+    value ? context.tr('yes') : context.tr('no');
+
+String _yesNoLabel(bool value) => value ? 'Yes' : 'No';
 
 pw.Widget _pdfLogo(pw.MemoryImage logoImage) {
   return pw.Center(

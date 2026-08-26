@@ -20,8 +20,10 @@
 
   <!-- iOS meta tags & icons -->
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="ANET Merchants">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#FFFFFF">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
@@ -89,11 +91,7 @@
       right: 0;
     }
 
-    @media (prefers-color-scheme: dark) {
-      body {
-        background-color: #111016;
-          }
-    }
+    /* Web always uses the light splash, including mobile browsers in OS dark mode. */
   </style>
   <script id="splash-screen-script">
     function removeSplashFromWeb() {
@@ -105,9 +103,7 @@
 </head>
 <body>
   <picture id="splash">
-      <source srcset="splash/img/light-1x.png 1x, splash/img/light-2x.png 2x, splash/img/light-3x.png 3x, splash/img/light-4x.png 4x" media="(prefers-color-scheme: light)">
-      <source srcset="splash/img/dark-1x.png 1x, splash/img/dark-2x.png 2x, splash/img/dark-3x.png 3x, splash/img/dark-4x.png 4x" media="(prefers-color-scheme: dark)">
-      <img class="center" aria-hidden="true" src="splash/img/light-1x.png" alt="">
+      <img class="center" aria-hidden="true" src="splash/img/light-1x.png" srcset="splash/img/light-1x.png 1x, splash/img/light-2x.png 2x, splash/img/light-3x.png 3x, splash/img/light-4x.png 4x" alt="">
   </picture>
   <script src="flutter_bootstrap.js" async></script>
 </body></html>

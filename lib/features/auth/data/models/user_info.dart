@@ -256,8 +256,6 @@ class MerchantDropdownItem {
           : '$normalizedShopName - ID $normalizedSerialNo';
     }
 
-    return normalizedShopName.isEmpty
-        ? merchantId
-        : '$normalizedShopName - ID $merchantId';
+    return normalizedShopName.isEmpty ? merchantId : normalizedShopName;
   }
 }

@@ -12,9 +12,8 @@ class AppThemeController extends ChangeNotifier {
   AppThemePreference get themePreference => _themePreference;
 
   ThemeMode get themeMode {
-    // The browser experience uses the light brand system by default. This
-    // deliberately ignores a device's saved/system dark preference so web
-    // login and dashboard surfaces remain consistent.
+    // Web (desktop and mobile browsers) is always light so login and
+    // dashboard stay on the brand palette regardless of OS dark mode.
     if (kIsWeb) return ThemeMode.light;
 
     switch (_themePreference) {
@@ -39,6 +38,10 @@ class AppThemeController extends ChangeNotifier {
   }
 
   Future<void> setThemePreference(AppThemePreference preference) async {
+    if (kIsWeb) {
+      return;
+    }
+
     if (_themePreference == preference) {
       return;
     }

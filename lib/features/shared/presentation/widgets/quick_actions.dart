@@ -98,7 +98,7 @@ class _QuickActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final foreground = selected ? Colors.white : AppColors.primaryPurple;
     final background =
-        selected ? AppColors.successGreen : context.appSurfaceAlt;
+        selected ? AppColors.primaryPurple : context.appSurfaceAlt;
 
     return LayoutBuilder(
       builder: (context, constraints) {
