@@ -7,6 +7,10 @@ sealed class SettlementEvent extends Equatable {
   List<Object?> get props => [];
 }
 
+class ResetSettlementRequested extends SettlementEvent {
+  const ResetSettlementRequested();
+}
+
 class GetSettlementHistoryRequested extends SettlementEvent {
   final String bearerToken;
   final String merchantId;

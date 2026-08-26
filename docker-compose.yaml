@@ -1,0 +1,29 @@
+name: anet-merchants
+
+services:
+  anet-merchants-web:
+    container_name: anet-merchants-web-prod
+    image: omaemirates/anet-merchants-web:1.0.1-prod
+    ports:
+      - "8080:443"
+    volumes:
+      - "C:/Anet-merchant-web/certs:/app/certs:ro"
+    environment:
+      - SSL_CRT_FILE=/app/certs/357c5d80161e5f7.crt
+      - SSL_KEY_FILE=/app/certs/oma_private1.key
+    restart: always
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget --no-check-certificate -q -O /dev/null https://127.0.0.1/ || exit 1"
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

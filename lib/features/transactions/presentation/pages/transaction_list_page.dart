@@ -376,6 +376,7 @@ class _TransactionListPageState extends State<TransactionListPage> {
                     (transaction) => _WebResultEntry(
                       date: transaction.addedOn,
                       amount: 'Rs. ${transaction.transactionAmount}',
+                      customerName: _valueOrFallback(transaction.payerName, ''),
                       paymentName:
                           _valueOrFallback(transaction.customerVpa, ''),
                       method: _valueOrFallback(transaction.rrn, ''),
@@ -960,6 +961,7 @@ class _DateRangeLabel extends StatelessWidget {
 class _WebResultEntry {
   final String date;
   final String amount;
+  final String customerName;
   final String paymentName;
   final String method;
   final String category;
@@ -971,6 +973,7 @@ class _WebResultEntry {
   const _WebResultEntry({
     required this.date,
     required this.amount,
+    this.customerName = '',
     required this.paymentName,
     required this.method,
     required this.category,
@@ -1000,7 +1003,9 @@ class _WebResultTable extends StatelessWidget {
       builder: (context, constraints) => SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: SizedBox(
-          width: constraints.maxWidth < 1040 ? 1040 : constraints.maxWidth,
+          width: constraints.maxWidth < (isQrTable ? 1240 : 1040)
+              ? (isQrTable ? 1240 : 1040)
+              : constraints.maxWidth,
           child: Column(
             children: [
               _WebResultTableHeader(
@@ -1053,11 +1058,12 @@ class _WebResultTableHeader extends StatelessWidget {
             _WebResultTableCell(label: 'Entry Mode', flex: 14, header: true),
             _WebResultTableCell(label: 'Status', flex: 14, header: true),
           ] else if (isQrTable) ...const [
-            _WebResultTableCell(label: 'Amount', flex: 15, header: true),
-            _WebResultTableCell(label: 'Date & Time', flex: 18, header: true),
-            _WebResultTableCell(label: 'Customer VPA', flex: 22, header: true),
-            _WebResultTableCell(label: 'RRN', flex: 15, header: true),
-            _WebResultTableCell(label: 'Ref ID', flex: 16, header: true),
+            _WebResultTableCell(label: 'Amount', flex: 13, header: true),
+            _WebResultTableCell(label: 'Date & Time', flex: 16, header: true),
+            _WebResultTableCell(label: 'Customer Name', flex: 18, header: true),
+            _WebResultTableCell(label: 'Customer VPA', flex: 20, header: true),
+            _WebResultTableCell(label: 'RRN', flex: 14, header: true),
+            _WebResultTableCell(label: 'Ref ID', flex: 14, header: true),
             _WebResultTableCell(label: 'Status', flex: 14, header: true),
           ] else ...const [
             _WebResultTableCell(label: 'Date', flex: 12, header: true),
@@ -1117,11 +1123,12 @@ class _WebResultTableRow extends StatelessWidget {
                   ),
                 ),
               ] else if (isQrTable) ...[
-                _WebResultTableCell(label: entry.amount, flex: 15, bold: true),
-                _WebResultTableCell(label: entry.date, flex: 18),
-                _WebResultTableCell(label: entry.paymentName, flex: 22),
-                _WebResultTableCell(label: entry.method, flex: 15),
-                _WebResultTableCell(label: entry.category, flex: 16),
+                _WebResultTableCell(label: entry.amount, flex: 13, bold: true),
+                _WebResultTableCell(label: entry.date, flex: 16),
+                _WebResultTableCell(label: entry.customerName, flex: 18),
+                _WebResultTableCell(label: entry.paymentName, flex: 20),
+                _WebResultTableCell(label: entry.method, flex: 14),
+                _WebResultTableCell(label: entry.category, flex: 14),
                 Expanded(
                   flex: 14,
                   child: Align(

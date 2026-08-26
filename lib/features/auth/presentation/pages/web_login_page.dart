@@ -6,10 +6,8 @@ class WebLoginPage extends StatelessWidget {
   final GlobalKey<FormState> formKey;
   final TextEditingController usernameController;
   final TextEditingController passwordController;
-  final bool rememberMe;
   final bool obscurePassword;
   final bool isSubmitting;
-  final ValueChanged<bool> onRememberMeChanged;
   final VoidCallback onTogglePassword;
   final VoidCallback onSubmit;
 
@@ -18,10 +16,8 @@ class WebLoginPage extends StatelessWidget {
     required this.formKey,
     required this.usernameController,
     required this.passwordController,
-    required this.rememberMe,
     required this.obscurePassword,
     required this.isSubmitting,
-    required this.onRememberMeChanged,
     required this.onTogglePassword,
     required this.onSubmit,
   });
@@ -373,12 +369,6 @@ class _WebSignInCard extends StatelessWidget {
               validator: (value) => value == null || value.isEmpty
                   ? context.tr('password_required')
                   : null,
-            ),
-            SizedBox(height: compact ? 12 : 16),
-            _RememberMeRow(
-              value: page.rememberMe,
-              onChanged: page.onRememberMeChanged,
-              compact: compact,
             ),
             SizedBox(height: compact ? 20 : 24),
             _SignInButton(

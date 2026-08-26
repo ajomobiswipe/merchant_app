@@ -51,6 +51,16 @@ class _LoginState extends State<Login> {
 
   Future<void> _loadSavedCredentials() async {
     final prefs = await SharedPreferences.getInstance();
+
+    if (kIsWeb) {
+      // Passwords must never be persisted in browser local storage. Remove
+      // values left by earlier builds and keep web authentication tab-scoped.
+      await prefs.remove(_rememberMeKey);
+      await prefs.remove(_savedUsernameKey);
+      await prefs.remove(_savedPasswordKey);
+      return;
+    }
+
     final shouldRemember = prefs.getBool(_rememberMeKey) ?? false;
 
     if (!mounted) return;
@@ -65,6 +75,8 @@ class _LoginState extends State<Login> {
   }
 
   Future<void> _persistCredentials() async {
+    if (kIsWeb) return;
+
     final prefs = await SharedPreferences.getInstance();
 
     if (_rememberMe) {
@@ -168,10 +180,8 @@ class _LoginState extends State<Login> {
           formKey: _formKey,
           usernameController: _usernameController,
           passwordController: _passwordController,
-          rememberMe: _rememberMe,
           obscurePassword: _obscurePassword,
           isSubmitting: _isLoginSubmitting,
-          onRememberMeChanged: (value) => setState(() => _rememberMe = value),
           onTogglePassword: () =>
               setState(() => _obscurePassword = !_obscurePassword),
           onSubmit: _submitLogin,

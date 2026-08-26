@@ -1,22 +1,27 @@
 import 'dart:convert';
 
 import 'package:anet_merchants/features/auth/data/models/user_info.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+import 'session_storage_backend.dart';
+import 'session_storage_backend_factory.dart';
 
 class SessionStorage {
-  static const _storage = FlutterSecureStorage();
+  final SessionStorageBackend _storage;
   static const _loginSuccessKey = 'login_success';
   static const _userInfoKey = 'user_info';
   static const _activeAcqMerchantIdKey = 'active_acq_merchant_id';
   static const _activeShopNameKey = 'active_shop_name';
 
+  SessionStorage({SessionStorageBackend? storage})
+      : _storage = storage ?? createSessionStorageBackend();
+
   Future<void> saveLoginResponse(UserInfoModel userInfo) async {
     // Persist the full login payload once so later API calls can read
     // token, merchant selection, feature flags, and profile data from one source.
-    await _storage.write(key: _loginSuccessKey, value: 'true');
+    await _storage.write(_loginSuccessKey, 'true');
     await _storage.write(
-      key: _userInfoKey,
-      value: jsonEncode(userInfo.toJson()),
+      _userInfoKey,
+      jsonEncode(userInfo.toJson()),
     );
     await setActiveMerchantSelection(
       acqMerchantId: userInfo.acqMerchantId,
@@ -25,26 +30,26 @@ class SessionStorage {
   }
 
   Future<void> clearSession() async {
-    await _storage.delete(key: _loginSuccessKey);
-    await _storage.delete(key: _userInfoKey);
-    await _storage.delete(key: _activeAcqMerchantIdKey);
-    await _storage.delete(key: _activeShopNameKey);
+    await _storage.delete(_loginSuccessKey);
+    await _storage.delete(_userInfoKey);
+    await _storage.delete(_activeAcqMerchantIdKey);
+    await _storage.delete(_activeShopNameKey);
   }
 
   Future<void> setActiveMerchantSelection({
     required String acqMerchantId,
     required String shopName,
   }) async {
-    await _storage.write(key: _activeAcqMerchantIdKey, value: acqMerchantId);
-    await _storage.write(key: _activeShopNameKey, value: shopName);
+    await _storage.write(_activeAcqMerchantIdKey, acqMerchantId);
+    await _storage.write(_activeShopNameKey, shopName);
   }
 
   Future<bool> get isLoginSuccess async {
-    return await _storage.read(key: _loginSuccessKey) == 'true';
+    return await _storage.read(_loginSuccessKey) == 'true';
   }
 
   Future<UserInfoModel?> get userInfo async {
-    final rawUserInfo = await _storage.read(key: _userInfoKey);
+    final rawUserInfo = await _storage.read(_userInfoKey);
 
     if (rawUserInfo == null || rawUserInfo.isEmpty) {
       return null;
@@ -65,7 +70,7 @@ class SessionStorage {
   Future<String> get email async => (await userInfo)?.email ?? '';
   Future<String> get shopName async => (await userInfo)?.shopName ?? '';
   Future<String> get activeShopName async {
-    final activeShopName = await _storage.read(key: _activeShopNameKey);
+    final activeShopName = await _storage.read(_activeShopNameKey);
     if (activeShopName != null && activeShopName.isNotEmpty) {
       return activeShopName;
     }
@@ -108,8 +113,7 @@ class SessionStorage {
   Future<String> get acqMerchantId async =>
       (await userInfo)?.acqMerchantId ?? '';
   Future<String> get activeAcqMerchantId async {
-    final activeAcqMerchantId =
-        await _storage.read(key: _activeAcqMerchantIdKey);
+    final activeAcqMerchantId = await _storage.read(_activeAcqMerchantIdKey);
     if (activeAcqMerchantId != null && activeAcqMerchantId.isNotEmpty) {
       return activeAcqMerchantId;
     }
@@ -135,4 +139,3 @@ class SessionStorage {
   Future<List<MerchantDropdownItem>> get merchantDropdownItems async =>
       (await userInfo)?.merchantDropdownItems ?? const [];
 }
-

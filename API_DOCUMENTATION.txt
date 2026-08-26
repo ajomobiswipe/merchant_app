@@ -1,0 +1,435 @@
+MERCHANT APP - API DOCUMENTATION
+================================
+
+Document purpose
+----------------
+This document describes the REST APIs currently used by the Merchant App.
+The request and response structures are based on the application's Retrofit
+services and Dart model classes. All IDs, tokens, people, dates, amounts, and
+other values shown in the examples are illustrative test data, not real
+production data.
+
+
+1. GENERAL INFORMATION
+======================
+
+Protocol and format
+-------------------
+- Protocol: HTTP/HTTPS
+- Request content type: application/json
+- Response format: JSON
+- HTTP client: Dio with Retrofit
+- Connection timeout: 30 seconds
+- Response timeout: 30 seconds
+
+Environment selection
+---------------------
+The app selects the environment using the compile-time APP_ENV value.
+Supported values are: prod, uat, and local. If APP_ENV is not provided, the
+app uses prod.
+
+Production:
+  Authentication base URL:
+    https://nanopay.nanopaygateway.com:8084/NanoPay/v1/
+
+  UI API base URL:
+    https://nanopay.nanopaygateway.com:8084/NanoPay/Middleware/UiApi/
+
+UAT:
+  Authentication base URL:
+    https://omasoftposqc.omaemirates.com:9097/NanoUMS/v1/
+
+  UI API base URL:
+    https://omasoftposqc.omaemirates.com:9512/NanoPay/Middleware/UiApi/
+
+Local:
+  Authentication base URL:
+    http://10.0.38.62:9093/NanoUMS/v1/
+
+  UI API base URL:
+    http://10.0.38.62:9508/NanoPay/Middleware/UiApi/
+
+Authentication
+--------------
+The login endpoint returns a bearerToken. Protected endpoints receive that
+token through the Authorization request header. A typical value is:
+
+  Authorization: Bearer <bearer-token>
+
+The application passes the complete Authorization header value to the API.
+The exact token prefix and expiration rules are controlled by the backend.
+
+
+2. LOGIN
+========
+
+Purpose
+-------
+Authenticates a merchant or terminal user and returns identity, merchant,
+role, dashboard, and bearer-token information.
+
+Request
+-------
+Method: POST
+Path: login
+Production URL:
+  https://nanopay.nanopaygateway.com:8084/NanoPay/v1/login
+
+Headers:
+  content-type: application/json
+
+Request body fields:
+  userName   String   Required. Login username.
+  password   String   Required. Login password.
+  deviceType String   Required by the request model; defaults to MOBILE.
+
+Sample request body:
+{
+  "userName": "demo.merchant",
+  "password": "ExamplePassword123",
+  "deviceType": "MOBILE"
+}
+
+Sample successful response:
+{
+  "firstName": "Demo",
+  "lastName": "Merchant",
+  "userName": "demo.merchant",
+  "emailId": "demo@example.com",
+  "shopName": "Demo Store",
+  "responseCode": "00",
+  "responseMessage": "Login successful",
+  "instId": "INST001",
+  "custId": "CUST001",
+  "role": "MERCHANT",
+  "roleId": 2,
+  "productId": 1,
+  "productName": "NanoPay",
+  "deviceType": "MOBILE",
+  "merchantId": "MERCHANT001",
+  "acqMerchantId": "ACQ001",
+  "bearerToken": "eyJhbGciOi...example-token",
+  "passFlag": true,
+  "checker": false,
+  "cid": "CID001",
+  "userRoleType": "merchant",
+  "isChecker": false,
+  "twoFAOTPTimer": 120,
+  "dashboardEnabled": "true",
+  "twoFARequired": false,
+  "userType": "merchant",
+  "terminalId": "TERM001",
+  "merchantIds": {
+    "ACQ001": "Demo Store"
+  },
+  "merchantInfoForDashboard": [
+    {
+      "acqid": "ACQ001",
+      "shopName": "Demo Store",
+      "serialId": "SB10001"
+    }
+  ]
+}
+
+Response explanation:
+- responseCode "00" is treated by the app as a successful login.
+- bearerToken is used to authorize subsequent API requests.
+- twoFARequired tells the app whether an OTP step is needed.
+- twoFAOTPTimer provides the OTP timer duration expected by the UI.
+- role and userType identify whether the user is a merchant, merchant user,
+  terminal user, or another supported role.
+- dashboardEnabled controls access to dashboard functionality. The app treats
+  true, y, and yes (case-insensitive) as enabled.
+- merchantIds and merchantInfoForDashboard supply merchant choices used by the
+  merchant selector.
+- terminalId identifies the terminal associated with a terminal user.
+
+
+3. GET SOUND BOX DEVICES
+========================
+
+Purpose
+-------
+Returns the sound-box devices associated with a merchant.
+
+Request
+-------
+Method: GET
+Path: getListOfSoundBoxDevices
+Production URL:
+  https://nanopay.nanopaygateway.com:8084/NanoPay/Middleware/UiApi/getListOfSoundBoxDevices
+
+Headers:
+  content-type: application/json
+  Authorization: Bearer <bearer-token>
+  x-client-unique-id: <client-unique-id>
+
+Query parameters:
+  pageNumber Integer Optional. Default: 0.
+  size       Integer Optional. Default: 100.
+  sort       String  Optional. Default: insertDateTime,desc.
+
+Request body fields:
+  merchantId String Required. Merchant whose devices should be returned.
+
+Sample request URL:
+  .../getListOfSoundBoxDevices?pageNumber=0&size=100&sort=insertDateTime%2Cdesc
+
+Sample request body:
+{
+  "merchantId": "MERCHANT001"
+}
+
+Sample successful response:
+{
+  "successMessage": "Sound box devices fetched successfully",
+  "statusCode": 200,
+  "pageData": {
+    "content": [
+      "SB10001",
+      "SB10002"
+    ],
+    "empty": false,
+    "totalElements": 2
+  }
+}
+
+Response explanation:
+- successMessage is the backend's human-readable result message.
+- statusCode is the application-level status included in the JSON response.
+- pageData.content contains sound-box values. The app converts every returned
+  item to a string.
+- pageData.empty indicates whether the result contains no devices.
+- pageData.totalElements is the total number of matching devices.
+
+Implementation note:
+This endpoint is declared as an HTTP GET with a JSON request body. Some HTTP
+proxies and servers do not reliably support GET bodies, so integrations must
+preserve the backend's expected behavior or confirm whether merchantId can be
+moved to a query parameter.
+
+
+4. GET MERCHANT VPA TRANSACTIONS
+================================
+
+Purpose
+-------
+Returns paginated UPI/VPA transaction data for a merchant, optionally filtered
+by date and mapped merchant ID. The response also contains aggregate amounts.
+
+Request
+-------
+Method: POST
+Path: merchantVpaTxnData
+Production URL:
+  https://nanopay.nanopaygateway.com:8084/NanoPay/Middleware/UiApi/merchantVpaTxnData
+
+Headers:
+  content-type: application/json
+  Authorization: Bearer <bearer-token>
+  Accept: application/json, text/plain, */*
+  Accept-Language: en-GB,en-US;q=0.9,en;q=0.8
+
+Query parameters:
+  page             Integer Optional. Default: 0.
+  size             Integer Optional. Default: 10.
+  sortDir          String  Optional. Default: DESC.
+  mappedMerchantId String  Optional. Selected mapped/acquiring merchant ID.
+
+Request body fields:
+  from      String or null Optional. Start of the requested date range.
+  to        String or null Optional. End of the requested date range.
+  creditVpa String or null Merchant credit VPA. An empty string is sent as null.
+
+The exact accepted date string format is a backend contract and is not
+validated or documented in the client model.
+
+Sample request URL:
+  .../merchantVpaTxnData?page=0&size=10&sortDir=DESC&mappedMerchantId=ACQ001
+
+Sample request body:
+{
+  "from": "2026-08-01",
+  "to": "2026-08-25",
+  "creditVpa": "demostore@bank"
+}
+
+Sample successful response:
+{
+  "successMessage": "Transactions fetched successfully",
+  "statusCode": 200,
+  "pageData": {
+    "content": [
+      {
+        "refId": "TXN100001",
+        "name": "UPI payment",
+        "status": "SUCCESS",
+        "transactionAmount": "1250.00",
+        "transactionType": "CREDIT",
+        "accountDetailsAccType": "CURRENT",
+        "code": "00",
+        "payerName": "Sample Customer",
+        "payeeName": "Demo Store",
+        "customerVpa": "customer@bank",
+        "creditVpa": "demostore@bank",
+        "rrn": "626000123456",
+        "deviceId": "SB10001",
+        "merchantId": "MERCHANT001",
+        "addedOn": "2026-08-25T10:30:00"
+      }
+    ],
+    "first": true,
+    "last": true,
+    "empty": false,
+    "number": 0,
+    "size": 10,
+    "totalPages": 1,
+    "totalElements": 1
+  },
+  "totalAmount": 1250.00,
+  "monthlyupiTxnAmount": {
+    "2026-08": 1250.00
+  }
+}
+
+Response explanation:
+- pageData.content contains individual transactions.
+- transactionAmount is represented as a string by the client model.
+- status and code describe the transaction result.
+- rrn is the retrieval reference number for the payment.
+- addedOn contains the transaction creation date/time supplied by the backend.
+- first, last, number, size, totalPages, and totalElements describe pagination.
+- totalAmount is the aggregate transaction amount returned by the backend.
+- monthlyupiTxnAmount maps a backend-defined month key to its aggregate amount.
+  Note the exact JSON key casing: monthlyupiTxnAmount.
+
+
+5. GET SUPPORT ACTIONS
+======================
+
+Purpose
+-------
+Returns the predefined quick-action messages that a merchant can select when
+creating a support request.
+
+Request
+-------
+Method: GET
+Path: getSupportActionData
+Production URL:
+  https://nanopay.nanopaygateway.com:8084/NanoPay/Middleware/UiApi/getSupportActionData
+
+Headers:
+  content-type: application/json
+  Authorization: Bearer <bearer-token>
+
+Request body: None
+Query parameters: None
+
+Sample successful response:
+{
+  "description": "Support actions fetched successfully",
+  "status": 200,
+  "data": [
+    {
+      "id": 1,
+      "quickActionMessage": "Sound box is not working",
+      "quickActionStatus": "ACTIVE"
+    },
+    {
+      "id": 2,
+      "quickActionMessage": "Payment notification was not received",
+      "quickActionStatus": "ACTIVE"
+    }
+  ]
+}
+
+Response explanation:
+- description is the backend's human-readable result description.
+- status is the application-level response status.
+- data contains the available support actions.
+- id uniquely identifies an action.
+- quickActionMessage is the message displayed to the merchant.
+- quickActionStatus indicates whether the action is active or otherwise
+  available according to the backend.
+
+
+6. RAISE SUPPORT REQUEST
+========================
+
+Purpose
+-------
+Creates a support request for a merchant using a selected quick-action message.
+
+Request
+-------
+Method: POST
+Path: raiseSupportRequest
+Production URL:
+  https://nanopay.nanopaygateway.com:8084/NanoPay/Middleware/UiApi/raiseSupportRequest
+
+Headers:
+  content-type: application/json
+  Authorization: Bearer <bearer-token>
+
+Request body fields:
+  merchantId         String Required. Merchant raising the request.
+  quickActionMessage String Required. Selected support issue/message.
+
+Sample request body:
+{
+  "merchantId": "MERCHANT001",
+  "quickActionMessage": "Sound box is not working"
+}
+
+Sample successful response:
+{
+  "description": "Support request created",
+  "status": 200,
+  "message": "Your support request has been submitted successfully"
+}
+
+Response explanation:
+- description summarizes the operation performed by the backend.
+- status is read from status. For compatibility, the app also accepts
+  statusCode when status is absent.
+- message is the user-facing result. For compatibility, the app also accepts
+  successMessage when message is absent.
+
+
+7. ERROR HANDLING NOTES
+=======================
+
+- The model classes primarily describe successful or parseable response
+  payloads. They do not define one shared error-response schema.
+- Callers should inspect both the HTTP status code and any application-level
+  status, statusCode, responseCode, description, or message in the JSON body.
+- A 401 or 403 response normally indicates a missing, expired, or unauthorized
+  bearer token, subject to backend behavior.
+- Network requests can fail after the configured 30-second connection or
+  response timeout.
+- Empty or missing response properties generally fall back to empty strings,
+  false, zero, or empty collections in the app's Dart models.
+
+
+8. API SUMMARY
+==============
+
+1. POST login
+   Authenticate a user and obtain session/user information.
+
+2. GET getListOfSoundBoxDevices
+   Get the sound-box devices assigned to a merchant.
+
+3. POST merchantVpaTxnData
+   Get filtered and paginated VPA transaction data.
+
+4. GET getSupportActionData
+   Get predefined support quick actions.
+
+5. POST raiseSupportRequest
+   Submit a merchant support request.
+
+
+End of document
+===============

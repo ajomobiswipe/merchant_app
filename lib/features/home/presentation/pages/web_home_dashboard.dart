@@ -4,6 +4,10 @@ part of 'home_page.dart';
 /// source is introduced for the browser layout.
 class WebHomeDashboard extends StatelessWidget {
   final String merchantId;
+  final bool showDashboard;
+  final List<MerchantDropdownItem> merchantItems;
+  final String selectedMerchantId;
+  final ValueChanged<String?> onMerchantChanged;
   final TransactionTab selectedTab;
   final ValueChanged<TransactionTab> onTabSelected;
   final ValueChanged<int> onNavigationSelected;
@@ -18,6 +22,10 @@ class WebHomeDashboard extends StatelessWidget {
   const WebHomeDashboard({
     super.key,
     required this.merchantId,
+    required this.showDashboard,
+    required this.merchantItems,
+    required this.selectedMerchantId,
+    required this.onMerchantChanged,
     required this.selectedTab,
     required this.onTabSelected,
     required this.onNavigationSelected,
@@ -37,8 +45,9 @@ class WebHomeDashboard extends StatelessWidget {
           child: Column(
             children: [
               WebMerchantAppBar(
+                key: ValueKey(selectedMerchantId),
                 onNavigationSelected: onNavigationSelected,
-                showDashboard: true,
+                showDashboard: showDashboard,
               ),
               Expanded(
                 child: LayoutBuilder(
@@ -52,6 +61,7 @@ class WebHomeDashboard extends StatelessWidget {
                         if (showSidebar)
                           _WebDashboardSidebar(
                             onSelected: onNavigationSelected,
+                            showDashboard: showDashboard,
                           ),
                         Expanded(
                           child: LayoutBuilder(
@@ -71,6 +81,26 @@ class WebHomeDashboard extends StatelessWidget {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.stretch,
                                     children: [
+                                      if (merchantItems.isNotEmpty) ...[
+                                        Align(
+                                          alignment: Alignment.centerRight,
+                                          child: ConstrainedBox(
+                                            constraints: const BoxConstraints(
+                                              maxWidth: 460,
+                                            ),
+                                            child: _MerchantDropdown(
+                                              items: merchantItems,
+                                              selectedMerchantId:
+                                                  selectedMerchantId.isEmpty
+                                                      ? merchantItems
+                                                          .first.merchantId
+                                                      : selectedMerchantId,
+                                              onChanged: onMerchantChanged,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 12),
+                                      ],
                                       _WebDashboardMetrics(
                                         selectedTab: selectedTab,
                                       ),
@@ -111,7 +141,12 @@ class WebHomeDashboard extends StatelessWidget {
 
 class _WebDashboardSidebar extends StatelessWidget {
   final ValueChanged<int> onSelected;
-  const _WebDashboardSidebar({required this.onSelected});
+  final bool showDashboard;
+
+  const _WebDashboardSidebar({
+    required this.onSelected,
+    required this.showDashboard,
+  });
   @override
   Widget build(BuildContext context) => Container(
         width: 228,
@@ -130,10 +165,11 @@ class _WebDashboardSidebar extends StatelessWidget {
               icon: Icons.support_agent_rounded,
               label: context.tr('support'),
               onTap: () => onSelected(1)),
-          _WebNavItem(
-              icon: Icons.bar_chart_rounded,
-              label: context.tr('dashboard'),
-              onTap: () => onSelected(2)),
+          if (showDashboard)
+            _WebNavItem(
+                icon: Icons.bar_chart_rounded,
+                label: context.tr('dashboard'),
+                onTap: () => onSelected(2)),
           _WebNavItem(
               icon: Icons.person_rounded,
               label: context.tr('profile'),
@@ -715,9 +751,10 @@ class _WebTransactionColumnLabels extends StatelessWidget {
             Expanded(flex: 16, child: _WebColumnLabel('TRANSACTION TYPE')),
             Expanded(flex: 15, child: _WebColumnLabel('ENTRY MODE')),
           ] else ...const [
-            Expanded(flex: 22, child: _WebColumnLabel('CUSTOMER VPA')),
-            Expanded(flex: 15, child: _WebColumnLabel('RRN')),
-            Expanded(flex: 16, child: _WebColumnLabel('REF ID')),
+            Expanded(flex: 18, child: _WebColumnLabel('CUSTOMER NAME')),
+            Expanded(flex: 20, child: _WebColumnLabel('CUSTOMER VPA')),
+            Expanded(flex: 14, child: _WebColumnLabel('RRN')),
+            Expanded(flex: 14, child: _WebColumnLabel('REF ID')),
           ],
           const SizedBox(width: 112, child: _WebColumnLabel('STATUS')),
           const SizedBox(width: 32),
@@ -741,7 +778,9 @@ class _WebHomeTransactionTable extends StatelessWidget {
         builder: (context, constraints) => SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: SizedBox(
-            width: constraints.maxWidth < 1040 ? 1040 : constraints.maxWidth,
+            width: constraints.maxWidth < (isPos ? 1040 : 1240)
+                ? (isPos ? 1040 : 1240)
+                : constraints.maxWidth,
             child: Column(
               children: [
                 _WebTransactionColumnLabels(isPos: isPos),
@@ -987,15 +1026,19 @@ class _WebQrTransactionRow extends StatelessWidget {
             child: _WebHomeTableText(transaction.addedOn),
           ),
           Expanded(
-            flex: 22,
+            flex: 18,
+            child: _WebHomeTableText(_webValueOrDash(transaction.payerName)),
+          ),
+          Expanded(
+            flex: 20,
             child: _WebHomeTableText(_webValueOrDash(transaction.customerVpa)),
           ),
           Expanded(
-            flex: 15,
+            flex: 14,
             child: _WebHomeTableText(_webValueOrDash(transaction.rrn)),
           ),
           Expanded(
-            flex: 16,
+            flex: 14,
             child: _WebHomeTableText(_webValueOrDash(transaction.refId)),
           ),
           SizedBox(

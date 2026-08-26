@@ -10,8 +10,13 @@ part 'settlement_state.dart';
 
 class SettlementBloc extends Bloc<SettlementEvent, SettlementState> {
   final GetSettlementHistory _getSettlementHistory;
+  int _requestGeneration = 0;
 
   SettlementBloc(this._getSettlementHistory) : super(const SettlementState()) {
+    on<ResetSettlementRequested>((event, emit) {
+      _requestGeneration++;
+      emit(const SettlementState());
+    });
     on<GetSettlementHistoryRequested>(_onGetSettlementHistoryRequested);
   }
 
@@ -19,6 +24,7 @@ class SettlementBloc extends Bloc<SettlementEvent, SettlementState> {
     GetSettlementHistoryRequested event,
     Emitter<SettlementState> emit,
   ) async {
+    final requestGeneration = ++_requestGeneration;
     final requestedPage = _boundedPage(event.page);
 
     emit(
@@ -26,6 +32,15 @@ class SettlementBloc extends Bloc<SettlementEvent, SettlementState> {
         isLoading: true,
         page: requestedPage,
         error: null,
+        settlements: requestedPage == 0 ? const [] : state.settlements,
+        settledTransactions:
+            requestedPage == 0 ? const [] : state.settledTransactions,
+        totalPages: requestedPage == 0 ? 0 : state.totalPages,
+        totalElements: requestedPage == 0 ? 0 : state.totalElements,
+        transactionCount: requestedPage == 0 ? 0 : state.transactionCount,
+        totalAmount: requestedPage == 0 ? 0 : state.totalAmount,
+        first: requestedPage == 0 ? true : state.first,
+        last: requestedPage == 0 ? true : state.last,
       ),
     );
 
@@ -40,6 +55,8 @@ class SettlementBloc extends Bloc<SettlementEvent, SettlementState> {
         sendSettlementReportToMail: event.sendSettlementReportToMail,
       ),
     );
+
+    if (requestGeneration != _requestGeneration || emit.isDone) return;
 
     if (dataState is DataSuccess<SettlementHistoryResponseModel>) {
       final page = dataState.data!.settlementAggregatePage;

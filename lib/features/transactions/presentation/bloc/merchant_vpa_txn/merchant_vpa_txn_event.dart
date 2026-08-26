@@ -7,6 +7,10 @@ sealed class MerchantVpaTxnEvent extends Equatable {
   List<Object> get props => [];
 }
 
+class ResetMerchantVpaTxnRequested extends MerchantVpaTxnEvent {
+  const ResetMerchantVpaTxnRequested();
+}
+
 class GetMerchantVpaTxnDataRequested extends MerchantVpaTxnEvent {
   final String bearerToken;
   final String creditVpa;

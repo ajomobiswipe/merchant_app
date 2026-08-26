@@ -7,6 +7,10 @@ sealed class SoundBoxEvent extends Equatable {
   List<Object> get props => [];
 }
 
+class ResetSoundBoxRequested extends SoundBoxEvent {
+  const ResetSoundBoxRequested();
+}
+
 class GetSoundBoxDevicesRequested extends SoundBoxEvent {
   final String merchantId;
   final String bearerToken;

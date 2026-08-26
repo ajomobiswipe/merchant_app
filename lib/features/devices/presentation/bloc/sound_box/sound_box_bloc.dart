@@ -10,9 +10,15 @@ part 'sound_box_state.dart';
 
 class SoundBoxBloc extends Bloc<SoundBoxEvent, SoundBoxState> {
   final GetSoundBoxDevices _getSoundBoxDevices;
+  int _requestGeneration = 0;
 
   SoundBoxBloc(this._getSoundBoxDevices) : super(SoundBoxInitial()) {
+    on<ResetSoundBoxRequested>((event, emit) {
+      _requestGeneration++;
+      emit(SoundBoxInitial());
+    });
     on<GetSoundBoxDevicesRequested>((event, emit) async {
+      final requestGeneration = ++_requestGeneration;
       emit(SoundBoxLoading());
 
       try {
@@ -23,6 +29,8 @@ class SoundBoxBloc extends Bloc<SoundBoxEvent, SoundBoxState> {
             clientUniqueId: event.clientUniqueId,
           ),
         );
+
+        if (requestGeneration != _requestGeneration || emit.isDone) return;
 
         if (dataState is DataSuccess<SoundBoxDevicesResponseModel>) {
           emit(
@@ -37,6 +45,7 @@ class SoundBoxBloc extends Bloc<SoundBoxEvent, SoundBoxState> {
           emit(SoundBoxFailure(error: dataState.error!));
         }
       } on DioException catch (e) {
+        if (requestGeneration != _requestGeneration || emit.isDone) return;
         emit(SoundBoxFailure(error: e));
       }
     });

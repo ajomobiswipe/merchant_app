@@ -11,10 +11,16 @@ part 'merchant_vpa_txn_state.dart';
 class MerchantVpaTxnBloc
     extends Bloc<MerchantVpaTxnEvent, MerchantVpaTxnState> {
   final GetMerchantVpaTxnData _getMerchantVpaTxnData;
+  int _requestGeneration = 0;
 
   MerchantVpaTxnBloc(this._getMerchantVpaTxnData)
       : super(MerchantVpaTxnInitial()) {
+    on<ResetMerchantVpaTxnRequested>((event, emit) {
+      _requestGeneration++;
+      emit(MerchantVpaTxnInitial());
+    });
     on<GetMerchantVpaTxnDataRequested>((event, emit) async {
+      final requestGeneration = ++_requestGeneration;
       final requestedPage = _boundedPage(event.page);
 
       emit(
@@ -42,6 +48,8 @@ class MerchantVpaTxnBloc
             size: event.size,
           ),
         );
+
+        if (requestGeneration != _requestGeneration || emit.isDone) return;
 
         if (dataState is DataSuccess<MerchantVpaTxnResponseModel>) {
           final pageData = dataState.data!.pageData;
@@ -83,6 +91,7 @@ class MerchantVpaTxnBloc
           );
         }
       } on DioException catch (e) {
+        if (requestGeneration != _requestGeneration || emit.isDone) return;
         emit(
           MerchantVpaTxnFailure(
             error: e,
@@ -98,6 +107,7 @@ class MerchantVpaTxnBloc
           ),
         );
       } catch (e) {
+        if (requestGeneration != _requestGeneration || emit.isDone) return;
         emit(
           MerchantVpaTxnFailure(
             error: DioException(

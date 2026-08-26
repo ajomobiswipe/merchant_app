@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:anet_merchants/core/di/injection_container.dart';
+import 'package:anet_merchants/core/storage/session_storage.dart';
 import 'package:anet_merchants/features/auth/auth.dart';
 import 'package:anet_merchants/features/home/home.dart';
 import 'package:anet_merchants/features/notifications/notifications.dart';
@@ -28,6 +29,33 @@ class AppRoutes {
 
   static final GoRouter router = GoRouter(
     initialLocation: splash,
+    redirect: (context, state) async {
+      final path = state.uri.path;
+      final isPublicRoute = <String>{
+        splash,
+        login,
+        forgotPassword,
+        resetPassword,
+        otpValidation,
+      }.contains(path);
+
+      bool isAuthenticated;
+      try {
+        isAuthenticated = await SessionStorage().isLoginSuccess;
+      } catch (_) {
+        isAuthenticated = false;
+      }
+
+      if (!isAuthenticated && !isPublicRoute) {
+        return login;
+      }
+
+      if (isAuthenticated && (path == splash || path == login)) {
+        return home;
+      }
+
+      return null;
+    },
     routes: [
       GoRoute(
         path: '/',

@@ -420,6 +420,10 @@ class _HomePageState extends State<HomePage> {
         listener: _onSoundBoxStateChanged,
         child: WebHomeDashboard(
           merchantId: _effectiveMerchantId,
+          showDashboard: _isDashboardEnabled,
+          merchantItems: _merchantDropdownItems,
+          selectedMerchantId: _acqMerchantId,
+          onMerchantChanged: _onMerchantChanged,
           selectedTab: _selectedTransactionTab,
           selectedVpa: _selectedVpa,
           onTabSelected: _onTransactionTabSelected,

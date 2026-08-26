@@ -14,6 +14,8 @@ class PosTransactionBloc
     extends Bloc<PosTransactionEvent, PosTransactionState> {
   final GetPosTerminals _getPosTerminals;
   final GetPosTransactions _getPosTransactions;
+  int _terminalRequestGeneration = 0;
+  int _transactionRequestGeneration = 0;
 
   PosTransactionBloc(this._getPosTerminals, this._getPosTransactions)
       : super(const PosTransactionState()) {
@@ -25,6 +27,7 @@ class PosTransactionBloc
     GetPosTerminalsRequested event,
     Emitter<PosTransactionState> emit,
   ) async {
+    final requestGeneration = ++_terminalRequestGeneration;
     emit(state.copyWith(terminalsLoading: true, terminalError: null));
 
     final dataState = await _getPosTerminals(
@@ -35,6 +38,8 @@ class PosTransactionBloc
         size: event.size,
       ),
     );
+
+    if (requestGeneration != _terminalRequestGeneration || emit.isDone) return;
 
     if (dataState is DataSuccess<PosTerminalResponseModel>) {
       emit(
@@ -61,6 +66,7 @@ class PosTransactionBloc
     GetPosTransactionsRequested event,
     Emitter<PosTransactionState> emit,
   ) async {
+    final requestGeneration = ++_transactionRequestGeneration;
     final requestedPage = _boundedPage(event.page);
 
     emit(
@@ -79,6 +85,10 @@ class PosTransactionBloc
         selectedTerminalId: event.terminalId,
       ),
     );
+
+    if (requestGeneration != _transactionRequestGeneration || emit.isDone) {
+      return;
+    }
 
     final dataState = await _getPosTransactions(
       params: GetPosTransactionsParams(
