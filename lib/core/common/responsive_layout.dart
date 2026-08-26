@@ -11,4 +11,8 @@ abstract final class AppBreakpoints {
 
   static bool isTabletOrLarger(BuildContext context) =>
       MediaQuery.sizeOf(context).width >= tablet;
+
+  /// Phone and narrow browser widths use the stacked mobile layout.
+  static bool isSingleColumn(BuildContext context) =>
+      MediaQuery.sizeOf(context).width < tablet;
 }

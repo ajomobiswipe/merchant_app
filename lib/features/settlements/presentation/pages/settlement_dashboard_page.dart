@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -9,6 +8,7 @@ import 'package:anet_merchants/core/common/app_assets.dart';
 import 'package:anet_merchants/core/common/app_colors.dart';
 import 'package:anet_merchants/core/common/app_text_style.dart';
 import 'package:anet_merchants/core/common/common_scaffold.dart';
+import 'package:anet_merchants/core/common/responsive_layout.dart';
 import 'package:anet_merchants/core/localization/app_language.dart';
 import 'package:anet_merchants/core/storage/session_storage.dart';
 import 'package:anet_merchants/core/utils/logout_helper.dart';
@@ -35,6 +35,7 @@ class SettlementDashboardPage extends StatefulWidget {
 class _SettlementDashboardPageState extends State<SettlementDashboardPage> {
   static const int _pageSize = 10;
   final SessionStorage _sessionStorage = SessionStorage();
+  final ScrollController _scrollController = ScrollController();
 
   String _bearerToken = '';
   String _merchantId = '';
@@ -43,10 +44,33 @@ class _SettlementDashboardPageState extends State<SettlementDashboardPage> {
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(_onScroll);
     _loadSettlements(page: 0);
   }
 
-  Future<void> _loadSettlements({required int page}) async {
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (!AppBreakpoints.isSingleColumn(context)) return;
+    if (!_scrollController.hasClients) return;
+    if (_scrollController.position.extentAfter > 320) return;
+    _loadMore();
+  }
+
+  void _loadMore() {
+    final state = context.read<SettlementBloc>().state;
+    if (state.isLoading || state.last || state.settlements.isEmpty) return;
+    _loadSettlements(page: state.page + 1, append: true);
+  }
+
+  Future<void> _loadSettlements({
+    required int page,
+    bool append = false,
+  }) async {
     final bearerToken =
         _bearerToken.isEmpty ? await _sessionStorage.bearerToken : _bearerToken;
     final merchantId =
@@ -74,6 +98,7 @@ class _SettlementDashboardPageState extends State<SettlementDashboardPage> {
             toDate: widget.filter.to,
             page: page,
             size: _pageSize,
+            append: append,
           ),
         );
   }
@@ -91,16 +116,17 @@ class _SettlementDashboardPageState extends State<SettlementDashboardPage> {
     return CommonScaffold(
       selectedIndex: 0,
       onBottomNavItemSelected: _onBottomNavItemSelected,
-      body: kIsWeb ? _buildWebDashboard() : _buildMobileDashboard(),
+      body: AppBreakpoints.isSingleColumn(context)
+          ? _buildMobileDashboard()
+          : _buildWebDashboard(),
     );
   }
 
   Widget _buildMobileDashboard() {
-    return SingleChildScrollView(
+    return ListView(
+      controller: _scrollController,
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+      children: [
           const _SettlementPageHeader(),
           const SizedBox(height: 30),
           const MerchantOverview(),
@@ -132,19 +158,17 @@ class _SettlementDashboardPageState extends State<SettlementDashboardPage> {
           const SizedBox(height: 18),
           _buildSettlementList(),
         ],
-      ),
     );
   }
 
   Widget _buildWebDashboard() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1320),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 1320),
+        child: ListView(
+          controller: _scrollController,
+          padding: const EdgeInsets.all(24),
+          children: [
               Row(
                 children: [
                   IconButton(
@@ -222,8 +246,7 @@ class _SettlementDashboardPageState extends State<SettlementDashboardPage> {
             ],
           ),
         ),
-      ),
-    );
+      );
   }
 
   Widget _buildSettlementList() {
@@ -256,35 +279,17 @@ class _SettlementDashboardPageState extends State<SettlementDashboardPage> {
         return Column(
           children: [
             ...state.settlements.map(_buildSettlementTile),
-            const SizedBox(height: 6),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  onPressed: state.isLoading || state.first
-                      ? null
-                      : () => _loadSettlements(page: state.page - 1),
-                  icon: const Icon(Icons.chevron_left_rounded),
-                  color: AppColors.primaryPurple,
-                  tooltip: context.tr('previous_page'),
-                ),
-                Text(
-                  '${context.tr('page')} ${state.page + 1} ${context.tr('of')} ${state.totalPages == 0 ? 1 : state.totalPages}',
-                  style: AppTextStyle.h5.copyWith(
-                    color: context.appTextPrimary,
-                    fontWeight: FontWeight.w800,
+            if (state.isLoading)
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 18),
+                child: Center(
+                  child: SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(strokeWidth: 2.4),
                   ),
                 ),
-                IconButton(
-                  onPressed: state.isLoading || state.last
-                      ? null
-                      : () => _loadSettlements(page: state.page + 1),
-                  icon: const Icon(Icons.chevron_right_rounded),
-                  color: AppColors.primaryPurple,
-                  tooltip: context.tr('next_page'),
-                ),
-              ],
-            ),
+              ),
           ],
         );
       },
@@ -639,8 +644,6 @@ class _WebSettlementMetric extends StatelessWidget {
       );
 }
 
-/// Keeps settlement records readable on compact browsers, without changing the
-/// existing mobile settlement cards.
 class _WebSettlementDashboardTable extends StatelessWidget {
   final List<Widget> children;
 

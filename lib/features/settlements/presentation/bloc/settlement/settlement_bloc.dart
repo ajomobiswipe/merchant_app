@@ -25,22 +25,23 @@ class SettlementBloc extends Bloc<SettlementEvent, SettlementState> {
     Emitter<SettlementState> emit,
   ) async {
     final requestGeneration = ++_requestGeneration;
-    final requestedPage = _boundedPage(event.page);
+    final requestedPage = event.append ? event.page : _boundedPage(event.page);
+    final append = event.append && requestedPage > 0;
 
     emit(
       state.copyWith(
         isLoading: true,
         page: requestedPage,
         error: null,
-        settlements: requestedPage == 0 ? const [] : state.settlements,
+        settlements: append ? state.settlements : const [],
         settledTransactions:
-            requestedPage == 0 ? const [] : state.settledTransactions,
-        totalPages: requestedPage == 0 ? 0 : state.totalPages,
-        totalElements: requestedPage == 0 ? 0 : state.totalElements,
-        transactionCount: requestedPage == 0 ? 0 : state.transactionCount,
-        totalAmount: requestedPage == 0 ? 0 : state.totalAmount,
-        first: requestedPage == 0 ? true : state.first,
-        last: requestedPage == 0 ? true : state.last,
+            append ? state.settledTransactions : const [],
+        totalPages: append ? state.totalPages : 0,
+        totalElements: append ? state.totalElements : 0,
+        transactionCount: append ? state.transactionCount : 0,
+        totalAmount: append ? state.totalAmount : 0,
+        first: append ? state.first : true,
+        last: append ? state.last : true,
       ),
     );
 
@@ -69,8 +70,15 @@ class SettlementBloc extends Bloc<SettlementEvent, SettlementState> {
 
       emit(
         state.copyWith(
-          settlements: page.content,
-          settledTransactions: settledSummaryPage.content,
+          settlements: append
+              ? _appendUniqueSettlements(state.settlements, page.content)
+              : page.content,
+          settledTransactions: append
+              ? _appendUniqueSettlements(
+                  state.settledTransactions,
+                  settledSummaryPage.content,
+                )
+              : settledSummaryPage.content,
           isLoading: false,
           page: pagination.page,
           size: page.size,
@@ -96,6 +104,21 @@ class SettlementBloc extends Bloc<SettlementEvent, SettlementState> {
         ),
       );
     }
+  }
+
+  List<SettlementItemModel> _appendUniqueSettlements(
+    List<SettlementItemModel> current,
+    List<SettlementItemModel> incoming,
+  ) {
+    final existing = current
+        .map((item) => '${item.utr}|${item.rrn}|${item.tranDate}')
+        .toSet();
+    return [
+      ...current,
+      ...incoming.where(
+        (item) => existing.add('${item.utr}|${item.rrn}|${item.tranDate}'),
+      ),
+    ];
   }
 
   int _boundedPage(int page) {

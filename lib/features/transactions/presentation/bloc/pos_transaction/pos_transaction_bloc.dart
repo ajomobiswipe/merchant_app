@@ -67,21 +67,21 @@ class PosTransactionBloc
     Emitter<PosTransactionState> emit,
   ) async {
     final requestGeneration = ++_transactionRequestGeneration;
-    final requestedPage = _boundedPage(event.page);
+    final requestedPage = event.append ? event.page : _boundedPage(event.page);
+    final append = event.append && requestedPage > 0;
 
     emit(
       state.copyWith(
         transactionsLoading: true,
         transactionError: null,
         page: requestedPage,
-        transactions: requestedPage == 0 ? const [] : state.transactions,
-        terminalSummaries:
-            requestedPage == 0 ? const [] : state.terminalSummaries,
-        totalElements: requestedPage == 0 ? 0 : state.totalElements,
-        totalAmount: requestedPage == 0 ? 0 : state.totalAmount,
-        totalPages: requestedPage == 0 ? 0 : state.totalPages,
-        first: requestedPage == 0 ? true : state.first,
-        last: requestedPage == 0 ? true : state.last,
+        transactions: append ? state.transactions : const [],
+        terminalSummaries: append ? state.terminalSummaries : const [],
+        totalElements: append ? state.totalElements : 0,
+        totalAmount: append ? state.totalAmount : 0,
+        totalPages: append ? state.totalPages : 0,
+        first: append ? state.first : true,
+        last: append ? state.last : true,
         selectedTerminalId: event.terminalId,
       ),
     );
@@ -120,7 +120,9 @@ class PosTransactionBloc
 
       emit(
         state.copyWith(
-          transactions: page.content,
+          transactions: append
+              ? _appendUniqueTransactions(state.transactions, page.content)
+              : page.content,
           transactionsLoading: false,
           transactionError: null,
           page: pagination.page,
@@ -131,7 +133,9 @@ class PosTransactionBloc
           last: pagination.last,
           totalAmount: dataState.data!.totalAmount,
           selectedTerminalId: event.terminalId,
-          terminalSummaries: dataState.data!.terminalSummaries,
+          terminalSummaries: append
+              ? state.terminalSummaries
+              : dataState.data!.terminalSummaries,
         ),
       );
       return;
@@ -145,6 +149,26 @@ class PosTransactionBloc
         ),
       );
     }
+  }
+
+  List<PosTransactionModel> _appendUniqueTransactions(
+    List<PosTransactionModel> current,
+    List<PosTransactionModel> incoming,
+  ) {
+    final existing = current
+        .map(
+          (item) =>
+              '${item.rrn}|${item.stan}|${item.transactionDate}|${item.amount}',
+        )
+        .toSet();
+    return [
+      ...current,
+      ...incoming.where(
+        (item) => existing.add(
+          '${item.rrn}|${item.stan}|${item.transactionDate}|${item.amount}',
+        ),
+      ),
+    ];
   }
 
   int _boundedPage(int page) {

@@ -41,6 +41,7 @@ class GetPosTransactionsRequested extends PosTransactionEvent {
   final String? creditVpa;
   final bool useMidEndpoint;
   final bool sendTxnReportToMail;
+  final bool append;
 
   const GetPosTransactionsRequested({
     required this.bearerToken,
@@ -59,6 +60,7 @@ class GetPosTransactionsRequested extends PosTransactionEvent {
     this.creditVpa,
     this.useMidEndpoint = false,
     this.sendTxnReportToMail = false,
+    this.append = false,
   });
 
   @override
@@ -79,5 +81,6 @@ class GetPosTransactionsRequested extends PosTransactionEvent {
         creditVpa,
         useMidEndpoint,
         sendTxnReportToMail,
+        append,
       ];
 }

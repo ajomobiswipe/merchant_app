@@ -41,6 +41,7 @@ class _HomePageState extends State<HomePage> {
   static const int _transactionPageSize = 10;
 
   final SessionStorage _sessionStorage = SessionStorage();
+  final ScrollController _scrollController = ScrollController();
 
   int _selectedBottomIndex = 0;
   TransactionTab _selectedTransactionTab = TransactionTab.pos;
@@ -81,7 +82,63 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _selectedBottomIndex = widget.initialBottomIndex;
+    _scrollController.addListener(_onHomeScroll);
     _loadSavedSession();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onHomeScroll() {
+    if (!_scrollController.hasClients) return;
+    if (_scrollController.position.extentAfter > 320) return;
+    _loadMoreHomeTransactions();
+  }
+
+  void _scheduleHomeLoadMoreIfNeeded() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_scrollController.hasClients) return;
+      if (_scrollController.position.maxScrollExtent > 80) return;
+      _loadMoreHomeTransactions();
+    });
+  }
+
+  void _loadMoreHomeTransactions() {
+    if (!AppBreakpoints.isSingleColumn(context)) return;
+    if (_selectedBottomIndex != 0 || _isAllMerchantSelection) return;
+
+    if (_selectedTransactionTab == TransactionTab.pos) {
+      final state = context.read<PosTransactionBloc>().state;
+      if (state.transactionsLoading ||
+          state.last ||
+          state.transactions.isEmpty) {
+        return;
+      }
+      _loadPosTransactions(page: state.page + 1, append: true);
+      return;
+    }
+
+    if (_selectedTransactionTab == TransactionTab.qr) {
+      final state = context.read<MerchantVpaTxnBloc>().state;
+      if (state is MerchantVpaTxnLoading ||
+          state.last ||
+          state.transactions.isEmpty) {
+        return;
+      }
+      _loadMerchantVpaTransactions(page: state.page + 1, append: true);
+      return;
+    }
+
+    if (_selectedTransactionTab == TransactionTab.settlements) {
+      final state = context.read<SettlementBloc>().state;
+      if (state.isLoading || state.last || state.settlements.isEmpty) {
+        return;
+      }
+      _loadSettlements(page: state.page + 1, append: true);
+    }
   }
 
   Future<void> _loadSavedSession() async {
@@ -287,7 +344,10 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _loadMerchantVpaTransactions({required int page}) {
+  void _loadMerchantVpaTransactions({
+    required int page,
+    bool append = false,
+  }) {
     final selectedVpa = _resolveSelectedVpa();
 
     if (_bearerToken.isEmpty || selectedVpa == null) {
@@ -305,6 +365,7 @@ class _HomePageState extends State<HomePage> {
             to: _homeTransactionToDate,
             page: page,
             size: _transactionPageSize,
+            append: append,
           ),
         );
   }
@@ -336,7 +397,10 @@ class _HomePageState extends State<HomePage> {
     return nextVpa;
   }
 
-  void _loadPosTransactions({required int page}) {
+  void _loadPosTransactions({
+    required int page,
+    bool append = false,
+  }) {
     final useMidEndpoint = _acqMerchantId == '0';
     final posMerchantId = useMidEndpoint ? _merchantId : _effectiveMerchantId;
 
@@ -357,11 +421,15 @@ class _HomePageState extends State<HomePage> {
             recordTo: _homeTransactionToDate,
             terminalId: _isTerminalUser ? _terminalId : null,
             useMidEndpoint: useMidEndpoint,
+            append: append && !useMidEndpoint,
           ),
         );
   }
 
-  void _loadSettlements({required int page}) {
+  void _loadSettlements({
+    required int page,
+    bool append = false,
+  }) {
     final settlementMerchantId = _effectiveMerchantId;
 
     if (_bearerToken.isEmpty || settlementMerchantId.isEmpty) {
@@ -380,6 +448,7 @@ class _HomePageState extends State<HomePage> {
             toDate: toDate,
             page: page,
             size: _transactionPageSize,
+            append: append,
           ),
         );
   }
@@ -483,11 +552,10 @@ class _HomePageState extends State<HomePage> {
   Widget _buildHomeBody() {
     return BlocListener<SoundBoxBloc, SoundBoxState>(
       listener: _onSoundBoxStateChanged,
-      child: SingleChildScrollView(
+      child: ListView(
+        controller: _scrollController,
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 18),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+        children: [
             if (!kIsWeb) ...[
               const HomeHeader(),
               const SizedBox(height: 18),
@@ -544,7 +612,6 @@ class _HomePageState extends State<HomePage> {
             ],
             _buildSelectedTransactionList(),
           ],
-        ),
       ),
     );
   }
@@ -594,32 +661,46 @@ class _HomePageState extends State<HomePage> {
       return _emptyTransactions();
     }
 
-    return BlocBuilder<MerchantVpaTxnBloc, MerchantVpaTxnState>(
+    return BlocConsumer<MerchantVpaTxnBloc, MerchantVpaTxnState>(
+      listener: (context, state) => _scheduleHomeLoadMoreIfNeeded(),
       builder: (context, state) {
-        return MerchantVpaTransactions(
-          transactions: state.transactions,
-          isLoading: state is MerchantVpaTxnLoading,
-          page: state.page,
-          totalPages: state.totalPages,
-          totalElements: state.totalElements,
-          totalAmount: state.totalAmount,
-          onPreviousPage: state.first
-              ? null
-              : () => _loadMerchantVpaTransactions(
-                    page: state.page - 1,
-                  ),
-          onNextPage: state.last
-              ? null
-              : () => _loadMerchantVpaTransactions(
-                    page: state.page + 1,
-                  ),
+        if (state is MerchantVpaTxnLoading && state.transactions.isEmpty) {
+          return const Center(
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 48),
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+
+        if (state.transactions.isEmpty) {
+          return _emptyTransactions();
+        }
+
+        return Column(
+          children: [
+            ...state.transactions.map(
+              (transaction) => TransactionListItem.fromVpa(
+                transaction: transaction,
+                cardStyle: true,
+                compact: true,
+                onInfoPressed: () {
+                  context.push(AppRoutes.vpaInvoice, extra: transaction);
+                },
+              ),
+            ),
+            _HomeLoadMoreIndicator(
+              visible: state is MerchantVpaTxnLoading && !state.last,
+            ),
+          ],
         );
       },
     );
   }
 
   Widget _buildSettlementList() {
-    return BlocBuilder<SettlementBloc, SettlementState>(
+    return BlocConsumer<SettlementBloc, SettlementState>(
+      listener: (context, state) => _scheduleHomeLoadMoreIfNeeded(),
       builder: (context, state) {
         if (state.isLoading && state.settlements.isEmpty) {
           return Center(
@@ -630,11 +711,29 @@ class _HomePageState extends State<HomePage> {
           );
         }
 
-        if (state.settlements.isEmpty) {
-          return _buildSettlementSummary(state);
-        }
-
-        return _buildSettlementSummary(state);
+        return Column(
+          children: [
+            _buildSettlementSummary(state),
+            if (state.settlements.isEmpty)
+              _emptyTransactions()
+            else ...[
+              ...state.settlements.map(
+                (settlement) => TransactionListItem.fromSettlement(
+                  settlement: settlement,
+                  onInfoPressed: () {
+                    context.push(
+                      AppRoutes.settlementInvoice,
+                      extra: settlement,
+                    );
+                  },
+                ),
+              ),
+              _HomeLoadMoreIndicator(
+                visible: state.isLoading && !state.last,
+              ),
+            ],
+          ],
+        );
       },
     );
   }
@@ -646,7 +745,7 @@ class _HomePageState extends State<HomePage> {
     );
 
     return Padding(
-      padding: const EdgeInsets.only(top: 4, bottom: 90),
+      padding: const EdgeInsets.only(top: 4, bottom: 12),
       child: Column(
         children: [
           _SettlementSummaryRow(
@@ -678,7 +777,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildPosTransactionList() {
-    return BlocBuilder<PosTransactionBloc, PosTransactionState>(
+    return BlocConsumer<PosTransactionBloc, PosTransactionState>(
+      listener: (context, state) => _scheduleHomeLoadMoreIfNeeded(),
       builder: (context, state) {
         if (state.transactionsLoading &&
             state.transactions.isEmpty &&
@@ -712,34 +812,8 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
             ),
-            const SizedBox(height: 12),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  onPressed: state.transactionsLoading || state.first
-                      ? null
-                      : () => _loadPosTransactions(page: state.page - 1),
-                  icon: const Icon(Icons.chevron_left_rounded),
-                  color: AppColors.primaryPurple,
-                  tooltip: context.tr('previous_page'),
-                ),
-                Text(
-                  '${context.tr('page')} ${state.page + 1} ${context.tr('of')} ${state.totalPages == 0 ? 1 : state.totalPages}',
-                  style: AppTextStyle.h5.copyWith(
-                    color: context.appTextPrimary,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                IconButton(
-                  onPressed: state.transactionsLoading || state.last
-                      ? null
-                      : () => _loadPosTransactions(page: state.page + 1),
-                  icon: const Icon(Icons.chevron_right_rounded),
-                  color: AppColors.primaryPurple,
-                  tooltip: context.tr('next_page'),
-                ),
-              ],
+            _HomeLoadMoreIndicator(
+              visible: state.transactionsLoading && !state.last,
             ),
           ],
         );
@@ -817,6 +891,28 @@ class _HomePageState extends State<HomePage> {
             fontStyle: FontStyle.italic,
             fontWeight: FontWeight.w400,
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _HomeLoadMoreIndicator extends StatelessWidget {
+  final bool visible;
+
+  const _HomeLoadMoreIndicator({required this.visible});
+
+  @override
+  Widget build(BuildContext context) {
+    if (!visible) return const SizedBox(height: 12);
+
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 18),
+      child: Center(
+        child: SizedBox(
+          width: 24,
+          height: 24,
+          child: CircularProgressIndicator(strokeWidth: 2.4),
         ),
       ),
     );

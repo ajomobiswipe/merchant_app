@@ -6,6 +6,7 @@ import 'package:anet_merchants/core/common/app_assets.dart';
 import 'package:anet_merchants/core/common/app_colors.dart';
 import 'package:anet_merchants/core/common/app_text_style.dart';
 import 'package:anet_merchants/core/common/common_scaffold.dart';
+import 'package:anet_merchants/core/common/responsive_layout.dart';
 import 'package:anet_merchants/core/di/injection_container.dart';
 import 'package:anet_merchants/core/localization/app_language.dart';
 import 'package:anet_merchants/core/resources/data_state.dart';
@@ -35,6 +36,7 @@ class _TransactionListPageState extends State<TransactionListPage> {
   static const int _pageSize = 10;
 
   final SessionStorage _sessionStorage = SessionStorage();
+  final ScrollController _scrollController = ScrollController();
 
   String _bearerToken = '';
   String _merchantId = '';
@@ -49,24 +51,81 @@ class _TransactionListPageState extends State<TransactionListPage> {
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(_onScroll);
     _loadSelectedTransactions(page: 0);
   }
 
-  Future<void> _loadSelectedTransactions({required int page}) async {
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (!AppBreakpoints.isSingleColumn(context)) return;
+    if (!_scrollController.hasClients) return;
+    if (_scrollController.position.extentAfter > 320) return;
+    _loadMore();
+  }
+
+  void _scheduleLoadMoreIfNeeded() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_scrollController.hasClients) return;
+      if (_scrollController.position.maxScrollExtent > 80) return;
+      _loadMore();
+    });
+  }
+
+  void _loadMore() {
     if (widget.filter.tab == TransactionTab.settlements) {
-      await _loadSettlements(page: page);
+      final state = context.read<SettlementBloc>().state;
+      if (state.isLoading || state.last || state.settlements.isEmpty) return;
+      _loadSettlements(page: state.page + 1, append: true);
       return;
     }
 
     if (widget.filter.tab == TransactionTab.pos) {
-      await _loadPosTransactions(page: page);
+      if (_isAllMerchantSelection) return;
+      final state = context.read<PosTransactionBloc>().state;
+      if (state.transactionsLoading ||
+          state.last ||
+          state.transactions.isEmpty) {
+        return;
+      }
+      _loadPosTransactions(page: state.page + 1, append: true);
       return;
     }
 
-    await _loadQrTransactions(page: page);
+    final state = context.read<MerchantVpaTxnBloc>().state;
+    if (state is MerchantVpaTxnLoading ||
+        state.last ||
+        state.transactions.isEmpty) {
+      return;
+    }
+    _loadQrTransactions(page: state.page + 1, append: true);
   }
 
-  Future<void> _loadQrTransactions({required int page}) async {
+  Future<void> _loadSelectedTransactions({
+    required int page,
+    bool append = false,
+  }) async {
+    if (widget.filter.tab == TransactionTab.settlements) {
+      await _loadSettlements(page: page, append: append);
+      return;
+    }
+
+    if (widget.filter.tab == TransactionTab.pos) {
+      await _loadPosTransactions(page: page, append: append);
+      return;
+    }
+
+    await _loadQrTransactions(page: page, append: append);
+  }
+
+  Future<void> _loadQrTransactions({
+    required int page,
+    bool append = false,
+  }) async {
     final bearerToken =
         _bearerToken.isEmpty ? await _sessionStorage.bearerToken : _bearerToken;
 
@@ -84,6 +143,7 @@ class _TransactionListPageState extends State<TransactionListPage> {
             to: widget.filter.to,
             page: page,
             size: _pageSize,
+            append: append,
           ),
         );
   }
@@ -93,6 +153,7 @@ class _TransactionListPageState extends State<TransactionListPage> {
     int? size,
     bool sendTxnReportToMail = false,
     String? creditVpa,
+    bool append = false,
   }) async {
     final bearerToken =
         _bearerToken.isEmpty ? await _sessionStorage.bearerToken : _bearerToken;
@@ -134,6 +195,7 @@ class _TransactionListPageState extends State<TransactionListPage> {
             creditVpa: creditVpa,
             useMidEndpoint: useMidEndpoint,
             sendTxnReportToMail: sendTxnReportToMail,
+            append: append,
           ),
         );
   }
@@ -141,6 +203,7 @@ class _TransactionListPageState extends State<TransactionListPage> {
   Future<void> _loadSettlements({
     required int page,
     bool sendSettlementReportToMail = false,
+    bool append = false,
   }) async {
     final bearerToken =
         _bearerToken.isEmpty ? await _sessionStorage.bearerToken : _bearerToken;
@@ -170,6 +233,7 @@ class _TransactionListPageState extends State<TransactionListPage> {
             page: page,
             size: _pageSize,
             sendSettlementReportToMail: sendSettlementReportToMail,
+            append: append,
           ),
         );
   }
@@ -189,35 +253,28 @@ class _TransactionListPageState extends State<TransactionListPage> {
       onBottomNavItemSelected: _onBottomNavItemSelected,
       bottomAction:
           kIsWeb || !_supportsEmailReport ? null : _buildEmailButton(),
-      body: kIsWeb
-          ? _buildWebTransactionLayout()
-          : _buildMobileTransactionLayout(),
+      body: AppBreakpoints.isSingleColumn(context)
+          ? _buildMobileTransactionLayout()
+          : _buildWebTransactionLayout(),
     );
   }
 
   Widget _buildMobileTransactionLayout() {
-    return SingleChildScrollView(
+    return ListView(
+      controller: _scrollController,
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 18),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const _TransactionListHeader(),
-          const SizedBox(height: 30),
-          const MerchantOverview(),
-          const SizedBox(height: 20),
-          if (widget.filter.dateLabel.isNotEmpty)
-            _DateRangeLabel(widget.filter.dateLabel),
-          if (widget.filter.dateLabel.isNotEmpty) const SizedBox(height: 16),
-          _buildSummary(),
-          const SizedBox(height: 18),
-          if (widget.filter.tab == TransactionTab.pos)
-            _buildPosTransactionList()
-          else if (widget.filter.tab == TransactionTab.settlements)
-            _buildSettlementList()
-          else
-            _buildQrTransactionList(),
-        ],
-      ),
+      children: [
+        const _TransactionListHeader(),
+        const SizedBox(height: 30),
+        const MerchantOverview(),
+        const SizedBox(height: 20),
+        if (widget.filter.dateLabel.isNotEmpty)
+          _DateRangeLabel(widget.filter.dateLabel),
+        if (widget.filter.dateLabel.isNotEmpty) const SizedBox(height: 16),
+        _buildSummary(),
+        const SizedBox(height: 18),
+        _buildSelectedTransactionList(),
+      ],
     );
   }
 
@@ -346,6 +403,15 @@ class _TransactionListPageState extends State<TransactionListPage> {
         ),
       ),
     );
+  }
+  Widget _buildSelectedTransactionList() {
+    if (widget.filter.tab == TransactionTab.pos) {
+      return _buildPosTransactionList();
+    }
+    if (widget.filter.tab == TransactionTab.settlements) {
+      return _buildSettlementList();
+    }
+    return _buildQrTransactionList();
   }
 
   Widget _buildWebTransactionTable() {
@@ -818,7 +884,8 @@ class _TransactionListPageState extends State<TransactionListPage> {
   }
 
   Widget _buildQrTransactionList() {
-    return BlocBuilder<MerchantVpaTxnBloc, MerchantVpaTxnState>(
+    return BlocConsumer<MerchantVpaTxnBloc, MerchantVpaTxnState>(
+      listener: (context, state) => _scheduleLoadMoreIfNeeded(),
       builder: (context, state) {
         if (state is MerchantVpaTxnLoading && state.transactions.isEmpty) {
           return const _LoadingTransactions();
@@ -831,17 +898,8 @@ class _TransactionListPageState extends State<TransactionListPage> {
         return Column(
           children: [
             ...state.transactions.map(_buildQrTransactionItem),
-            const SizedBox(height: 4),
-            _PaginationControls(
-              page: state.page,
-              totalPages: state.totalPages,
-              isLoading: state is MerchantVpaTxnLoading,
-              onPreviousPage: state.first
-                  ? null
-                  : () => _loadQrTransactions(page: state.page - 1),
-              onNextPage: state.last
-                  ? null
-                  : () => _loadQrTransactions(page: state.page + 1),
+            _LoadMoreIndicator(
+              visible: state is MerchantVpaTxnLoading && !state.last,
             ),
           ],
         );
@@ -850,7 +908,8 @@ class _TransactionListPageState extends State<TransactionListPage> {
   }
 
   Widget _buildPosTransactionList() {
-    return BlocBuilder<PosTransactionBloc, PosTransactionState>(
+    return BlocConsumer<PosTransactionBloc, PosTransactionState>(
+      listener: (context, state) => _scheduleLoadMoreIfNeeded(),
       builder: (context, state) {
         if (state.transactionsLoading &&
             state.transactions.isEmpty &&
@@ -873,17 +932,8 @@ class _TransactionListPageState extends State<TransactionListPage> {
         return Column(
           children: [
             ...state.transactions.map(_buildPosTransactionItem),
-            const SizedBox(height: 4),
-            _PaginationControls(
-              page: state.page,
-              totalPages: state.totalPages,
-              isLoading: state.transactionsLoading,
-              onPreviousPage: state.first
-                  ? null
-                  : () => _loadPosTransactions(page: state.page - 1),
-              onNextPage: state.last
-                  ? null
-                  : () => _loadPosTransactions(page: state.page + 1),
+            _LoadMoreIndicator(
+              visible: state.transactionsLoading && !state.last,
             ),
           ],
         );
@@ -892,7 +942,8 @@ class _TransactionListPageState extends State<TransactionListPage> {
   }
 
   Widget _buildSettlementList() {
-    return BlocBuilder<SettlementBloc, SettlementState>(
+    return BlocConsumer<SettlementBloc, SettlementState>(
+      listener: (context, state) => _scheduleLoadMoreIfNeeded(),
       builder: (context, state) {
         if (state.isLoading && state.settlements.isEmpty) {
           return const _LoadingTransactions();
@@ -905,18 +956,7 @@ class _TransactionListPageState extends State<TransactionListPage> {
         return Column(
           children: [
             ...state.settlements.map(_buildSettlementItem),
-            const SizedBox(height: 4),
-            _PaginationControls(
-              page: state.page,
-              totalPages: state.totalPages,
-              isLoading: state.isLoading,
-              onPreviousPage: state.first
-                  ? null
-                  : () => _loadSettlements(page: state.page - 1),
-              onNextPage: state.last
-                  ? null
-                  : () => _loadSettlements(page: state.page + 1),
-            ),
+            _LoadMoreIndicator(visible: state.isLoading && !state.last),
           ],
         );
       },
@@ -926,6 +966,7 @@ class _TransactionListPageState extends State<TransactionListPage> {
   Widget _buildQrTransactionItem(MerchantVpaTransactionModel transaction) {
     return TransactionListItem.fromVpa(
       transaction: transaction,
+      cardStyle: true,
       onInfoPressed: () {
         context.push(AppRoutes.vpaInvoice, extra: transaction);
       },
@@ -935,7 +976,7 @@ class _TransactionListPageState extends State<TransactionListPage> {
   Widget _buildPosTransactionItem(PosTransactionModel transaction) {
     return TransactionListItem.fromPos(
       transaction: transaction,
-      cardStyle: false,
+      cardStyle: true,
       onInfoPressed: () {
         context.push(AppRoutes.transactionInvoice, extra: transaction);
       },
@@ -948,6 +989,28 @@ class _TransactionListPageState extends State<TransactionListPage> {
       onInfoPressed: () {
         context.push(AppRoutes.settlementInvoice, extra: settlement);
       },
+    );
+  }
+}
+
+class _LoadMoreIndicator extends StatelessWidget {
+  final bool visible;
+
+  const _LoadMoreIndicator({required this.visible});
+
+  @override
+  Widget build(BuildContext context) {
+    if (!visible) return const SizedBox(height: 12);
+
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 18),
+      child: Center(
+        child: SizedBox(
+          width: 24,
+          height: 24,
+          child: CircularProgressIndicator(strokeWidth: 2.4),
+        ),
+      ),
     );
   }
 }

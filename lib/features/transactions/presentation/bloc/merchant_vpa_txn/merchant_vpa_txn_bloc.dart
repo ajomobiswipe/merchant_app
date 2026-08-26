@@ -21,18 +21,19 @@ class MerchantVpaTxnBloc
     });
     on<GetMerchantVpaTxnDataRequested>((event, emit) async {
       final requestGeneration = ++_requestGeneration;
-      final requestedPage = _boundedPage(event.page);
+      final requestedPage = event.append ? event.page : _boundedPage(event.page);
+      final append = event.append && requestedPage > 0;
 
       emit(
         MerchantVpaTxnLoading(
-          transactions: requestedPage == 0 ? const [] : state.transactions,
+          transactions: append ? state.transactions : const [],
           page: requestedPage,
           size: event.size,
-          totalPages: requestedPage == 0 ? 0 : state.totalPages,
-          totalElements: requestedPage == 0 ? 0 : state.totalElements,
-          first: requestedPage == 0 ? true : state.first,
-          last: requestedPage == 0 ? true : state.last,
-          totalAmount: requestedPage == 0 ? 0 : state.totalAmount,
+          totalPages: append ? state.totalPages : 0,
+          totalElements: append ? state.totalElements : 0,
+          first: append ? state.first : true,
+          last: append ? state.last : true,
+          totalAmount: append ? state.totalAmount : 0,
           selectedVpa: event.creditVpa,
         ),
       );
@@ -60,7 +61,12 @@ class MerchantVpaTxnBloc
 
           emit(
             MerchantVpaTxnSuccess(
-              transactions: pageData.content,
+              transactions: append
+                  ? _appendUniqueTransactions(
+                      state.transactions,
+                      pageData.content,
+                    )
+                  : pageData.content,
               page: pagination.page,
               size: pageData.size,
               totalPages: pagination.totalPages,
@@ -128,6 +134,20 @@ class MerchantVpaTxnBloc
         );
       }
     });
+  }
+
+  List<MerchantVpaTransactionModel> _appendUniqueTransactions(
+    List<MerchantVpaTransactionModel> current,
+    List<MerchantVpaTransactionModel> incoming,
+  ) {
+    final existing =
+        current.map((item) => '${item.rrn}|${item.refId}|${item.addedOn}').toSet();
+    return [
+      ...current,
+      ...incoming.where(
+        (item) => existing.add('${item.rrn}|${item.refId}|${item.addedOn}'),
+      ),
+    ];
   }
 
   int _boundedPage(int page) {

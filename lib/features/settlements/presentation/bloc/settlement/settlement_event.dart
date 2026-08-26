@@ -19,6 +19,7 @@ class GetSettlementHistoryRequested extends SettlementEvent {
   final int page;
   final int size;
   final bool sendSettlementReportToMail;
+  final bool append;
 
   const GetSettlementHistoryRequested({
     required this.bearerToken,
@@ -28,6 +29,7 @@ class GetSettlementHistoryRequested extends SettlementEvent {
     required this.page,
     this.size = 10,
     this.sendSettlementReportToMail = false,
+    this.append = false,
   });
 
   @override
@@ -39,5 +41,6 @@ class GetSettlementHistoryRequested extends SettlementEvent {
         page,
         size,
         sendSettlementReportToMail,
+        append,
       ];
 }
