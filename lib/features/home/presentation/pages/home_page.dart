@@ -22,6 +22,7 @@ import 'package:anet_merchants/features/settlements/settlements.dart';
 import 'package:anet_merchants/features/shared/shared.dart';
 import 'package:anet_merchants/features/support/support.dart';
 import 'package:anet_merchants/features/transactions/transactions.dart';
+import 'package:anet_merchants/features/home/presentation/widgets/mobile_home_widgets.dart';
 
 part 'web_home_dashboard.dart';
 
@@ -332,10 +333,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _openTransactionFilter() {
+    _openTransactionFilterFor(_selectedTransactionTab);
+  }
+
+  void _openTransactionFilterFor(TransactionTab tab) {
     context.push(
       AppRoutes.transactionFilter,
       extra: TransactionFilterData(
-        tab: _selectedTransactionTab,
+        tab: tab,
         creditVpa: _selectedVpa ?? '',
         from: '',
         to: '',
@@ -522,14 +527,7 @@ class _HomePageState extends State<HomePage> {
         selectedIndex: _selectedBottomIndex,
         onBottomNavItemSelected: _onBottomNavItemSelected,
         showDashboard: _isDashboardEnabled,
-        bottomAction: _selectedBottomIndex == 0
-            ? ViewAllTransactionsButton(
-                label: _selectedTransactionTab == TransactionTab.settlements
-                    ? context.tr('view_all_settlements')
-                    : context.tr('view_all_transactions'),
-                onPressed: _openTransactionFilter,
-              )
-            : null,
+        bottomAction: null,
         body: _buildSelectedBody(),
       ),
     );
@@ -552,15 +550,30 @@ class _HomePageState extends State<HomePage> {
   Widget _buildHomeBody() {
     return BlocListener<SoundBoxBloc, SoundBoxState>(
       listener: _onSoundBoxStateChanged,
-      child: ListView(
-        controller: _scrollController,
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 18),
-        children: [
-            if (!kIsWeb) ...[
-              const HomeHeader(),
-              const SizedBox(height: 18),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color.alphaBlend(
+                AppColors.primaryPurple.withValues(
+                  alpha: context.isDarkMode ? .16 : .08,
+                ),
+                context.appBackground,
+              ),
+              context.appBackground,
             ],
-            MerchantOverview(key: ValueKey(_acqMerchantId)),
+            stops: const [0, 0.28],
+          ),
+        ),
+        child: ListView(
+          controller: _scrollController,
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 18),
+          children: [
+            MobileHomeGreeting(
+              onProfileTap: () => _onBottomNavItemSelected(3),
+            ),
             if (!_isTerminalUser && _merchantDropdownItems.isNotEmpty) ...[
               const SizedBox(height: 10),
               _MerchantDropdown(
@@ -571,76 +584,106 @@ class _HomePageState extends State<HomePage> {
                 onChanged: _onMerchantChanged,
               ),
             ],
-            const SizedBox(height: 12),
+            const SizedBox(height: 14),
             _buildHomeSummaryCard(),
-            if (!_isAllMerchantSelection) ...[
+            const SizedBox(height: 12),
+            _buildChannelTiles(),
+            if (!_isAllMerchantSelection &&
+                _selectedTransactionTab == TransactionTab.qr) ...[
               const SizedBox(height: 12),
-              QuickActions(
-                selectedTab: _selectedTransactionTab,
-                onTabSelected: _onTransactionTabSelected,
+              BlocBuilder<SoundBoxBloc, SoundBoxState>(
+                builder: (context, state) {
+                  return VpaSelector(
+                    isLoading: state is SoundBoxLoading,
+                    vpas: state.devices,
+                    selectedVpa: state.devices.contains(_selectedVpa)
+                        ? _selectedVpa
+                        : null,
+                    onChanged: _onVpaChanged,
+                  );
+                },
               ),
-              const SizedBox(height: 12),
-              if (_selectedTransactionTab == TransactionTab.qr) ...[
-                BlocBuilder<SoundBoxBloc, SoundBoxState>(
-                  builder: (context, state) {
-                    return VpaSelector(
-                      isLoading: state is SoundBoxLoading,
-                      vpas: state.devices,
-                      selectedVpa: state.devices.contains(_selectedVpa)
-                          ? _selectedVpa
-                          : null,
-                      onChanged: _onVpaChanged,
-                    );
-                  },
-                ),
-                const SizedBox(height: 12),
-              ],
-              RecentTransactionsHeader(
-                title: _selectedTransactionTab == TransactionTab.settlements
-                    ? context.tr('today_settlements')
-                    : _selectedTransactionTab.localizedTitle(context),
-                onRefresh: _refreshSelectedTransactions,
-              ),
-              const SizedBox(height: 10),
-            ] else ...[
-              const SizedBox(height: 12),
-              RecentTransactionsHeader(
-                title: context.tr('all_merchants'),
-                onRefresh: _refreshSelectedTransactions,
-              ),
-              const SizedBox(height: 10),
             ],
+            const SizedBox(height: 16),
+            MobileHomeSectionHeader(
+              title: _isAllMerchantSelection
+                  ? context.tr('all_merchants')
+                  : _selectedTransactionTab == TransactionTab.pos
+                      ? context.tr('recent_pos_transactions')
+                      : _selectedTransactionTab == TransactionTab.qr
+                          ? context.tr('recent_qr_transactions')
+                          : context.tr('todays_settlements'),
+              onViewAll: _openTransactionFilter,
+            ),
+            const SizedBox(height: 8),
             _buildSelectedTransactionList(),
           ],
+        ),
       ),
     );
   }
 
+  Widget _buildChannelTiles() {
+    return BlocBuilder<PosTransactionBloc, PosTransactionState>(
+      builder: (context, pos) {
+        return BlocBuilder<MerchantVpaTxnBloc, MerchantVpaTxnState>(
+          builder: (context, qr) {
+            return BlocBuilder<SettlementBloc, SettlementState>(
+              builder: (context, settlement) {
+                return MobileHomeChannelTiles(
+                  selectedTab: _selectedTransactionTab,
+                  posCount: pos.totalElements,
+                  qrCount: qr.totalElements,
+                  settlementCount: settlement.totalElements,
+                  enableQrAndSettlements: !_isAllMerchantSelection,
+                  onSelected: _onTransactionTabSelected,
+                  onViewAll: _openTransactionFilterFor,
+                );
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+
   Widget _buildHomeSummaryCard() {
-    if (_isAllMerchantSelection ||
-        _selectedTransactionTab == TransactionTab.pos) {
-      return BlocBuilder<PosTransactionBloc, PosTransactionState>(
-        builder: (context, state) => SuccessSummaryCard(
-          transactionCount: state.totalElements,
-          amount: state.totalAmount,
-        ),
-      );
-    }
-
-    if (_selectedTransactionTab == TransactionTab.settlements) {
-      return BlocBuilder<SettlementBloc, SettlementState>(
-        builder: (context, state) => SuccessSummaryCard(
-          transactionCount: state.transactionCount,
-          amount: state.totalAmount,
-        ),
-      );
-    }
-
-    return BlocBuilder<MerchantVpaTxnBloc, MerchantVpaTxnState>(
-      builder: (context, state) => SuccessSummaryCard(
-        transactionCount: state.totalElements,
-        amount: state.totalAmount,
-      ),
+    return BlocBuilder<PosTransactionBloc, PosTransactionState>(
+      builder: (context, pos) {
+        return BlocBuilder<MerchantVpaTxnBloc, MerchantVpaTxnState>(
+          builder: (context, qr) {
+            return BlocBuilder<SettlementBloc, SettlementState>(
+              builder: (context, settlement) {
+                final tab = _isAllMerchantSelection
+                    ? TransactionTab.pos
+                    : _selectedTransactionTab;
+                final int count;
+                final double amount;
+                final String title;
+                switch (tab) {
+                  case TransactionTab.qr:
+                    count = qr.totalElements;
+                    amount = qr.totalAmount;
+                    title = context.tr('qr_transactions');
+                  case TransactionTab.settlements:
+                    count = settlement.totalElements;
+                    amount = settlement.totalAmount;
+                    title = context.tr('settlements');
+                  case TransactionTab.pos:
+                    count = pos.totalElements;
+                    amount = pos.totalAmount;
+                    title = context.tr('pos_transactions');
+                }
+                return MobileHomeHeroCard(
+                  title: title,
+                  transactionCount: count,
+                  amount: amount,
+                );
+              },
+            );
+          },
+        );
+      },
     );
   }
 
@@ -680,11 +723,9 @@ class _HomePageState extends State<HomePage> {
         return Column(
           children: [
             ...state.transactions.map(
-              (transaction) => TransactionListItem.fromVpa(
+              (transaction) => MobileHomeTxnTile.fromVpa(
                 transaction: transaction,
-                cardStyle: true,
-                compact: true,
-                onInfoPressed: () {
+                onTap: () {
                   context.push(AppRoutes.vpaInvoice, extra: transaction);
                 },
               ),
@@ -702,77 +743,65 @@ class _HomePageState extends State<HomePage> {
     return BlocConsumer<SettlementBloc, SettlementState>(
       listener: (context, state) => _scheduleHomeLoadMoreIfNeeded(),
       builder: (context, state) {
+        final deductions = state.settlements.fold<double>(
+          0,
+          (total, item) => total + item.gst + item.mdrAmount,
+        );
+        final summary = MobileHomeSettlementSummary(
+          settledAmount: state.totalAmount,
+          deductions: deductions,
+        );
+
         if (state.isLoading && state.settlements.isEmpty) {
-          return Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 48),
-              child: CircularProgressIndicator(color: AppColors.primaryPurple),
-            ),
+          return Column(
+            children: [
+              summary,
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 48),
+                  child: CircularProgressIndicator(
+                    color: AppColors.primaryPurple,
+                  ),
+                ),
+              ),
+            ],
+          );
+        }
+
+        if (state.settlements.isEmpty) {
+          return Column(
+            children: [
+              summary,
+              _emptyTransactions(),
+            ],
           );
         }
 
         return Column(
           children: [
-            _buildSettlementSummary(state),
-            if (state.settlements.isEmpty)
-              _emptyTransactions()
-            else ...[
-              ...state.settlements.map(
-                (settlement) => TransactionListItem.fromSettlement(
-                  settlement: settlement,
-                  onInfoPressed: () {
-                    context.push(
-                      AppRoutes.settlementInvoice,
-                      extra: settlement,
-                    );
-                  },
-                ),
+            summary,
+            ...state.settlements.map(
+              (settlement) => MobileHomeSettlementTile(
+                settlement: settlement,
+                onTap: () {
+                  context.push(
+                    AppRoutes.settlementDetail,
+                    extra: SettlementDetailData(
+                      settlement: settlement,
+                      filter: const TransactionFilterData(
+                        tab: TransactionTab.settlements,
+                      ),
+                    ),
+                  );
+                },
               ),
-              _HomeLoadMoreIndicator(
-                visible: state.isLoading && !state.last,
-              ),
-            ],
+            ),
+            _HomeLoadMoreIndicator(
+              visible: state.isLoading && !state.last,
+            ),
           ],
         );
       },
-    );
-  }
-
-  Widget _buildSettlementSummary(SettlementState state) {
-    final deductions = state.settlements.fold<double>(
-      0,
-      (total, item) => total + item.gst + item.mdrAmount,
-    );
-
-    return Padding(
-      padding: const EdgeInsets.only(top: 4, bottom: 12),
-      child: Column(
-        children: [
-          _SettlementSummaryRow(
-            label: context.tr('settled_amount'),
-            subtitle: context.tr('total_amount_settled_today'),
-            icon: Icons.account_balance_wallet_outlined,
-            iconColor: AppColors.primaryPurple,
-            amount: state.totalAmount,
-          ),
-          const SizedBox(height: 10),
-          _SettlementSummaryRow(
-            label: context.tr('deductions'),
-            subtitle: context.tr('total_deductions_today'),
-            icon: Icons.percent_rounded,
-            iconColor: const Color(0xffB03060),
-            amount: deductions,
-          ),
-          const SizedBox(height: 10),
-          _SettlementSummaryRow(
-            label: context.tr('pending_settlements'),
-            subtitle: context.tr('total_pending_settlements'),
-            icon: Icons.schedule_rounded,
-            iconColor: const Color(0xffB89116),
-            amount: 0,
-          ),
-        ],
-      ),
     );
   }
 
@@ -802,11 +831,9 @@ class _HomePageState extends State<HomePage> {
         return Column(
           children: [
             ...state.transactions.map(
-              (transaction) => TransactionListItem.fromPos(
+              (transaction) => MobileHomeTxnTile.fromPos(
                 transaction: transaction,
-                cardStyle: true,
-                compact: true,
-                onInfoPressed: () {
+                onTap: () {
                   context.push(AppRoutes.transactionInvoice,
                       extra: transaction);
                 },
@@ -914,94 +941,6 @@ class _HomeLoadMoreIndicator extends StatelessWidget {
           height: 24,
           child: CircularProgressIndicator(strokeWidth: 2.4),
         ),
-      ),
-    );
-  }
-}
-
-class _SettlementSummaryRow extends StatelessWidget {
-  final String label;
-  final String subtitle;
-  final IconData icon;
-  final Color iconColor;
-  final double amount;
-
-  const _SettlementSummaryRow({
-    required this.label,
-    required this.subtitle,
-    required this.icon,
-    required this.iconColor,
-    required this.amount,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-      decoration: BoxDecoration(
-        color: context.appSurface,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: context.appBorder),
-        boxShadow: [
-          BoxShadow(
-            color: context.appShadow,
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: iconColor.withValues(alpha: .12),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(icon, color: iconColor, size: 28),
-          ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: AppTextStyle.h4.copyWith(
-                    color: context.appTextPrimary,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  subtitle,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: AppTextStyle.h5.copyWith(
-                    color: context.appTextSecondary,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 10),
-          Text(
-            'Rs. ${amount.toStringAsFixed(1)}',
-            style: AppTextStyle.h3.copyWith(
-              color: context.appTextPrimary,
-              fontWeight: FontWeight.w900,
-            ),
-          ),
-          Icon(
-            Icons.chevron_right_rounded,
-            color: context.appTextSecondary,
-            size: 28,
-          ),
-        ],
       ),
     );
   }

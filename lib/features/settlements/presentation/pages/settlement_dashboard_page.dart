@@ -740,7 +740,7 @@ class _WebSettlementDashboardRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final settled = settlement.merPayDone || settlement.reconciled;
+    final settled = settlement.isSettledStatus;
     final statusColor =
         settled ? const Color(0xff0B7A3A) : const Color(0xffA66D00);
     final statusSurface =
@@ -808,7 +808,7 @@ class _WebSettlementDashboardRow extends StatelessWidget {
                         ),
                         child: Text(
                           settled
-                              ? context.tr('settled_on')
+                              ? context.tr('settled')
                               : context.tr('pending_settlements'),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -898,7 +898,7 @@ class _WebCompactSettlementRow extends StatelessWidget {
                         ),
                         child: Text(
                           settled
-                              ? context.tr('settled_on')
+                              ? context.tr('settled')
                               : context.tr('pending_settlements'),
                           maxLines: 2,
                           textAlign: TextAlign.center,

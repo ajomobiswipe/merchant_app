@@ -25,13 +25,16 @@ class SettlementBloc extends Bloc<SettlementEvent, SettlementState> {
     Emitter<SettlementState> emit,
   ) async {
     final requestGeneration = ++_requestGeneration;
-    final requestedPage = event.append ? event.page : _boundedPage(event.page);
+    // Do not clamp against the previous response: settlement-list paging and
+    // settlement-detail transaction paging are different result sets.
+    final requestedPage = event.page < 0 ? 0 : event.page;
     final append = event.append && requestedPage > 0;
 
     emit(
       state.copyWith(
         isLoading: true,
         page: requestedPage,
+        transactionPage: requestedPage,
         error: null,
         settlements: append ? state.settlements : const [],
         settledTransactions:
@@ -42,6 +45,9 @@ class SettlementBloc extends Bloc<SettlementEvent, SettlementState> {
         totalAmount: append ? state.totalAmount : 0,
         first: append ? state.first : true,
         last: append ? state.last : true,
+        transactionTotalPages: append ? state.transactionTotalPages : 0,
+        transactionFirst: append ? state.transactionFirst : true,
+        transactionLast: append ? state.transactionLast : true,
       ),
     );
 
@@ -67,6 +73,10 @@ class SettlementBloc extends Bloc<SettlementEvent, SettlementState> {
         page: page.number,
         totalPages: page.totalPages,
       );
+      final transactionPagination = _normalizedPagination(
+        page: settledSummaryPage.number,
+        totalPages: settledSummaryPage.totalPages,
+      );
 
       emit(
         state.copyWith(
@@ -81,7 +91,7 @@ class SettlementBloc extends Bloc<SettlementEvent, SettlementState> {
               : settledSummaryPage.content,
           isLoading: false,
           page: pagination.page,
-          size: page.size,
+          size: event.size,
           totalPages: pagination.totalPages,
           totalElements: total.settlementCount == 0
               ? page.totalElements
@@ -90,6 +100,10 @@ class SettlementBloc extends Bloc<SettlementEvent, SettlementState> {
           last: pagination.last,
           totalAmount: total.totalAmount,
           transactionCount: total.transactionCount,
+          transactionPage: transactionPagination.page,
+          transactionTotalPages: transactionPagination.totalPages,
+          transactionFirst: transactionPagination.first,
+          transactionLast: transactionPagination.last,
           error: null,
         ),
       );
@@ -119,11 +133,6 @@ class SettlementBloc extends Bloc<SettlementEvent, SettlementState> {
         (item) => existing.add('${item.utr}|${item.rrn}|${item.tranDate}'),
       ),
     ];
-  }
-
-  int _boundedPage(int page) {
-    final maxPage = state.totalPages > 0 ? state.totalPages - 1 : 0;
-    return page.clamp(0, maxPage).toInt();
   }
 
   _SettlementPagination _normalizedPagination({

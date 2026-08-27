@@ -176,11 +176,15 @@ class SettlementItemModel {
       rrn: json['rrn'] ?? '',
       approveCode: json['approveCode'] ?? '',
       mid: json['mid'] ?? '',
-      merPayDone: json['merPayDone'] == true,
-      misDone: json['misDone'] == true,
-      reconciled: json['reconciled'] == true,
+      merPayDone: _toBool(json['merPayDone']),
+      misDone: _toBool(json['misDone']),
+      reconciled: _toBool(json['reconciled']),
     );
   }
+
+  /// Settlement-history APIs only return completed payouts, even when
+  /// merPayDone/reconciled are missing or encoded as strings.
+  bool get isSettledStatus => true;
 }
 
 double _toDouble(dynamic value) {
@@ -191,4 +195,11 @@ double _toDouble(dynamic value) {
 int _toInt(dynamic value) {
   if (value is num) return value.toInt();
   return int.tryParse('$value') ?? 0;
+}
+
+bool _toBool(dynamic value) {
+  if (value is bool) return value;
+  if (value is num) return value != 0;
+  final text = '$value'.trim().toLowerCase();
+  return text == 'true' || text == '1' || text == 'y' || text == 'yes';
 }

@@ -15,6 +15,7 @@ import 'package:anet_merchants/core/storage/session_storage.dart';
 import 'package:anet_merchants/core/utils/logout_helper.dart';
 import 'package:anet_merchants/core/utils/navigation_helper.dart';
 import 'package:anet_merchants/core/widgets/loading_action_content.dart';
+import 'package:anet_merchants/features/home/presentation/widgets/mobile_home_widgets.dart';
 import 'package:anet_merchants/features/settlements/settlements.dart';
 import 'package:anet_merchants/features/shared/shared.dart';
 import 'package:anet_merchants/features/transactions/transactions.dart';
@@ -561,8 +562,7 @@ class _TransactionListPageState extends State<TransactionListPage> {
               isQrTable: false,
               entries: state.settlements.map(
                 (settlement) {
-                  final successful =
-                      settlement.merPayDone || settlement.reconciled;
+                  final successful = settlement.isSettledStatus;
                   return _WebResultEntry(
                     date: settlement.tranDate == null
                         ? '-'
@@ -964,30 +964,34 @@ class _TransactionListPageState extends State<TransactionListPage> {
   }
 
   Widget _buildQrTransactionItem(MerchantVpaTransactionModel transaction) {
-    return TransactionListItem.fromVpa(
+    return MobileHomeTxnTile.fromVpa(
       transaction: transaction,
-      cardStyle: true,
-      onInfoPressed: () {
+      onTap: () {
         context.push(AppRoutes.vpaInvoice, extra: transaction);
       },
     );
   }
 
   Widget _buildPosTransactionItem(PosTransactionModel transaction) {
-    return TransactionListItem.fromPos(
+    return MobileHomeTxnTile.fromPos(
       transaction: transaction,
-      cardStyle: true,
-      onInfoPressed: () {
+      onTap: () {
         context.push(AppRoutes.transactionInvoice, extra: transaction);
       },
     );
   }
 
   Widget _buildSettlementItem(SettlementItemModel settlement) {
-    return TransactionListItem.fromSettlement(
+    return MobileHomeSettlementTile(
       settlement: settlement,
-      onInfoPressed: () {
-        context.push(AppRoutes.settlementInvoice, extra: settlement);
+      onTap: () {
+        context.push(
+          AppRoutes.settlementDetail,
+          extra: SettlementDetailData(
+            settlement: settlement,
+            filter: widget.filter,
+          ),
+        );
       },
     );
   }

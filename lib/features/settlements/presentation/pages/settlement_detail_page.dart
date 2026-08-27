@@ -297,12 +297,39 @@ class _SettlementDetailPageState extends State<SettlementDetailPage> {
         }
 
         if (kIsWeb) {
-          return _WebSettlementActivityTable(
-            transactions: state.settledTransactions,
-            onTransactionSelected: (transaction) => context.push(
-              AppRoutes.settlementInvoice,
-              extra: transaction,
-            ),
+          final pageSize = state.size > 0 ? state.size : _pageSize;
+          final countedPages = widget.data.settlement.transactionCount > 0
+              ? (widget.data.settlement.transactionCount / pageSize)
+                  .ceil()
+              : 0;
+          final totalPages = [
+            state.transactionTotalPages,
+            countedPages,
+            state.settledTransactions.isEmpty ? 0 : 1,
+          ].reduce((a, b) => a > b ? a : b);
+          final page = state.transactionPage;
+          final canGoPrevious = page > 0;
+          final canGoNext = totalPages == 0 ? false : page < totalPages - 1;
+
+          return Column(
+            children: [
+              _WebSettlementActivityTable(
+                transactions: state.settledTransactions,
+                onTransactionSelected: (transaction) => context.push(
+                  AppRoutes.settlementInvoice,
+                  extra: transaction,
+                ),
+              ),
+              _SettlementActivityPagination(
+                page: page,
+                totalPages: totalPages,
+                isLoading: state.isLoading,
+                canGoPrevious: canGoPrevious,
+                canGoNext: canGoNext,
+                onPrevious: () => _loadTransactions(page: page - 1),
+                onNext: () => _loadTransactions(page: page + 1),
+              ),
+            ],
           );
         }
 
@@ -339,6 +366,53 @@ class _SettlementDetailPageState extends State<SettlementDetailPage> {
 
 /// Browser-only history table. Values are deliberately sourced from the
 /// settlement invoice model, so the list and the invoice show the same facts.
+class _SettlementActivityPagination extends StatelessWidget {
+  final int page;
+  final int totalPages;
+  final bool isLoading;
+  final bool canGoPrevious;
+  final bool canGoNext;
+  final VoidCallback onPrevious;
+  final VoidCallback onNext;
+
+  const _SettlementActivityPagination({
+    required this.page,
+    required this.totalPages,
+    required this.isLoading,
+    required this.canGoPrevious,
+    required this.canGoNext,
+    required this.onPrevious,
+    required this.onNext,
+  });
+
+  @override
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            OutlinedButton.icon(
+              onPressed: isLoading || !canGoPrevious ? null : onPrevious,
+              icon: const Icon(Icons.chevron_left_rounded),
+              label: Text(context.tr('previous_page')),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 22),
+              child: Text(
+                '${context.tr('page')} ${page + 1} ${context.tr('of')} ${totalPages == 0 ? 1 : totalPages}',
+                style: AppTextStyle.h5.copyWith(fontWeight: FontWeight.w900),
+              ),
+            ),
+            OutlinedButton.icon(
+              onPressed: isLoading || !canGoNext ? null : onNext,
+              icon: const Icon(Icons.chevron_right_rounded),
+              label: Text(context.tr('next_page')),
+            ),
+          ],
+        ),
+      );
+}
+
 class _WebSettlementActivityTable extends StatelessWidget {
   final List<SettlementItemModel> transactions;
   final ValueChanged<SettlementItemModel> onTransactionSelected;
@@ -442,7 +516,7 @@ class _WebSettlementActivityRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isSettled = transaction.merPayDone || transaction.reconciled;
+    final isSettled = transaction.isSettledStatus;
     final amount = transaction.totalAmountPayable == 0
         ? transaction.grossTransactionAmount
         : transaction.totalAmountPayable;
@@ -535,7 +609,7 @@ class _WebSettlementStatusBadge extends StatelessWidget {
         ),
         child: Text(
           isSettled
-              ? context.tr('settled_on')
+              ? context.tr('settled')
               : context.tr('pending_settlements'),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,

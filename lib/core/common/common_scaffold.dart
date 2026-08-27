@@ -539,54 +539,40 @@ class _CommonBottomNavigation extends StatelessWidget {
     ];
 
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 10),
       decoration: BoxDecoration(
         color: context.appBackground,
         border: Border(top: BorderSide(color: context.appBorder)),
       ),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          const gap = 8.0;
-          const circleSize = 54.0;
-          final totalGap = gap * (items.length - 1);
-          final selectedWidth = (constraints.maxWidth -
-                  totalGap -
-                  (circleSize * (items.length - 1)))
-              .clamp(112.0, 152.0);
-
-          return Container(
-            height: 64,
-            padding: const EdgeInsets.all(5),
-            decoration: BoxDecoration(
-              color:
-                  context.isDarkMode ? const Color(0xff09090D) : Colors.white,
-              borderRadius: BorderRadius.circular(32),
-              border: Border.all(color: context.appBorder),
-              boxShadow: [
-                BoxShadow(
-                  color: context.appShadow,
-                  blurRadius: 18,
-                  offset: const Offset(0, 8),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+        decoration: BoxDecoration(
+          color: context.isDarkMode ? const Color(0xff09090D) : Colors.white,
+          borderRadius: BorderRadius.circular(28),
+          border: Border.all(color: context.appBorder),
+          boxShadow: [
+            BoxShadow(
+              color: context.appShadow,
+              blurRadius: 18,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            for (final item in items)
+              Expanded(
+                child: _BottomNavItem(
+                  icon: item.icon,
+                  label: item.label,
+                  selected: selectedIndex == item.index,
+                  onTap: () => onItemSelected(item.index),
                 ),
-              ],
-            ),
-            child: Row(
-              children: [
-                for (var i = 0; i < items.length; i++) ...[
-                  _BottomNavItem(
-                    icon: items[i].icon,
-                    label: items[i].label,
-                    selected: selectedIndex == items[i].index,
-                    selectedWidth: selectedWidth.toDouble(),
-                    circleSize: circleSize,
-                    onTap: () => onItemSelected(items[i].index),
-                  ),
-                  if (i != items.length - 1) const SizedBox(width: gap),
-                ],
-              ],
-            ),
-          );
-        },
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -608,80 +594,51 @@ class _BottomNavItem extends StatelessWidget {
   final IconData icon;
   final String label;
   final bool selected;
-  final double selectedWidth;
-  final double circleSize;
   final VoidCallback onTap;
 
   const _BottomNavItem({
     required this.icon,
     required this.label,
     required this.selected,
-    required this.selectedWidth,
-    required this.circleSize,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    final iconColor = selected
-        ? Colors.white
+    final color = selected
+        ? AppColors.primaryPurple
         : context.appTextSecondary.withValues(alpha: .9);
-    final selectedSurface = AppColors.primaryPurple;
-    final unselectedSurface =
-        context.isDarkMode ? const Color(0xff181820) : context.appSurfaceAlt;
 
-    return Tooltip(
-      message: label,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(28),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 220),
-          curve: Curves.easeOutCubic,
-          width: selected ? selectedWidth : circleSize,
-          height: circleSize,
-          decoration: BoxDecoration(
-            color: selected
-                ? AppColors.primaryPurple.withValues(alpha: .14)
-                : unselectedSurface,
-            borderRadius: BorderRadius.circular(28),
-            border: Border.all(
-              color: selected
-                  ? AppColors.primaryPurple.withValues(alpha: .20)
-                  : context.appBorder,
-            ),
-          ),
-          child: Row(
-            mainAxisAlignment:
-                selected ? MainAxisAlignment.start : MainAxisAlignment.center,
-            children: [
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 220),
-                width: circleSize - 10,
-                height: circleSize - 10,
-                margin: selected
-                    ? const EdgeInsets.only(left: 5, right: 10)
-                    : EdgeInsets.zero,
-                decoration: BoxDecoration(
-                  color: selected ? selectedSurface : Colors.transparent,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(icon, color: iconColor, size: 27),
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(22),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOutCubic,
+        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+        decoration: BoxDecoration(
+          color: selected
+              ? AppColors.primaryPurple.withValues(alpha: .12)
+              : Colors.transparent,
+          borderRadius: BorderRadius.circular(22),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, color: color, size: 22),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: AppTextStyle.h5.copyWith(
+                color: color,
+                fontWeight: selected ? FontWeight.w900 : FontWeight.w700,
+                fontSize: 11,
               ),
-              if (selected)
-                Expanded(
-                  child: Text(
-                    label,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: AppTextStyle.h4.copyWith(
-                      color: context.appTextPrimary,
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
-                ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

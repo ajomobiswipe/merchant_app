@@ -1209,7 +1209,7 @@ class _WebSettlementRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isSettled = settlement.merPayDone || settlement.reconciled;
+    final isSettled = settlement.isSettledStatus;
     final date = settlement.tranDate == null
         ? 'N/A'
         : DateFormat('d MMM yyyy').format(settlement.tranDate!);
@@ -1321,7 +1321,7 @@ class _WebSettlementStatusBadge extends StatelessWidget {
           borderRadius: BorderRadius.circular(18),
         ),
         child: Text(
-          isSettled ? 'Settled' : 'Pending',
+          isSettled ? context.tr('settled') : context.tr('pending_settlements'),
           textAlign: TextAlign.center,
           style: AppTextStyle.h5.copyWith(
             color:

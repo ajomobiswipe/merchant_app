@@ -147,6 +147,7 @@ const Map<AppLanguage, Map<String, String>> _localizedValues = {
     'total_transactions': 'Total Transactions',
     'total_amount': 'Total Amount',
     'utr_wise_settlement': 'UTR Wise Settlement',
+    'settled': 'Settled',
     'settled_on': 'Settled on',
     'transaction_activity': 'Transaction Activity',
     'settlement_breakdown': 'Settlement Breakdown',
@@ -345,8 +346,7 @@ const Map<AppLanguage, Map<String, String>> _localizedValues = {
     'promo_dashboard_caption':
         'Track payments, settlements and business performance from one place.',
     'enter_your_details': 'Enter Your Details',
-    'all_rights_reserved':
-        '© 2026 Alliance Network™. All rights reserved.',
+    'all_rights_reserved': '© 2026 Alliance Network™. All rights reserved.',
     'recent_pos_transactions': 'Recent POS Transactions',
     'recent_qr_transactions': 'Recent QR Transactions',
     'todays_settlements': "Today's Settlements",
@@ -362,10 +362,8 @@ const Map<AppLanguage, Map<String, String>> _localizedValues = {
     'no_pos_transactions': 'No POS transactions available',
     'unable_load_qr_transactions':
         'Unable to load QR transactions. Please try again.',
-    'no_qr_transactions_for_vpa':
-        'No QR transactions available for this VPA',
-    'unable_load_settlements':
-        'Unable to load settlements. Please try again.',
+    'no_qr_transactions_for_vpa': 'No QR transactions available for this VPA',
+    'unable_load_settlements': 'Unable to load settlements. Please try again.',
     'no_settlements_today': 'No settlements available today',
     'date_time': 'Date & Time',
     'time': 'Time',
@@ -427,6 +425,15 @@ const Map<AppLanguage, Map<String, String>> _localizedValues = {
     'cash_withdrawal': 'Cash Withdrawal',
     'balance_enquiry': 'Balance Enquiry',
     'mini_statement': 'Mini Statement',
+    'good_morning': 'Good Morning,',
+    'good_afternoon': 'Good Afternoon,',
+    'good_evening': 'Good Evening,',
+    'home_summary_subtitle': "Here's your transaction summary",
+    'transactions_this_month': 'Transactions This Month',
+    'this_month': 'This Month',
+    'last_2_years': 'Last 2 Years',
+    'view_all': 'View All',
+    'sale_transaction': 'Sale Transaction',
   },
   AppLanguage.malayalam: {
     'home': 'ഹോം',
@@ -476,6 +483,7 @@ const Map<AppLanguage, Map<String, String>> _localizedValues = {
     'total_transactions': 'ആകെ ഇടപാടുകൾ',
     'total_amount': 'ആകെ തുക',
     'utr_wise_settlement': 'UTR അനുസരിച്ചുള്ള സെറ്റിൽമെന്റ്',
+    'settled': 'സെറ്റിൽഡ്',
     'settled_on': 'സെറ്റിൽ ചെയ്തത്',
     'transaction_activity': 'ഇടപാട് പ്രവർത്തനം',
     'settlement_breakdown': 'സെറ്റിൽമെന്റ് ബ്രേക്ക്‌ഡൗൺ',
@@ -674,7 +682,8 @@ const Map<AppLanguage, Map<String, String>> _localizedValues = {
     'promo_security_title': 'ഫിന്‍ടെക് സുരക്ഷ',
     'promo_security_caption':
         'എല്ലാ ഡിജിറ്റൽ ധന ഇടപാടുകളും എൻഡ്-ടു-എൻഡ് സുരക്ഷ സംരക്ഷിക്കുന്നു.',
-    'promo_dashboard_title': 'നിങ്ങളുടെ ബിസിനസ് ഓൺലൈനിൽ സുരക്ഷിതമായി നിയന്ത്രിക്കുക',
+    'promo_dashboard_title':
+        'നിങ്ങളുടെ ബിസിനസ് ഓൺലൈനിൽ സുരക്ഷിതമായി നിയന്ത്രിക്കുക',
     'promo_dashboard_caption':
         'പേയ്മെന്റുകൾ, സെറ്റിൽമെന്റുകൾ, ബിസിനസ് പ്രകടനം ഒരിടത്ത് നിന്ന് ട്രാക്ക് ചെയ്യുക.',
     'enter_your_details': 'നിങ്ങളുടെ വിവരങ്ങൾ നൽകുക',
@@ -759,6 +768,15 @@ const Map<AppLanguage, Map<String, String>> _localizedValues = {
     'cash_withdrawal': 'ക്യാഷ് വിത്‌ഡ്രോയൽ',
     'balance_enquiry': 'ബാലൻസ് എൻക്വയറി',
     'mini_statement': 'മിനി സ്റ്റേറ്റ്‌മെന്റ്',
+    'good_morning': 'സുപ്രഭാതം,',
+    'good_afternoon': 'ശുഭ ഉച്ചയ്ക്ക്,',
+    'good_evening': 'ശുഭ സന്ധ്യ,',
+    'home_summary_subtitle': 'നിങ്ങളുടെ ഇടപാട് സംഗ്രഹം ഇതാ',
+    'transactions_this_month': 'ഈ മാസത്തെ ഇടപാടുകൾ',
+    'this_month': 'ഈ മാസം',
+    'last_2_years': 'കഴിഞ്ഞ 2 വർഷം',
+    'view_all': 'എല്ലാം കാണുക',
+    'sale_transaction': 'സെയിൽ ഇടപാട്',
   },
   AppLanguage.tamil: {
     'home': 'முகப்பு',
@@ -808,6 +826,7 @@ const Map<AppLanguage, Map<String, String>> _localizedValues = {
     'total_transactions': 'மொத்த பரிவர்த்தனைகள்',
     'total_amount': 'மொத்த தொகை',
     'utr_wise_settlement': 'UTR வாரியான செட்டில்மென்ட்',
+    'settled': 'செட்டில்',
     'settled_on': 'செட்டில் தேதி',
     'transaction_activity': 'பரிவர்த்தனை செயல்பாடு',
     'settlement_breakdown': 'செட்டில்மென்ட் விவரம்',
@@ -1007,7 +1026,8 @@ const Map<AppLanguage, Map<String, String>> _localizedValues = {
     'promo_security_title': 'ஃபின்டெக் பாதுகாப்பு',
     'promo_security_caption':
         'ஒவ்வொரு டிஜிட்டல் நிதி பரிவர்த்தனையையும் எண்ட்-டு-எண்ட் பாதுகாப்பு காக்கிறது.',
-    'promo_dashboard_title': 'உங்கள் வணிகத்தை ஆன்லைனில் பாதுகாப்பாக நிர்வகிக்கவும்',
+    'promo_dashboard_title':
+        'உங்கள் வணிகத்தை ஆன்லைனில் பாதுகாப்பாக நிர்வகிக்கவும்',
     'promo_dashboard_caption':
         'பேமெண்ட்கள், செட்டில்மெண்ட்கள் மற்றும் வணிக செயல்திறனை ஒரே இடத்தில் கண்காணிக்கவும்.',
     'enter_your_details': 'உங்கள் விவரங்களை உள்ளிடவும்',
@@ -1092,6 +1112,15 @@ const Map<AppLanguage, Map<String, String>> _localizedValues = {
     'cash_withdrawal': 'பணம் எடுத்தல்',
     'balance_enquiry': 'இருப்பு விசாரணை',
     'mini_statement': 'மினி ஸ்டேட்மெண்ட்',
+    'good_morning': 'காலை வணக்கம்,',
+    'good_afternoon': 'மதிய வணக்கம்,',
+    'good_evening': 'மாலை வணக்கம்,',
+    'home_summary_subtitle': 'உங்கள் பரிவர்த்தனை சுருக்கம் இங்கே',
+    'transactions_this_month': 'இந்த மாத பரிவர்த்தனைகள்',
+    'this_month': 'இந்த மாதம்',
+    'last_2_years': 'கடந்த 2 ஆண்டுகள்',
+    'view_all': 'அனைத்தும்',
+    'sale_transaction': 'விற்பனை பரிவர்த்தனை',
   },
   AppLanguage.hindi: {
     'home': 'होम',
@@ -1141,6 +1170,7 @@ const Map<AppLanguage, Map<String, String>> _localizedValues = {
     'total_transactions': 'कुल लेनदेन',
     'total_amount': 'कुल राशि',
     'utr_wise_settlement': 'UTR के अनुसार सेटलमेंट',
+    'settled': 'सेटल्ड',
     'settled_on': 'सेटल्ड ऑन',
     'transaction_activity': 'लेनदेन गतिविधि',
     'settlement_breakdown': 'सेटलमेंट ब्रेकडाउन',
@@ -1334,12 +1364,12 @@ const Map<AppLanguage, Map<String, String>> _localizedValues = {
     'promo_security_title': 'फिनटेक सुरक्षा',
     'promo_security_caption':
         'एंड-टू-एंड सुरक्षा हर डिजिटल वित्तीय लेनदेन की रक्षा करती है.',
-    'promo_dashboard_title': 'अपना व्यवसाय ऑनलाइन सुरक्षित रूप से प्रबंधित करें',
+    'promo_dashboard_title':
+        'अपना व्यवसाय ऑनलाइन सुरक्षित रूप से प्रबंधित करें',
     'promo_dashboard_caption':
         'भुगतान, सेटलमेंट और व्यवसाय प्रदर्शन एक जगह से ट्रैक करें.',
     'enter_your_details': 'अपना विवरण दर्ज करें',
-    'all_rights_reserved':
-        '© 2026 Alliance Network™. सर्वाधिकार सुरक्षित.',
+    'all_rights_reserved': '© 2026 Alliance Network™. सर्वाधिकार सुरक्षित.',
     'recent_pos_transactions': 'हाल के POS लेनदेन',
     'recent_qr_transactions': 'हाल के QR लेनदेन',
     'todays_settlements': 'आज के सेटलमेंट',
@@ -1419,5 +1449,14 @@ const Map<AppLanguage, Map<String, String>> _localizedValues = {
     'cash_withdrawal': 'कैश विदड्रॉल',
     'balance_enquiry': 'बैलेंस इन्क्वायरी',
     'mini_statement': 'मिनी स्टेटमेंट',
+    'good_morning': 'सुप्रभात,',
+    'good_afternoon': 'शुभ दोपहर,',
+    'good_evening': 'शुभ संध्या,',
+    'home_summary_subtitle': 'आपका लेनदेन सारांश यहाँ है',
+    'transactions_this_month': 'इस महीने के लेनदेन',
+    'this_month': 'इस महीने',
+    'last_2_years': 'पिछले 2 वर्ष',
+    'view_all': 'सभी देखें',
+    'sale_transaction': 'सेल लेनदेन',
   },
 };

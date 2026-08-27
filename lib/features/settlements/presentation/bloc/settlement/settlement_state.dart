@@ -13,6 +13,10 @@ class SettlementState extends Equatable {
   final bool first;
   final bool last;
   final double totalAmount;
+  final int transactionPage;
+  final int transactionTotalPages;
+  final bool transactionFirst;
+  final bool transactionLast;
 
   const SettlementState({
     this.settlements = const [],
@@ -27,6 +31,10 @@ class SettlementState extends Equatable {
     this.first = true,
     this.last = true,
     this.totalAmount = 0,
+    this.transactionPage = 0,
+    this.transactionTotalPages = 0,
+    this.transactionFirst = true,
+    this.transactionLast = true,
   });
 
   SettlementState copyWith({
@@ -42,6 +50,10 @@ class SettlementState extends Equatable {
     bool? first,
     bool? last,
     double? totalAmount,
+    int? transactionPage,
+    int? transactionTotalPages,
+    bool? transactionFirst,
+    bool? transactionLast,
   }) {
     return SettlementState(
       settlements: settlements ?? this.settlements,
@@ -56,6 +68,11 @@ class SettlementState extends Equatable {
       first: first ?? this.first,
       last: last ?? this.last,
       totalAmount: totalAmount ?? this.totalAmount,
+      transactionPage: transactionPage ?? this.transactionPage,
+      transactionTotalPages:
+          transactionTotalPages ?? this.transactionTotalPages,
+      transactionFirst: transactionFirst ?? this.transactionFirst,
+      transactionLast: transactionLast ?? this.transactionLast,
     );
   }
 
@@ -73,5 +90,9 @@ class SettlementState extends Equatable {
         first,
         last,
         totalAmount,
+        transactionPage,
+        transactionTotalPages,
+        transactionFirst,
+        transactionLast,
       ];
 }
