@@ -20,9 +20,19 @@ class MerchantVpaTxnBloc
       emit(MerchantVpaTxnInitial());
     });
     on<GetMerchantVpaTxnDataRequested>((event, emit) async {
-      final requestGeneration = ++_requestGeneration;
-      final requestedPage = event.append ? event.page : _boundedPage(event.page);
+      final requestedPage =
+          event.append ? event.page : _boundedPage(event.page);
       final append = event.append && requestedPage > 0;
+      if (append &&
+          (state.last ||
+              state is MerchantVpaTxnLoading ||
+              (state.totalElements > 0 &&
+                  state.transactions.length >= state.totalElements) ||
+              (state.totalPages > 0 && requestedPage >= state.totalPages))) {
+        return;
+      }
+
+      final requestGeneration = ++_requestGeneration;
 
       emit(
         MerchantVpaTxnLoading(
@@ -47,6 +57,9 @@ class MerchantVpaTxnBloc
             to: event.to,
             page: requestedPage,
             size: event.size,
+            mappedMerchantId: event.mappedMerchantId.isEmpty
+                ? null
+                : event.mappedMerchantId,
           ),
         );
 
@@ -58,21 +71,26 @@ class MerchantVpaTxnBloc
             page: pageData.number,
             totalPages: pageData.totalPages,
           );
+          final transactions = append
+              ? _appendUniqueTransactions(
+                  state.transactions,
+                  pageData.content,
+                )
+              : pageData.content;
+          final reachedEnd = pageData.last ||
+              pageData.content.length < event.size ||
+              (pageData.totalElements > 0 &&
+                  transactions.length >= pageData.totalElements);
 
           emit(
             MerchantVpaTxnSuccess(
-              transactions: append
-                  ? _appendUniqueTransactions(
-                      state.transactions,
-                      pageData.content,
-                    )
-                  : pageData.content,
+              transactions: transactions,
               page: pagination.page,
               size: pageData.size,
               totalPages: pagination.totalPages,
               totalElements: pageData.totalElements,
               first: pagination.first,
-              last: pagination.last,
+              last: reachedEnd || pagination.last,
               totalAmount: dataState.data!.totalAmount,
               selectedVpa: event.creditVpa,
             ),
@@ -90,7 +108,7 @@ class MerchantVpaTxnBloc
               totalPages: state.totalPages,
               totalElements: state.totalElements,
               first: state.first,
-              last: state.last,
+              last: true,
               totalAmount: state.totalAmount,
               selectedVpa: event.creditVpa,
             ),
@@ -107,7 +125,7 @@ class MerchantVpaTxnBloc
             totalPages: state.totalPages,
             totalElements: state.totalElements,
             first: state.first,
-            last: state.last,
+            last: true,
             totalAmount: state.totalAmount,
             selectedVpa: event.creditVpa,
           ),
@@ -127,7 +145,7 @@ class MerchantVpaTxnBloc
             totalPages: state.totalPages,
             totalElements: state.totalElements,
             first: state.first,
-            last: state.last,
+            last: true,
             totalAmount: state.totalAmount,
             selectedVpa: event.creditVpa,
           ),

@@ -406,6 +406,9 @@ class WebHelpCard extends StatelessWidget {
           const SizedBox(height: 10),
           Text(
             context.tr('need_help'),
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
             style: AppTextStyle.h4.copyWith(
               color: const Color(0xff201D27),
               fontWeight: FontWeight.w900,
@@ -428,14 +431,29 @@ class WebHelpCard extends StatelessWidget {
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppColors.primaryPurple,
                 side: const BorderSide(color: Color(0xffD8BEFF)),
-                padding: const EdgeInsets.symmetric(vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 8,
+                ),
+                minimumSize: Size.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(context.tr('contact_support')),
-                  const SizedBox(width: 8),
-                  const Icon(Icons.arrow_forward_rounded, size: 18),
+                  Flexible(
+                    child: Text(
+                      context.tr('contact_support'),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: AppTextStyle.h5.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  const Icon(Icons.arrow_forward_rounded, size: 16),
                 ],
               ),
             ),

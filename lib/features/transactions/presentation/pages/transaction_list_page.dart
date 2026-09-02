@@ -73,14 +73,35 @@ class _TransactionListPageState extends State<TransactionListPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted || !_scrollController.hasClients) return;
       if (_scrollController.position.maxScrollExtent > 80) return;
+      if (!_isFirstLoadedPage) return;
       _loadMore();
     });
+  }
+
+  bool get _isFirstLoadedPage {
+    if (widget.filter.tab == TransactionTab.settlements) {
+      return context.read<SettlementBloc>().state.page == 0;
+    }
+    if (widget.filter.tab == TransactionTab.pos) {
+      return context.read<PosTransactionBloc>().state.page == 0;
+    }
+    return context.read<MerchantVpaTxnBloc>().state.page == 0;
+  }
+
+  bool _hasLoadedAll(int loaded, int total) {
+    return total > 0 && loaded >= total;
   }
 
   void _loadMore() {
     if (widget.filter.tab == TransactionTab.settlements) {
       final state = context.read<SettlementBloc>().state;
-      if (state.isLoading || state.last || state.settlements.isEmpty) return;
+      if (state.isLoading ||
+          state.error != null ||
+          state.last ||
+          state.settlements.isEmpty ||
+          _hasLoadedAll(state.settlements.length, state.totalElements)) {
+        return;
+      }
       _loadSettlements(page: state.page + 1, append: true);
       return;
     }
@@ -90,7 +111,8 @@ class _TransactionListPageState extends State<TransactionListPage> {
       final state = context.read<PosTransactionBloc>().state;
       if (state.transactionsLoading ||
           state.last ||
-          state.transactions.isEmpty) {
+          state.transactions.isEmpty ||
+          _hasLoadedAll(state.transactions.length, state.totalElements)) {
         return;
       }
       _loadPosTransactions(page: state.page + 1, append: true);
@@ -99,8 +121,10 @@ class _TransactionListPageState extends State<TransactionListPage> {
 
     final state = context.read<MerchantVpaTxnBloc>().state;
     if (state is MerchantVpaTxnLoading ||
+        state is MerchantVpaTxnFailure ||
         state.last ||
-        state.transactions.isEmpty) {
+        state.transactions.isEmpty ||
+        _hasLoadedAll(state.transactions.length, state.totalElements)) {
       return;
     }
     _loadQrTransactions(page: state.page + 1, append: true);
@@ -136,6 +160,20 @@ class _TransactionListPageState extends State<TransactionListPage> {
 
     _bearerToken = bearerToken;
 
+    final merchantId =
+        _merchantId.isEmpty ? await _sessionStorage.merchantId : _merchantId;
+    final acqMerchantId = _acqMerchantId.isEmpty
+        ? await _sessionStorage.activeAcqMerchantId
+        : _acqMerchantId;
+    _merchantId = merchantId;
+    _acqMerchantId = acqMerchantId;
+    final mappedMerchantId =
+        acqMerchantId.isEmpty || acqMerchantId == '0' ? merchantId : acqMerchantId;
+
+    if (!mounted) {
+      return;
+    }
+
     context.read<MerchantVpaTxnBloc>().add(
           GetMerchantVpaTxnDataRequested(
             bearerToken: bearerToken,
@@ -145,6 +183,7 @@ class _TransactionListPageState extends State<TransactionListPage> {
             page: page,
             size: _pageSize,
             append: append,
+            mappedMerchantId: mappedMerchantId,
           ),
         );
   }

@@ -103,8 +103,21 @@ class _HomePageState extends State<HomePage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted || !_scrollController.hasClients) return;
       if (_scrollController.position.maxScrollExtent > 80) return;
+      // Only pad the first page. Chaining every success re-fired the VPA
+      // API until the connection dropped (same issue as the previous app).
+      if (!_isFirstLoadedPage) return;
       _loadMoreHomeTransactions();
     });
+  }
+
+  bool get _isFirstLoadedPage {
+    if (_selectedTransactionTab == TransactionTab.pos) {
+      return context.read<PosTransactionBloc>().state.page == 0;
+    }
+    if (_selectedTransactionTab == TransactionTab.qr) {
+      return context.read<MerchantVpaTxnBloc>().state.page == 0;
+    }
+    return context.read<SettlementBloc>().state.page == 0;
   }
 
   void _loadMoreHomeTransactions() {
@@ -115,7 +128,8 @@ class _HomePageState extends State<HomePage> {
       final state = context.read<PosTransactionBloc>().state;
       if (state.transactionsLoading ||
           state.last ||
-          state.transactions.isEmpty) {
+          state.transactions.isEmpty ||
+          _hasLoadedAll(state.transactions.length, state.totalElements)) {
         return;
       }
       _loadPosTransactions(page: state.page + 1, append: true);
@@ -125,8 +139,10 @@ class _HomePageState extends State<HomePage> {
     if (_selectedTransactionTab == TransactionTab.qr) {
       final state = context.read<MerchantVpaTxnBloc>().state;
       if (state is MerchantVpaTxnLoading ||
+          state is MerchantVpaTxnFailure ||
           state.last ||
-          state.transactions.isEmpty) {
+          state.transactions.isEmpty ||
+          _hasLoadedAll(state.transactions.length, state.totalElements)) {
         return;
       }
       _loadMerchantVpaTransactions(page: state.page + 1, append: true);
@@ -135,11 +151,19 @@ class _HomePageState extends State<HomePage> {
 
     if (_selectedTransactionTab == TransactionTab.settlements) {
       final state = context.read<SettlementBloc>().state;
-      if (state.isLoading || state.last || state.settlements.isEmpty) {
+      if (state.isLoading ||
+          state.error != null ||
+          state.last ||
+          state.settlements.isEmpty ||
+          _hasLoadedAll(state.settlements.length, state.totalElements)) {
         return;
       }
       _loadSettlements(page: state.page + 1, append: true);
     }
+  }
+
+  bool _hasLoadedAll(int loaded, int total) {
+    return total > 0 && loaded >= total;
   }
 
   Future<void> _loadSavedSession() async {
@@ -371,6 +395,7 @@ class _HomePageState extends State<HomePage> {
             page: page,
             size: _transactionPageSize,
             append: append,
+            mappedMerchantId: _effectiveMerchantId,
           ),
         );
   }

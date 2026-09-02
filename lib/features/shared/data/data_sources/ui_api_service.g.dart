@@ -81,6 +81,9 @@ class _MerchantUiApiService implements MerchantUiApiService {
       r'sortDir': sortDir,
       r'mappedMerchantId': mappedMerchantId,
     };
+    queryParameters.removeWhere(
+      (key, value) => value == null || (value is String && value.isEmpty),
+    );
     final _headers = <String, dynamic>{
       r'Authorization': authorization,
       r'Accept': accept,

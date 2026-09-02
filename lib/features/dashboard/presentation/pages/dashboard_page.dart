@@ -37,8 +37,24 @@ class _DashboardPageState extends State<DashboardPage> {
 
   DateTimeRange _lastThreeMonthsRange() {
     final now = DateTime.now();
-    final start = DateTime(now.year, now.month - 2, 1);
-    return DateTimeRange(start: start, end: now);
+    return DateTimeRange(start: _addMonths(now, -3), end: now);
+  }
+
+  DateTime _addMonths(DateTime date, int months) {
+    return DateTime(date.year, date.month + months, date.day);
+  }
+
+  DateTime _minimumToDate(DateTime fromDate) {
+    return _addMonths(fromDate, 3);
+  }
+
+  DateTimeRange _normalizedRange(DateTime start, DateTime end) {
+    final minEnd = _minimumToDate(start);
+    final maxEnd = _maximumToDate(start);
+    var nextEnd = end;
+    if (nextEnd.isBefore(minEnd)) nextEnd = minEnd;
+    if (nextEnd.isAfter(maxEnd)) nextEnd = maxEnd;
+    return DateTimeRange(start: start, end: nextEnd);
   }
 
   Future<void> _loadDashboardData() async {
@@ -115,34 +131,34 @@ class _DashboardPageState extends State<DashboardPage> {
 
   Future<void> _pickFromDate() async {
     final now = DateTime.now();
+    final latestStart = _addMonths(now, -3);
     final fromDate = await _pickCalendarDate(
       initialDate: _selectedRange.start,
       firstDate: DateTime(now.year - 5),
-      lastDate: now,
+      lastDate: latestStart.isAfter(now) ? now : latestStart,
     );
 
     if (fromDate == null || !mounted) {
       return;
     }
 
-    final maxToDate = _maximumToDate(fromDate);
-    final nextToDate = _selectedRange.end.isBefore(fromDate)
-        ? fromDate
-        : _selectedRange.end.isAfter(maxToDate)
-            ? maxToDate
-            : _selectedRange.end;
-
     setState(() {
-      _selectedRange = DateTimeRange(start: fromDate, end: nextToDate);
+      _selectedRange = _normalizedRange(fromDate, _selectedRange.end);
     });
     _loadDashboardData();
   }
 
   Future<void> _pickToDate() async {
+    final minToDate = _minimumToDate(_selectedRange.start);
+    final maxToDate = _maximumToDate(_selectedRange.start);
+    if (minToDate.isAfter(maxToDate)) {
+      return;
+    }
+
     final toDate = await _pickCalendarDate(
       initialDate: _selectedRange.end,
-      firstDate: _selectedRange.start,
-      lastDate: _maximumToDate(_selectedRange.start),
+      firstDate: minToDate,
+      lastDate: maxToDate,
     );
 
     if (toDate == null || !mounted) {
@@ -150,19 +166,14 @@ class _DashboardPageState extends State<DashboardPage> {
     }
 
     setState(() {
-      _selectedRange = DateTimeRange(start: _selectedRange.start, end: toDate);
+      _selectedRange = _normalizedRange(_selectedRange.start, toDate);
     });
     _loadDashboardData();
   }
 
   DateTime _maximumToDate(DateTime fromDate) {
     final now = DateTime.now();
-    final sixMonthsFromStart = DateTime(
-      fromDate.year,
-      fromDate.month + 6,
-      fromDate.day,
-    );
-
+    final sixMonthsFromStart = _addMonths(fromDate, 6);
     return sixMonthsFromStart.isAfter(now) ? now : sixMonthsFromStart;
   }
 
@@ -171,6 +182,10 @@ class _DashboardPageState extends State<DashboardPage> {
     required DateTime firstDate,
     required DateTime lastDate,
   }) {
+    if (firstDate.isAfter(lastDate)) {
+      return Future.value(null);
+    }
+
     final normalizedInitialDate = initialDate.isBefore(firstDate)
         ? firstDate
         : initialDate.isAfter(lastDate)
@@ -348,21 +363,34 @@ class _DashboardDateControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
-          child: _DateButton(
-            label: context.tr('from'),
-            value: fromLabel,
-            onTap: onFromTap,
-          ),
+        Row(
+          children: [
+            Expanded(
+              child: _DateButton(
+                label: context.tr('from'),
+                value: fromLabel,
+                onTap: onFromTap,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _DateButton(
+                label: context.tr('to'),
+                value: toLabel,
+                onTap: onToTap,
+              ),
+            ),
+          ],
         ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _DateButton(
-            label: context.tr('to'),
-            value: toLabel,
-            onTap: onToTap,
+        const SizedBox(height: 8),
+        Text(
+          context.tr('dashboard_date_range_hint'),
+          style: AppTextStyle.h5.copyWith(
+            color: context.appTextSecondary,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ],
