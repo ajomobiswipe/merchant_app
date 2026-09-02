@@ -4,7 +4,6 @@ import 'package:anet_merchant_app/core/constants/constants.dart';
 import 'package:anet_merchant_app/data/services/app_update_service.dart';
 import 'package:anet_merchant_app/data/services/connectivity_service.dart';
 import 'package:anet_merchant_app/presentation/providers/authProvider.dart';
-import 'package:anet_merchant_app/presentation/providers/permission.dart';
 import 'package:anet_merchant_app/presentation/widgets/common_widgets/custom_app_button.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
 import 'package:anet_merchant_app/presentation/widgets/form_field/custom_textform_field.dart';
@@ -33,7 +32,7 @@ class _MerchantLoginState extends State<MerchantLogin> {
   @override
 
   /// Initializes the state of the widget, sets up the AuthProvider,
-  /// checks device permissions, and verifies connectivity. It also
+  /// verifies connectivity. It also
   /// resets the authProvider and checks if the "remember me" option
   /// is enabled to auto-fill login details.
 
@@ -43,7 +42,6 @@ class _MerchantLoginState extends State<MerchantLogin> {
       authProvider = Provider.of<AuthProvider>(context, listen: false);
       authProvider.resetAllAndCheckRememberMe();
     });
-    DevicePermission().checkPermission();
     ConnectivityService().checkConnectivity();
     InAppUpdateService().checkForUpdate();
   }
@@ -350,7 +348,7 @@ class _MerchantLoginState extends State<MerchantLogin> {
     );
   }
 
-  forgotPassword() {
+  Widget forgotPassword() {
     return TextButton(
       onPressed: () {
         Navigator.pushNamed(context, 'forgotPassword');

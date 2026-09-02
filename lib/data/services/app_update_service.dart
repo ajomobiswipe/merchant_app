@@ -2,6 +2,7 @@ import 'package:anet_merchant_app/data/services/pref_service%20.dart';
 import 'package:anet_merchant_app/main.dart';
 import 'package:anet_merchant_app/presentation/widgets/custom_text_widget.dart';
 import 'package:anet_merchant_app/presentation/widgets/widget.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:shimmer/shimmer.dart';
@@ -17,9 +18,13 @@ class InAppUpdateService {
   /// PUBLIC FUNCTION — CALL THIS AFTER LOGIN OR APP STARTUP
   /// --------------------------------------------------------------
   Future<void> checkForUpdate({bool showNoUpdateDialog = false}) async {
-    print("Checking for app update...");
+    // in_app_update wraps Google Play's update API and is Android-only.
+    // Calling its method channel on iOS or web throws MissingPluginException.
+    if (kIsWeb || defaultTargetPlatform != TargetPlatform.android) return;
+
+    debugPrint("Checking for app update...");
     final enableUpdate = await PrefService.instance.isUpdateCheckEnabled();
-    print("Update check enabled: $enableUpdate");
+    debugPrint("Update check enabled: $enableUpdate");
     if (!enableUpdate) return;
 
     try {
@@ -45,6 +50,8 @@ class InAppUpdateService {
   /// PERFORM IMMEDIATE UPDATE
   /// --------------------------------------------------------------
   Future<void> _performImmediateUpdate() async {
+    if (kIsWeb || defaultTargetPlatform != TargetPlatform.android) return;
+
     try {
       await InAppUpdate.performImmediateUpdate();
     } catch (e) {

@@ -11,7 +11,7 @@ class AuthService {
     if (isBiometricSupported && canCheckBiometrics) {
       try {
         isAuthenticated = await localAuthentication.authenticate(
-          localizedReason: 'Scan your fingerprint to authenticate',
+          localizedReason: 'Use biometrics to securely authenticate',
           options: const AuthenticationOptions(
               biometricOnly: true, useErrorDialogs: true, stickyAuth: true),
         );

@@ -2,16 +2,19 @@ import 'package:flutter/foundation.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class DevicePermission {
-  checkPermission() async {
-    var statuses = await [
+  Future<void> checkPermission() async {
+    final permissions = <Permission>[
       Permission.location,
       Permission.camera,
-      Permission.storage,
       Permission.notification,
-    ].request();
-    if (kDebugMode) print(statuses);
+      if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android)
+        Permission.storage,
+    ];
+
+    final statuses = await permissions.request();
+    if (kDebugMode) debugPrint('$statuses');
     if (statuses[Permission.camera] == PermissionStatus.permanentlyDenied) {
-      openAppSettings();
+      await openAppSettings();
     }
   }
 }
