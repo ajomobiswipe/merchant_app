@@ -147,10 +147,10 @@ class _MerchantLoginState extends State<MerchantLogin> {
                                   },
                                   context: context,
                                   obscureText: false,
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.allow(
-                                        RegExp(r'[0-9a-zA-Z.@&# ,\-]'))
-                                  ],
+                                  // inputFormatters: [
+                                  //   FilteringTextInputFormatter.allow(
+                                  //       RegExp(r'[0-9a-zA-Z.@&# ,\-_]'))
+                                  // ],
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
                                       return 'Please enter Username!';
