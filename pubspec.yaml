@@ -94,7 +94,7 @@ flutter:
           weight: 100
     - family: Mont
       fonts:
-        - asset: assets/fonts/Mont-Bold.otf
+        - asset: assets/fonts/GoogleSans-Bold.ttf
     - family: Mont-regular
       fonts:
-        - asset: assets/fonts/Mont-Regular.otf
+        - asset: assets/fonts/GoogleSans-Regular.ttf
