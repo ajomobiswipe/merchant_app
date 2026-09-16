@@ -41,7 +41,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text("Transactions Report",
-                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
+                  style: TextStyle(fontSize: 26, )),
               const SizedBox(height: 20),
 
               // Period selector

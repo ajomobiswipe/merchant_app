@@ -88,7 +88,7 @@ class _SplashScreenState extends State<SplashScreen> {
         style: Theme.of(context)
             .textTheme
             .titleLarge
-            ?.copyWith(fontWeight: FontWeight.bold, fontSize: 24),
+            ?.copyWith( fontSize: 24),
       ),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       showLoader: false,
