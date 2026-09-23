@@ -149,6 +149,20 @@ void main() {
               'transactionType': 'OSAL001',
               'insertDateTime': '07/08/2025 12:07:25',
               'settled': true,
+              'mti': '1210',
+              'processCode': '000000',
+              'isVoided': false,
+              'isReverse': false,
+              'traceNumber': '000227',
+              'acquiringBIN': 'OMAIND',
+              'de_7': '0807063715',
+              'settledOn': '08/08/2025 10:14:47',
+              'isBatchClosed': false,
+              'batchClosedOn': '',
+              'mcc': '5814',
+              'deviceType': 'ANDROID POS',
+              'txnSource': 'CARD',
+              'terminalLocation': 'HARDWARI SWEETS MILK ADELHI        DL IN',
             },
           ],
           'first': true,
@@ -173,6 +187,17 @@ void main() {
       expect(txn.amount, '760.00');
       expect(txn.authCode, 'F05211');
       expect(txn.settled, isTrue);
+      expect(txn.mti, '1210');
+      expect(txn.processCode, '000000');
+      expect(txn.isVoided, isFalse);
+      expect(txn.traceNumber, '000227');
+      expect(txn.acquiringBin, 'OMAIND');
+      expect(txn.de7, '0807063715');
+      expect(txn.settledOn, '08/08/2025 10:14:47');
+      expect(txn.mcc, '5814');
+      expect(txn.deviceType, 'ANDROID POS');
+      expect(txn.txnSource, 'CARD');
+      expect(txn.terminalLocation, 'HARDWARI SWEETS MILK ADELHI        DL IN');
     });
 
     test('uses responsePage totalElements when count is missing', () {

@@ -32,8 +32,8 @@ class SettlementRepositoryImpl implements SettlementRepository {
         },
         data: {
           'merchantId': merchantId,
-          'fromDate': fromDate,
-          'toDate': toDate,
+          'fromDate': fromDate.isEmpty ? null : fromDate,
+          'toDate': toDate.isEmpty ? null : toDate,
           'reconciled': true,
           'merPayDone': true,
           'misDone': true,

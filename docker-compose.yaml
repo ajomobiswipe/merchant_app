@@ -3,7 +3,7 @@ name: anet-merchants
 services:
   anet-merchants-web:
     container_name: anet-merchants-web-prod
-    image: omaemirates/anet-merchants-web:1.0.1-prod
+    image: omaemirates/anet-merchants-web:1.0.3
     ports:
       - "8080:443"
     volumes:
@@ -11,6 +11,7 @@ services:
     environment:
       - SSL_CRT_FILE=/app/certs/357c5d80161e5f7.crt
       - SSL_KEY_FILE=/app/certs/oma_private1.key
+      - NGINX_ENVSUBST_FILTER=^SSL_
     restart: always
     healthcheck:
       test:

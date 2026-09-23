@@ -144,6 +144,7 @@ class SettlementItemModel {
   final String rrn;
   final String approveCode;
   final String mid;
+  final String merchantTxnIdAuthId;
   final bool merPayDone;
   final bool misDone;
   final bool reconciled;
@@ -159,6 +160,7 @@ class SettlementItemModel {
     required this.rrn,
     required this.approveCode,
     required this.mid,
+    this.merchantTxnIdAuthId = '',
     required this.merPayDone,
     required this.misDone,
     required this.reconciled,
@@ -176,9 +178,10 @@ class SettlementItemModel {
       rrn: json['rrn'] ?? '',
       approveCode: json['approveCode'] ?? '',
       mid: json['mid'] ?? '',
+      merchantTxnIdAuthId: json['merchantTxnIdAuthId']?.toString() ?? '',
       merPayDone: _toBool(json['merPayDone']),
       misDone: _toBool(json['misDone']),
-      reconciled: _toBool(json['reconciled']),
+      reconciled: _toBool(json['reconciled'] ?? json['isReconciled']),
     );
   }
 

@@ -15,7 +15,7 @@ abstract class MerchantUiApiService {
   factory MerchantUiApiService(Dio dio, {String baseUrl}) =
       _MerchantUiApiService;
 
-  @GET('getListOfSoundBoxDevices')
+  @POST('getListOfSoundBoxDevices')
   Future<HttpResponse<SoundBoxDevicesResponseModel>> getListOfSoundBoxDevices(
     @Header('Authorization') String authorization,
     @Header('x-client-unique-id') String clientUniqueId,

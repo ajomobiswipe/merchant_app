@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:anet_merchants/config/routes/routes.dart';
-import 'package:anet_merchants/core/common/app_assets.dart';
 import 'package:anet_merchants/core/common/app_colors.dart';
 import 'package:anet_merchants/core/common/app_text_style.dart';
 import 'package:anet_merchants/core/common/common_scaffold.dart';
@@ -12,13 +11,14 @@ import 'package:anet_merchants/core/localization/app_language.dart';
 import 'package:anet_merchants/core/resources/data_state.dart';
 import 'package:anet_merchants/core/services/alert_service.dart';
 import 'package:anet_merchants/core/storage/session_storage.dart';
-import 'package:anet_merchants/core/utils/logout_helper.dart';
+import 'package:anet_merchants/core/utils/file_downloader.dart';
 import 'package:anet_merchants/core/utils/navigation_helper.dart';
 import 'package:anet_merchants/core/widgets/loading_action_content.dart';
 import 'package:anet_merchants/features/home/presentation/widgets/mobile_home_widgets.dart';
 import 'package:anet_merchants/features/settlements/settlements.dart';
 import 'package:anet_merchants/features/shared/shared.dart';
 import 'package:anet_merchants/features/transactions/transactions.dart';
+import 'package:anet_merchants/features/transactions/utils/transaction_report_excel.dart';
 import 'package:go_router/go_router.dart';
 
 class TransactionListPage extends StatefulWidget {
@@ -44,10 +44,18 @@ class _TransactionListPageState extends State<TransactionListPage> {
   String _acqMerchantId = '';
   String _clientUniqueId = '';
   bool _isSendingEmail = false;
+  bool _isDownloadingReport = false;
 
   bool get _supportsEmailReport => widget.filter.tab != TransactionTab.qr;
+  bool get _supportsExcelReport =>
+      widget.filter.tab == TransactionTab.pos ||
+      widget.filter.tab == TransactionTab.qr ||
+      widget.filter.tab == TransactionTab.settlements;
   bool get _isAllMerchantSelection =>
       widget.filter.tab == TransactionTab.pos && _acqMerchantId == '0';
+  bool get _isReportActionBusy => _isSendingEmail || _isDownloadingReport;
+  bool get _showExcelDownload =>
+      _supportsExcelReport && !_isAllMerchantSelection;
 
   @override
   void initState() {
@@ -167,8 +175,9 @@ class _TransactionListPageState extends State<TransactionListPage> {
         : _acqMerchantId;
     _merchantId = merchantId;
     _acqMerchantId = acqMerchantId;
-    final mappedMerchantId =
-        acqMerchantId.isEmpty || acqMerchantId == '0' ? merchantId : acqMerchantId;
+    final mappedMerchantId = acqMerchantId.isEmpty || acqMerchantId == '0'
+        ? merchantId
+        : acqMerchantId;
 
     if (!mounted) {
       return;
@@ -291,8 +300,7 @@ class _TransactionListPageState extends State<TransactionListPage> {
     return CommonScaffold(
       selectedIndex: 0,
       onBottomNavItemSelected: _onBottomNavItemSelected,
-      bottomAction:
-          kIsWeb || !_supportsEmailReport ? null : _buildEmailButton(),
+      bottomAction: null,
       body: AppBreakpoints.isSingleColumn(context)
           ? _buildMobileTransactionLayout()
           : _buildWebTransactionLayout(),
@@ -304,13 +312,12 @@ class _TransactionListPageState extends State<TransactionListPage> {
       controller: _scrollController,
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 18),
       children: [
-        const _TransactionListHeader(),
+        const FlowPageHeader(),
         const SizedBox(height: 30),
         const MerchantOverview(),
         const SizedBox(height: 20),
-        if (widget.filter.dateLabel.isNotEmpty)
-          _DateRangeLabel(widget.filter.dateLabel),
-        if (widget.filter.dateLabel.isNotEmpty) const SizedBox(height: 16),
+        _buildDateAndReportActions(),
+        const SizedBox(height: 16),
         _buildSummary(),
         const SizedBox(height: 18),
         _buildSelectedTransactionList(),
@@ -364,10 +371,43 @@ class _TransactionListPageState extends State<TransactionListPage> {
         if (widget.filter.dateLabel.isNotEmpty) ...[
           const SizedBox(width: 10),
           Expanded(child: _DateRangeLabel(widget.filter.dateLabel)),
+        ] else
+          const Spacer(),
+        if (_showExcelDownload) ...[
+          OutlinedButton(
+            onPressed: _isReportActionBusy ? null : _downloadCurrentReport,
+            style: OutlinedButton.styleFrom(
+              foregroundColor: AppColors.primaryPurple,
+              disabledForegroundColor: AppColors.primaryPurple,
+              side: BorderSide(color: AppColors.primaryPurple),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 12,
+              ),
+            ),
+            child: _isDownloadingReport
+                ? LoadingActionContent(
+                    label: context.tr('preparing'),
+                    color: AppColors.primaryPurple,
+                    indicatorSize: 18,
+                    textStyle: AppTextStyle.h5.copyWith(
+                      fontWeight: FontWeight.w900,
+                    ),
+                  )
+                : Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.download_rounded),
+                      const SizedBox(width: 9),
+                      Text(context.tr('download')),
+                    ],
+                  ),
+          ),
+          const SizedBox(width: 10),
         ],
         if (_supportsEmailReport)
           OutlinedButton(
-            onPressed: _isSendingEmail ? null : _sendCurrentReportToEmail,
+            onPressed: _isReportActionBusy ? null : _sendCurrentReportToEmail,
             style: OutlinedButton.styleFrom(
               foregroundColor: AppColors.primaryPurple,
               disabledForegroundColor: AppColors.primaryPurple,
@@ -399,51 +439,95 @@ class _TransactionListPageState extends State<TransactionListPage> {
     );
   }
 
-  Widget _buildEmailButton({bool inline = false}) {
-    return Padding(
-      padding:
-          inline ? EdgeInsets.zero : const EdgeInsets.fromLTRB(20, 6, 20, 12),
-      child: SizedBox(
-        width: double.infinity,
-        height: 54,
-        child: ElevatedButton(
-          onPressed: _isSendingEmail ? null : _sendCurrentReportToEmail,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primaryPurple,
-            disabledBackgroundColor:
-                AppColors.primaryPurple.withValues(alpha: .82),
-            foregroundColor: Colors.white,
-            disabledForegroundColor: Colors.white,
-            elevation: 0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-          child: _isSendingEmail
-              ? LoadingActionContent(
-                  label: context.tr('sending_email'),
-                  color: Colors.white,
-                  textStyle: AppTextStyle.h4WhiteColor.copyWith(
-                    fontWeight: FontWeight.w900,
-                  ),
-                )
-              : Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(Icons.mail_outline_rounded, size: 26),
-                    const SizedBox(width: 10),
-                    Text(
-                      context.tr('send_by_email'),
-                      style: AppTextStyle.h4WhiteColor.copyWith(
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                  ],
+  Widget _buildDateAndReportActions() {
+    final showActions = _showExcelDownload || _supportsEmailReport;
+    if (widget.filter.dateLabel.isEmpty && !showActions) {
+      return const SizedBox.shrink();
+    }
+
+    return Row(
+      children: [
+        if (widget.filter.dateLabel.isNotEmpty)
+          Expanded(child: _DateRangeLabel(widget.filter.dateLabel))
+        else
+          const Spacer(),
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.centerRight,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (_showExcelDownload)
+                _buildCompactReportButton(
+                  onPressed:
+                      _isReportActionBusy ? null : _downloadCurrentReport,
+                  isLoading: _isDownloadingReport,
+                  loadingLabel: context.tr('preparing'),
+                  icon: Icons.download_rounded,
+                  label: context.tr('download'),
                 ),
+              if (_showExcelDownload && _supportsEmailReport)
+                const SizedBox(width: 8),
+              if (_supportsEmailReport)
+                _buildCompactReportButton(
+                  onPressed:
+                      _isReportActionBusy ? null : _sendCurrentReportToEmail,
+                  isLoading: _isSendingEmail,
+                  loadingLabel: context.tr('sending_email'),
+                  icon: Icons.mail_outline_rounded,
+                  label: context.tr('send_by_email'),
+                ),
+            ],
+          ),
         ),
-      ),
+      ],
     );
   }
+
+  Widget _buildCompactReportButton({
+    required VoidCallback? onPressed,
+    required bool isLoading,
+    required String loadingLabel,
+    required IconData icon,
+    required String label,
+  }) {
+    return OutlinedButton(
+      onPressed: onPressed,
+      style: OutlinedButton.styleFrom(
+        foregroundColor: AppColors.primaryPurple,
+        disabledForegroundColor: AppColors.primaryPurple,
+        side: BorderSide(color: AppColors.primaryPurple, width: 1.4),
+        shape: const StadiumBorder(),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        visualDensity: VisualDensity.compact,
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      ),
+      child: isLoading
+          ? LoadingActionContent(
+              label: loadingLabel,
+              color: AppColors.primaryPurple,
+              indicatorSize: 14,
+              textStyle: AppTextStyle.h5.copyWith(
+                fontWeight: FontWeight.w800,
+              ),
+            )
+          : Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(icon, size: 18),
+                const SizedBox(width: 6),
+                Text(
+                  label,
+                  style: AppTextStyle.h5.copyWith(
+                    color: AppColors.primaryPurple,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ],
+            ),
+    );
+  }
+
   Widget _buildSelectedTransactionList() {
     if (widget.filter.tab == TransactionTab.pos) {
       return _buildPosTransactionList();
@@ -687,8 +771,320 @@ class _TransactionListPageState extends State<TransactionListPage> {
     return 'UNKNOWN';
   }
 
+  Future<void> _downloadCurrentReport() async {
+    if (_isReportActionBusy || !_showExcelDownload) {
+      return;
+    }
+
+    setState(() {
+      _isDownloadingReport = true;
+    });
+
+    try {
+      if (widget.filter.tab == TransactionTab.pos) {
+        await _downloadPosExcelReport();
+        return;
+      }
+
+      if (widget.filter.tab == TransactionTab.settlements) {
+        await _downloadSettlementExcelReport();
+        return;
+      }
+
+      await _downloadVpaExcelReport();
+    } catch (_) {
+      if (!mounted) return;
+      await AlertService.error(
+        context,
+        title: context.tr('error'),
+        message: context.tr('report_download_failed'),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isDownloadingReport = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _downloadVpaExcelReport() async {
+    final state = context.read<MerchantVpaTxnBloc>().state;
+    final totalTransactions = state.totalElements > 0
+        ? state.totalElements
+        : state.transactions.length;
+
+    if (totalTransactions <= 0) {
+      await _showNoTransactionsToDownloadAlert();
+      return;
+    }
+
+    final bearerToken =
+        _bearerToken.isEmpty ? await _sessionStorage.bearerToken : _bearerToken;
+    final merchantId =
+        _merchantId.isEmpty ? await _sessionStorage.merchantId : _merchantId;
+    final acqMerchantId = _acqMerchantId.isEmpty
+        ? await _sessionStorage.activeAcqMerchantId
+        : _acqMerchantId;
+    final mappedMerchantId = acqMerchantId.isEmpty || acqMerchantId == '0'
+        ? merchantId
+        : acqMerchantId;
+
+    if (!mounted || bearerToken.isEmpty) {
+      return;
+    }
+
+    _bearerToken = bearerToken;
+    _merchantId = merchantId;
+    _acqMerchantId = acqMerchantId;
+
+    final result = await sl<GetMerchantVpaTxnData>()(
+      params: GetMerchantVpaTxnDataParams(
+        bearerToken: bearerToken,
+        creditVpa: widget.filter.creditVpa,
+        from: widget.filter.from,
+        to: widget.filter.to,
+        page: 0,
+        size: totalTransactions,
+        mappedMerchantId: mappedMerchantId,
+      ),
+    );
+
+    if (!mounted) return;
+
+    if (result is! DataSuccess<MerchantVpaTxnResponseModel> ||
+        result.data == null) {
+      await AlertService.error(
+        context,
+        title: context.tr('error'),
+        message: result.error?.message ?? context.tr('report_download_failed'),
+      );
+      return;
+    }
+
+    final transactions = result.data!.pageData.content;
+    if (transactions.isEmpty) {
+      await _showNoTransactionsToDownloadAlert();
+      return;
+    }
+
+    final bytes = TransactionReportExcel.fromVpaTransactions(transactions);
+    if (bytes.isEmpty) {
+      await AlertService.error(
+        context,
+        title: context.tr('error'),
+        message: context.tr('report_download_failed'),
+      );
+      return;
+    }
+
+    await downloadFile(
+      bytes: bytes,
+      filename: _reportFilename('vpa_transactions'),
+      mimeType: xlsxMimeType,
+    );
+  }
+
+  Future<void> _downloadPosExcelReport() async {
+    final state = context.read<PosTransactionBloc>().state;
+    final totalTransactions = state.totalElements > 0
+        ? state.totalElements
+        : state.transactions.length;
+
+    if (totalTransactions <= 0) {
+      await _showNoTransactionsToDownloadAlert();
+      return;
+    }
+
+    final response = await _requestPosTransactionsForReport(
+      size: totalTransactions,
+    );
+
+    if (!mounted) return;
+
+    if (response is! DataSuccess<PosTxnHistoryResponseModel> ||
+        response.data == null) {
+      await AlertService.error(
+        context,
+        title: context.tr('error'),
+        message:
+            response.error?.message ?? context.tr('report_download_failed'),
+      );
+      return;
+    }
+
+    final transactions = response.data!.responsePage.content;
+    if (transactions.isEmpty) {
+      await _showNoTransactionsToDownloadAlert();
+      return;
+    }
+
+    final bytes = TransactionReportExcel.fromPosTransactions(transactions);
+    if (bytes.isEmpty) {
+      await AlertService.error(
+        context,
+        title: context.tr('error'),
+        message: context.tr('report_download_failed'),
+      );
+      return;
+    }
+
+    await downloadFile(
+      bytes: bytes,
+      filename: _posHistoryReportFilename(),
+      mimeType: xlsxMimeType,
+    );
+  }
+
+  Future<void> _downloadSettlementExcelReport() async {
+    final state = context.read<SettlementBloc>().state;
+    final totalTransactions = state.transactionCount > 0
+        ? state.transactionCount
+        : state.settledTransactions.isNotEmpty
+            ? state.settledTransactions.length
+            : state.totalElements;
+
+    if (totalTransactions <= 0) {
+      await _showNoTransactionsToDownloadAlert();
+      return;
+    }
+
+    final bearerToken =
+        _bearerToken.isEmpty ? await _sessionStorage.bearerToken : _bearerToken;
+    final merchantId =
+        _merchantId.isEmpty ? await _sessionStorage.merchantId : _merchantId;
+    final acqMerchantId = _acqMerchantId.isEmpty
+        ? await _sessionStorage.activeAcqMerchantId
+        : _acqMerchantId;
+    final settlementMerchantId = acqMerchantId.isEmpty || acqMerchantId == '0'
+        ? merchantId
+        : acqMerchantId;
+
+    if (!mounted || bearerToken.isEmpty || settlementMerchantId.isEmpty) {
+      return;
+    }
+
+    _bearerToken = bearerToken;
+    _merchantId = merchantId;
+    _acqMerchantId = acqMerchantId;
+
+    final result = await sl<GetSettlementHistory>()(
+      params: GetSettlementHistoryParams(
+        bearerToken: bearerToken,
+        merchantId: settlementMerchantId,
+        fromDate: widget.filter.from,
+        toDate: widget.filter.to,
+        page: 0,
+        size: totalTransactions,
+      ),
+    );
+
+    if (!mounted) return;
+
+    if (result is! DataSuccess<SettlementHistoryResponseModel> ||
+        result.data == null) {
+      await AlertService.error(
+        context,
+        title: context.tr('error'),
+        message: result.error?.message ?? context.tr('report_download_failed'),
+      );
+      return;
+    }
+
+    final settlements = result.data!.settledSummaryPage.content.isNotEmpty
+        ? result.data!.settledSummaryPage.content
+        : result.data!.settlementAggregatePage.content;
+    if (settlements.isEmpty) {
+      await _showNoTransactionsToDownloadAlert();
+      return;
+    }
+
+    final bytes = TransactionReportExcel.fromSettlements(settlements);
+    if (bytes.isEmpty) {
+      await AlertService.error(
+        context,
+        title: context.tr('error'),
+        message: context.tr('report_download_failed'),
+      );
+      return;
+    }
+
+    await downloadFile(
+      bytes: bytes,
+      filename: _settlementReportFilename(),
+      mimeType: xlsxMimeType,
+    );
+  }
+
+  Future<DataState<PosTxnHistoryResponseModel>>
+      _requestPosTransactionsForReport({
+    required int size,
+    bool sendTxnReportToMail = false,
+  }) async {
+    final bearerToken =
+        _bearerToken.isEmpty ? await _sessionStorage.bearerToken : _bearerToken;
+    final merchantId =
+        _merchantId.isEmpty ? await _sessionStorage.merchantId : _merchantId;
+    final acqMerchantId = _acqMerchantId.isEmpty
+        ? await _sessionStorage.activeAcqMerchantId
+        : _acqMerchantId;
+    final clientUniqueId =
+        _clientUniqueId.isEmpty ? await _sessionStorage.email : _clientUniqueId;
+    final useMidEndpoint = acqMerchantId == '0';
+    final posMerchantId =
+        useMidEndpoint || acqMerchantId.isEmpty ? merchantId : acqMerchantId;
+
+    _bearerToken = bearerToken;
+    _merchantId = merchantId;
+    _acqMerchantId = acqMerchantId;
+    _clientUniqueId = clientUniqueId;
+
+    return sl<GetPosTransactions>()(
+      params: GetPosTransactionsParams(
+        bearerToken: bearerToken,
+        clientUniqueId: clientUniqueId,
+        merchantId: useMidEndpoint ? '' : posMerchantId,
+        mid: useMidEndpoint ? posMerchantId : null,
+        acquirerId: 'OMAIND',
+        page: 0,
+        size: size,
+        recordFrom: widget.filter.from,
+        recordTo: widget.filter.to,
+        rrn: widget.filter.rrn,
+        authCode: widget.filter.authCode,
+        terminalId: widget.filter.terminalId,
+        sourceOfTxn: widget.filter.sourceOfTxn,
+        useMidEndpoint: useMidEndpoint,
+        sendTxnReportToMail: sendTxnReportToMail,
+      ),
+    );
+  }
+
+  String _reportFilename(String prefix) {
+    final from = widget.filter.from.replaceAll(RegExp(r'[^0-9A-Za-z-]'), '');
+    final to = widget.filter.to.replaceAll(RegExp(r'[^0-9A-Za-z-]'), '');
+    if (from.isNotEmpty && to.isNotEmpty) {
+      return '${prefix}_${from}_to_$to.xlsx';
+    }
+    return '${prefix}_report.xlsx';
+  }
+
+  String _posHistoryReportFilename() {
+    return _timestampedReportFilename('TransactionHistoryReport');
+  }
+
+  String _settlementReportFilename() {
+    return _timestampedReportFilename('TransactionSettlementReport');
+  }
+
+  String _timestampedReportFilename(String prefix) {
+    final now = DateTime.now();
+    String two(int value) => value.toString().padLeft(2, '0');
+    return '${prefix}_${now.year}-${two(now.month)}-${two(now.day)}_${two(now.hour)}-${two(now.minute)}.xlsx';
+  }
+
   Future<void> _sendCurrentReportToEmail() async {
-    if (_isSendingEmail || !_supportsEmailReport) {
+    if (_isReportActionBusy || !_supportsEmailReport) {
       return;
     }
 
@@ -721,8 +1117,9 @@ class _TransactionListPageState extends State<TransactionListPage> {
       return;
     }
 
-    final response = await _requestPosEmailReport(
+    final response = await _requestPosTransactionsForReport(
       size: totalTransactions,
+      sendTxnReportToMail: true,
     );
 
     await _showEmailResult(response);
@@ -802,48 +1199,6 @@ class _TransactionListPageState extends State<TransactionListPage> {
     );
   }
 
-  Future<DataState<PosTxnHistoryResponseModel>> _requestPosEmailReport({
-    required int size,
-  }) async {
-    final bearerToken =
-        _bearerToken.isEmpty ? await _sessionStorage.bearerToken : _bearerToken;
-    final merchantId =
-        _merchantId.isEmpty ? await _sessionStorage.merchantId : _merchantId;
-    final acqMerchantId = _acqMerchantId.isEmpty
-        ? await _sessionStorage.activeAcqMerchantId
-        : _acqMerchantId;
-    final clientUniqueId =
-        _clientUniqueId.isEmpty ? await _sessionStorage.email : _clientUniqueId;
-    final useMidEndpoint = acqMerchantId == '0';
-    final posMerchantId =
-        useMidEndpoint || acqMerchantId.isEmpty ? merchantId : acqMerchantId;
-
-    _bearerToken = bearerToken;
-    _merchantId = merchantId;
-    _acqMerchantId = acqMerchantId;
-    _clientUniqueId = clientUniqueId;
-
-    return sl<GetPosTransactions>()(
-      params: GetPosTransactionsParams(
-        bearerToken: bearerToken,
-        clientUniqueId: clientUniqueId,
-        merchantId: useMidEndpoint ? '' : posMerchantId,
-        mid: useMidEndpoint ? posMerchantId : null,
-        acquirerId: 'OMAIND',
-        page: 0,
-        size: size,
-        recordFrom: widget.filter.from,
-        recordTo: widget.filter.to,
-        rrn: widget.filter.rrn,
-        authCode: widget.filter.authCode,
-        terminalId: widget.filter.terminalId,
-        sourceOfTxn: widget.filter.sourceOfTxn,
-        useMidEndpoint: useMidEndpoint,
-        sendTxnReportToMail: true,
-      ),
-    );
-  }
-
   Future<void> _showEmailResult(
     DataState<PosTxnHistoryResponseModel> response,
   ) async {
@@ -886,6 +1241,14 @@ class _TransactionListPageState extends State<TransactionListPage> {
       context,
       title: context.tr('alert'),
       message: context.tr('no_transactions_to_send'),
+    );
+  }
+
+  Future<void> _showNoTransactionsToDownloadAlert() {
+    return AlertService.warning(
+      context,
+      title: context.tr('alert'),
+      message: context.tr('no_transactions_to_download'),
     );
   }
 
@@ -1719,50 +2082,6 @@ class _PaginationControls extends StatelessWidget {
           icon: const Icon(Icons.chevron_right_rounded),
           color: AppColors.primaryPurple,
           tooltip: context.tr('next_page'),
-        ),
-      ],
-    );
-  }
-}
-
-class _TransactionListHeader extends StatelessWidget {
-  const _TransactionListHeader();
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        IconButton(
-          onPressed: () => NavigationHelper.backOrGo(
-            context,
-            AppRoutes.home,
-          ),
-          icon: const Icon(Icons.arrow_back_rounded),
-          color: context.appTextPrimary,
-          iconSize: 32,
-          tooltip: context.tr('back'),
-        ),
-        const Spacer(),
-        Image.asset(
-          AppAssets.anetLauncherIcon,
-          width: 42,
-          height: 36,
-          fit: BoxFit.contain,
-        ),
-        const Spacer(),
-        IconButton(
-          onPressed: () => context.push(AppRoutes.notifications),
-          icon: const Icon(Icons.notifications_none_rounded),
-          color: context.appIconColor,
-          iconSize: 32,
-          tooltip: context.tr('notifications'),
-        ),
-        IconButton(
-          onPressed: () => LogoutHelper.logout(context),
-          icon: const Icon(Icons.logout_rounded),
-          color: context.appIconColor,
-          iconSize: 32,
-          tooltip: context.tr('logout'),
         ),
       ],
     );

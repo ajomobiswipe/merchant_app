@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -92,37 +93,39 @@ class _MobileHomeGreetingState extends State<MobileHomeGreeting> {
             ],
           ),
         ),
-        const SizedBox(width: 10),
-        _RoundIconButton(
-          icon: Icons.notifications_none_rounded,
-          tooltip: context.tr('notifications'),
-          onTap: () => context.push(AppRoutes.notifications),
-        ),
-        const SizedBox(width: 8),
-        _RoundIconButton(
-          icon: Icons.logout_rounded,
-          tooltip: context.tr('logout'),
-          onTap: () => LogoutHelper.logout(context),
-        ),
-        const SizedBox(width: 8),
-        Tooltip(
-          message: context.tr('profile'),
-          child: InkWell(
-            onTap: widget.onProfileTap,
-            customBorder: const CircleBorder(),
-            child: CircleAvatar(
-              radius: 20,
-              backgroundColor: context.appElevatedSurface,
-              child: Text(
-                initials,
-                style: AppTextStyle.h4.copyWith(
-                  color: AppColors.primaryPurple,
-                  fontWeight: FontWeight.w900,
+        if (!kIsWeb) ...[
+          const SizedBox(width: 10),
+          _RoundIconButton(
+            icon: Icons.notifications_none_rounded,
+            tooltip: context.tr('notifications'),
+            onTap: () => context.push(AppRoutes.notifications),
+          ),
+          const SizedBox(width: 8),
+          _RoundIconButton(
+            icon: Icons.logout_rounded,
+            tooltip: context.tr('logout'),
+            onTap: () => LogoutHelper.logout(context),
+          ),
+          const SizedBox(width: 8),
+          Tooltip(
+            message: context.tr('profile'),
+            child: InkWell(
+              onTap: widget.onProfileTap,
+              customBorder: const CircleBorder(),
+              child: CircleAvatar(
+                radius: 20,
+                backgroundColor: context.appElevatedSurface,
+                child: Text(
+                  initials,
+                  style: AppTextStyle.h4.copyWith(
+                    color: AppColors.primaryPurple,
+                    fontWeight: FontWeight.w900,
+                  ),
                 ),
               ),
             ),
           ),
-        ),
+        ],
       ],
     );
   }

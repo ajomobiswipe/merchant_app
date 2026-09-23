@@ -42,7 +42,7 @@ class _MerchantUiApiService implements MerchantUiApiService {
     final _data = <String, dynamic>{};
     _data.addAll(request.toJson());
     final _options = _setStreamType<HttpResponse<SoundBoxDevicesResponseModel>>(
-      Options(method: 'GET', headers: _headers, extra: _extra)
+      Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
             'getListOfSoundBoxDevices',

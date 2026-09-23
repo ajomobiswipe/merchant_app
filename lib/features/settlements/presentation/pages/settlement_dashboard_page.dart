@@ -4,19 +4,18 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import 'package:anet_merchants/config/routes/routes.dart';
-import 'package:anet_merchants/core/common/app_assets.dart';
 import 'package:anet_merchants/core/common/app_colors.dart';
 import 'package:anet_merchants/core/common/app_text_style.dart';
 import 'package:anet_merchants/core/common/common_scaffold.dart';
 import 'package:anet_merchants/core/common/responsive_layout.dart';
 import 'package:anet_merchants/core/localization/app_language.dart';
 import 'package:anet_merchants/core/storage/session_storage.dart';
-import 'package:anet_merchants/core/utils/logout_helper.dart';
 import 'package:anet_merchants/core/utils/navigation_helper.dart';
 import 'package:anet_merchants/features/settlements/data/models/settlement_history_response_model.dart';
 import 'package:anet_merchants/features/settlements/presentation/bloc/settlement/settlement_bloc.dart';
 import 'package:anet_merchants/features/settlements/presentation/pages/settlement_navigation_data.dart';
 import 'package:anet_merchants/features/transactions/presentation/pages/transaction_filter_data.dart';
+import 'package:anet_merchants/features/shared/presentation/widgets/flow_page_header.dart';
 import 'package:anet_merchants/features/shared/presentation/widgets/merchant_overview.dart';
 
 class SettlementDashboardPage extends StatefulWidget {
@@ -127,7 +126,7 @@ class _SettlementDashboardPageState extends State<SettlementDashboardPage> {
       controller: _scrollController,
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
       children: [
-          const _SettlementPageHeader(),
+          const FlowPageHeader(),
           const SizedBox(height: 30),
           const MerchantOverview(),
           const SizedBox(height: 18),
@@ -1193,49 +1192,7 @@ class _DateRangeLabel extends StatelessWidget {
   }
 }
 
-class _SettlementPageHeader extends StatelessWidget {
-  const _SettlementPageHeader();
 
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        IconButton(
-          onPressed: () => NavigationHelper.backOrGo(
-            context,
-            AppRoutes.home,
-          ),
-          icon: const Icon(Icons.arrow_back_rounded),
-          color: context.appTextPrimary,
-          iconSize: 32,
-          tooltip: context.tr('back'),
-        ),
-        const Spacer(),
-        Image.asset(
-          AppAssets.anetLauncherIcon,
-          width: 42,
-          height: 36,
-          fit: BoxFit.contain,
-        ),
-        const Spacer(),
-        IconButton(
-          onPressed: () => context.push(AppRoutes.notifications),
-          icon: const Icon(Icons.notifications_none_rounded),
-          color: context.appIconColor,
-          iconSize: 32,
-          tooltip: context.tr('notifications'),
-        ),
-        IconButton(
-          onPressed: () => LogoutHelper.logout(context),
-          icon: const Icon(Icons.logout_rounded),
-          color: context.appIconColor,
-          iconSize: 32,
-          tooltip: context.tr('logout'),
-        ),
-      ],
-    );
-  }
-}
 
 String _formatDate(DateTime? value) {
   if (value == null) return 'N/A';

@@ -337,6 +337,10 @@ const Map<AppLanguage, Map<String, String>> _localizedValues = {
     'email_report_sent': 'Report request sent to your registered email.',
     'email_report_failed': 'Could not send the email report. Please try again.',
     'no_transactions_to_send': 'No transactions are available to send.',
+    'report_download_failed':
+        'Could not download the report. Please try again.',
+    'no_transactions_to_download':
+        'No transactions are available to download.',
     'all_merchants': 'All',
     'login_web_hero_message':
         'Sign in to access your merchant dashboard\nand manage your business securely.',
@@ -678,6 +682,9 @@ const Map<AppLanguage, Map<String, String>> _localizedValues = {
     'email_report_failed':
         'ഇമെയിൽ റിപ്പോർട്ട് അയക്കാൻ കഴിഞ്ഞില്ല. വീണ്ടും ശ്രമിക്കുക.',
     'no_transactions_to_send': 'അയക്കാൻ ഇടപാടുകൾ ഒന്നുമില്ല.',
+    'report_download_failed':
+        'റിപ്പോർട്ട് ഡൗൺലോഡ് ചെയ്യാനായില്ല. വീണ്ടും ശ്രമിക്കുക.',
+    'no_transactions_to_download': 'ഡൗൺലോഡ് ചെയ്യാൻ ഇടപാടുകൾ ഒന്നുമില്ല.',
     'all_merchants': 'എല്ലാം',
     'login_web_hero_message':
         'മർച്ചന്റ് ഡാഷ്ബോർഡ് ആക്സസ് ചെയ്യാനും ബിസിനസ് സുരക്ഷിതമായി നിയന്ത്രിക്കാനും സൈൻ ഇൻ ചെയ്യുക.',
@@ -1023,6 +1030,9 @@ const Map<AppLanguage, Map<String, String>> _localizedValues = {
     'email_report_failed':
         'மின்னஞ்சல் அறிக்கையை அனுப்ப முடியவில்லை. மீண்டும் முயற்சிக்கவும்.',
     'no_transactions_to_send': 'அனுப்ப பரிவர்த்தனைகள் இல்லை.',
+    'report_download_failed':
+        'அறிக்கையை பதிவிறக்க முடியவில்லை. மீண்டும் முயலவும்.',
+    'no_transactions_to_download': 'பதிவிறக்க பரிவர்த்தனைகள் இல்லை.',
     'all_merchants': 'அனைத்தும்',
     'login_web_hero_message':
         'மெர்சண்ட் டாஷ்போர்டை அணுகவும் வணிகத்தை பாதுகாப்பாக நிர்வகிக்கவும் உள்நுழையவும்.',
@@ -1362,6 +1372,10 @@ const Map<AppLanguage, Map<String, String>> _localizedValues = {
     'email_report_failed':
         'ईमेल रिपोर्ट भेजी नहीं जा सकी. कृपया फिर प्रयास करें.',
     'no_transactions_to_send': 'भेजने के लिए कोई लेनदेन उपलब्ध नहीं है.',
+    'report_download_failed':
+        'रिपोर्ट डाउनलोड नहीं हो सकी. कृपया फिर से प्रयास करें.',
+    'no_transactions_to_download':
+        'डाउनलोड करने के लिए कोई लेनदेन उपलब्ध नहीं है.',
     'all_merchants': 'सभी',
     'login_web_hero_message':
         'मर्चेंट डैशबोर्ड तक पहुँचने और व्यवसाय सुरक्षित रूप से चलाने के लिए साइन इन करें.',

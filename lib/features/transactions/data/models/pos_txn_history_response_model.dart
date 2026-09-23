@@ -307,6 +307,20 @@ class PosTransactionModel {
   final String transactionType;
   final String insertDateTime;
   final bool settled;
+  final String mti;
+  final String processCode;
+  final bool isVoided;
+  final bool isReverse;
+  final String traceNumber;
+  final String acquiringBin;
+  final String de7;
+  final String settledOn;
+  final bool isBatchClosed;
+  final String batchClosedOn;
+  final String mcc;
+  final String deviceType;
+  final String txnSource;
+  final String terminalLocation;
 
   const PosTransactionModel({
     required this.merchantId,
@@ -330,31 +344,83 @@ class PosTransactionModel {
     required this.transactionType,
     required this.insertDateTime,
     required this.settled,
+    this.mti = '',
+    this.processCode = '',
+    this.isVoided = false,
+    this.isReverse = false,
+    this.traceNumber = '',
+    this.acquiringBin = '',
+    this.de7 = '',
+    this.settledOn = '',
+    this.isBatchClosed = false,
+    this.batchClosedOn = '',
+    this.mcc = '',
+    this.deviceType = '',
+    this.txnSource = '',
+    this.terminalLocation = '',
   });
 
   factory PosTransactionModel.fromJson(Map<String, dynamic> json) {
     return PosTransactionModel(
-      merchantId: json['merchantId'] ?? '',
-      terminalId: json['terminalId'] ?? '',
-      transactionDate: json['transactionDate'] ?? '',
-      transactionTime: json['transactionTime'] ?? '',
-      rrn: json['rrn'] ?? '',
-      amount: json['amount'] ?? '',
-      authCode: json['authCode'] ?? '',
-      acquirerId: json['acquirerId'] ?? '',
-      batchNo: json['batchNo'] ?? '',
-      cardNo: json['cardNo'] ?? '',
-      currency: json['currency'] ?? '',
-      nameOnCard: json['nameOnCard'] ?? '',
-      posEntryMode: json['posEntryMode'] ?? '',
-      responseCode: json['responseCode'] ?? '',
-      responseDesc: json['responseDesc'] ?? '',
-      schemeName: json['schemeName'] ?? '',
-      stan: json['stan'] ?? '',
-      terminalAddress: json['terminalAddress'] ?? '',
-      transactionType: json['transactionType'] ?? '',
-      insertDateTime: json['insertDateTime'] ?? '',
-      settled: json['settled'] ?? false,
+      merchantId: _string(json, const ['merchantId']),
+      terminalId: _string(json, const ['terminalId']),
+      transactionDate: _string(json, const ['transactionDate']),
+      transactionTime: _string(json, const ['transactionTime']),
+      rrn: _string(json, const ['rrn']),
+      amount: _string(json, const ['amount']),
+      authCode: _string(json, const ['authCode']),
+      acquirerId: _string(json, const ['acquirerId']),
+      batchNo: _string(json, const ['batchNo']),
+      cardNo: _string(json, const ['cardNo']),
+      currency: _string(json, const ['currency']),
+      nameOnCard: _string(json, const ['nameOnCard']),
+      posEntryMode: _string(json, const ['posEntryMode']),
+      responseCode: _string(json, const ['responseCode']),
+      responseDesc: _string(json, const ['responseDesc']),
+      schemeName: _string(json, const ['schemeName']),
+      stan: _string(json, const ['stan']),
+      terminalAddress: _string(json, const ['terminalAddress', 'terminalLocation']),
+      transactionType: _string(json, const ['transactionType']),
+      insertDateTime: _string(json, const ['insertDateTime']),
+      settled: _bool(json, const ['settled', 'isSettled']),
+      mti: _string(json, const ['mti', 'MTI']),
+      processCode: _string(json, const ['processCode', 'ProcessCode']),
+      isVoided: _bool(json, const ['isVoided', 'voided']),
+      isReverse: _bool(json, const ['isReverse', 'reverse']),
+      traceNumber: _string(json, const ['traceNumber']),
+      acquiringBin: _string(json, const ['acquiringBIN', 'acquiringBin']),
+      de7: _string(json, const ['de_7', 'de7', 'DE_7']),
+      settledOn: _string(json, const ['settledOn']),
+      isBatchClosed: _bool(json, const ['isBatchClosed', 'batchClosed']),
+      batchClosedOn: _string(json, const ['batchClosedOn']),
+      mcc: _string(json, const ['mcc', 'MCC']),
+      deviceType: _string(json, const ['deviceType']),
+      txnSource: _string(json, const ['txnSource']),
+      terminalLocation:
+          _string(json, const ['terminalLocation', 'terminalAddress']),
     );
+  }
+
+  static String _string(Map<String, dynamic> json, List<String> keys) {
+    for (final key in keys) {
+      final value = json[key];
+      if (value == null) continue;
+      final text = '$value';
+      if (text.trim().isEmpty || text == 'null') continue;
+      return text;
+    }
+    return '';
+  }
+
+  static bool _bool(Map<String, dynamic> json, List<String> keys) {
+    for (final key in keys) {
+      final value = json[key];
+      if (value is bool) return value;
+      if (value == null) continue;
+      final text = '$value'.trim().toLowerCase();
+      if (text == 'true' || text == '1') return true;
+      if (text == 'false' || text == '0') return false;
+    }
+    return false;
   }
 }

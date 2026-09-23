@@ -61,22 +61,14 @@ class _HomePageState extends State<HomePage> {
   // the POS flow because QR/VPA history depends on a single mapped merchant.
   bool get _isAllMerchantSelection => !_isTerminalUser && _acqMerchantId == '0';
 
-  DateTime get _homeTransactionStartDate {
-    final today = DateTime.now();
-    final targetYear = today.year - 2;
-    final lastDayOfTargetMonth = DateTime(targetYear, today.month + 1, 0).day;
-    final targetDay =
-        today.day > lastDayOfTargetMonth ? lastDayOfTargetMonth : today.day;
+  DateTime get _today => DateTime.now();
 
-    return DateTime(targetYear, today.month, targetDay);
+  String get _homeTxnDate {
+    return DateFormat('dd-MM-yyyy').format(_today);
   }
 
-  String get _homeTransactionFromDate {
-    return DateFormat('dd-MM-yyyy').format(_homeTransactionStartDate);
-  }
-
-  String get _homeTransactionToDate {
-    return DateFormat('dd-MM-yyyy').format(DateTime.now());
+  String get _homeSettlementDate {
+    return DateFormat('yyyy-MM-dd').format(_today);
   }
 
   @override
@@ -228,6 +220,7 @@ class _HomePageState extends State<HomePage> {
 
     if (_isAllMerchantSelection) return;
 
+    context.read<SettlementBloc>().add(const ResetSettlementRequested());
     _loadSettlements(page: 0);
     _loadSoundBoxDevices();
   }
@@ -303,6 +296,7 @@ class _HomePageState extends State<HomePage> {
     }
 
     if (tab == TransactionTab.settlements) {
+      context.read<SettlementBloc>().add(const ResetSettlementRequested());
       _loadSettlements(page: 0);
     }
   }
@@ -390,8 +384,8 @@ class _HomePageState extends State<HomePage> {
           GetMerchantVpaTxnDataRequested(
             bearerToken: _bearerToken,
             creditVpa: selectedVpa,
-            from: _homeTransactionFromDate,
-            to: _homeTransactionToDate,
+            from: _homeTxnDate,
+            to: _homeTxnDate,
             page: page,
             size: _transactionPageSize,
             append: append,
@@ -447,8 +441,8 @@ class _HomePageState extends State<HomePage> {
             acquirerId: 'OMAIND',
             page: useMidEndpoint ? 0 : page,
             size: useMidEndpoint ? 1 : _transactionPageSize,
-            recordFrom: _homeTransactionFromDate,
-            recordTo: _homeTransactionToDate,
+            recordFrom: _homeTxnDate,
+            recordTo: _homeTxnDate,
             terminalId: _isTerminalUser ? _terminalId : null,
             useMidEndpoint: useMidEndpoint,
             append: append && !useMidEndpoint,
@@ -466,16 +460,12 @@ class _HomePageState extends State<HomePage> {
       return;
     }
 
-    final formatter = DateFormat('yyyy-MM-dd');
-    final fromDate = formatter.format(_homeTransactionStartDate);
-    final toDate = formatter.format(DateTime.now());
-
     context.read<SettlementBloc>().add(
           GetSettlementHistoryRequested(
             bearerToken: _bearerToken,
             merchantId: settlementMerchantId,
-            fromDate: fromDate,
-            toDate: toDate,
+            fromDate: _homeSettlementDate,
+            toDate: _homeSettlementDate,
             page: page,
             size: _transactionPageSize,
             append: append,
@@ -634,9 +624,9 @@ class _HomePageState extends State<HomePage> {
               title: _isAllMerchantSelection
                   ? context.tr('all_merchants')
                   : _selectedTransactionTab == TransactionTab.pos
-                      ? context.tr('recent_pos_transactions')
+                      ? context.tr('transactions_today')
                       : _selectedTransactionTab == TransactionTab.qr
-                          ? context.tr('recent_qr_transactions')
+                          ? context.tr('qr_transactions_today')
                           : context.tr('todays_settlements'),
               onViewAll: _openTransactionFilter,
             ),

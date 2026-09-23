@@ -14,6 +14,7 @@ import 'package:anet_merchants/core/localization/app_language.dart';
 import 'package:anet_merchants/core/resources/data_state.dart';
 import 'package:anet_merchants/core/services/alert_service.dart';
 import 'package:anet_merchants/core/storage/session_storage.dart';
+import 'package:anet_merchants/core/utils/file_downloader.dart';
 import 'package:anet_merchants/core/utils/logout_helper.dart';
 import 'package:anet_merchants/core/utils/navigation_helper.dart';
 import 'package:anet_merchants/core/widgets/loading_action_content.dart';
@@ -23,6 +24,7 @@ import 'package:anet_merchants/features/settlements/presentation/bloc/settlement
 import 'package:anet_merchants/features/settlements/presentation/pages/settlement_navigation_data.dart';
 import 'package:anet_merchants/features/shared/presentation/widgets/merchant_overview.dart';
 import 'package:anet_merchants/features/shared/presentation/widgets/transaction_list_item.dart';
+import 'package:anet_merchants/features/transactions/utils/transaction_report_excel.dart';
 
 class SettlementDetailPage extends StatefulWidget {
   final SettlementDetailData data;
@@ -45,6 +47,9 @@ class _SettlementDetailPageState extends State<SettlementDetailPage> {
   String _merchantId = '';
   String _acqMerchantId = '';
   bool _isSendingEmail = false;
+  bool _isDownloadingReport = false;
+
+  bool get _isReportActionBusy => _isSendingEmail || _isDownloadingReport;
 
   @override
   void initState() {
@@ -101,61 +106,77 @@ class _SettlementDetailPageState extends State<SettlementDetailPage> {
     NavigationHelper.goHomeAndClearStack(context, AppRoutes.home);
   }
 
-  Future<void> _sendSettlementReportToEmail() async {
-    if (_isSendingEmail) return;
+  Future<void> _downloadSettlementReport() async {
+    if (_isReportActionBusy) return;
 
-    setState(() => _isSendingEmail = true);
+    setState(() => _isDownloadingReport = true);
 
     try {
-      final bearerToken = _bearerToken.isEmpty
-          ? await _sessionStorage.bearerToken
-          : _bearerToken;
-      final merchantId =
-          _merchantId.isEmpty ? await _sessionStorage.merchantId : _merchantId;
-      final acqMerchantId = _acqMerchantId.isEmpty
-          ? await _sessionStorage.activeAcqMerchantId
-          : _acqMerchantId;
-      final settlementMerchantId = acqMerchantId.isEmpty || acqMerchantId == '0'
-          ? merchantId
-          : acqMerchantId;
-      final settlementDate = _apiDate(widget.data.settlement.tranDate);
-      if (!mounted) return;
+      final result = await _requestSettlementReport(sendToMail: false);
+      if (!mounted || result == null) return;
 
-      // This page represents one settlement date. Its aggregate response
-      // supplies the exact transaction count for that date, whereas the
-      // bloc's totalElements describes the paginated detail response.
-      final selectedSettlementCount = widget.data.settlement.transactionCount;
-      final loadedTransactionCount =
-          context.read<SettlementBloc>().state.totalElements;
-      final requestedSize = selectedSettlementCount > 0
-          ? selectedSettlementCount
-          : loadedTransactionCount;
-
-      if (bearerToken.isEmpty ||
-          settlementMerchantId.isEmpty ||
-          settlementDate.isEmpty ||
-          requestedSize <= 0) {
-        await AlertService.warning(
+      if (result is! DataSuccess<SettlementHistoryResponseModel> ||
+          result.data == null) {
+        await AlertService.error(
           context,
-          title: context.tr('alert'),
-          message: context.tr('no_transactions_to_send'),
+          title: context.tr('error'),
+          message: result.error?.message ?? context.tr('report_download_failed'),
         );
         return;
       }
 
-      final result = await sl<GetSettlementHistory>()(
-        params: GetSettlementHistoryParams(
-          bearerToken: bearerToken,
-          merchantId: settlementMerchantId,
-          fromDate: settlementDate,
-          toDate: settlementDate,
-          page: 0,
-          size: requestedSize,
-          sendSettlementReportToMail: true,
-        ),
-      );
+      final settlements = result.data!.settledSummaryPage.content.isNotEmpty
+          ? result.data!.settledSummaryPage.content
+          : result.data!.settlementAggregatePage.content;
+      if (settlements.isEmpty) {
+        await AlertService.warning(
+          context,
+          title: context.tr('alert'),
+          message: context.tr('no_transactions_to_download'),
+        );
+        return;
+      }
 
+      final bytes = TransactionReportExcel.fromSettlements(settlements);
+      if (bytes.isEmpty) {
+        await AlertService.error(
+          context,
+          title: context.tr('error'),
+          message: context.tr('report_download_failed'),
+        );
+        return;
+      }
+
+      final now = DateTime.now();
+      String two(int value) => value.toString().padLeft(2, '0');
+      await downloadFile(
+        bytes: bytes,
+        filename:
+            'TransactionSettlementReport_${now.year}-${two(now.month)}-${two(now.day)}_${two(now.hour)}-${two(now.minute)}.xlsx',
+        mimeType: xlsxMimeType,
+      );
+    } catch (_) {
       if (!mounted) return;
+      await AlertService.error(
+        context,
+        title: context.tr('error'),
+        message: context.tr('report_download_failed'),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isDownloadingReport = false);
+      }
+    }
+  }
+
+  Future<void> _sendSettlementReportToEmail() async {
+    if (_isReportActionBusy) return;
+
+    setState(() => _isSendingEmail = true);
+
+    try {
+      final result = await _requestSettlementReport(sendToMail: true);
+      if (!mounted || result == null) return;
 
       if (result is DataSuccess<SettlementHistoryResponseModel>) {
         final mailResponse = result.data!.sendMailResponse;
@@ -190,6 +211,226 @@ class _SettlementDetailPageState extends State<SettlementDetailPage> {
     }
   }
 
+  Future<DataState<SettlementHistoryResponseModel>?> _requestSettlementReport({
+    required bool sendToMail,
+  }) async {
+    final bearerToken =
+        _bearerToken.isEmpty ? await _sessionStorage.bearerToken : _bearerToken;
+    final merchantId =
+        _merchantId.isEmpty ? await _sessionStorage.merchantId : _merchantId;
+    final acqMerchantId = _acqMerchantId.isEmpty
+        ? await _sessionStorage.activeAcqMerchantId
+        : _acqMerchantId;
+    final settlementMerchantId = acqMerchantId.isEmpty || acqMerchantId == '0'
+        ? merchantId
+        : acqMerchantId;
+    final settlementDate = _apiDate(widget.data.settlement.tranDate);
+    if (!mounted) return null;
+
+    final selectedSettlementCount = widget.data.settlement.transactionCount;
+    final loadedTransactionCount =
+        context.read<SettlementBloc>().state.settledTransactions.length;
+    final requestedSize = selectedSettlementCount > 0
+        ? selectedSettlementCount
+        : loadedTransactionCount;
+
+    if (bearerToken.isEmpty ||
+        settlementMerchantId.isEmpty ||
+        settlementDate.isEmpty ||
+        requestedSize <= 0) {
+      await AlertService.warning(
+        context,
+        title: context.tr('alert'),
+        message: sendToMail
+            ? context.tr('no_transactions_to_send')
+            : context.tr('no_transactions_to_download'),
+      );
+      return null;
+    }
+
+    _bearerToken = bearerToken;
+    _merchantId = merchantId;
+    _acqMerchantId = acqMerchantId;
+
+    return sl<GetSettlementHistory>()(
+      params: GetSettlementHistoryParams(
+        bearerToken: bearerToken,
+        merchantId: settlementMerchantId,
+        fromDate: settlementDate,
+        toDate: settlementDate,
+        page: 0,
+        size: requestedSize,
+        sendSettlementReportToMail: sendToMail,
+      ),
+    );
+  }
+
+  Widget _buildWebReportToolbar() {
+    return Row(
+      children: [
+        TextButton.icon(
+          onPressed: () => NavigationHelper.backOrGo(
+            context,
+            AppRoutes.home,
+          ),
+          icon: const Icon(Icons.arrow_back_rounded),
+          label: Text(context.tr('back')),
+          style: TextButton.styleFrom(
+            foregroundColor: context.appTextPrimary,
+            padding: const EdgeInsets.symmetric(
+              horizontal: 4,
+              vertical: 10,
+            ),
+            textStyle: AppTextStyle.h4.copyWith(
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+        ),
+        const Spacer(),
+        _buildWebBorderButton(
+          onPressed: _isReportActionBusy ? null : _downloadSettlementReport,
+          isLoading: _isDownloadingReport,
+          loadingLabel: context.tr('preparing'),
+          icon: Icons.download_rounded,
+          label: context.tr('download'),
+        ),
+        const SizedBox(width: 10),
+        _buildWebBorderButton(
+          onPressed: _isReportActionBusy ? null : _sendSettlementReportToEmail,
+          isLoading: _isSendingEmail,
+          loadingLabel: context.tr('sending_email'),
+          icon: Icons.mail_outline_rounded,
+          label: context.tr('send_by_email'),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildWebBorderButton({
+    required VoidCallback? onPressed,
+    required bool isLoading,
+    required String loadingLabel,
+    required IconData icon,
+    required String label,
+  }) {
+    return OutlinedButton(
+      onPressed: onPressed,
+      style: OutlinedButton.styleFrom(
+        foregroundColor: AppColors.primaryPurple,
+        disabledForegroundColor: AppColors.primaryPurple,
+        side: BorderSide(color: AppColors.primaryPurple),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      ),
+      child: isLoading
+          ? LoadingActionContent(
+              label: loadingLabel,
+              color: AppColors.primaryPurple,
+              indicatorSize: 18,
+              textStyle: AppTextStyle.h5.copyWith(
+                fontWeight: FontWeight.w900,
+              ),
+            )
+          : Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(icon),
+                const SizedBox(width: 9),
+                Text(label),
+              ],
+            ),
+    );
+  }
+
+  Widget _buildMobileReportActions() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 6, 20, 12),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            width: double.infinity,
+            height: 54,
+            child: OutlinedButton(
+              onPressed:
+                  _isReportActionBusy ? null : _downloadSettlementReport,
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.primaryPurple,
+                disabledForegroundColor: AppColors.primaryPurple,
+                side: BorderSide(color: AppColors.primaryPurple, width: 1.6),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: _isDownloadingReport
+                  ? LoadingActionContent(
+                      label: context.tr('preparing'),
+                      color: AppColors.primaryPurple,
+                      textStyle: AppTextStyle.h4.copyWith(
+                        fontWeight: FontWeight.w900,
+                      ),
+                    )
+                  : Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.download_rounded, size: 26),
+                        const SizedBox(width: 10),
+                        Text(
+                          context.tr('download'),
+                          style: AppTextStyle.h4.copyWith(
+                            color: AppColors.primaryPurple,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                      ],
+                    ),
+            ),
+          ),
+          const SizedBox(height: 10),
+          SizedBox(
+            width: double.infinity,
+            height: 54,
+            child: ElevatedButton(
+              onPressed:
+                  _isReportActionBusy ? null : _sendSettlementReportToEmail,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primaryPurple,
+                disabledBackgroundColor:
+                    AppColors.primaryPurple.withValues(alpha: .82),
+                foregroundColor: Colors.white,
+                disabledForegroundColor: Colors.white,
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: _isSendingEmail
+                  ? LoadingActionContent(
+                      label: context.tr('sending_email'),
+                      color: Colors.white,
+                      textStyle: AppTextStyle.h4WhiteColor.copyWith(
+                        fontWeight: FontWeight.w900,
+                      ),
+                    )
+                  : Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.mail_outline_rounded, size: 26),
+                        const SizedBox(width: 10),
+                        Text(
+                          context.tr('send_by_email'),
+                          style: AppTextStyle.h4WhiteColor.copyWith(
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                      ],
+                    ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final settlement = widget.data.settlement;
@@ -197,34 +438,14 @@ class _SettlementDetailPageState extends State<SettlementDetailPage> {
     return CommonScaffold(
       selectedIndex: 0,
       onBottomNavItemSelected: _onBottomNavItemSelected,
-      bottomAction: _EmailButton(
-        onPressed: _isSendingEmail ? null : _sendSettlementReportToEmail,
-        isLoading: _isSendingEmail,
-      ),
+      bottomAction: kIsWeb ? null : _buildMobileReportActions(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(20, 12, 20, 18),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (kIsWeb) ...[
-              TextButton.icon(
-                onPressed: () => NavigationHelper.backOrGo(
-                  context,
-                  AppRoutes.home,
-                ),
-                icon: const Icon(Icons.arrow_back_rounded),
-                label: Text(context.tr('back')),
-                style: TextButton.styleFrom(
-                  foregroundColor: context.appTextPrimary,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 4,
-                    vertical: 10,
-                  ),
-                  textStyle: AppTextStyle.h4.copyWith(
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-              ),
+              _buildWebReportToolbar(),
               const SizedBox(height: 8),
             ],
             if (!kIsWeb) ...[
@@ -893,62 +1114,6 @@ class _BreakdownRow extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _EmailButton extends StatelessWidget {
-  final VoidCallback? onPressed;
-  final bool isLoading;
-
-  const _EmailButton({
-    required this.onPressed,
-    required this.isLoading,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 6, 20, 12),
-      child: SizedBox(
-        height: 54,
-        width: double.infinity,
-        child: ElevatedButton(
-          onPressed: onPressed,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primaryPurple,
-            disabledBackgroundColor:
-                AppColors.primaryPurple.withValues(alpha: .82),
-            foregroundColor: Colors.white,
-            disabledForegroundColor: Colors.white,
-            elevation: 0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-          child: isLoading
-              ? LoadingActionContent(
-                  label: context.tr('sending_email'),
-                  color: Colors.white,
-                  textStyle: AppTextStyle.h4WhiteColor.copyWith(
-                    fontWeight: FontWeight.w900,
-                  ),
-                )
-              : Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(Icons.mail_outline_rounded, size: 26),
-                    const SizedBox(width: 10),
-                    Text(
-                      context.tr('send_by_email'),
-                      style: AppTextStyle.h4WhiteColor.copyWith(
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                  ],
-                ),
-        ),
       ),
     );
   }

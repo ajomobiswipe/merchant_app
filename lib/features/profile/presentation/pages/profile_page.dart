@@ -385,16 +385,6 @@ class _InfoSection extends StatelessWidget {
           icon: Icons.badge_rounded,
           label: context.tr('merchant_id'),
           value: _fallback(userInfo?.merchantId, context.tr('not_available')),
-        ),
-        _InfoTile(
-          icon: Icons.verified_user_rounded,
-          label: context.tr('role'),
-          value: _fallback(userInfo?.role, context.tr('not_available')),
-        ),
-        _InfoTile(
-          icon: Icons.phone_android_rounded,
-          label: context.tr('device_type'),
-          value: _fallback(userInfo?.deviceType, context.tr('not_available')),
           showDivider: false,
         ),
       ],

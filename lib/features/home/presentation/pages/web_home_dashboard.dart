@@ -785,7 +785,7 @@ class _WebTableHeader extends StatelessWidget {
   Widget build(BuildContext context) => Padding(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       child: Row(children: [
-        Text(context.tr('recent_pos_transactions'),
+        Text(context.tr('transactions_today'),
             style: AppTextStyle.h4.copyWith(fontWeight: FontWeight.w900)),
         const Spacer(),
         _WebRefreshButton(onPressed: onRefresh),
@@ -809,7 +809,7 @@ class _WebQrTableHeader extends StatelessWidget {
   Widget build(BuildContext context) => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         child: Row(children: [
-          Text(context.tr('recent_qr_transactions'),
+          Text(context.tr('qr_transactions_today'),
               style: AppTextStyle.h4.copyWith(fontWeight: FontWeight.w900)),
           const Spacer(),
           _WebRefreshButton(onPressed: onRefresh),

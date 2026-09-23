@@ -3,4 +3,10 @@ FROM nginx:alpine
 COPY build/web/ /usr/share/nginx/html/
 COPY docker/nginx/default.conf.template /etc/nginx/templates/default.conf.template
 
+# Defaults so envsubst always replaces ${SSL_CRT_FILE} / ${SSL_KEY_FILE}.
+# Mount real certs at /app/certs when running the container.
+ENV SSL_CRT_FILE=/app/certs/357c5d80161e5f7.crt
+ENV SSL_KEY_FILE=/app/certs/oma_private1.key
+ENV NGINX_ENVSUBST_FILTER=^SSL_
+
 EXPOSE 443
