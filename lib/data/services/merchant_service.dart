@@ -78,8 +78,10 @@ class MerchantServices {
     return await DioClient().post(url, requestModel);
   }
 
-    Future<dynamic> fetchTransactionHistoryGetPosTxnHistoryReportbyMid(Map<String, dynamic> requestModel,
-      {required int pageNumber, required int pageSize}) async {
+  Future<dynamic> fetchTransactionHistoryGetPosTxnHistoryReportbyMid(
+      Map<String, dynamic> requestModel,
+      {required int pageNumber,
+      required int pageSize}) async {
     final url =
         "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/getPosTxnHistoryReportbyMid?page=$pageNumber&size=$pageSize&sort=insertDateTime%2Cdesc";
     return await DioClient().post(url, requestModel);
@@ -92,8 +94,6 @@ class MerchantServices {
       bool forMonthyValues = false,
       String? merchantId}) async {
     String merchantIdQuery = "";
-
-
 
     if (forMonthyValues && merchantId != null) {
       merchantIdQuery = "&mappedMerchantId=$merchantId";
@@ -119,7 +119,7 @@ class MerchantServices {
       required String merchantId}) async {
     final url =
         "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/getListOfSoundBoxDevices?page=$pageNumber&size=500&sort=insertDateTime%2Cdesc";
-    return await DioClient().getWithReqBody(url, requestModel);
+    return await DioClient().post(url, requestModel);
   }
 
   Future<dynamic> getSupportActionData() async {
