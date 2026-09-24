@@ -21,6 +21,22 @@ void main() {
       });
     });
 
+    test('includes rrn when searching a VPA transaction', () {
+      const request = MerchantVpaTxnRequestModel(
+        from: '18-09-2024',
+        to: '24-09-2026',
+        rrn: '187187860320',
+        creditVpa: 'Hardwarisweets.anet@axisbank',
+      );
+
+      expect(request.toJson(), {
+        'from': '18-09-2024',
+        'to': '24-09-2026',
+        'rrn': '187187860320',
+        'creditVpa': 'Hardwarisweets.anet@axisbank',
+      });
+    });
+
     test('serializes empty date range as null for VPA-only search', () {
       const request = MerchantVpaTxnRequestModel(
         from: '',

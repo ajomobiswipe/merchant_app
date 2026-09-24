@@ -10,6 +10,7 @@ class GetMerchantVpaTxnDataParams {
   final String to;
   final int page;
   final int size;
+  final String? rrn;
   final String? mappedMerchantId;
 
   const GetMerchantVpaTxnDataParams({
@@ -19,6 +20,7 @@ class GetMerchantVpaTxnDataParams {
     required this.to,
     required this.page,
     required this.size,
+    this.rrn,
     this.mappedMerchantId,
   });
 }
@@ -42,6 +44,7 @@ class GetMerchantVpaTxnData
       to: params.to,
       page: params.page,
       size: params.size,
+      rrn: params.rrn,
       mappedMerchantId: params.mappedMerchantId,
     );
   }

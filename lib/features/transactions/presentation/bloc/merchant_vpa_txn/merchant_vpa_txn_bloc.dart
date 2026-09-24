@@ -57,6 +57,7 @@ class MerchantVpaTxnBloc
             to: event.to,
             page: requestedPage,
             size: event.size,
+            rrn: event.rrn,
             mappedMerchantId: event.mappedMerchantId.isEmpty
                 ? null
                 : event.mappedMerchantId,

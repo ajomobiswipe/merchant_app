@@ -20,6 +20,7 @@ class MerchantVpaTxnRepositoryImpl implements MerchantVpaTxnRepository {
     required String to,
     required int page,
     required int size,
+    String? rrn,
     String? mappedMerchantId,
   }) async {
     try {
@@ -28,6 +29,7 @@ class MerchantVpaTxnRepositoryImpl implements MerchantVpaTxnRepository {
         MerchantVpaTxnRequestModel(
           from: from,
           to: to,
+          rrn: rrn,
           creditVpa: creditVpa,
         ),
         page: page,

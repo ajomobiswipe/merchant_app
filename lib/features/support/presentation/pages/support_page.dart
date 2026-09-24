@@ -16,7 +16,14 @@ import 'package:anet_merchants/features/support/presentation/pages/web_support_p
 import '../../../../core/common/responsive_layout.dart';
 
 class SupportPage extends StatefulWidget {
-  const SupportPage({super.key});
+  final ValueChanged<int> onMenuSelected;
+  final bool showDashboard;
+
+  const SupportPage({
+    super.key,
+    required this.onMenuSelected,
+    this.showDashboard = true,
+  });
 
   @override
   State<SupportPage> createState() => _SupportPageState();
@@ -152,7 +159,10 @@ class _SupportPageState extends State<SupportPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const HomeHeader(),
+                  HomeHeader(
+                    onNavigationSelected: widget.onMenuSelected,
+                    showDashboard: widget.showDashboard,
+                  ),
                   const SizedBox(height: 32),
                   const _SupportHero(),
                   const SizedBox(height: 24),

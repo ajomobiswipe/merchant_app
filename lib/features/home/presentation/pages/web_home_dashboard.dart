@@ -177,6 +177,13 @@ class _WebAllMerchantSummary extends StatelessWidget {
                       ),
                     ),
                     const Spacer(),
+                    _WebSearchButton(
+                      onPressed: () => showTransactionRrnSearchSheet(
+                        context,
+                        tab: TransactionTab.pos,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
                     _WebRefreshButton(
                       onPressed: state.transactionsLoading ? null : onRefresh,
                     ),
@@ -567,6 +574,10 @@ class _WebRecentTransactions extends StatelessWidget {
           _WebTableHeader(
             onViewAll: onViewAll,
             onRefresh: state.transactionsLoading ? null : onRefresh,
+            onSearch: () => showTransactionRrnSearchSheet(
+              context,
+              tab: TransactionTab.pos,
+            ),
           ),
           const Divider(height: 1),
           if (state.transactionsLoading && state.transactions.isEmpty)
@@ -607,6 +618,11 @@ class _WebRecentTransactions extends StatelessWidget {
           builder: (context, state) => _WebQrTableHeader(
             onViewAll: onViewAll,
             onRefresh: state is MerchantVpaTxnLoading ? null : onRefresh,
+            onSearch: () => showTransactionRrnSearchSheet(
+              context,
+              tab: TransactionTab.qr,
+              creditVpa: selectedVpa ?? '',
+            ),
           ),
         ),
         const Divider(height: 1),
@@ -789,7 +805,12 @@ class _WebPagination extends StatelessWidget {
 class _WebTableHeader extends StatelessWidget {
   final VoidCallback onViewAll;
   final VoidCallback? onRefresh;
-  const _WebTableHeader({required this.onViewAll, required this.onRefresh});
+  final VoidCallback onSearch;
+  const _WebTableHeader({
+    required this.onViewAll,
+    required this.onRefresh,
+    required this.onSearch,
+  });
   @override
   Widget build(BuildContext context) => Padding(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -798,6 +819,8 @@ class _WebTableHeader extends StatelessWidget {
             style: AppTextStyle(kIsWeb &&
                 AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(fontWeight: FontWeight.w900)),
         const Spacer(),
+        _WebSearchButton(onPressed: onSearch),
+        const SizedBox(width: 8),
         _WebRefreshButton(onPressed: onRefresh),
         const SizedBox(width: 8),
         TextButton.icon(
@@ -810,9 +833,11 @@ class _WebTableHeader extends StatelessWidget {
 class _WebQrTableHeader extends StatelessWidget {
   final VoidCallback onViewAll;
   final VoidCallback? onRefresh;
+  final VoidCallback onSearch;
   const _WebQrTableHeader({
     required this.onViewAll,
     required this.onRefresh,
+    required this.onSearch,
   });
 
   @override
@@ -823,6 +848,8 @@ class _WebQrTableHeader extends StatelessWidget {
               style: AppTextStyle(kIsWeb &&
                 AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(fontWeight: FontWeight.w900)),
           const Spacer(),
+          _WebSearchButton(onPressed: onSearch),
+          const SizedBox(width: 8),
           _WebRefreshButton(onPressed: onRefresh),
           const SizedBox(width: 8),
           TextButton.icon(
@@ -858,6 +885,19 @@ class _WebSettlementTableHeader extends StatelessWidget {
               label: Text(context.tr('view_all_settlements')),
             ),
         ]),
+      );
+}
+
+class _WebSearchButton extends StatelessWidget {
+  final VoidCallback onPressed;
+
+  const _WebSearchButton({required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) => OutlinedButton.icon(
+        onPressed: onPressed,
+        icon: const Icon(Icons.search_rounded, size: 19),
+        label: Text(context.tr('search')),
       );
 }
 
@@ -909,7 +949,6 @@ class _WebTransactionColumnLabels extends StatelessWidget {
             Expanded(
                 flex: 20, child: _WebColumnLabel(context.tr('customer_vpa'))),
             Expanded(flex: 14, child: _WebColumnLabel(context.tr('rrn'))),
-            Expanded(flex: 14, child: _WebColumnLabel(context.tr('ref_id'))),
           ],
           SizedBox(width: 112, child: _WebColumnLabel(context.tr('status'))),
           const SizedBox(width: 32),
@@ -933,8 +972,8 @@ class _WebHomeTransactionTable extends StatelessWidget {
         builder: (context, constraints) => SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: SizedBox(
-            width: constraints.maxWidth < (isPos ? 1040 : 1240)
-                ? (isPos ? 1040 : 1240)
+            width: constraints.maxWidth < (isPos ? 1040 : 1100)
+                ? (isPos ? 1040 : 1100)
                 : constraints.maxWidth,
             child: Column(
               children: [
@@ -1198,10 +1237,6 @@ class _WebQrTransactionRow extends StatelessWidget {
           Expanded(
             flex: 14,
             child: _WebHomeTableText(_webValueOrDash(transaction.rrn)),
-          ),
-          Expanded(
-            flex: 14,
-            child: _WebHomeTableText(_webValueOrDash(transaction.refId)),
           ),
           SizedBox(
             width: 112,

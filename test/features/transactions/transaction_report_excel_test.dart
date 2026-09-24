@@ -20,7 +20,7 @@ void main() {
       const transaction = MerchantVpaTransactionModel(
         refId: 'REF-1',
         name: 'Store',
-        status: 'SUCCESS',
+        status: 'TRANSACTION HAS BEEN APPROVED',
         transactionAmount: '125.50',
         transactionType: 'CREDIT',
         accountDetailsAccType: 'SAVINGS',
@@ -32,7 +32,10 @@ void main() {
         rrn: '123456',
         deviceId: 'SB-1',
         merchantId: 'MID1',
-        addedOn: '22-09-2026 10:15:00',
+        addedOn: '2026-09-24T12:11:41.067',
+        orgStatus: 'SUCCESS',
+        gatewayResponseCode: '00',
+        gatewayResponseMessage: 'TRANSACTION HAS BEEN APPROVED',
       );
 
       final xml = sheetXml(
@@ -40,11 +43,17 @@ void main() {
       );
 
       expect(xml, contains('Date/Time'));
-      expect(xml, contains('22-09-2026 10:15:00'));
+      expect(xml, contains('2026-09-24 12:11:41.067'));
+      expect(xml, isNot(contains('2026-09-24T12:11:41.067')));
       expect(xml, contains('125.50'));
       expect(xml, contains('Asha'));
       expect(xml, contains('123456'));
-      expect(xml, contains('REF-1'));
+      expect(xml, contains('Org Status'));
+      expect(xml, contains('>Success<'));
+      expect(xml, contains('TRANSACTION HAS BEEN APPROVED'));
+      expect(xml, isNot(contains('gatewayResponseMessage')));
+      expect(xml, isNot(contains('Ref ID')));
+      expect(xml, isNot(contains('REF-1')));
     });
 
     test('writes POS rows in the backend TransactionHistoryReport column order',

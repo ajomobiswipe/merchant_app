@@ -7,31 +7,49 @@ import 'package:anet_merchants/core/localization/app_language.dart';
 import 'package:anet_merchants/core/utils/logout_helper.dart';
 
 class HomeHeader extends StatelessWidget {
-  const HomeHeader({super.key});
+  final ValueChanged<int> onNavigationSelected;
+  final bool showDashboard;
+
+  const HomeHeader({
+    super.key,
+    required this.onNavigationSelected,
+    this.showDashboard = true,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Container(
-          width: 38,
-          height: 38,
-          decoration: BoxDecoration(
-            color: context.appSurface,
-            borderRadius: BorderRadius.circular(10),
-            boxShadow: [
-              BoxShadow(
-                color: context.appShadow,
-                blurRadius: 8,
-                offset: const Offset(0, 3),
-              ),
-            ],
-            border: Border.all(color: context.appBorder),
-          ),
-          child: Icon(
-            Icons.menu_rounded,
-            color: context.appIconColor,
-            size: 24,
+        PopupMenuButton<int>(
+          onSelected: onNavigationSelected,
+          offset: const Offset(0, 42),
+          itemBuilder: (context) => [
+            PopupMenuItem(value: 0, child: Text(context.tr('home'))),
+            PopupMenuItem(value: 1, child: Text(context.tr('support'))),
+            if (showDashboard)
+              PopupMenuItem(value: 2, child: Text(context.tr('dashboard'))),
+            PopupMenuItem(value: 3, child: Text(context.tr('profile'))),
+          ],
+          child: Container(
+            width: 38,
+            height: 38,
+            decoration: BoxDecoration(
+              color: context.appSurface,
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                  color: context.appShadow,
+                  blurRadius: 8,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+              border: Border.all(color: context.appBorder),
+            ),
+            child: Icon(
+              Icons.menu_rounded,
+              color: context.appIconColor,
+              size: 24,
+            ),
           ),
         ),
         const Spacer(),

@@ -97,6 +97,9 @@ class MerchantVpaTransactionModel {
   final String deviceId;
   final String merchantId;
   final String addedOn;
+  final String orgStatus;
+  final String gatewayResponseCode;
+  final String gatewayResponseMessage;
 
   const MerchantVpaTransactionModel({
     required this.refId,
@@ -114,17 +117,25 @@ class MerchantVpaTransactionModel {
     required this.deviceId,
     required this.merchantId,
     required this.addedOn,
+    this.orgStatus = '',
+    this.gatewayResponseCode = '',
+    this.gatewayResponseMessage = '',
   });
 
   factory MerchantVpaTransactionModel.fromJson(Map<String, dynamic> json) {
+    final status = '${json['status'] ?? ''}';
+    final code = '${json['code'] ?? ''}';
+    final explicitOrgStatus =
+        '${json['orgStatus'] ?? json['org_status'] ?? ''}'.trim();
+
     return MerchantVpaTransactionModel(
       refId: json['refId'] ?? '',
       name: json['name'] ?? '',
-      status: json['status'] ?? '',
+      status: status,
       transactionAmount: json['transactionAmount'] ?? '',
       transactionType: json['transactionType'] ?? '',
       accountDetailsAccType: json['accountDetailsAccType'] ?? '',
-      code: json['code'] ?? '',
+      code: code,
       payerName: json['payerName'] ?? '',
       payeeName: json['payeeName'] ?? '',
       customerVpa: json['customerVpa'] ?? '',
@@ -133,6 +144,26 @@ class MerchantVpaTransactionModel {
       deviceId: json['deviceId'] ?? '',
       merchantId: json['merchantId'] ?? '',
       addedOn: json['addedOn'] ?? '',
+      gatewayResponseCode: '${json['gatewayResponseCode'] ?? ''}',
+      gatewayResponseMessage: '${json['gatewayResponseMessage'] ?? ''}',
+      orgStatus: explicitOrgStatus.isNotEmpty
+          ? explicitOrgStatus
+          : _derivedOrgStatus(status: status, code: code),
     );
+  }
+
+  static String _derivedOrgStatus({
+    required String status,
+    required String code,
+  }) {
+    final normalizedCode = code.trim();
+    final normalizedStatus = status.trim().toLowerCase();
+    if (normalizedCode == '00' ||
+        normalizedCode == '000' ||
+        normalizedStatus == 'success' ||
+        normalizedStatus.contains('approved')) {
+      return 'Success';
+    }
+    return '';
   }
 }

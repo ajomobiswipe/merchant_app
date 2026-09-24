@@ -16,7 +16,8 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace = "com.alliancenetwork.merchantapp"
-    compileSdk = flutter.compileSdkVersion
+    // flutter_secure_storage compiles against SDK 37. Flutter's default is still 36.
+    compileSdk = maxOf(flutter.compileSdkVersion, 37)
     ndkVersion = "28.2.13676358"
 
     compileOptions {

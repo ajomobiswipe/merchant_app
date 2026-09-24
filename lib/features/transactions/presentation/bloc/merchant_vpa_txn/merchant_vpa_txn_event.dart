@@ -20,6 +20,7 @@ class GetMerchantVpaTxnDataRequested extends MerchantVpaTxnEvent {
   final int size;
   final bool append;
   final String mappedMerchantId;
+  final String rrn;
 
   const GetMerchantVpaTxnDataRequested({
     required this.bearerToken,
@@ -30,6 +31,7 @@ class GetMerchantVpaTxnDataRequested extends MerchantVpaTxnEvent {
     this.size = 10,
     this.append = false,
     this.mappedMerchantId = '',
+    this.rrn = '',
   });
 
   @override
@@ -42,5 +44,6 @@ class GetMerchantVpaTxnDataRequested extends MerchantVpaTxnEvent {
         size,
         append,
         mappedMerchantId,
+        rrn,
       ];
 }

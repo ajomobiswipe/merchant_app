@@ -17,4 +17,5 @@ export 'presentation/pages/transaction_invoice_page.dart';
 export 'presentation/pages/transaction_list_page.dart';
 export 'presentation/pages/vpa_invoice_page.dart';
 export 'presentation/widgets/merchant_vpa_transactions.dart';
+export 'presentation/widgets/transaction_rrn_search_sheet.dart';
 export 'presentation/widgets/vpa_selector.dart';

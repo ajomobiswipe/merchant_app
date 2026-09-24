@@ -551,11 +551,20 @@ class _HomePageState extends State<HomePage> {
   Widget _buildSelectedBody() {
     switch (_selectedBottomIndex) {
       case 1:
-        return const SupportPage();
+        return SupportPage(
+          onMenuSelected: _onBottomNavItemSelected,
+          showDashboard: _isDashboardEnabled,
+        );
       case 2:
-        return const DashboardPage();
+        return DashboardPage(
+          onMenuSelected: _onBottomNavItemSelected,
+          showDashboard: _isDashboardEnabled,
+        );
       case 3:
-        return const ProfilePage();
+        return ProfilePage(
+          onMenuSelected: _onBottomNavItemSelected,
+          showDashboard: _isDashboardEnabled,
+        );
       case 0:
       default:
         return _buildHomeBody();
@@ -629,6 +638,14 @@ class _HomePageState extends State<HomePage> {
                           ? context.tr('qr_transactions_today')
                           : context.tr('todays_settlements'),
               onViewAll: _openTransactionFilter,
+              onSearch: !kIsWeb ||
+                      _selectedTransactionTab == TransactionTab.settlements
+                  ? null
+                  : () => showTransactionRrnSearchSheet(
+                        context,
+                        tab: _selectedTransactionTab,
+                        creditVpa: _selectedVpa ?? '',
+                      ),
             ),
             const SizedBox(height: 8),
             _buildSelectedTransactionList(),

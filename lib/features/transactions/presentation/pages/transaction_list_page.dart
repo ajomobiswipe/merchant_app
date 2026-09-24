@@ -193,6 +193,7 @@ class _TransactionListPageState extends State<TransactionListPage> {
             size: _pageSize,
             append: append,
             mappedMerchantId: mappedMerchantId,
+            rrn: widget.filter.rrn,
           ),
         );
   }
@@ -373,6 +374,27 @@ class _TransactionListPageState extends State<TransactionListPage> {
           Expanded(child: _DateRangeLabel(widget.filter.dateLabel)),
         ] else
           const Spacer(),
+        if (kIsWeb &&
+            (widget.filter.tab == TransactionTab.pos ||
+                widget.filter.tab == TransactionTab.qr)) ...[
+          OutlinedButton.icon(
+            onPressed: () => showTransactionRrnSearchSheet(
+              context,
+              tab: widget.filter.tab,
+              creditVpa: widget.filter.creditVpa,
+              initialFrom: widget.filter.from,
+              initialTo: widget.filter.to,
+            ),
+            icon: const Icon(Icons.search_rounded),
+            label: Text(context.tr('search')),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: AppColors.primaryPurple,
+              side: BorderSide(color: AppColors.primaryPurple),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            ),
+          ),
+          const SizedBox(width: 10),
+        ],
         if (_showExcelDownload) ...[
           OutlinedButton(
             onPressed: _isReportActionBusy ? null : _downloadCurrentReport,
@@ -442,7 +464,11 @@ class _TransactionListPageState extends State<TransactionListPage> {
   }
 
   Widget _buildDateAndReportActions() {
-    final showActions = _showExcelDownload || _supportsEmailReport;
+    final showSearch = kIsWeb &&
+        (widget.filter.tab == TransactionTab.pos ||
+            widget.filter.tab == TransactionTab.qr);
+    final showActions =
+        _showExcelDownload || _supportsEmailReport || showSearch;
     if (widget.filter.dateLabel.isEmpty && !showActions) {
       return const SizedBox.shrink();
     }
@@ -459,6 +485,21 @@ class _TransactionListPageState extends State<TransactionListPage> {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
+              if (showSearch)
+                _buildCompactReportButton(
+                  onPressed: () => showTransactionRrnSearchSheet(
+                    context,
+                    tab: widget.filter.tab,
+                    creditVpa: widget.filter.creditVpa,
+                    initialFrom: widget.filter.from,
+                    initialTo: widget.filter.to,
+                  ),
+                  isLoading: false,
+                  loadingLabel: context.tr('search'),
+                  icon: Icons.search_rounded,
+                  label: context.tr('search'),
+                ),
+              if (showSearch && _showExcelDownload) const SizedBox(width: 8),
               if (_showExcelDownload)
                 _buildCompactReportButton(
                   onPressed:
@@ -576,7 +617,6 @@ class _TransactionListPageState extends State<TransactionListPage> {
                       paymentName:
                           _valueOrFallback(transaction.customerVpa, ''),
                       method: _valueOrFallback(transaction.rrn, ''),
-                      category: _valueOrFallback(transaction.refId, ''),
                       status: transaction.status,
                       successful: _isSuccessfulStatus(transaction.status),
                       onTap: () => context.push(
@@ -848,6 +888,7 @@ class _TransactionListPageState extends State<TransactionListPage> {
         creditVpa: widget.filter.creditVpa,
         from: widget.filter.from,
         to: widget.filter.to,
+        rrn: widget.filter.rrn,
         page: 0,
         size: totalTransactions,
         mappedMerchantId: mappedMerchantId,
@@ -1475,7 +1516,7 @@ class _WebResultEntry {
     this.customerName = '',
     required this.paymentName,
     required this.method,
-    required this.category,
+    this.category = '',
     this.entryMode = '',
     required this.status,
     required this.successful,
@@ -1668,8 +1709,8 @@ class _WebResultTable extends StatelessWidget {
       builder: (context, constraints) => SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: SizedBox(
-          width: constraints.maxWidth < (isQrTable ? 1240 : 1040)
-              ? (isQrTable ? 1240 : 1040)
+          width: constraints.maxWidth < (isQrTable ? 1100 : 1040)
+              ? (isQrTable ? 1100 : 1040)
               : constraints.maxWidth,
           child: Column(
             children: [
@@ -1739,8 +1780,6 @@ class _WebResultTableHeader extends StatelessWidget {
                 label: context.tr('customer_vpa'), flex: 20, header: true),
             _WebResultTableCell(
                 label: context.tr('rrn'), flex: 14, header: true),
-            _WebResultTableCell(
-                label: context.tr('ref_id'), flex: 14, header: true),
             _WebResultTableCell(
                 label: context.tr('status'), flex: 14, header: true),
           ] else ...[
@@ -1812,7 +1851,6 @@ class _WebResultTableRow extends StatelessWidget {
                 _WebResultTableCell(label: entry.customerName, flex: 18),
                 _WebResultTableCell(label: entry.paymentName, flex: 20),
                 _WebResultTableCell(label: entry.method, flex: 14),
-                _WebResultTableCell(label: entry.category, flex: 14),
                 Expanded(
                   flex: 14,
                   child: Align(

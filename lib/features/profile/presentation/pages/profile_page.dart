@@ -7,13 +7,21 @@ import 'package:anet_merchants/core/localization/app_language.dart';
 import 'package:anet_merchants/core/services/app_update_service.dart';
 import 'package:anet_merchants/core/services/device_app_info_service.dart';
 import 'package:anet_merchants/core/storage/session_storage.dart';
+import 'package:anet_merchants/core/utils/logout_helper.dart';
 import 'package:anet_merchants/features/auth/auth.dart';
 import 'package:anet_merchants/features/shared/shared.dart';
 
 import '../../../../core/common/responsive_layout.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+  final ValueChanged<int> onMenuSelected;
+  final bool showDashboard;
+
+  const ProfilePage({
+    super.key,
+    required this.onMenuSelected,
+    this.showDashboard = true,
+  });
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -50,7 +58,10 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const HomeHeader(),
+              HomeHeader(
+                onNavigationSelected: widget.onMenuSelected,
+                showDashboard: widget.showDashboard,
+              ),
               const SizedBox(height: 28),
               _ProfileHeader(userInfo: userInfo),
               const SizedBox(height: 20),
@@ -61,6 +72,8 @@ class _ProfilePageState extends State<ProfilePage> {
               const _SettingsSection(),
               const SizedBox(height: 20),
               const _AboutSection(),
+              const SizedBox(height: 20),
+              const _LogoutButton(),
             ],
           ),
         );
@@ -134,6 +147,8 @@ class _WebProfileLayout extends StatelessWidget {
                     ],
                     const SizedBox(height: 20),
                     const _AboutSection(),
+                    const SizedBox(height: 20),
+                    const _LogoutButton(),
                   ],
                 ),
               ),
@@ -478,6 +493,32 @@ class _AboutSection extends StatelessWidget {
           showDivider: false,
         ),
       ],
+    );
+  }
+}
+
+class _LogoutButton extends StatelessWidget {
+  const _LogoutButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: OutlinedButton.icon(
+        onPressed: () => LogoutHelper.logout(context),
+        icon: const Icon(Icons.logout_rounded),
+        label: Text(context.tr('logout')),
+        style: OutlinedButton.styleFrom(
+          foregroundColor: const Color(0xffE11D48),
+          side: const BorderSide(color: Color(0xffE11D48)),
+          padding: const EdgeInsets.symmetric(vertical: 14),
+          textStyle: AppTextStyle(
+            kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                ? AppPlatform.web
+                : AppPlatform.mobile,
+          ).h4.copyWith(fontWeight: FontWeight.w800),
+        ),
+      ),
     );
   }
 }

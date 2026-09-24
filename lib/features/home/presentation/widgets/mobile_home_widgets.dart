@@ -318,11 +318,13 @@ class MobileHomeChannelTiles extends StatelessWidget {
 class MobileHomeSectionHeader extends StatelessWidget {
   final String title;
   final VoidCallback onViewAll;
+  final VoidCallback? onSearch;
 
   const MobileHomeSectionHeader({
     super.key,
     required this.title,
     required this.onViewAll,
+    this.onSearch,
   });
 
   @override
@@ -339,6 +341,28 @@ class MobileHomeSectionHeader extends StatelessWidget {
             ),
           ),
         ),
+        if (onSearch != null)
+          TextButton(
+            onPressed: onSearch,
+            style: TextButton.styleFrom(
+              foregroundColor: AppColors.primaryPurple,
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              minimumSize: Size.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+            child: Text(
+              context.tr('search'),
+              style: AppTextStyle(kIsWeb &&
+                      AppBreakpoints.isTabletOrLarger(context)
+                      ? AppPlatform.web
+                      : AppPlatform.mobile)
+                  .h5
+                  .copyWith(
+                    color: AppColors.primaryPurple,
+                    fontWeight: FontWeight.w800,
+                  ),
+            ),
+          ),
         TextButton(
           onPressed: onViewAll,
           style: TextButton.styleFrom(

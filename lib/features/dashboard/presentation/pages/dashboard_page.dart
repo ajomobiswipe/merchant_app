@@ -13,7 +13,14 @@ import 'package:anet_merchants/features/transactions/transactions.dart';
 import '../../../../core/common/responsive_layout.dart';
 
 class DashboardPage extends StatefulWidget {
-  const DashboardPage({super.key});
+  final ValueChanged<int> onMenuSelected;
+  final bool showDashboard;
+
+  const DashboardPage({
+    super.key,
+    required this.onMenuSelected,
+    this.showDashboard = true,
+  });
 
   @override
   State<DashboardPage> createState() => _DashboardPageState();
@@ -276,7 +283,10 @@ class _DashboardPageState extends State<DashboardPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (!kIsWeb) ...[
-            const HomeHeader(),
+            HomeHeader(
+              onNavigationSelected: widget.onMenuSelected,
+              showDashboard: widget.showDashboard,
+            ),
             const SizedBox(height: 26),
           ],
           const MerchantOverview(),

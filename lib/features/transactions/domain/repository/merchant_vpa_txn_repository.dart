@@ -9,6 +9,7 @@ abstract class MerchantVpaTxnRepository {
     required String to,
     required int page,
     required int size,
+    String? rrn,
     String? mappedMerchantId,
   });
 }

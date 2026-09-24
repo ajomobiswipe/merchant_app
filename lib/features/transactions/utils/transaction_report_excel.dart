@@ -75,28 +75,41 @@ class TransactionReportExcel {
         'Customer VPA',
         'Credit VPA',
         'RRN',
-        'Ref ID',
         'Status',
+        'Org Status',
         'Transaction Type',
         'Merchant ID',
       ],
       rows: transactions
           .map(
             (transaction) => [
-              transaction.addedOn,
+              _vpaDateTime(transaction.addedOn),
               transaction.transactionAmount,
               transaction.payerName,
               transaction.customerVpa,
               transaction.creditVpa,
               transaction.rrn,
-              transaction.refId,
-              transaction.status,
+              _statusFromGatewayCode(transaction.gatewayResponseCode),
+              transaction.gatewayResponseMessage.trim().isNotEmpty
+                  ? transaction.gatewayResponseMessage
+                  : transaction.status,
               transaction.transactionType,
               transaction.merchantId,
             ],
           )
           .toList(),
     );
+  }
+
+  static String _vpaDateTime(String addedOn) {
+    return addedOn.replaceFirst('T', ' ');
+  }
+
+  static String _statusFromGatewayCode(String code) {
+    final normalized = code.trim();
+    if (normalized == '00' || normalized == '000') return 'Success';
+    if (normalized.isEmpty) return '';
+    return 'Failed';
   }
 
   static List<int> fromPosTransactions(
