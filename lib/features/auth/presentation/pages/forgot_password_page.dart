@@ -12,6 +12,8 @@ import 'package:anet_merchants/core/utils/navigation_helper.dart';
 import 'package:anet_merchants/features/auth/data/models/forgot_password_response_model.dart';
 import 'package:anet_merchants/features/auth/domain/usecases/request_forgot_password.dart';
 
+import '../../../../core/common/responsive_layout.dart';
+
 part 'web_forgot_password_page.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
@@ -138,7 +140,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 Text(
                   context.tr('forgot_password_title'),
                   textAlign: TextAlign.center,
-                  style: AppTextStyle.h2.copyWith(
+                  style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h2.copyWith(
                     color: AppColors.primaryPurple,
                     fontWeight: FontWeight.w900,
                   ),
@@ -147,7 +150,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 Text(
                   context.tr('forgot_password_instruction'),
                   textAlign: TextAlign.center,
-                  style: AppTextStyle.h4.copyWith(
+                  style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                     color: context.appTextSecondary,
                     fontWeight: FontWeight.w700,
                   ),
@@ -158,7 +162,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 TextFormField(
                   controller: _identifierController,
                   textInputAction: TextInputAction.done,
-                  style: AppTextStyle.h4.copyWith(
+                  style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                     color: context.appTextPrimary,
                     fontWeight: FontWeight.w800,
                   ),
@@ -190,7 +195,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     _isSubmitting
                         ? context.tr('loading')
                         : context.tr('forgot_password_submit'),
-                    style: AppTextStyle.h4.copyWith(
+                    style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.w900,
                     ),
@@ -220,7 +226,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   }) {
     return InputDecoration(
       hintText: hintText,
-      hintStyle: AppTextStyle.h4.copyWith(
+      hintStyle: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
         color: context.appTextSecondary,
         fontWeight: FontWeight.w700,
       ),
@@ -266,7 +273,8 @@ class _FieldLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: AppTextStyle.h4.copyWith(
+      style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
         color: context.appTextPrimary,
         fontWeight: FontWeight.w900,
       ),
@@ -304,7 +312,8 @@ class _ContactCard extends StatelessWidget {
         children: [
           Text(
             context.tr('connect_with_us'),
-            style: AppTextStyle.h3.copyWith(
+            style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
               color: context.appTextPrimary,
               fontWeight: FontWeight.w900,
             ),
@@ -362,7 +371,8 @@ class _ContactRow extends StatelessWidget {
                 value,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: AppTextStyle.h5.copyWith(
+                style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                   color: context.appTextPrimary,
                   fontWeight: FontWeight.w800,
                 ),

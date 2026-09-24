@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:anet_merchants/config/routes/routes.dart';
@@ -12,6 +13,8 @@ import 'package:anet_merchants/features/invoices/presentation/widgets/invoice_pa
 import 'package:anet_merchants/features/invoices/utils/invoice_pdf_downloader.dart';
 import 'package:anet_merchants/features/transactions/data/models/pos_txn_history_response_model.dart';
 import 'package:pdf/widgets.dart' as pw;
+
+import '../../../../core/common/responsive_layout.dart';
 
 class TransactionInvoicePage extends StatefulWidget {
   final PosTransactionModel transaction;
@@ -90,7 +93,8 @@ class _TransactionInvoicePageState extends State<TransactionInvoicePage> {
                     )
                   : Text(
                       context.tr('download'),
-                      style: AppTextStyle.h4WhiteColor.copyWith(
+                      style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4WhiteColor.copyWith(
                         fontWeight: FontWeight.w900,
                       ),
                     ),
@@ -124,7 +128,8 @@ class _TransactionInvoicePageState extends State<TransactionInvoicePage> {
                     textAlign: TextAlign.center,
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
-                    style: AppTextStyle.h4.copyWith(
+                    style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                       color: context.appTextSecondary,
                       fontWeight: FontWeight.w500,
                     ),
@@ -157,7 +162,8 @@ class _TransactionInvoicePageState extends State<TransactionInvoicePage> {
                   child: Text(
                     _transactionType(transaction.transactionType),
                     textAlign: TextAlign.center,
-                    style: AppTextStyle.h2.copyWith(
+                    style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h2.copyWith(
                       color: context.appTextPrimary,
                       fontWeight: FontWeight.w900,
                     ),
@@ -222,7 +228,8 @@ class _TransactionInvoicePageState extends State<TransactionInvoicePage> {
                   children: [
                     Text(
                       context.tr('amount'),
-                      style: AppTextStyle.h4.copyWith(
+                      style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                         color: context.appTextPrimary,
                         fontWeight: FontWeight.w900,
                       ),
@@ -230,7 +237,8 @@ class _TransactionInvoicePageState extends State<TransactionInvoicePage> {
                     SizedBox(width: compact ? 16 : 22),
                     Text(
                       _currency(transaction.currency),
-                      style: AppTextStyle.h3.copyWith(
+                      style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
                         color: context.appTextPrimary,
                         fontWeight: FontWeight.w900,
                       ),
@@ -238,7 +246,8 @@ class _TransactionInvoicePageState extends State<TransactionInvoicePage> {
                     SizedBox(width: compact ? 16 : 22),
                     Text(
                       _valueOrFallback(transaction.amount),
-                      style: AppTextStyle.h4.copyWith(
+                      style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                         color: context.appTextPrimary,
                         fontWeight: FontWeight.w900,
                       ),
@@ -253,7 +262,8 @@ class _TransactionInvoicePageState extends State<TransactionInvoicePage> {
                   child: Text(
                     _pinMessage(transaction.posEntryMode),
                     textAlign: TextAlign.center,
-                    style: AppTextStyle.h5.copyWith(
+                    style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                       color: context.appTextPrimary,
                       fontWeight: FontWeight.w900,
                     ),
@@ -263,7 +273,8 @@ class _TransactionInvoicePageState extends State<TransactionInvoicePage> {
                   const SizedBox(height: 16),
                   Text(
                     transaction.nameOnCard,
-                    style: AppTextStyle.h5.copyWith(
+                    style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                       color: context.appTextPrimary,
                       fontWeight: FontWeight.w900,
                     ),
@@ -273,7 +284,8 @@ class _TransactionInvoicePageState extends State<TransactionInvoicePage> {
                 Text(
                   context.tr('merchant_satisfied_terms'),
                   textAlign: TextAlign.center,
-                  style: AppTextStyle.h5.copyWith(
+                  style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                     color: context.appTextSecondary,
                     fontWeight: FontWeight.w600,
                     height: 1.35,
@@ -284,7 +296,8 @@ class _TransactionInvoicePageState extends State<TransactionInvoicePage> {
                   child: Text(
                     context.tr('thank_you_merchant_copy'),
                     textAlign: TextAlign.center,
-                    style: AppTextStyle.h5.copyWith(
+                    style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                       color: context.appTextPrimary,
                       fontWeight: FontWeight.w800,
                       height: 1.35,
@@ -560,7 +573,8 @@ class _BrandHeader extends StatelessWidget {
               : merchantDisplayLabel.toUpperCase(),
           maxLines: 3,
           overflow: TextOverflow.ellipsis,
-          style: AppTextStyle.h3.copyWith(
+          style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
             color: context.appTextPrimary,
             fontWeight: FontWeight.w900,
           ),
@@ -649,7 +663,8 @@ class _InvoiceLine extends StatelessWidget {
         alignment: alignment,
         child: Text.rich(
           TextSpan(
-            style: AppTextStyle.h5.copyWith(
+            style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
               color: context.appTextPrimary,
               fontWeight: FontWeight.w600,
               fontSize: compact ? 14.5 : 16,

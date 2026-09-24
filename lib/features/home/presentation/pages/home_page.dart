@@ -892,7 +892,8 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Text(
                     '${context.tr('terminals')}: ${summary.serialNumber.isEmpty ? context.tr('not_available') : summary.serialNumber}',
-                    style: AppTextStyle.h3.copyWith(
+                    style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
                       color: context.appTextPrimary,
                       fontWeight: FontWeight.w900,
                     ),
@@ -900,7 +901,8 @@ class _HomePageState extends State<HomePage> {
                   const SizedBox(height: 8),
                   Text(
                     '${context.tr('total_transactions')}: ${summary.count}',
-                    style: AppTextStyle.h3.copyWith(
+                    style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
                       color: context.appTextPrimary,
                       fontWeight: FontWeight.w500,
                     ),
@@ -908,7 +910,8 @@ class _HomePageState extends State<HomePage> {
                   const SizedBox(height: 6),
                   Text(
                     '${context.tr('total_amount')}: Rs ${summary.totalAmount.toStringAsFixed(0)}',
-                    style: AppTextStyle.h3.copyWith(
+                    style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
                       color: context.appTextPrimary,
                       fontWeight: FontWeight.w500,
                     ),
@@ -928,7 +931,8 @@ class _HomePageState extends State<HomePage> {
         padding: const EdgeInsets.symmetric(vertical: 120),
         child: Text(
           context.tr('no_transactions'),
-          style: AppTextStyle.h3.copyWith(
+          style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
             color: context.appTextSecondary,
             fontStyle: FontStyle.italic,
             fontWeight: FontWeight.w400,
@@ -1012,7 +1016,8 @@ class _MerchantDropdown extends StatelessWidget {
                       label,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: AppTextStyle.h5.copyWith(
+                      style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                         color: context.appTextPrimary,
                         fontWeight: FontWeight.w800,
                       ),

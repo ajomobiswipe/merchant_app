@@ -13,6 +13,8 @@ import 'package:anet_merchants/core/widgets/loading_action_content.dart';
 import 'package:anet_merchants/features/auth/data/models/password_reset_response_model.dart';
 import 'package:anet_merchants/features/auth/domain/usecases/reset_password.dart';
 
+import '../../../../core/common/responsive_layout.dart';
+
 part 'web_reset_password_page.dart';
 
 class ResetPasswordPage extends StatefulWidget {
@@ -198,7 +200,8 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 Text(
                   context.tr('reset_password_title'),
                   textAlign: TextAlign.center,
-                  style: AppTextStyle.h2.copyWith(
+                  style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h2.copyWith(
                     color: AppColors.primaryPurple,
                     fontWeight: FontWeight.w900,
                   ),
@@ -207,7 +210,8 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 Text(
                   context.tr('reset_password_instruction'),
                   textAlign: TextAlign.center,
-                  style: AppTextStyle.h4.copyWith(
+                  style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                     color: context.appTextSecondary,
                     fontWeight: FontWeight.w700,
                     height: 1.35,
@@ -272,13 +276,15 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                         ? LoadingActionContent(
                             label: context.tr('resetting_password'),
                             color: Colors.white,
-                            textStyle: AppTextStyle.h3.copyWith(
+                            textStyle: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
                               fontWeight: FontWeight.w900,
                             ),
                           )
                         : Text(
                             context.tr('reset_password_submit'),
-                            style: AppTextStyle.h3.copyWith(
+                            style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
                               color: Colors.white,
                               fontWeight: FontWeight.w900,
                             ),
@@ -316,7 +322,8 @@ class _PasswordField extends StatelessWidget {
       children: [
         Text(
           label,
-          style: AppTextStyle.h4.copyWith(
+          style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
             color: context.appTextPrimary,
             fontWeight: FontWeight.w900,
           ),
@@ -325,13 +332,15 @@ class _PasswordField extends StatelessWidget {
         TextFormField(
           controller: controller,
           obscureText: obscureText,
-          style: AppTextStyle.h4.copyWith(
+          style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
             color: context.appTextPrimary,
             fontWeight: FontWeight.w700,
           ),
           decoration: InputDecoration(
             hintText: label,
-            hintStyle: AppTextStyle.h4.copyWith(
+            hintStyle: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
               color: context.appTextSecondary,
               fontWeight: FontWeight.w600,
             ),

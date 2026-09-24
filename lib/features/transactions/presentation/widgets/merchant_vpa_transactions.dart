@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:anet_merchants/config/routes/routes.dart';
 import 'package:anet_merchants/core/common/app_colors.dart';
@@ -6,6 +7,8 @@ import 'package:anet_merchants/core/localization/app_language.dart';
 import 'package:anet_merchants/features/transactions/data/models/merchant_vpa_txn_response_model.dart';
 import 'package:anet_merchants/features/shared/presentation/widgets/transaction_list_item.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../../../core/common/responsive_layout.dart';
 
 class MerchantVpaTransactions extends StatelessWidget {
   final List<MerchantVpaTransactionModel> transactions;
@@ -46,7 +49,8 @@ class MerchantVpaTransactions extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 48),
           child: Text(
             context.tr('no_vpa_transactions'),
-            style: AppTextStyle.h3.copyWith(
+            style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
               color: context.appTextSecondary,
               fontStyle: FontStyle.italic,
               fontWeight: FontWeight.w400,
@@ -64,7 +68,8 @@ class MerchantVpaTransactions extends StatelessWidget {
             Expanded(
               child: Text(
                 '$totalElements ${context.tr('transactions')}',
-                style: AppTextStyle.h5.copyWith(
+                style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                   color: context.appTextSecondary,
                   fontWeight: FontWeight.w700,
                 ),
@@ -72,7 +77,8 @@ class MerchantVpaTransactions extends StatelessWidget {
             ),
             Text(
               'Rs. ${totalAmount.toStringAsFixed(2)}',
-              style: AppTextStyle.h4.copyWith(
+              style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                 color: context.appTextPrimary,
                 fontWeight: FontWeight.w800,
               ),
@@ -102,7 +108,8 @@ class MerchantVpaTransactions extends StatelessWidget {
             ),
             Text(
               '${context.tr('page')} ${page + 1} ${context.tr('of')} ${totalPages == 0 ? 1 : totalPages}',
-              style: AppTextStyle.h5.copyWith(
+              style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                 color: context.appTextPrimary,
                 fontWeight: FontWeight.w800,
               ),

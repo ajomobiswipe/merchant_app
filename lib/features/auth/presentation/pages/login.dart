@@ -225,7 +225,8 @@ class _LoginState extends State<Login> {
                             Center(
                               child: Text(
                                 context.tr('login_subtitle'),
-                                style: AppTextStyle.h4.copyWith(
+                                style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                                   color: const Color(0xff667085),
                                   fontWeight: FontWeight.w700,
                                 ),
@@ -333,8 +334,10 @@ class _LoginState extends State<Login> {
                                     child: Text(
                                       context.tr('forgot_password'),
                                       style: (compact
-                                              ? AppTextStyle.h5
-                                              : AppTextStyle.h4)
+                                              ? AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5
+                                              : AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4)
                                           .copyWith(
                                         color: AppColors.primaryPurple,
                                         fontWeight: FontWeight.w900,
@@ -468,7 +471,8 @@ class _MobileLoginHero extends StatelessWidget {
             width: screenWidth * .48,
             child: Text(
               context.tr('login_welcome_title'),
-              style: AppTextStyle.h2.copyWith(
+              style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h2.copyWith(
                 color: context.appTextPrimary,
                 fontSize: 30,
                 fontWeight: FontWeight.w900,
@@ -482,7 +486,8 @@ class _MobileLoginHero extends StatelessWidget {
             width: screenWidth * .50,
             child: Text(
               context.tr('login_subtitle'),
-              style: AppTextStyle.h4.copyWith(
+              style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                 color: context.appTextSecondary,
                 fontWeight: FontWeight.w700,
                 height: 1.4,
@@ -613,7 +618,9 @@ class _MerchantSignInTitle extends StatelessWidget {
         SizedBox(width: compact ? 9 : 12),
         Text(
           context.tr('login_title'),
-          style: (compact ? AppTextStyle.h3 : AppTextStyle.h2).copyWith(
+          style: (compact ? AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3 : AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h2).copyWith(
             color: AppColors.primaryPurple,
             fontWeight: FontWeight.w900,
           ),
@@ -636,7 +643,9 @@ class _FieldLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       label,
-      style: (compact ? AppTextStyle.h5 : AppTextStyle.h4).copyWith(
+      style: (compact ? AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5 : AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4).copyWith(
         color: context.appTextPrimary,
         fontWeight: FontWeight.w900,
       ),
@@ -668,13 +677,17 @@ class _LoginTextField extends StatelessWidget {
     return TextFormField(
       controller: controller,
       obscureText: obscureText,
-      style: (compact ? AppTextStyle.h5 : AppTextStyle.h4).copyWith(
+      style: (compact ? AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5 : AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4).copyWith(
         color: context.appTextPrimary,
         fontWeight: FontWeight.w700,
       ),
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: (compact ? AppTextStyle.h5 : AppTextStyle.h4).copyWith(
+        hintStyle: (compact ? AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5 : AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4).copyWith(
           color: context.appTextSecondary,
           fontWeight: FontWeight.w600,
         ),
@@ -769,7 +782,9 @@ class _RememberMeRow extends StatelessWidget {
           SizedBox(width: compact ? 10 : 14),
           Text(
             context.tr('remember_me'),
-            style: (compact ? AppTextStyle.h5 : AppTextStyle.h4).copyWith(
+            style: (compact ? AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5 : AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4).copyWith(
               color: context.appTextPrimary,
               fontWeight: FontWeight.w700,
             ),
@@ -813,7 +828,9 @@ class _SignInButton extends StatelessWidget {
             ? LoadingActionContent(
                 label: context.tr('login_logging_in'),
                 color: Colors.white,
-                textStyle: (compact ? AppTextStyle.h4 : AppTextStyle.h3)
+                textStyle: (compact ? AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4 : AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3)
                     .copyWith(fontWeight: FontWeight.w900),
               )
             : Stack(
@@ -822,7 +839,9 @@ class _SignInButton extends StatelessWidget {
                   Text(
                     context.tr('sign_in'),
                     style:
-                        (compact ? AppTextStyle.h4 : AppTextStyle.h3).copyWith(
+                        (compact ? AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4 : AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3).copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.w900,
                     ),
@@ -856,7 +875,9 @@ class _OrDivider extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: compact ? 12 : 18),
           child: Text(
             context.tr('or'),
-            style: (compact ? AppTextStyle.h5 : AppTextStyle.h4).copyWith(
+            style: (compact ? AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5 : AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4).copyWith(
               color: context.appTextPrimary,
               fontWeight: FontWeight.w900,
             ),
@@ -944,7 +965,9 @@ class _ConnectHeader extends StatelessWidget {
         Expanded(
           child: Text(
             context.tr('connect_with_us'),
-            style: (compact ? AppTextStyle.h4 : AppTextStyle.h3).copyWith(
+            style: (compact ? AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4 : AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3).copyWith(
               color: context.appTextPrimary,
               fontWeight: FontWeight.w900,
             ),
@@ -996,7 +1019,9 @@ class _ContactRow extends StatelessWidget {
                 text,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: (compact ? AppTextStyle.h5 : AppTextStyle.h4).copyWith(
+                style: (compact ? AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5 : AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4).copyWith(
                   color: context.appTextPrimary,
                   fontWeight: FontWeight.w700,
                 ),

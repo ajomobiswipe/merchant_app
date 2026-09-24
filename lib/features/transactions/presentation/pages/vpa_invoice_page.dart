@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:anet_merchants/config/routes/routes.dart';
@@ -13,6 +14,8 @@ import 'package:anet_merchants/features/invoices/utils/invoice_pdf_downloader.da
 import 'package:anet_merchants/features/transactions/data/models/merchant_vpa_txn_response_model.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/widgets.dart' as pw;
+
+import '../../../../core/common/responsive_layout.dart';
 
 class VpaInvoicePage extends StatefulWidget {
   final MerchantVpaTransactionModel transaction;
@@ -78,7 +81,8 @@ class _VpaInvoicePageState extends State<VpaInvoicePage> {
               textAlign: TextAlign.center,
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
-              style: AppTextStyle.h3.copyWith(
+              style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
                 color: context.appTextPrimary,
                 fontWeight: FontWeight.w900,
               ),
@@ -132,7 +136,8 @@ class _VpaInvoicePageState extends State<VpaInvoicePage> {
             Text(
               context.tr('thank_you_service'),
               textAlign: TextAlign.center,
-              style: AppTextStyle.h3.copyWith(
+              style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
                 color: context.appTextPrimary,
                 fontWeight: FontWeight.w900,
               ),
@@ -141,7 +146,8 @@ class _VpaInvoicePageState extends State<VpaInvoicePage> {
             Text(
               context.tr('keep_receipt'),
               textAlign: TextAlign.center,
-              style: AppTextStyle.h4.copyWith(
+              style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                 color: context.appTextPrimary,
                 fontWeight: FontWeight.w900,
               ),
@@ -406,7 +412,8 @@ class _InvoiceLine extends StatelessWidget {
           Expanded(
             child: Text(
               label,
-              style: AppTextStyle.h4.copyWith(
+              style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                 color: context.appTextPrimary,
                 fontWeight: FontWeight.w900,
               ),
@@ -418,7 +425,8 @@ class _InvoiceLine extends StatelessWidget {
               textAlign: TextAlign.right,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: AppTextStyle.h4.copyWith(
+              style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                 color: context.appTextPrimary,
                 fontWeight: FontWeight.w500,
               ),
@@ -445,7 +453,8 @@ class _InlineInvoiceLine extends StatelessWidget {
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
       text: TextSpan(
-        style: AppTextStyle.h4.copyWith(color: context.appTextPrimary),
+        style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(color: context.appTextPrimary),
         children: [
           TextSpan(
             text: label,
@@ -476,7 +485,8 @@ class _AmountRow extends StatelessWidget {
         children: [
           Text(
             'AMOUNT',
-            style: AppTextStyle.h2.copyWith(
+            style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h2.copyWith(
               color: context.appTextPrimary,
               fontWeight: FontWeight.w900,
             ),
@@ -484,7 +494,8 @@ class _AmountRow extends StatelessWidget {
           const SizedBox(width: 28),
           Text(
             currency,
-            style: AppTextStyle.h2.copyWith(
+            style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h2.copyWith(
               color: context.appTextPrimary,
               fontWeight: FontWeight.w900,
             ),
@@ -492,7 +503,8 @@ class _AmountRow extends StatelessWidget {
           const SizedBox(width: 28),
           Text(
             amount.isEmpty ? 'N/A' : amount,
-            style: AppTextStyle.h2.copyWith(
+            style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h2.copyWith(
               color: context.appTextPrimary,
               fontWeight: FontWeight.w900,
             ),
@@ -540,7 +552,8 @@ class _DownloadButton extends StatelessWidget {
                 )
               : Text(
                   context.tr('download'),
-                  style: AppTextStyle.h4WhiteColor.copyWith(
+                  style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4WhiteColor.copyWith(
                     fontWeight: FontWeight.w900,
                   ),
                 ),

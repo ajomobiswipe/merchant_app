@@ -1,7 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:anet_merchants/core/common/app_colors.dart';
 import 'package:anet_merchants/core/common/app_text_style.dart';
 import 'package:anet_merchants/core/localization/app_language.dart';
+
+import '../../../../core/common/responsive_layout.dart';
 
 class ViewAllTransactionsButton extends StatelessWidget {
   final VoidCallback? onPressed;
@@ -40,7 +43,8 @@ class ViewAllTransactionsButton extends StatelessWidget {
                   label ?? context.tr('view_all_transactions'),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTextStyle.h4WhiteColor.copyWith(
+                  style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4WhiteColor.copyWith(
                     fontWeight: FontWeight.w800,
                   ),
                 ),

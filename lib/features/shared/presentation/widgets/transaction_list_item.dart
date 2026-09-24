@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:anet_merchants/core/common/app_colors.dart';
 import 'package:anet_merchants/core/common/app_text_style.dart';
@@ -6,6 +7,8 @@ import 'package:anet_merchants/features/transactions/data/models/merchant_vpa_tx
 import 'package:anet_merchants/features/transactions/data/models/pos_txn_history_response_model.dart';
 import 'package:anet_merchants/features/settlements/data/models/settlement_history_response_model.dart';
 import 'package:intl/intl.dart';
+
+import '../../../../core/common/responsive_layout.dart';
 
 class TransactionListItem extends StatelessWidget {
   final String amount;
@@ -125,7 +128,9 @@ class TransactionListItem extends StatelessWidget {
                 _formattedAmount,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: (compact ? AppTextStyle.h4 : AppTextStyle.h3).copyWith(
+                style: (compact ? AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4 : AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3).copyWith(
                   color: context.appTextPrimary,
                   fontWeight: FontWeight.w900,
                 ),
@@ -135,7 +140,9 @@ class TransactionListItem extends StatelessWidget {
                 dateTimeText,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: (compact ? AppTextStyle.h5 : AppTextStyle.h4).copyWith(
+                style: (compact ? AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5 : AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4).copyWith(
                   color: context.appTextSecondary,
                   fontWeight: FontWeight.w600,
                 ),
@@ -146,7 +153,8 @@ class TransactionListItem extends StatelessWidget {
                   detailsText!,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTextStyle.h5.copyWith(
+                  style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                     color: context.appTextSecondary,
                     fontWeight: FontWeight.w700,
                   ),
@@ -170,8 +178,10 @@ class TransactionListItem extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: (compact
-                    ? AppTextStyle.h5WhiteColor
-                    : AppTextStyle.h4WhiteColor)
+                    ? AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5WhiteColor
+                    : AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4WhiteColor)
                 .copyWith(
               fontWeight: FontWeight.w800,
             ),

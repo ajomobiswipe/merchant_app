@@ -1,8 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:anet_merchants/core/common/app_colors.dart';
 import 'package:anet_merchants/core/common/app_text_style.dart';
 import 'package:anet_merchants/core/localization/app_language.dart';
 import 'package:anet_merchants/core/services/connectivity_controller.dart';
+
+import '../common/responsive_layout.dart';
 
 class ConnectivityBlocker extends StatelessWidget {
   final Widget child;
@@ -49,7 +52,8 @@ class ConnectivityBlocker extends StatelessWidget {
                           Text(
                             context.tr('no_internet_title'),
                             textAlign: TextAlign.center,
-                            style: AppTextStyle.h3.copyWith(
+                            style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
                               fontWeight: FontWeight.w900,
                             ),
                           ),
@@ -57,7 +61,8 @@ class ConnectivityBlocker extends StatelessWidget {
                           Text(
                             context.tr('no_internet_message'),
                             textAlign: TextAlign.center,
-                            style: AppTextStyle.h5.copyWith(
+                            style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                               color: Theme.of(context).hintColor,
                               fontWeight: FontWeight.w700,
                             ),

@@ -1,8 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:anet_merchants/core/common/app_colors.dart';
 import 'package:anet_merchants/core/common/app_text_style.dart';
 import 'package:anet_merchants/core/localization/app_language.dart';
 import 'package:anet_merchants/core/storage/session_storage.dart';
+
+import '../../../../core/common/responsive_layout.dart';
 
 class MerchantOverview extends StatefulWidget {
   const MerchantOverview({super.key});
@@ -51,7 +54,8 @@ class _MerchantOverviewState extends State<MerchantOverview> {
             children: [
               Text(
                 displayName,
-                style: AppTextStyle.h3.copyWith(
+                style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
                   height: 1.2,
                   color: context.appTextPrimary,
                   fontWeight: FontWeight.w900,
@@ -63,7 +67,8 @@ class _MerchantOverviewState extends State<MerchantOverview> {
                   '${context.tr('merchant_id')} : $_merchantId',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTextStyle.h5.copyWith(
+                  style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                     color: context.appTextSecondary,
                     fontWeight: FontWeight.w700,
                   ),

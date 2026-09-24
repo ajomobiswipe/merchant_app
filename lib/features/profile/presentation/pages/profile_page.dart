@@ -10,6 +10,8 @@ import 'package:anet_merchants/core/storage/session_storage.dart';
 import 'package:anet_merchants/features/auth/auth.dart';
 import 'package:anet_merchants/features/shared/shared.dart';
 
+import '../../../../core/common/responsive_layout.dart';
+
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
@@ -101,7 +103,8 @@ class _WebProfileLayout extends StatelessWidget {
                   children: [
                     Text(
                       context.tr('profile'),
-                      style: AppTextStyle.h2.copyWith(
+                      style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h2.copyWith(
                         color: context.appTextPrimary,
                         fontWeight: FontWeight.w900,
                       ),
@@ -320,7 +323,8 @@ class _ProfileHeader extends StatelessWidget {
                 )
               : Text(
                   initials.isEmpty ? 'AN' : initials,
-                  style: AppTextStyle.h2.copyWith(
+                  style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h2.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w900,
                   ),
@@ -332,7 +336,8 @@ class _ProfileHeader extends StatelessWidget {
           textAlign: TextAlign.center,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
-          style: AppTextStyle.h3.copyWith(
+          style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
             color: context.appTextPrimary,
             fontWeight: FontWeight.w900,
           ),
@@ -343,7 +348,8 @@ class _ProfileHeader extends StatelessWidget {
           textAlign: TextAlign.center,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: AppTextStyle.h4.copyWith(
+          style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
             color: context.appTextSecondary,
             fontWeight: FontWeight.w700,
           ),
@@ -420,7 +426,8 @@ class _SettingsSection extends StatelessWidget {
                         const SizedBox(width: 12),
                         Text(
                           context.tr('theme'),
-                          style: AppTextStyle.h4.copyWith(
+                          style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                             color: context.appTextPrimary,
                             fontWeight: FontWeight.w900,
                           ),
@@ -493,7 +500,8 @@ class _LanguageSelector extends StatelessWidget {
                 children: [
                   Text(
                     context.tr('app_language'),
-                    style: AppTextStyle.h5.copyWith(
+                    style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                       color: context.appTextSecondary,
                       fontWeight: FontWeight.w800,
                     ),
@@ -504,7 +512,8 @@ class _LanguageSelector extends StatelessWidget {
                       value: appLanguageController.language,
                       isExpanded: true,
                       dropdownColor: context.appSurface,
-                      style: AppTextStyle.h4.copyWith(
+                      style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                         color: context.appTextPrimary,
                         fontWeight: FontWeight.w800,
                       ),
@@ -550,7 +559,8 @@ class _ColorSchemeSelector extends StatelessWidget {
                 children: [
                   Text(
                     context.tr('color_combination'),
-                    style: AppTextStyle.h5.copyWith(
+                    style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                       color: context.appTextSecondary,
                       fontWeight: FontWeight.w800,
                     ),
@@ -561,7 +571,8 @@ class _ColorSchemeSelector extends StatelessWidget {
                       value: appColorPaletteController.preference,
                       isExpanded: true,
                       dropdownColor: context.appSurface,
-                      style: AppTextStyle.h4.copyWith(
+                      style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                         color: context.appTextPrimary,
                         fontWeight: FontWeight.w800,
                       ),
@@ -668,7 +679,8 @@ class _ProfileCard extends StatelessWidget {
         children: [
           Text(
             title,
-            style: AppTextStyle.h3.copyWith(
+            style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
               color: context.appTextPrimary,
               fontWeight: FontWeight.w900,
             ),
@@ -708,7 +720,8 @@ class _InfoTile extends StatelessWidget {
                 children: [
                   Text(
                     label,
-                    style: AppTextStyle.h5.copyWith(
+                    style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                       color: context.appTextSecondary,
                       fontWeight: FontWeight.w800,
                     ),
@@ -718,7 +731,8 @@ class _InfoTile extends StatelessWidget {
                     value,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: AppTextStyle.h4.copyWith(
+                    style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                       color: context.appTextPrimary,
                       fontWeight: FontWeight.w800,
                     ),
@@ -772,7 +786,8 @@ class _ActionTile extends StatelessWidget {
                     children: [
                       Text(
                         label,
-                        style: AppTextStyle.h5.copyWith(
+                        style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                           color: context.appTextSecondary,
                           fontWeight: FontWeight.w800,
                         ),
@@ -782,7 +797,8 @@ class _ActionTile extends StatelessWidget {
                         value,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: AppTextStyle.h4.copyWith(
+                        style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                           color: context.appTextPrimary,
                           fontWeight: FontWeight.w800,
                         ),
@@ -848,7 +864,8 @@ class _ThemeChip extends StatelessWidget {
         ),
         child: Text(
           label,
-          style: AppTextStyle.h5.copyWith(
+          style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
             color: selected ? Colors.white : context.appTextPrimary,
             fontWeight: FontWeight.w900,
           ),

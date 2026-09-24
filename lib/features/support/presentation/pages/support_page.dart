@@ -13,6 +13,8 @@ import 'package:anet_merchants/features/support/presentation/bloc/support_action
 import 'package:anet_merchants/features/shared/presentation/widgets/home_header.dart';
 import 'package:anet_merchants/features/support/presentation/pages/web_support_page.dart';
 
+import '../../../../core/common/responsive_layout.dart';
+
 class SupportPage extends StatefulWidget {
   const SupportPage({super.key});
 
@@ -232,7 +234,8 @@ class _SupportHeroState extends State<_SupportHero> {
               const SizedBox(height: 20),
               Text(
                 displayName,
-                style: AppTextStyle.h3.copyWith(
+                style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
                   color: context.appTextPrimary,
                   fontWeight: FontWeight.w900,
                   height: 1.35,
@@ -269,14 +272,16 @@ class _AllianceLogo extends StatelessWidget {
             children: [
               Text(
                 'Alliance',
-                style: AppTextStyle.h2.copyWith(
+                style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h2.copyWith(
                   color: context.appTextPrimary,
                   fontWeight: FontWeight.w900,
                 ),
               ),
               Text(
                 'Network',
-                style: AppTextStyle.h4.copyWith(
+                style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                   color: context.appTextSecondary,
                   fontWeight: FontWeight.w700,
                 ),
@@ -370,7 +375,8 @@ class _QuickActionsCard extends StatelessWidget {
               const SizedBox(width: 12),
               Text(
                 context.tr('quick_actions'),
-                style: AppTextStyle.h3.copyWith(
+                style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
                   color: context.appTextPrimary,
                   fontWeight: FontWeight.w900,
                 ),
@@ -440,7 +446,8 @@ class _QuickActionsCard extends StatelessWidget {
   }
 
   TextStyle _dropdownTextStyle(BuildContext context) {
-    return AppTextStyle.h4.copyWith(
+    return AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
       color: context.appTextPrimary,
       fontWeight: FontWeight.w600,
     );
@@ -468,7 +475,8 @@ class _HelpDeskCard extends StatelessWidget {
               Text(
                 context.tr('help_desk'),
                 textAlign: TextAlign.center,
-                style: AppTextStyle.h3.copyWith(
+                style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
                   color: context.appTextPrimary,
                   fontWeight: FontWeight.w900,
                   height: 1,
@@ -489,7 +497,8 @@ class _HelpDeskCard extends StatelessWidget {
               children: [
                 Text(
                   context.tr('here_to_help'),
-                  style: AppTextStyle.h3.copyWith(
+                  style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
                     color: context.appTextPrimary,
                     fontWeight: FontWeight.w900,
                   ),
@@ -497,7 +506,8 @@ class _HelpDeskCard extends StatelessWidget {
                 const SizedBox(height: 10),
                 Text(
                   context.tr('raise_concern'),
-                  style: AppTextStyle.h4.copyWith(
+                  style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                     color: context.appTextSecondary,
                     fontWeight: FontWeight.w500,
                     height: 1.35,
@@ -555,7 +565,8 @@ class _RaiseRequestButton extends StatelessWidget {
               isSubmitting
                   ? context.tr('raising_request')
                   : context.tr('raise_request'),
-              style: AppTextStyle.h4WhiteColor.copyWith(
+              style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4WhiteColor.copyWith(
                 fontWeight: FontWeight.w900,
               ),
             ),
@@ -582,7 +593,8 @@ class _ContactUsCard extends StatelessWidget {
         children: [
           Text(
             context.tr('contact_us'),
-            style: AppTextStyle.h4.copyWith(
+            style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
               color: context.appTextPrimary,
               fontWeight: FontWeight.w900,
             ),
@@ -636,7 +648,8 @@ class _ContactRow extends StatelessWidget {
                 text,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: AppTextStyle.h4.copyWith(
+                style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                   color: context.appTextPrimary,
                   fontWeight: FontWeight.w500,
                 ),

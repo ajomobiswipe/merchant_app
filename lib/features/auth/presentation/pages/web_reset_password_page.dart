@@ -114,7 +114,8 @@ class _ResetWebTopBar extends StatelessWidget {
             child: Text(
               'ANET Merchants',
               overflow: TextOverflow.ellipsis,
-              style: AppTextStyle.h3.copyWith(
+              style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
                 color: const Color(0xff15131B),
                 fontSize: 18,
                 fontWeight: FontWeight.w900,
@@ -202,7 +203,8 @@ class _ResetWebHero extends StatelessWidget {
         children: [
           Text(
             context.tr('login_welcome_title'),
-            style: AppTextStyle.h4.copyWith(
+            style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
               color: AppColors.primaryPurple,
               fontWeight: FontWeight.w900,
             ),
@@ -218,7 +220,8 @@ class _ResetWebHero extends StatelessWidget {
                 ),
               ],
             ),
-            style: AppTextStyle.h2.copyWith(
+            style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h2.copyWith(
               color: const Color(0xff171936),
               fontSize: 35,
               height: 1.22,
@@ -230,7 +233,8 @@ class _ResetWebHero extends StatelessWidget {
             constraints: const BoxConstraints(maxWidth: 430),
             child: Text(
               context.tr('reset_password_hero_message'),
-              style: AppTextStyle.h4.copyWith(
+              style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                 color: const Color(0xff66708B),
                 fontSize: 16,
                 height: 1.55,
@@ -275,7 +279,8 @@ class _ResetWebForm extends StatelessWidget {
           children: [
             Text(
               context.tr('reset_password_title'),
-              style: AppTextStyle.h2.copyWith(
+              style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h2.copyWith(
                 color: const Color(0xff171936),
                 fontSize: isDesktop ? 28 : 24,
                 fontWeight: FontWeight.w900,
@@ -284,7 +289,8 @@ class _ResetWebForm extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               context.tr('reset_password_instruction'),
-              style: AppTextStyle.h4.copyWith(
+              style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                 color: const Color(0xff66708B),
                 fontWeight: FontWeight.w600,
               ),
@@ -353,7 +359,8 @@ class _ResetWebForm extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    textStyle: AppTextStyle.h3.copyWith(
+                    textStyle: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
                       fontWeight: FontWeight.w900,
                     ),
                   ),
@@ -361,7 +368,8 @@ class _ResetWebForm extends StatelessWidget {
                       ? LoadingActionContent(
                           label: context.tr('resetting_password'),
                           color: Colors.white,
-                          textStyle: AppTextStyle.h3.copyWith(
+                          textStyle: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
                             fontWeight: FontWeight.w900,
                           ),
                         )
@@ -411,7 +419,8 @@ class _ResetWebPasswordField extends StatelessWidget {
       children: [
         Text(
           label,
-          style: AppTextStyle.h5.copyWith(
+          style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
             color: const Color(0xff171936),
             fontSize: 13,
             fontWeight: FontWeight.w900,
@@ -427,13 +436,15 @@ class _ResetWebPasswordField extends StatelessWidget {
           onChanged: onChanged,
           onFieldSubmitted: onFieldSubmitted,
           validator: validator,
-          style: AppTextStyle.h4.copyWith(
+          style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
             color: const Color(0xff171936),
             fontWeight: FontWeight.w700,
           ),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: AppTextStyle.h4.copyWith(
+            hintStyle: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
               color: const Color(0xff9298A9),
               fontWeight: FontWeight.w600,
             ),
@@ -535,7 +546,8 @@ class _PasswordRequirements extends StatelessWidget {
               children: [
                 Text(
                   context.tr('password_must_contain'),
-                  style: AppTextStyle.h5.copyWith(
+                  style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                     color: const Color(0xff171936),
                     fontSize: 13,
                     fontWeight: FontWeight.w900,
@@ -564,7 +576,8 @@ class _PasswordRequirements extends StatelessWidget {
                               Expanded(
                                 child: Text(
                                   requirement.$1,
-                                  style: AppTextStyle.h5.copyWith(
+                                  style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                                     color: const Color(0xff66708B),
                                     fontWeight: FontWeight.w600,
                                   ),

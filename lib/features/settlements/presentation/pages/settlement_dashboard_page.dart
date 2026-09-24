@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -140,7 +141,8 @@ class _SettlementDashboardPageState extends State<SettlementDashboardPage> {
           const SizedBox(height: 28),
           Text(
             context.tr('utr_wise_settlement'),
-            style: AppTextStyle.h3.copyWith(
+            style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
               color: context.appTextPrimary,
               fontWeight: FontWeight.w900,
             ),
@@ -206,7 +208,8 @@ class _SettlementDashboardPageState extends State<SettlementDashboardPage> {
                                   : widget.filter.dateLabel,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: AppTextStyle.h4.copyWith(
+                              style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                                 color: context.appTextPrimary,
                                 fontWeight: FontWeight.w900,
                               ),
@@ -226,7 +229,8 @@ class _SettlementDashboardPageState extends State<SettlementDashboardPage> {
               const SizedBox(height: 22),
               Text(
                 context.tr('utr_wise_settlement'),
-                style: AppTextStyle.h3.copyWith(
+                style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
                   color: context.appTextPrimary,
                   fontWeight: FontWeight.w900,
                 ),
@@ -266,7 +270,8 @@ class _SettlementDashboardPageState extends State<SettlementDashboardPage> {
             child: Center(
               child: Text(
                 context.tr('no_transactions'),
-                style: AppTextStyle.h3.copyWith(
+                style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
                   color: context.appTextSecondary,
                   fontStyle: FontStyle.italic,
                 ),
@@ -344,7 +349,8 @@ class _SettlementDashboardPageState extends State<SettlementDashboardPage> {
                     ),
                     Text(
                       '${context.tr('page')} ${state.page + 1} ${context.tr('of')} ${state.totalPages == 0 ? 1 : state.totalPages}',
-                      style: AppTextStyle.h5.copyWith(
+                      style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                         color: context.appTextPrimary,
                         fontWeight: FontWeight.w800,
                       ),
@@ -412,7 +418,8 @@ class _SettlementDashboardPageState extends State<SettlementDashboardPage> {
                 children: [
                   Text(
                     'Rs. ${settlement.grossTransactionAmount.toStringAsFixed(1)}',
-                    style: AppTextStyle.h3.copyWith(
+                    style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
                       color: AppColors.primaryPurple,
                       fontWeight: FontWeight.w900,
                     ),
@@ -420,7 +427,8 @@ class _SettlementDashboardPageState extends State<SettlementDashboardPage> {
                   const SizedBox(height: 6),
                   Text(
                     '${settlement.transactionCount} ${context.tr('transactions')}',
-                    style: AppTextStyle.h5.copyWith(
+                    style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                       color: context.appTextPrimary,
                       fontWeight: FontWeight.w900,
                     ),
@@ -430,7 +438,8 @@ class _SettlementDashboardPageState extends State<SettlementDashboardPage> {
                     'UTR : ${settlement.utr.isEmpty ? 'N/A' : settlement.utr}',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: AppTextStyle.h5.copyWith(
+                    style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                       color: context.appTextSecondary,
                       fontWeight: FontWeight.w700,
                     ),
@@ -449,7 +458,8 @@ class _SettlementDashboardPageState extends State<SettlementDashboardPage> {
                 children: [
                   Text(
                     context.tr('settled_on'),
-                    style: AppTextStyle.h5.copyWith(
+                    style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                       color: const Color(0xff0B7A3A),
                       fontWeight: FontWeight.w900,
                     ),
@@ -457,7 +467,8 @@ class _SettlementDashboardPageState extends State<SettlementDashboardPage> {
                   const SizedBox(height: 4),
                   Text(
                     _formatDate(settlement.tranDate),
-                    style: AppTextStyle.h5.copyWith(
+                    style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                       color: Colors.black,
                       fontWeight: FontWeight.w800,
                     ),
@@ -561,7 +572,8 @@ class _WebSettlementAmount extends StatelessWidget {
               children: [
                 Text(
                   context.tr('total_amount_settled'),
-                  style: AppTextStyle.h4.copyWith(
+                  style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                     color: const Color(0xff079447),
                     fontWeight: FontWeight.w900,
                   ),
@@ -569,7 +581,8 @@ class _WebSettlementAmount extends StatelessWidget {
                 const SizedBox(height: 16),
                 Text(
                   amount,
-                  style: AppTextStyle.h2.copyWith(
+                  style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h2.copyWith(
                     color: context.appTextPrimary,
                     fontWeight: FontWeight.w900,
                   ),
@@ -623,7 +636,8 @@ class _WebSettlementMetric extends StatelessWidget {
                   label,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTextStyle.h5.copyWith(
+                  style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                     color: context.appTextSecondary,
                     fontWeight: FontWeight.w800,
                   ),
@@ -631,7 +645,8 @@ class _WebSettlementMetric extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   value,
-                  style: AppTextStyle.h3.copyWith(
+                  style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
                     color: const Color(0xff079447),
                     fontWeight: FontWeight.w900,
                   ),
@@ -721,7 +736,8 @@ class _WebSettlementColumnLabel extends StatelessWidget {
         label,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
-        style: AppTextStyle.h5.copyWith(
+        style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
           color: context.appTextSecondary,
           fontWeight: FontWeight.w900,
         ),
@@ -772,7 +788,8 @@ class _WebSettlementDashboardRow extends StatelessWidget {
                     flex: 18,
                     child: Text(
                       'Rs. ${settlement.grossTransactionAmount.toStringAsFixed(2)}',
-                      style: AppTextStyle.h5.copyWith(
+                      style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                         color: context.appTextPrimary,
                         fontWeight: FontWeight.w900,
                       ),
@@ -811,7 +828,8 @@ class _WebSettlementDashboardRow extends StatelessWidget {
                               : context.tr('pending_settlements'),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: AppTextStyle.h5.copyWith(
+                          style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                             color: statusColor,
                             fontWeight: FontWeight.w900,
                           ),
@@ -878,7 +896,8 @@ class _WebCompactSettlementRow extends StatelessWidget {
                     Expanded(
                       child: Text(
                         'Rs. ${settlement.grossTransactionAmount.toStringAsFixed(2)}',
-                        style: AppTextStyle.h4.copyWith(
+                        style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                           color: context.appTextPrimary,
                           fontWeight: FontWeight.w900,
                         ),
@@ -901,7 +920,8 @@ class _WebCompactSettlementRow extends StatelessWidget {
                               : context.tr('pending_settlements'),
                           maxLines: 2,
                           textAlign: TextAlign.center,
-                          style: AppTextStyle.h5.copyWith(
+                          style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                             color: statusColor,
                             fontWeight: FontWeight.w900,
                           ),
@@ -968,7 +988,8 @@ class _WebCompactSettlementFact extends StatelessWidget {
             value,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: AppTextStyle.h5.copyWith(
+            style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
               color: context.appTextPrimary,
               fontWeight: FontWeight.w700,
             ),
@@ -993,7 +1014,8 @@ class _WebSettlementCell extends StatelessWidget {
         value,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
-        style: AppTextStyle.h5.copyWith(
+        style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
           color: context.appTextPrimary,
           fontWeight: FontWeight.w700,
         ),
@@ -1019,7 +1041,8 @@ class _WebSettlementDashboardMessage extends StatelessWidget {
             ? CircularProgressIndicator(color: AppColors.primaryPurple)
             : Text(
                 context.tr('no_transactions'),
-                style: AppTextStyle.h3.copyWith(
+                style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
                   color: context.appTextSecondary,
                   fontStyle: FontStyle.italic,
                 ),
@@ -1053,7 +1076,8 @@ class _SettlementSummaryCard extends StatelessWidget {
         children: [
           Text(
             context.tr('total_amount_settled'),
-            style: AppTextStyle.h4.copyWith(
+            style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
               color: const Color(0xff079447),
               fontWeight: FontWeight.w900,
             ),
@@ -1064,7 +1088,8 @@ class _SettlementSummaryCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   'Rs. ${state.totalAmount.toStringAsFixed(2)}',
-                  style: AppTextStyle.h2.copyWith(
+                  style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h2.copyWith(
                     color: context.appTextPrimary,
                     fontSize: 30,
                     fontWeight: FontWeight.w900,
@@ -1137,14 +1162,16 @@ class _SummaryMetric extends StatelessWidget {
             children: [
               Text(
                 label,
-                style: AppTextStyle.h5.copyWith(
+                style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                   color: context.appTextSecondary,
                   fontWeight: FontWeight.w800,
                 ),
               ),
               Text(
                 value,
-                style: AppTextStyle.h4.copyWith(
+                style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                   color: const Color(0xff078B3E),
                   fontWeight: FontWeight.w900,
                 ),
@@ -1181,7 +1208,8 @@ class _DateRangeLabel extends StatelessWidget {
             label,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: AppTextStyle.h4.copyWith(
+            style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
               color: context.appTextSecondary,
               fontWeight: FontWeight.w800,
             ),

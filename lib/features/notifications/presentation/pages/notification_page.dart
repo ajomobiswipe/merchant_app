@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:anet_merchants/config/routes/routes.dart';
@@ -7,6 +8,8 @@ import 'package:anet_merchants/core/common/app_text_style.dart';
 import 'package:anet_merchants/core/localization/app_language.dart';
 import 'package:anet_merchants/core/utils/logout_helper.dart';
 import 'package:anet_merchants/core/utils/navigation_helper.dart';
+
+import '../../../../core/common/responsive_layout.dart';
 
 class NotificationPage extends StatelessWidget {
   const NotificationPage({super.key});
@@ -53,7 +56,8 @@ class NotificationPage extends StatelessWidget {
               const SizedBox(height: 28),
               Text(
                 context.tr('notifications'),
-                style: AppTextStyle.h2.copyWith(
+                style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h2.copyWith(
                   color: context.appTextPrimary,
                   fontSize: 30,
                   fontWeight: FontWeight.w800,
@@ -81,7 +85,8 @@ class NotificationPage extends StatelessWidget {
                       const SizedBox(height: 20),
                       Text(
                         context.tr('no_notifications'),
-                        style: AppTextStyle.h3.copyWith(
+                        style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
                           color: context.appTextPrimary,
                           fontSize: 22,
                           fontWeight: FontWeight.w700,
@@ -91,7 +96,8 @@ class NotificationPage extends StatelessWidget {
                       const SizedBox(height: 8),
                       Text(
                         context.tr('no_notifications_message'),
-                        style: AppTextStyle.h4.copyWith(
+                        style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                           color: context.appTextSecondary,
                           fontSize: 15,
                           fontWeight: FontWeight.w500,

@@ -390,7 +390,8 @@ class _TransactionListPageState extends State<TransactionListPage> {
                     label: context.tr('preparing'),
                     color: AppColors.primaryPurple,
                     indicatorSize: 18,
-                    textStyle: AppTextStyle.h5.copyWith(
+                    textStyle: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                       fontWeight: FontWeight.w900,
                     ),
                   )
@@ -422,7 +423,8 @@ class _TransactionListPageState extends State<TransactionListPage> {
                     label: context.tr('sending_email'),
                     color: AppColors.primaryPurple,
                     indicatorSize: 18,
-                    textStyle: AppTextStyle.h5.copyWith(
+                    textStyle: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                       fontWeight: FontWeight.w900,
                     ),
                   )
@@ -507,7 +509,8 @@ class _TransactionListPageState extends State<TransactionListPage> {
               label: loadingLabel,
               color: AppColors.primaryPurple,
               indicatorSize: 14,
-              textStyle: AppTextStyle.h5.copyWith(
+              textStyle: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                 fontWeight: FontWeight.w800,
               ),
             )
@@ -518,7 +521,8 @@ class _TransactionListPageState extends State<TransactionListPage> {
                 const SizedBox(width: 6),
                 Text(
                   label,
-                  style: AppTextStyle.h5.copyWith(
+                  style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                     color: AppColors.primaryPurple,
                     fontWeight: FontWeight.w800,
                   ),
@@ -1441,7 +1445,8 @@ class _DateRangeLabel extends StatelessWidget {
             label,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: AppTextStyle.h4.copyWith(
+            style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
               color: context.appTextPrimary,
               fontWeight: FontWeight.w900,
             ),
@@ -1577,7 +1582,8 @@ class _TerminalSummaryCell extends StatelessWidget {
         label,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
-        style: AppTextStyle.h5.copyWith(
+        style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
           color: context.appTextPrimary,
           fontWeight: header || bold ? FontWeight.w900 : FontWeight.w700,
         ),
@@ -1610,7 +1616,8 @@ class _TerminalSummaryList extends StatelessWidget {
                 children: [
                   Text(
                     '${context.tr('terminals')}: ${summary.serialNumber.isEmpty ? context.tr('not_available') : summary.serialNumber}',
-                    style: AppTextStyle.h4.copyWith(
+                    style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                       color: context.appTextPrimary,
                       fontWeight: FontWeight.w900,
                     ),
@@ -1618,7 +1625,8 @@ class _TerminalSummaryList extends StatelessWidget {
                   const SizedBox(height: 8),
                   Text(
                     '${context.tr('total_transactions')}: ${summary.count}',
-                    style: AppTextStyle.h5.copyWith(
+                    style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                       color: context.appTextPrimary,
                       fontWeight: FontWeight.w700,
                     ),
@@ -1626,7 +1634,8 @@ class _TerminalSummaryList extends StatelessWidget {
                   const SizedBox(height: 5),
                   Text(
                     '${context.tr('total_amount')}: Rs. ${summary.totalAmount.toStringAsFixed(2)}',
-                    style: AppTextStyle.h5.copyWith(
+                    style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                       color: context.appTextPrimary,
                       fontWeight: FontWeight.w700,
                     ),
@@ -1861,7 +1870,8 @@ class _WebResultTableCell extends StatelessWidget {
         label,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
-        style: AppTextStyle.h5.copyWith(
+        style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
           color: context.appTextPrimary,
           fontWeight: header || bold ? FontWeight.w900 : FontWeight.w700,
         ),
@@ -1904,7 +1914,8 @@ class _WebResultStatus extends StatelessWidget {
         normalized.isEmpty ? '-' : normalized,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
-        style: AppTextStyle.h5.copyWith(
+        style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
           color: foreground,
           fontWeight: FontWeight.w900,
         ),
@@ -1937,7 +1948,8 @@ class _EmptyTransactions extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 72),
         child: Text(
           context.tr('no_transactions'),
-          style: AppTextStyle.h3.copyWith(
+          style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
             color: context.appTextSecondary,
             fontStyle: FontStyle.italic,
             fontWeight: FontWeight.w400,
@@ -2003,14 +2015,16 @@ class _TransactionSummary extends StatelessWidget {
             children: [
               Text(
                 '$count',
-                style: AppTextStyle.h2.copyWith(
+                style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h2.copyWith(
                   color: valueColor,
                   fontWeight: FontWeight.w900,
                 ),
               ),
               Text(
                 context.tr('total_transactions'),
-                style: AppTextStyle.h5.copyWith(
+                style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                   color: foregroundColor,
                   fontWeight: FontWeight.w900,
                 ),
@@ -2024,14 +2038,16 @@ class _TransactionSummary extends StatelessWidget {
             children: [
               Text(
                 '₹ ${amount.toStringAsFixed(2)}',
-                style: AppTextStyle.h2.copyWith(
+                style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h2.copyWith(
                   color: valueColor,
                   fontWeight: FontWeight.w900,
                 ),
               ),
               Text(
                 context.tr('total_amount'),
-                style: AppTextStyle.h5.copyWith(
+                style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                   color: foregroundColor,
                   fontWeight: FontWeight.w900,
                 ),
@@ -2072,7 +2088,8 @@ class _PaginationControls extends StatelessWidget {
         ),
         Text(
           '${context.tr('page')} ${page + 1} ${context.tr('of')} ${totalPages == 0 ? 1 : totalPages}',
-          style: AppTextStyle.h5.copyWith(
+          style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
             color: context.appTextPrimary,
             fontWeight: FontWeight.w800,
           ),

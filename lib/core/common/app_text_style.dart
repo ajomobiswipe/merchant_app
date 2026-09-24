@@ -1,44 +1,53 @@
 import 'package:flutter/material.dart';
 
+
+enum AppPlatform {
+  mobile,
+  web,
+}
+
 class AppTextStyle {
-  const AppTextStyle._();
+
+  const AppTextStyle(this.platform);
+
+  final AppPlatform platform;
 
   static const String _fontFamily = 'Muli';
 
-  static const TextStyle h2 = TextStyle(
+  TextStyle get h2 => TextStyle(
     fontFamily: _fontFamily,
-    fontSize: 22,
+    fontSize: platform == AppPlatform.web ? 22 : 14,
     fontWeight: FontWeight.w700,
   );
 
-  static const TextStyle h3 = TextStyle(
+  TextStyle get h3 => TextStyle(
     fontFamily: _fontFamily,
-    fontSize: 16,
+    fontSize: platform == AppPlatform.web ? 16:12,
     fontWeight: FontWeight.w700,
   );
 
-  static const TextStyle h4 = TextStyle(
+   TextStyle get h4 => TextStyle(
     fontFamily: _fontFamily,
-    fontSize: 15,
+    fontSize: platform == AppPlatform.web ?15:11,
     fontWeight: FontWeight.w600,
   );
 
-  static const TextStyle h5 = TextStyle(
+   TextStyle get h5 => TextStyle(
     fontFamily: _fontFamily,
-    fontSize: 12,
+    fontSize: platform == AppPlatform.web ?12:8,
     fontWeight: FontWeight.w600,
   );
 
-  static const TextStyle h4WhiteColor = TextStyle(
+    TextStyle get h4WhiteColor => TextStyle(
     fontFamily: _fontFamily,
-    fontSize: 15,
+    fontSize: platform == AppPlatform.web ?15:11,
     fontWeight: FontWeight.w600,
     color: Colors.white,
   );
 
-  static const TextStyle h5WhiteColor = TextStyle(
+    TextStyle get h5WhiteColor => TextStyle(
     fontFamily: _fontFamily,
-    fontSize: 12,
+    fontSize: platform == AppPlatform.web ?12:8,
     fontWeight: FontWeight.w600,
     color: Colors.white,
   );

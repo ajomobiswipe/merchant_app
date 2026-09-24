@@ -13,6 +13,8 @@ import 'package:anet_merchants/features/settlements/data/models/settlement_histo
 import 'package:anet_merchants/features/transactions/data/models/merchant_vpa_txn_response_model.dart';
 import 'package:anet_merchants/features/transactions/data/models/pos_txn_history_response_model.dart';
 
+import '../../../../core/common/responsive_layout.dart';
+
 class MobileHomeGreeting extends StatefulWidget {
   final VoidCallback onProfileTap;
 
@@ -59,7 +61,8 @@ class _MobileHomeGreetingState extends State<MobileHomeGreeting> {
             children: [
               Text(
                 greeting,
-                style: AppTextStyle.h5.copyWith(
+                style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                   color: context.appTextSecondary,
                   fontWeight: FontWeight.w600,
                 ),
@@ -70,7 +73,8 @@ class _MobileHomeGreetingState extends State<MobileHomeGreeting> {
                   children: [
                     TextSpan(
                       text: shop,
-                      style: AppTextStyle.h2.copyWith(
+                      style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h2.copyWith(
                         color: context.appTextPrimary,
                         fontWeight: FontWeight.w900,
                         height: 1.15,
@@ -85,7 +89,8 @@ class _MobileHomeGreetingState extends State<MobileHomeGreeting> {
               const SizedBox(height: 4),
               Text(
                 context.tr('home_summary_subtitle'),
-                style: AppTextStyle.h5.copyWith(
+                style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                   color: context.appTextSecondary,
                   fontWeight: FontWeight.w600,
                 ),
@@ -117,7 +122,8 @@ class _MobileHomeGreetingState extends State<MobileHomeGreeting> {
                 backgroundColor: context.appElevatedSurface,
                 child: Text(
                   initials,
-                  style: AppTextStyle.h4.copyWith(
+                  style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                     color: AppColors.primaryPurple,
                     fontWeight: FontWeight.w900,
                   ),
@@ -198,7 +204,8 @@ class MobileHomeHeroCard extends StatelessWidget {
                       title,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: AppTextStyle.h5WhiteColor.copyWith(
+                      style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5WhiteColor.copyWith(
                         fontWeight: FontWeight.w700,
                         fontSize: 12 * scale,
                       ),
@@ -224,7 +231,8 @@ class MobileHomeHeroCard extends StatelessWidget {
                 '$transactionCount ${context.tr('transactions')}',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: AppTextStyle.h5WhiteColor.copyWith(
+                style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5WhiteColor.copyWith(
                   color: Colors.white.withValues(alpha: .86),
                   fontWeight: FontWeight.w700,
                   fontSize: 12 * scale,
@@ -324,7 +332,8 @@ class MobileHomeSectionHeader extends StatelessWidget {
         Expanded(
           child: Text(
             title,
-            style: AppTextStyle.h3.copyWith(
+            style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
               color: context.appTextPrimary,
               fontWeight: FontWeight.w900,
             ),
@@ -342,7 +351,8 @@ class MobileHomeSectionHeader extends StatelessWidget {
             children: [
               Text(
                 context.tr('view_all'),
-                style: AppTextStyle.h5.copyWith(
+                style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                   color: AppColors.primaryPurple,
                   fontWeight: FontWeight.w800,
                 ),
@@ -481,7 +491,8 @@ class MobileHomeTxnTile extends StatelessWidget {
                         title,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: AppTextStyle.h4.copyWith(
+                        style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                           color: titleColor,
                           fontWeight: FontWeight.w800,
                           height: 1.2,
@@ -493,7 +504,8 @@ class MobileHomeTxnTile extends StatelessWidget {
                           details,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: AppTextStyle.h5.copyWith(
+                          style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                             color: mutedColor,
                             height: 1.2,
                           ),
@@ -504,7 +516,8 @@ class MobileHomeTxnTile extends StatelessWidget {
                         dateTimeText,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: AppTextStyle.h5.copyWith(
+                        style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                           color: mutedColor,
                           fontWeight: FontWeight.w500,
                           height: 1.2,
@@ -519,7 +532,8 @@ class MobileHomeTxnTile extends StatelessWidget {
                   children: [
                     Text(
                       amount,
-                      style: AppTextStyle.h4.copyWith(
+                      style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                         color: titleColor,
                         fontWeight: FontWeight.w900,
                         height: 1.2,
@@ -541,7 +555,8 @@ class MobileHomeTxnTile extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.center,
-                        style: AppTextStyle.h5.copyWith(
+                        style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                           color: chipFg,
                           fontWeight: FontWeight.w800,
                           fontSize: 10,
@@ -624,7 +639,8 @@ class MobileHomeSettlementTile extends StatelessWidget {
                       date,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: AppTextStyle.h4.copyWith(
+                      style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                         color: _tileTitleColor(context),
                         fontWeight: FontWeight.w800,
                       ),
@@ -634,7 +650,8 @@ class MobileHomeSettlementTile extends StatelessWidget {
                       '${context.tr('utr')}: $utr',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: AppTextStyle.h5.copyWith(
+                      style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                         color: _tileMutedColor(context),
                         fontWeight: FontWeight.w800,
                       ),
@@ -644,7 +661,8 @@ class MobileHomeSettlementTile extends StatelessWidget {
                       '${settlement.transactionCount} ${context.tr('transactions')}',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: AppTextStyle.h5.copyWith(
+                      style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                         color: _tileMutedColor(context),
                       ),
                     ),
@@ -653,7 +671,8 @@ class MobileHomeSettlementTile extends StatelessWidget {
                       '${context.tr('gross_amount')}: Rs. ${settlement.grossTransactionAmount.toStringAsFixed(2)}',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: AppTextStyle.h5.copyWith(
+                      style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                         color: _tileTitleColor(context),
                         fontWeight: FontWeight.w700,
                       ),
@@ -662,7 +681,8 @@ class MobileHomeSettlementTile extends StatelessWidget {
                       '${context.tr('net_payable')}: Rs. ${settlement.totalAmountPayable.toStringAsFixed(2)}',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: AppTextStyle.h5.copyWith(
+                      style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                         color: AppColors.primaryPurple,
                         fontWeight: FontWeight.w900,
                       ),
@@ -684,7 +704,8 @@ class MobileHomeSettlementTile extends StatelessWidget {
                       isSettled
                           ? context.tr('settled')
                           : context.tr('pending_settlements'),
-                      style: AppTextStyle.h5.copyWith(
+                      style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                         color: chipFg,
                         fontWeight: FontWeight.w900,
                         fontSize: 10,
@@ -817,21 +838,24 @@ class _SettlementMetricCard extends StatelessWidget {
                   label,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTextStyle.h5.copyWith(fontWeight: FontWeight.w900),
+                  style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(fontWeight: FontWeight.w900),
                 ),
                 const SizedBox(height: 3),
                 Text(
                   subtitle,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTextStyle.h5.copyWith(
+                  style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                     color: context.appTextSecondary,
                   ),
                 ),
                 const SizedBox(height: 6),
                 Text(
                   'Rs. ${amount.toStringAsFixed(2)}',
-                  style: AppTextStyle.h4.copyWith(
+                  style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                     color: color,
                     fontWeight: FontWeight.w900,
                   ),
@@ -921,7 +945,8 @@ class _ChannelTile extends StatelessWidget {
                         label,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: AppTextStyle.h5.copyWith(
+                        style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                           color: iconColor,
                           fontWeight: FontWeight.w800,
                           height: 1.15,
@@ -931,7 +956,8 @@ class _ChannelTile extends StatelessWidget {
                       SizedBox(height: 8 * scale),
                       Text(
                         '$count',
-                        style: AppTextStyle.h2.copyWith(
+                        style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h2.copyWith(
                           color: context.appTextPrimary,
                           fontWeight: FontWeight.w900,
                           height: 1,
@@ -958,7 +984,8 @@ class _ChannelTile extends StatelessWidget {
                           context.tr('view_all'),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: AppTextStyle.h5.copyWith(
+                          style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                             color: AppColors.primaryPurple,
                             fontWeight: FontWeight.w800,
                             height: 1.1,

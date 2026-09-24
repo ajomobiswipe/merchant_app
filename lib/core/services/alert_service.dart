@@ -1,7 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:anet_merchants/core/common/app_colors.dart';
 import 'package:anet_merchants/core/common/app_text_style.dart';
 import 'package:anet_merchants/core/localization/app_language.dart';
+
+import '../common/responsive_layout.dart';
 
 enum AppAlertType { success, warning, error, info }
 
@@ -147,7 +150,8 @@ class _AppAlertDialog extends StatelessWidget {
           Text(
             title,
             textAlign: TextAlign.center,
-            style: AppTextStyle.h2.copyWith(
+            style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h2.copyWith(
               color: AppColors.primaryPurple,
               fontWeight: FontWeight.w900,
             ),
@@ -156,7 +160,8 @@ class _AppAlertDialog extends StatelessWidget {
           Text(
             message,
             textAlign: TextAlign.center,
-            style: AppTextStyle.h4.copyWith(
+            style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
               color: context.appTextSecondary,
               fontWeight: FontWeight.w600,
               height: 1.35,
@@ -181,7 +186,8 @@ class _AppAlertDialog extends StatelessWidget {
                     ),
                     child: Text(
                       secondaryText!,
-                      style: AppTextStyle.h4.copyWith(
+                      style: AppTextStyle(kIsWeb &&
+                          AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                         fontWeight: FontWeight.w800,
                       ),
                     ),
@@ -203,7 +209,8 @@ class _AppAlertDialog extends StatelessWidget {
                   ),
                   child: Text(
                     primaryText,
-                    style: AppTextStyle.h4WhiteColor.copyWith(
+                    style: AppTextStyle(kIsWeb &&
+                        AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4WhiteColor.copyWith(
                       fontWeight: FontWeight.w900,
                     ),
                   ),

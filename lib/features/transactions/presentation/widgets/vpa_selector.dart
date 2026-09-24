@@ -1,7 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:anet_merchants/core/common/app_colors.dart';
 import 'package:anet_merchants/core/common/app_text_style.dart';
 import 'package:anet_merchants/core/localization/app_language.dart';
+
+import '../../../../core/common/responsive_layout.dart';
 
 class VpaSelector extends StatelessWidget {
   final List<String> vpas;
@@ -42,7 +45,8 @@ class VpaSelector extends StatelessWidget {
                     context.tr('loading_vpa_devices'),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: AppTextStyle.h4.copyWith(
+                    style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                       color: context.appTextPrimary,
                       fontWeight: FontWeight.w800,
                     ),
@@ -56,7 +60,8 @@ class VpaSelector extends StatelessWidget {
                         context.tr('no_vpa_devices'),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: AppTextStyle.h4.copyWith(
+                        style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                           color: context.appTextPrimary,
                           fontWeight: FontWeight.w800,
                         ),
@@ -69,7 +74,8 @@ class VpaSelector extends StatelessWidget {
                                 vpa,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: AppTextStyle.h4.copyWith(
+                                style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                                   color: context.appTextPrimary,
                                   fontWeight: FontWeight.w800,
                                 ),

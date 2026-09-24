@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:anet_merchants/config/routes/routes.dart';
 import 'package:anet_merchants/core/common/app_assets.dart';
@@ -7,6 +8,8 @@ import 'package:anet_merchants/core/localization/app_language.dart';
 import 'package:anet_merchants/core/storage/session_storage.dart';
 import 'package:anet_merchants/core/utils/browser_history.dart';
 import 'package:anet_merchants/core/utils/navigation_helper.dart';
+
+import '../../../../core/common/responsive_layout.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -58,7 +61,8 @@ class _SplashPageState extends State<SplashPage> {
             const SizedBox(height: 16),
             Text(
               context.tr('loading'),
-              style: AppTextStyle.h4.copyWith(
+              style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                 color: context.appTextPrimary,
                 fontWeight: FontWeight.w700,
               ),

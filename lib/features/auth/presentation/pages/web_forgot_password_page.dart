@@ -168,7 +168,8 @@ class _WebForgotWelcome extends StatelessWidget {
             const SizedBox(height: 20),
             Text(
               context.tr('forgot_password_title'),
-              style: AppTextStyle.h2.copyWith(
+              style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h2.copyWith(
                 color: AppColors.primaryPurple,
                 fontWeight: FontWeight.w900,
               ),
@@ -177,7 +178,8 @@ class _WebForgotWelcome extends StatelessWidget {
             Text(
               context.tr('forgot_password_instruction'),
               textAlign: TextAlign.center,
-              style: AppTextStyle.h4.copyWith(
+              style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                 color: const Color(0xff65708E),
                 height: 1.5,
                 fontWeight: FontWeight.w700,
@@ -213,14 +215,16 @@ class _WebForgotRequestColumn extends StatelessWidget {
                           children: [
                             Text(
                               context.tr('enter_your_details'),
-                              style: AppTextStyle.h2.copyWith(
+                              style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h2.copyWith(
                                   color: AppColors.primaryPurple,
                                   fontWeight: FontWeight.w900),
                             ),
                             const SizedBox(height: 5),
                             Text(
                               context.tr('forgot_password_instruction'),
-                              style: AppTextStyle.h5.copyWith(
+                              style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                                   color: const Color(0xff65708E),
                                   fontWeight: FontWeight.w600),
                             ),
@@ -259,7 +263,8 @@ class _WebForgotRequestColumn extends StatelessWidget {
                               page.isSubmitting
                                   ? context.tr('loading')
                                   : context.tr('forgot_password_submit'),
-                              style: AppTextStyle.h4.copyWith(
+                              style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w900)),
                           const Spacer(),

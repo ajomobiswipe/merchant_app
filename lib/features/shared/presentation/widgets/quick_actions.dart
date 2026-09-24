@@ -1,7 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:anet_merchants/core/common/app_colors.dart';
 import 'package:anet_merchants/core/common/app_text_style.dart';
 import 'package:anet_merchants/core/localization/app_language.dart';
+
+import '../../../../core/common/responsive_layout.dart';
 
 class QuickActions extends StatelessWidget {
   final TransactionTab selectedTab;
@@ -146,7 +149,8 @@ class _QuickActionButton extends StatelessWidget {
                       displayLabel,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: AppTextStyle.h5.copyWith(
+                      style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                         color: selected ? Colors.white : context.appTextPrimary,
                         fontSize: isCompact ? 11 : null,
                         fontWeight: FontWeight.w900,

@@ -207,7 +207,8 @@ class _WebMerchantAppBarState extends State<WebMerchantAppBar> {
                 const SizedBox(width: 9),
                 Text(
                   'ANET Merchants',
-                  style: AppTextStyle.h3.copyWith(
+                  style: AppTextStyle(kIsWeb &&
+                      AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
                     color: const Color(0xff201D27),
                     fontWeight: FontWeight.w900,
                   ),
@@ -240,7 +241,8 @@ class _WebMerchantAppBarState extends State<WebMerchantAppBar> {
                       )
                     : Text(
                         _initials(),
-                        style: AppTextStyle.h4.copyWith(
+                        style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                           color: AppColors.primaryPurple,
                           fontWeight: FontWeight.w900,
                         ),
@@ -291,7 +293,9 @@ class _MerchantIdentity extends StatelessWidget {
                   : shopName.toUpperCase(),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: (compact ? AppTextStyle.h5 : AppTextStyle.h4).copyWith(
+              style: (compact ? AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5 : AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4).copyWith(
                 color: const Color(0xff201D27),
                 fontWeight: FontWeight.w900,
               ),
@@ -303,7 +307,8 @@ class _MerchantIdentity extends StatelessWidget {
                 : '${context.tr('merchant_id')}: $merchantId',
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: AppTextStyle.h5.copyWith(
+            style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
               color: AppColors.primaryPurple,
               fontWeight: FontWeight.w800,
             ),
@@ -409,7 +414,8 @@ class WebHelpCard extends StatelessWidget {
             textAlign: TextAlign.center,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: AppTextStyle.h4.copyWith(
+            style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
               color: const Color(0xff201D27),
               fontWeight: FontWeight.w900,
             ),
@@ -418,7 +424,8 @@ class WebHelpCard extends StatelessWidget {
           Text(
             context.tr('support_team_assist'),
             textAlign: TextAlign.center,
-            style: AppTextStyle.h5.copyWith(
+            style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
               color: const Color(0xff6E6880),
               fontWeight: FontWeight.w700,
             ),
@@ -447,7 +454,8 @@ class WebHelpCard extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       textAlign: TextAlign.center,
-                      style: AppTextStyle.h5.copyWith(
+                      style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                         fontWeight: FontWeight.w800,
                       ),
                     ),
@@ -472,7 +480,8 @@ class WebTrademarkFooter extends StatelessWidget {
     return Text(
       '\u00A9 2026 Alliance Network\u2122',
       textAlign: TextAlign.center,
-      style: AppTextStyle.h5.copyWith(
+      style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
         color: const Color(0xff817A91),
         fontWeight: FontWeight.w700,
       ),
@@ -507,7 +516,8 @@ class _DesktopNavigationItem extends StatelessWidget {
                         : context.appTextSecondary),
                 const SizedBox(width: 14),
                 Text(data.label,
-                    style: AppTextStyle.h4.copyWith(
+                    style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                         color: selected
                             ? AppColors.primaryPurple
                             : context.appTextPrimary,
@@ -650,7 +660,8 @@ class _BottomNavItem extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,
-              style: AppTextStyle.h5.copyWith(
+              style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                 color: color,
                 fontWeight: selected ? FontWeight.w900 : FontWeight.w700,
                 fontSize: 11,

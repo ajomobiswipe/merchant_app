@@ -159,7 +159,8 @@ class _WelcomePanel extends StatelessWidget {
           const SizedBox(height: 62),
           Text(
             context.tr('login_welcome_title'),
-            style: AppTextStyle.h2.copyWith(
+            style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h2.copyWith(
               color: const Color(0xff202331),
               fontWeight: FontWeight.w900,
             ),
@@ -167,7 +168,8 @@ class _WelcomePanel extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
             context.tr('login_web_hero_message'),
-            style: AppTextStyle.h4.copyWith(
+            style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
               color: const Color(0xff65708E),
               height: 1.6,
               fontWeight: FontWeight.w600,
@@ -253,7 +255,8 @@ class _WebPromoCarouselState extends State<_WebPromoCarousel> {
             children: [
               Text(
                 context.tr(_slides[_currentPage].titleKey),
-                style: AppTextStyle.h3.copyWith(
+                style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
                   color: const Color(0xff202331),
                   fontWeight: FontWeight.w900,
                 ),
@@ -261,7 +264,8 @@ class _WebPromoCarouselState extends State<_WebPromoCarousel> {
               const SizedBox(height: 6),
               Text(
                 context.tr(_slides[_currentPage].captionKey),
-                style: AppTextStyle.h4.copyWith(
+                style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                   color: const Color(0xff65708E),
                   height: 1.45,
                   fontWeight: FontWeight.w600,
@@ -380,7 +384,9 @@ class _WebSignInCard extends StatelessWidget {
                 onPressed: () => context.push(AppRoutes.forgotPassword),
                 child: Text(
                   context.tr('forgot_password'),
-                  style: (compact ? AppTextStyle.h5 : AppTextStyle.h4).copyWith(
+                  style: (compact ? AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5 : AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4).copyWith(
                     color: AppColors.primaryPurple,
                     fontWeight: FontWeight.w900,
                   ),

@@ -10,6 +10,8 @@ import 'package:anet_merchants/core/storage/session_storage.dart';
 import 'package:anet_merchants/features/shared/shared.dart';
 import 'package:anet_merchants/features/transactions/transactions.dart';
 
+import '../../../../core/common/responsive_layout.dart';
+
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
 
@@ -250,7 +252,8 @@ class _DashboardPageState extends State<DashboardPage> {
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
                 foregroundColor: AppColors.primaryPurple,
-                textStyle: AppTextStyle.h4.copyWith(
+                textStyle: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                   fontWeight: FontWeight.w800,
                 ),
               ),
@@ -293,7 +296,8 @@ class _DashboardPageState extends State<DashboardPage> {
           const SizedBox(height: 18),
           Text(
             context.tr('month_vs_transaction_amount'),
-            style: AppTextStyle.h3.copyWith(
+            style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
               color: context.appTextPrimary,
               fontWeight: FontWeight.w900,
             ),
@@ -388,7 +392,8 @@ class _DashboardDateControls extends StatelessWidget {
         const SizedBox(height: 8),
         Text(
           context.tr('dashboard_date_range_hint'),
-          style: AppTextStyle.h5.copyWith(
+          style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
             color: context.appTextSecondary,
             fontWeight: FontWeight.w600,
           ),
@@ -426,7 +431,8 @@ class _DateButton extends StatelessWidget {
           children: [
             Text(
               label,
-              style: AppTextStyle.h5.copyWith(
+              style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                 color: context.appTextSecondary,
                 fontWeight: FontWeight.w800,
               ),
@@ -445,7 +451,8 @@ class _DateButton extends StatelessWidget {
                     value,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: AppTextStyle.h5.copyWith(
+                    style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                       color: context.appTextPrimary,
                       fontWeight: FontWeight.w900,
                     ),
@@ -517,7 +524,8 @@ class _MonthlyValuesChart extends StatelessWidget {
                               'Rs. ${point.total.toStringAsFixed(1)}',
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: AppTextStyle.h5.copyWith(
+                              style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                                 color: context.appTextPrimary,
                                 fontWeight: FontWeight.w800,
                               ),
@@ -553,7 +561,8 @@ class _MonthlyValuesChart extends StatelessWidget {
                               point.label,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: AppTextStyle.h5.copyWith(
+                              style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                                 color: context.appTextSecondary,
                                 fontWeight: FontWeight.w800,
                               ),
@@ -657,7 +666,8 @@ class _LegendItem extends StatelessWidget {
         Expanded(
           child: Text(
             label,
-            style: AppTextStyle.h5.copyWith(
+            style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
               color: context.appTextPrimary,
               fontWeight: FontWeight.w700,
             ),
@@ -702,7 +712,8 @@ class _DashboardMessage extends StatelessWidget {
       child: Text(
         message,
         textAlign: TextAlign.center,
-        style: AppTextStyle.h4.copyWith(
+        style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
           color: context.appTextSecondary,
           fontWeight: FontWeight.w700,
         ),

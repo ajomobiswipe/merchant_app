@@ -17,6 +17,8 @@ import 'package:anet_merchants/features/shared/presentation/widgets/quick_action
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../core/common/responsive_layout.dart';
+
 class TransactionFilterPage extends StatefulWidget {
   final TransactionTab tab;
   final String? initialVpa;
@@ -230,7 +232,8 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
                 foregroundColor: AppColors.primaryPurple,
-                textStyle: AppTextStyle.h4.copyWith(
+                textStyle: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                   fontWeight: FontWeight.w800,
                 ),
               ),
@@ -371,14 +374,16 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
           ),
           title: Text(
             context.tr('filter_required'),
-            style: AppTextStyle.h4.copyWith(
+            style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
               color: context.appTextPrimary,
               fontWeight: FontWeight.w900,
             ),
           ),
           content: Text(
             message,
-            style: AppTextStyle.h5.copyWith(
+            style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
               color: context.appTextSecondary,
               fontWeight: FontWeight.w700,
             ),
@@ -388,7 +393,8 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
               onPressed: () => Navigator.of(context).pop(),
               child: Text(
                 context.tr('ok'),
-                style: AppTextStyle.h5.copyWith(
+                style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                   color: AppColors.primaryPurple,
                   fontWeight: FontWeight.w900,
                 ),
@@ -481,7 +487,8 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
                     const SizedBox(width: 8),
                     Text(
                       _webFilterTitle,
-                      style: AppTextStyle.h3.copyWith(
+                      style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
                         color: context.appTextPrimary,
                         fontWeight: FontWeight.w900,
                       ),
@@ -533,7 +540,8 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
         style: OutlinedButton.styleFrom(
           foregroundColor: const Color(0xffF34D4D),
           side: const BorderSide(color: Color(0xffF34D4D)),
-          textStyle: AppTextStyle.h4.copyWith(fontWeight: FontWeight.w900),
+          textStyle: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(fontWeight: FontWeight.w900),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
@@ -551,7 +559,8 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
                 foregroundColor: AppColors.primaryPurple,
                 side: BorderSide(color: AppColors.primaryPurple),
                 textStyle:
-                    AppTextStyle.h4.copyWith(fontWeight: FontWeight.w900),
+                    AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(fontWeight: FontWeight.w900),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -565,7 +574,8 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
                 backgroundColor: AppColors.primaryPurple,
                 foregroundColor: Colors.white,
                 elevation: 0,
-                textStyle: AppTextStyle.h4WhiteColor
+                textStyle: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4WhiteColor
                     .copyWith(fontWeight: FontWeight.w900),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -601,7 +611,8 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
         const SizedBox(height: 34),
         Text(
           context.tr('vpa'),
-          style: AppTextStyle.h4.copyWith(
+          style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
             color: context.appTextPrimary,
             fontWeight: FontWeight.w900,
           ),
@@ -644,7 +655,8 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
           padding: const EdgeInsets.only(left: sectionInset),
           child: Text(
             context.tr('payment_tid'),
-            style: AppTextStyle.h4.copyWith(
+            style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
               color: context.appTextPrimary,
               fontWeight: FontWeight.w900,
             ),
@@ -655,7 +667,8 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
           padding: const EdgeInsets.only(left: sectionInset),
           child: Text(
             context.tr('search_by'),
-            style: AppTextStyle.h4.copyWith(
+            style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
               color: context.appTextPrimary,
               fontWeight: FontWeight.w900,
             ),
@@ -709,7 +722,8 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
           children: [
             Text(
               context.tr('search_by'),
-              style: AppTextStyle.h4.copyWith(
+              style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                 color: context.appTextPrimary,
                 fontWeight: FontWeight.w900,
               ),
@@ -769,7 +783,8 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
       children: [
         Text(
           context.tr('tid_vpa'),
-          style: AppTextStyle.h4.copyWith(
+          style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
             color: context.appTextPrimary,
             fontWeight: FontWeight.w900,
           ),
@@ -805,7 +820,8 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
         children: [
           Text(
             context.tr('tid_vpa'),
-            style: AppTextStyle.h4.copyWith(
+            style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
               color: context.appTextPrimary,
               fontWeight: FontWeight.w900,
             ),
@@ -845,7 +861,8 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
           width: 72,
           child: Text(
             context.tr('tid_vpa'),
-            style: AppTextStyle.h4.copyWith(
+            style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
               color: context.appTextPrimary,
               fontWeight: FontWeight.w900,
             ),
@@ -897,7 +914,8 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
       children: [
         Text(
           'Date',
-          style: AppTextStyle.h4.copyWith(
+          style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
             color: context.appTextPrimary,
             fontWeight: FontWeight.w900,
           ),
@@ -924,7 +942,8 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
         children: [
           Text(
             context.tr('payment_mode'),
-            style: AppTextStyle.h4.copyWith(
+            style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
               color: context.appTextPrimary,
               fontWeight: FontWeight.w900,
             ),
@@ -951,7 +970,8 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
           width: 130,
           child: Text(
             context.tr('payment_mode'),
-            style: AppTextStyle.h4.copyWith(
+            style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
               color: context.appTextPrimary,
               fontWeight: FontWeight.w900,
             ),
@@ -1015,14 +1035,16 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
           Expanded(
             child: TextField(
               controller: _codeController,
-              style: AppTextStyle.h5.copyWith(
+              style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                 color: context.appTextPrimary,
                 fontWeight: FontWeight.w700,
               ),
               decoration: InputDecoration(
                 border: InputBorder.none,
                 hintText: label,
-                hintStyle: AppTextStyle.h5.copyWith(
+                hintStyle: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                   color: context.appTextSecondary,
                   fontWeight: FontWeight.w700,
                 ),
@@ -1065,7 +1087,8 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
             Expanded(
               child: Text(
                 _labelFor(filter),
-                style: AppTextStyle.h5.copyWith(
+                style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                   color: context.appTextSecondary,
                   fontWeight: FontWeight.w700,
                 ),
@@ -1255,7 +1278,8 @@ class _FilterDropdown extends StatelessWidget {
             child: isLoading
                 ? Text(
                     context.tr('loading'),
-                    style: AppTextStyle.h5.copyWith(
+                    style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                       color: context.appTextSecondary,
                       fontWeight: FontWeight.w700,
                     ),
@@ -1265,7 +1289,8 @@ class _FilterDropdown extends StatelessWidget {
                       value: selectedValue,
                       isExpanded: true,
                       dropdownColor: context.appSurface,
-                      style: AppTextStyle.h5.copyWith(
+                      style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                         color: context.appTextPrimary,
                         fontWeight: FontWeight.w700,
                       ),
@@ -1275,7 +1300,8 @@ class _FilterDropdown extends StatelessWidget {
                       ),
                       hint: Text(
                         hint,
-                        style: AppTextStyle.h5.copyWith(
+                        style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                           color: context.appTextSecondary,
                           fontWeight: FontWeight.w700,
                         ),
@@ -1324,7 +1350,8 @@ class _SearchOption extends StatelessWidget {
           const SizedBox(width: 12),
           Text(
             label,
-            style: AppTextStyle.h5.copyWith(
+            style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
               color: context.appTextPrimary,
               fontWeight: FontWeight.w900,
             ),

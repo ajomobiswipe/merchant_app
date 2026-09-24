@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:anet_merchants/config/routes/routes.dart';
 import 'package:anet_merchants/core/common/app_assets.dart';
@@ -12,6 +13,8 @@ import 'package:anet_merchants/core/utils/navigation_helper.dart';
 import 'package:anet_merchants/features/auth/data/models/otp_validation_response_model.dart';
 import 'package:anet_merchants/features/auth/data/models/user_info.dart';
 import 'package:anet_merchants/features/auth/domain/usecases/verify_email_otp.dart';
+
+import '../../../../core/common/responsive_layout.dart';
 
 class OtpValidationPage extends StatefulWidget {
   final UserInfoModel userInfo;
@@ -122,7 +125,8 @@ class _OtpValidationPageState extends State<OtpValidationPage> {
                 Text(
                   context.tr('otp_validation_title'),
                   textAlign: TextAlign.center,
-                  style: AppTextStyle.h2.copyWith(
+                  style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h2.copyWith(
                     color: AppColors.primaryPurple,
                     fontWeight: FontWeight.w900,
                   ),
@@ -133,7 +137,8 @@ class _OtpValidationPageState extends State<OtpValidationPage> {
                       ? context.tr('otp_validation_message')
                       : widget.userInfo.responseMessage,
                   textAlign: TextAlign.center,
-                  style: AppTextStyle.h4.copyWith(
+                  style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                     color: context.appTextSecondary,
                     fontWeight: FontWeight.w700,
                   ),
@@ -143,7 +148,8 @@ class _OtpValidationPageState extends State<OtpValidationPage> {
                   controller: _otpController,
                   keyboardType: TextInputType.number,
                   maxLength: 6,
-                  style: AppTextStyle.h3.copyWith(
+                  style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
                     color: context.appTextPrimary,
                     fontWeight: FontWeight.w900,
                     letterSpacing: 4,
@@ -188,7 +194,8 @@ class _OtpValidationPageState extends State<OtpValidationPage> {
                     _isSubmitting
                         ? context.tr('loading')
                         : context.tr('verify_otp'),
-                    style: AppTextStyle.h4.copyWith(
+                    style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.w900,
                     ),

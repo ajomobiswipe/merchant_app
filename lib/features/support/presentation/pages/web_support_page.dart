@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:anet_merchants/core/common/app_colors.dart';
@@ -6,6 +7,8 @@ import 'package:anet_merchants/core/localization/app_language.dart';
 import 'package:anet_merchants/core/utils/contact_launcher.dart';
 import 'package:anet_merchants/features/support/data/models/support_action_response_model.dart';
 import 'package:anet_merchants/features/support/presentation/bloc/support_action/support_action_bloc.dart';
+
+import '../../../../core/common/responsive_layout.dart';
 
 /// Browser-specific Support layout.
 ///
@@ -108,7 +111,8 @@ class _WebQuickActionsCard extends StatelessWidget {
         children: [
           Text(
             context.tr('quick_actions'),
-            style: AppTextStyle.h4.copyWith(
+            style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
               color: const Color(0xff171320),
               fontWeight: FontWeight.w900,
             ),
@@ -196,7 +200,8 @@ class _QuickActionText extends StatelessWidget {
         action.quickActionMessage,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
-        style: AppTextStyle.h5.copyWith(
+        style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
           color: const Color(0xff1A1622),
           fontWeight: FontWeight.w800,
         ),
@@ -211,7 +216,8 @@ class _QuickActionText extends StatelessWidget {
           action.quickActionMessage,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: AppTextStyle.h5.copyWith(
+          style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
             color: const Color(0xff1A1622),
             fontWeight: FontWeight.w800,
           ),
@@ -255,7 +261,8 @@ class _WebHelpBanner extends StatelessWidget {
               children: [
                 Text(
                   context.tr('here_to_help'),
-                  style: AppTextStyle.h4.copyWith(
+                  style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
                     color: const Color(0xff171320),
                     fontWeight: FontWeight.w900,
                   ),
@@ -416,14 +423,16 @@ class _WebRaiseRequestCard extends StatelessWidget {
                           isSubmitting
                               ? context.tr('raising_request')
                               : context.tr('raise_request'),
-                          style: AppTextStyle.h4WhiteColor.copyWith(
+                          style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4WhiteColor.copyWith(
                             fontWeight: FontWeight.w900,
                           ),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           context.tr('submit_new_support_request'),
-                          style: AppTextStyle.h5.copyWith(
+                          style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                             color: Colors.white.withValues(alpha: .88),
                             fontWeight: FontWeight.w600,
                           ),
@@ -469,7 +478,8 @@ class _WebContactUsCard extends StatelessWidget {
         children: [
           Text(
             context.tr('contact_us').replaceAll(':', ''),
-            style: AppTextStyle.h4.copyWith(
+            style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
               color: const Color(0xff171320),
               fontWeight: FontWeight.w900,
             ),
@@ -520,7 +530,8 @@ class _WebContactRow extends StatelessWidget {
                 text,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: AppTextStyle.h5.copyWith(
+                style: AppTextStyle(kIsWeb &&
+                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
                   color: const Color(0xff25202F),
                   fontWeight: FontWeight.w700,
                 ),
@@ -563,7 +574,7 @@ Widget _webSupportIcon(IconData icon, {double size = 28}) => Container(
       child: Icon(icon, color: AppColors.primaryPurple, size: size),
     );
 
-final TextStyle _webSecondaryTextStyle = AppTextStyle.h5.copyWith(
+final TextStyle _webSecondaryTextStyle = AppTextStyle(AppPlatform.web).h5.copyWith(
   color: const Color(0xff6E6880),
   fontWeight: FontWeight.w600,
 );
