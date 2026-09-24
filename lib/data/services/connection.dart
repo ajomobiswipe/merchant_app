@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:anet_merchant_app/core/constants/constants.dart';
 import 'package:anet_merchant_app/core/static_functions.dart';
@@ -42,6 +43,13 @@ class DioClient {
           ..badCertificateCallback = (cert, host, port) => false;
       },
     );
+  }
+
+  void _printRequestBodyJson(dynamic data) {
+    if (!kDebugMode || data == null) return;
+    try {
+      print('Request Body JSON: ${jsonEncode(data)}');
+    } catch (_) {}
   }
 
   void _addAuthInterceptor() {
@@ -89,6 +97,7 @@ class DioClient {
   ) async {
     if (kDebugMode) print('Request URL: $url');
     if (kDebugMode) print('Request data: $data');
+    _printRequestBodyJson(data);
     final response = await _dio.get(url, data: data);
     if (kDebugMode) {
       print('Response: ${response.data}');
@@ -104,6 +113,7 @@ class DioClient {
       print('Request URL: $url');
       print('Request Data: $data');
     }
+    _printRequestBodyJson(data);
 
     final response = await _dio
         .post(url, data: data)
@@ -153,6 +163,7 @@ class DioClient {
       print('Request URL: $url');
       print('Request Data: $data');
     }
+    _printRequestBodyJson(data);
 
     final dio = Dio(BaseOptions(
       connectTimeout: const Duration(seconds: 30),
