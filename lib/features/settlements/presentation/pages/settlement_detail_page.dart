@@ -275,7 +275,9 @@ class _SettlementDetailPageState extends State<SettlementDetailPage> {
             context,
             AppRoutes.home,
           ),
-          icon: const Icon(Icons.arrow_back_rounded),
+          icon:  Icon(defaultTargetPlatform == TargetPlatform.iOS
+              ? Icons.arrow_back_ios
+              : Icons.arrow_back_rounded,),
           label: Text(context.tr('back')),
           style: TextButton.styleFrom(
             foregroundColor: context.appTextPrimary,
@@ -1155,7 +1157,9 @@ class _SettlementDetailHeader extends StatelessWidget {
             context,
             AppRoutes.home,
           ),
-          icon: const Icon(Icons.arrow_back_rounded),
+          icon:  Icon(defaultTargetPlatform == TargetPlatform.iOS
+              ? Icons.arrow_back_ios
+              : Icons.arrow_back_rounded,),
           color: context.appTextPrimary,
           iconSize: 32,
           tooltip: context.tr('back'),

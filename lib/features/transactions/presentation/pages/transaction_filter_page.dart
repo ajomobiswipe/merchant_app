@@ -480,7 +480,9 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
                         context,
                         AppRoutes.home,
                       ),
-                      icon: const Icon(Icons.arrow_back_rounded),
+                      icon:  Icon(defaultTargetPlatform == TargetPlatform.iOS
+                          ? Icons.arrow_back_ios
+                          : Icons.arrow_back_rounded,),
                       color: context.appTextPrimary,
                       tooltip: context.tr('back'),
                     ),

@@ -184,7 +184,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       context,
                       AppRoutes.login,
                     ),
-                    icon: const Icon(Icons.arrow_back_rounded),
+                    icon:  Icon(defaultTargetPlatform == TargetPlatform.iOS
+                        ? Icons.arrow_back_ios
+                        : Icons.arrow_back_rounded,),
                     color: context.appTextPrimary,
                     iconSize: 32,
                     tooltip: context.tr('back'),
