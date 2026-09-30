@@ -23,6 +23,7 @@ import 'package:anet_merchants/features/settlements/domain/usecases/get_settleme
 import 'package:anet_merchants/features/settlements/presentation/bloc/settlement/settlement_bloc.dart';
 import 'package:anet_merchants/features/settlements/presentation/pages/settlement_navigation_data.dart';
 import 'package:anet_merchants/features/shared/presentation/widgets/merchant_overview.dart';
+import 'package:anet_merchants/features/shared/presentation/widgets/web_scrollable_table.dart';
 import 'package:anet_merchants/features/shared/presentation/widgets/transaction_list_item.dart';
 import 'package:anet_merchants/features/transactions/utils/transaction_report_excel.dart';
 
@@ -663,23 +664,16 @@ class _WebSettlementActivityTable extends StatelessWidget {
           borderRadius: BorderRadius.circular(14),
           border: Border.all(color: context.appBorder),
         ),
-        child: LayoutBuilder(
-          builder: (context, constraints) => SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: SizedBox(
-              width: constraints.maxWidth < 1060 ? 1060 : constraints.maxWidth,
-              child: Column(
-                children: [
-                  const _WebSettlementActivityTableHeader(),
-                  for (final transaction in transactions)
-                    _WebSettlementActivityRow(
-                      transaction: transaction,
-                      onTap: () => onTransactionSelected(transaction),
-                    ),
-                ],
+        child: WebScrollableTable(
+          minWidth: 1060,
+          children: [
+            const _WebSettlementActivityTableHeader(),
+            for (final transaction in transactions)
+              _WebSettlementActivityRow(
+                transaction: transaction,
+                onTap: () => onTransactionSelected(transaction),
               ),
-            ),
-          ),
+          ],
         ),
       );
 }

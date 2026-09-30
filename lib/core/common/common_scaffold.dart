@@ -10,7 +10,7 @@ import 'package:anet_merchants/core/localization/app_language.dart';
 import 'package:anet_merchants/core/storage/session_storage.dart';
 import 'package:anet_merchants/core/utils/logout_helper.dart';
 
-class CommonScaffold extends StatelessWidget {
+class CommonScaffold extends StatefulWidget {
   final Widget body;
   final int selectedIndex;
   final ValueChanged<int> onBottomNavItemSelected;
@@ -27,6 +27,30 @@ class CommonScaffold extends StatelessWidget {
   });
 
   @override
+  State<CommonScaffold> createState() => _CommonScaffoldState();
+}
+
+class _CommonScaffoldState extends State<CommonScaffold> {
+  bool _sessionDashboardEnabled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadDashboardFlag();
+  }
+
+  Future<void> _loadDashboardFlag() async {
+    final enabled = await SessionStorage().isDashboardEnabled;
+    if (!mounted || _sessionDashboardEnabled == enabled) {
+      return;
+    }
+    setState(() => _sessionDashboardEnabled = enabled);
+  }
+
+  bool get _showDashboard =>
+      widget.showDashboard && _sessionDashboardEnabled;
+
+  @override
   Widget build(BuildContext context) {
     final isNativeDesktop = AppBreakpoints.isDesktop(context);
     // Browser pages already have a shared app-bar menu. Reserve the side rail
@@ -39,9 +63,9 @@ class CommonScaffold extends StatelessWidget {
     final desktopBody = Row(
       children: [
         _DesktopNavigation(
-          selectedIndex: selectedIndex,
-          onItemSelected: onBottomNavItemSelected,
-          showDashboard: showDashboard,
+          selectedIndex: widget.selectedIndex,
+          onItemSelected: widget.onBottomNavItemSelected,
+          showDashboard: _showDashboard,
         ),
         Expanded(
           child: Center(
@@ -51,8 +75,8 @@ class CommonScaffold extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  Expanded(child: body),
-                  if (bottomAction != null) bottomAction!,
+                  Expanded(child: widget.body),
+                  if (widget.bottomAction != null) widget.bottomAction!,
                 ],
               ),
             ),
@@ -68,19 +92,19 @@ class CommonScaffold extends StatelessWidget {
             ? Column(
                 children: [
                   WebMerchantAppBar(
-                    onNavigationSelected: onBottomNavItemSelected,
-                    showDashboard: showDashboard,
+                    onNavigationSelected: widget.onBottomNavItemSelected,
+                    showDashboard: _showDashboard,
                   ),
                   Expanded(
-                    child: useDesktopNavigation ? desktopBody : body,
+                    child: useDesktopNavigation ? desktopBody : widget.body,
                   ),
-                  if (!useDesktopNavigation && bottomAction != null)
-                    bottomAction!,
+                  if (!useDesktopNavigation && widget.bottomAction != null)
+                    widget.bottomAction!,
                   if (useWebBottomNavigation)
                     _CommonBottomNavigation(
-                      selectedIndex: selectedIndex,
-                      onItemSelected: onBottomNavItemSelected,
-                      showDashboard: showDashboard,
+                      selectedIndex: widget.selectedIndex,
+                      onItemSelected: widget.onBottomNavItemSelected,
+                      showDashboard: _showDashboard,
                     ),
                 ],
               )
@@ -88,12 +112,12 @@ class CommonScaffold extends StatelessWidget {
                 ? desktopBody
                 : Column(
                     children: [
-                      Expanded(child: body),
-                      if (bottomAction != null) bottomAction!,
+                      Expanded(child: widget.body),
+                      if (widget.bottomAction != null) widget.bottomAction!,
                       _CommonBottomNavigation(
-                        selectedIndex: selectedIndex,
-                        onItemSelected: onBottomNavItemSelected,
-                        showDashboard: showDashboard,
+                        selectedIndex: widget.selectedIndex,
+                        onItemSelected: widget.onBottomNavItemSelected,
+                        showDashboard: _showDashboard,
                       ),
                     ],
                   ),

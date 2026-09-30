@@ -1,41 +1,45 @@
-class SoundBoxDevicesResponseModel {
+import 'package:anet_merchants/features/devices/data/models/vpa_qr_parser.dart';
+
+class VpaQrResponseModel {
   final String successMessage;
   final int statusCode;
-  final SoundBoxPageDataModel pageData;
+  final VpaQrPageData pageData;
 
-  const SoundBoxDevicesResponseModel({
+  const VpaQrResponseModel({
     required this.successMessage,
     required this.statusCode,
     required this.pageData,
   });
 
-  factory SoundBoxDevicesResponseModel.fromJson(Map<String, dynamic> json) {
-    return SoundBoxDevicesResponseModel(
+  factory VpaQrResponseModel.fromJson(Map<String, dynamic> json) {
+    return VpaQrResponseModel(
       successMessage: json['successMessage'] ?? '',
       statusCode: json['statusCode'] ?? 0,
-      pageData: SoundBoxPageDataModel.fromJson(json['pageData'] ?? {}),
+      pageData: VpaQrPageData.fromJson(json['pageData'] ?? {}),
     );
   }
 }
 
-class SoundBoxPageDataModel {
-  final List<String> content;
+class VpaQrPageData {
+  final List<VpaQrItem> content;
   final bool empty;
   final int totalElements;
   final bool last;
 
-  const SoundBoxPageDataModel({
+  const VpaQrPageData({
     required this.content,
     required this.empty,
     required this.totalElements,
     this.last = true,
   });
 
-  factory SoundBoxPageDataModel.fromJson(Map<String, dynamic> json) {
+  factory VpaQrPageData.fromJson(Map<String, dynamic> json) {
     final content = json['content'];
 
-    return SoundBoxPageDataModel(
-      content: content is List ? content.map((item) => '$item').toList() : [],
+    return VpaQrPageData(
+      content: content is List
+          ? VpaQrParser.parseContent(content)
+          : const [],
       empty: json['empty'] ?? true,
       totalElements: json['totalElements'] ?? 0,
       last: json['last'] ?? true,

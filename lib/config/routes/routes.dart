@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:anet_merchants/core/di/injection_container.dart';
 import 'package:anet_merchants/core/storage/session_storage.dart';
 import 'package:anet_merchants/features/auth/auth.dart';
+import 'package:anet_merchants/features/devices/devices.dart';
 import 'package:anet_merchants/features/home/home.dart';
 import 'package:anet_merchants/features/notifications/notifications.dart';
 import 'package:anet_merchants/features/settlements/settlements.dart';
@@ -19,6 +20,7 @@ class AppRoutes {
   static const String home = '/Home';
   static const String notifications = '/Notifications';
   static const String profile = '/Profile';
+  static const String merchantQr = '/MerchantQr';
   static const String transactionFilter = '/TransactionFilter';
   static const String transactions = '/Transactions';
   static const String transactionInvoice = '/TransactionInvoice';
@@ -107,6 +109,10 @@ class AppRoutes {
       GoRoute(
         path: profile,
         builder: (context, state) => const HomePage(initialBottomIndex: 3),
+      ),
+      GoRoute(
+        path: merchantQr,
+        builder: (context, state) => const MerchantQrPage(),
       ),
       GoRoute(
         path: transactionFilter,

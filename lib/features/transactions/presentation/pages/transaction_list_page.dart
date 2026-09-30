@@ -327,7 +327,7 @@ class _TransactionListPageState extends State<TransactionListPage> {
   }
 
   Widget _buildWebTransactionLayout() {
-    return SingleChildScrollView(
+    return Padding(
       padding: const EdgeInsets.all(28),
       child: Center(
         child: ConstrainedBox(
@@ -339,15 +339,17 @@ class _TransactionListPageState extends State<TransactionListPage> {
               const SizedBox(height: 18),
               _buildSummary(),
               const SizedBox(height: 20),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: const Color(0xffE9E2F0)),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: _buildWebTransactionTable(),
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: const Color(0xffE9E2F0)),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: _buildWebTransactionTable(),
+                  ),
                 ),
               ),
             ],
@@ -1533,13 +1535,9 @@ class _WebTerminalSummaryTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) => SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: SizedBox(
-          width: constraints.maxWidth < 720 ? 720 : constraints.maxWidth,
-          child: Column(
-            children: [
+    return WebScrollableTable(
+      minWidth: 720,
+      children: [
               Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
@@ -1599,10 +1597,7 @@ class _WebTerminalSummaryTable extends StatelessWidget {
                     ],
                   ),
                 ),
-            ],
-          ),
-        ),
-      ),
+      ],
     );
   }
 }
@@ -1707,30 +1702,21 @@ class _WebResultTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) => SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: SizedBox(
-          width: constraints.maxWidth < (isQrTable ? 1100 : 1040)
-              ? (isQrTable ? 1100 : 1040)
-              : constraints.maxWidth,
-          child: Column(
-            children: [
-              _WebResultTableHeader(
-                isPosTable: isPosTable,
-                isQrTable: isQrTable,
-              ),
-              for (var index = 0; index < entries.length; index++)
-                _WebResultTableRow(
-                  entry: entries[index],
-                  alternateSurface: index.isOdd,
-                  isPosTable: isPosTable,
-                  isQrTable: isQrTable,
-                ),
-            ],
-          ),
+    return WebScrollableTable(
+      minWidth: isQrTable ? 1100 : 1040,
+      children: [
+        _WebResultTableHeader(
+          isPosTable: isPosTable,
+          isQrTable: isQrTable,
         ),
-      ),
+        for (var index = 0; index < entries.length; index++)
+          _WebResultTableRow(
+            entry: entries[index],
+            alternateSurface: index.isOdd,
+            isPosTable: isPosTable,
+            isQrTable: isQrTable,
+          ),
+      ],
     );
   }
 }

@@ -64,6 +64,50 @@ class _MerchantUiApiService implements MerchantUiApiService {
   }
 
   @override
+  Future<HttpResponse<VpaQrResponseModel>> getListOfVpaAndQrData(
+    String authorization,
+    String clientUniqueId,
+    VpaQrRequestModel request, {
+    int pageNumber = 0,
+    int size = 200,
+    String sort = 'insertDateTime,desc',
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'pageNumber': pageNumber,
+      r'size': size,
+      r'sort': sort,
+    };
+    final _headers = <String, dynamic>{
+      r'Authorization': authorization,
+      r'x-client-unique-id': clientUniqueId,
+    };
+    _headers.removeWhere((k, v) => v == null);
+    final _data = <String, dynamic>{};
+    _data.addAll(request.toJson());
+    final _options = _setStreamType<HttpResponse<VpaQrResponseModel>>(
+      Options(method: 'POST', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            'getListOfVpaAndQrData',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late VpaQrResponseModel _value;
+    try {
+      _value = VpaQrResponseModel.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    final httpResponse = HttpResponse(_value, _result);
+    return httpResponse;
+  }
+
+  @override
   Future<HttpResponse<MerchantVpaTxnResponseModel>> getMerchantVpaTxnData(
     String authorization,
     MerchantVpaTxnRequestModel request, {

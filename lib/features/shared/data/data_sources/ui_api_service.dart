@@ -5,6 +5,8 @@ import 'package:anet_merchants/features/support/data/models/raise_support_reques
 import 'package:anet_merchants/features/support/data/models/raise_support_response_model.dart';
 import 'package:anet_merchants/features/devices/data/models/sound_box_devices_request_model.dart';
 import 'package:anet_merchants/features/devices/data/models/sound_box_devices_response_model.dart';
+import 'package:anet_merchants/features/devices/data/models/vpa_qr_request_model.dart';
+import 'package:anet_merchants/features/devices/data/models/vpa_qr_response_model.dart';
 import 'package:anet_merchants/features/support/data/models/support_action_response_model.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -22,6 +24,16 @@ abstract class MerchantUiApiService {
     @Body() SoundBoxDevicesRequestModel request, {
     @Query('pageNumber') int pageNumber = 0,
     @Query('size') int size = 100,
+    @Query('sort') String sort = 'insertDateTime,desc',
+  });
+
+  @POST('getListOfVpaAndQrData')
+  Future<HttpResponse<VpaQrResponseModel>> getListOfVpaAndQrData(
+    @Header('Authorization') String authorization,
+    @Header('x-client-unique-id') String clientUniqueId,
+    @Body() VpaQrRequestModel request, {
+    @Query('pageNumber') int pageNumber = 0,
+    @Query('size') int size = 200,
     @Query('sort') String sort = 'insertDateTime,desc',
   });
 

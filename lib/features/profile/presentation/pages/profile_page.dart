@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:anet_merchants/config/routes/routes.dart';
 import 'package:anet_merchants/config/theme/app_theme_controller.dart';
 import 'package:anet_merchants/core/common/app_colors.dart';
 import 'package:anet_merchants/core/common/app_text_style.dart';
@@ -406,6 +408,12 @@ class _InfoSection extends StatelessWidget {
           icon: Icons.badge_rounded,
           label: context.tr('merchant_id'),
           value: _fallback(userInfo?.merchantId, context.tr('not_available')),
+        ),
+        _ActionTile(
+          icon: Icons.qr_code_2_rounded,
+          label: context.tr('show_merchant_qr'),
+          value: context.tr('view_merchant_qr'),
+          onTap: () => context.push(AppRoutes.merchantQr),
           showDivider: false,
         ),
       ],

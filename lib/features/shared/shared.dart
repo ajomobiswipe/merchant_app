@@ -7,3 +7,4 @@ export 'presentation/widgets/recent_transactions_header.dart';
 export 'presentation/widgets/success_summary_card.dart';
 export 'presentation/widgets/transaction_list_item.dart';
 export 'presentation/widgets/view_all_transactions_button.dart';
+export 'presentation/widgets/web_scrollable_table.dart';

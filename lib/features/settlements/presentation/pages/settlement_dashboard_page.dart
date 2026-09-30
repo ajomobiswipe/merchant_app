@@ -18,6 +18,7 @@ import 'package:anet_merchants/features/settlements/presentation/pages/settlemen
 import 'package:anet_merchants/features/transactions/presentation/pages/transaction_filter_data.dart';
 import 'package:anet_merchants/features/shared/presentation/widgets/flow_page_header.dart';
 import 'package:anet_merchants/features/shared/presentation/widgets/merchant_overview.dart';
+import 'package:anet_merchants/features/shared/presentation/widgets/web_scrollable_table.dart';
 
 class SettlementDashboardPage extends StatefulWidget {
   final TransactionFilterData filter;
@@ -675,17 +676,12 @@ class _WebSettlementDashboardTable extends StatelessWidget {
             return Column(children: children);
           }
 
-          return SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: SizedBox(
-              width: constraints.maxWidth < 980 ? 980 : constraints.maxWidth,
-              child: Column(
-                children: [
-                  const _WebSettlementTableColumnLabels(),
-                  ...children,
-                ],
-              ),
-            ),
+          return WebScrollableTable(
+            minWidth: 980,
+            children: [
+              const _WebSettlementTableColumnLabels(),
+              ...children,
+            ],
           );
         },
       );

@@ -66,59 +66,59 @@ class WebHomeDashboard extends StatelessWidget {
                             showDashboard: showDashboard,
                           ),
                         Expanded(
-                          child: LayoutBuilder(
-                            builder: (context, viewport) =>
-                                SingleChildScrollView(
-                              padding: EdgeInsets.all(
-                                viewport.maxWidth < 1120 ? 12 : 14,
-                              ),
-                              child: Align(
-                                alignment: Alignment.topCenter,
-                                child: ConstrainedBox(
-                                  constraints: BoxConstraints(
-                                    maxWidth: 1320,
-                                    minHeight: viewport.maxHeight - 28,
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.stretch,
-                                    children: [
-                                      if (merchantItems.isNotEmpty) ...[
-                                        Align(
-                                          alignment: Alignment.centerRight,
-                                          child: ConstrainedBox(
-                                            constraints: const BoxConstraints(
-                                              maxWidth: 460,
-                                            ),
-                                            child: _MerchantDropdown(
-                                              items: merchantItems,
-                                              selectedMerchantId:
-                                                  selectedMerchantId.isEmpty
-                                                      ? merchantItems
-                                                          .first.merchantId
-                                                      : selectedMerchantId,
-                                              onChanged: onMerchantChanged,
-                                            ),
+                          child: Padding(
+                            padding: EdgeInsets.all(
+                              availableSpace.maxWidth < 1120 ? 12 : 14,
+                            ),
+                            child: Align(
+                              alignment: Alignment.topCenter,
+                              child: ConstrainedBox(
+                                constraints: const BoxConstraints(
+                                  maxWidth: 1320,
+                                ),
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    if (merchantItems.isNotEmpty) ...[
+                                      Align(
+                                        alignment: Alignment.centerRight,
+                                        child: ConstrainedBox(
+                                          constraints: const BoxConstraints(
+                                            maxWidth: 460,
+                                          ),
+                                          child: _MerchantDropdown(
+                                            items: merchantItems,
+                                            selectedMerchantId:
+                                                selectedMerchantId.isEmpty
+                                                    ? merchantItems
+                                                        .first.merchantId
+                                                    : selectedMerchantId,
+                                            onChanged: onMerchantChanged,
                                           ),
                                         ),
-                                        const SizedBox(height: 12),
-                                      ],
-                                      _WebDashboardMetrics(
-                                        selectedTab: selectedTab,
                                       ),
                                       const SizedBox(height: 12),
-                                      if (isAllMerchantSelection)
-                                        _WebAllMerchantSummary(
+                                    ],
+                                    _WebDashboardMetrics(
+                                      selectedTab: selectedTab,
+                                    ),
+                                    const SizedBox(height: 12),
+                                    if (isAllMerchantSelection)
+                                      Expanded(
+                                        child: _WebAllMerchantSummary(
                                           onViewAll: onViewAll,
                                           onRefresh: onRefresh,
-                                        )
-                                      else ...[
-                                        _WebTransactionTabs(
-                                          selected: selectedTab,
-                                          onSelected: onTabSelected,
                                         ),
-                                        const SizedBox(height: 12),
-                                        _WebRecentTransactions(
+                                      )
+                                    else ...[
+                                      _WebTransactionTabs(
+                                        selected: selectedTab,
+                                        onSelected: onTabSelected,
+                                      ),
+                                      const SizedBox(height: 12),
+                                      Expanded(
+                                        child: _WebRecentTransactions(
                                           selectedTab: selectedTab,
                                           onViewAll: onViewAll,
                                           onRefresh: onRefresh,
@@ -130,9 +130,9 @@ class WebHomeDashboard extends StatelessWidget {
                                           selectedVpa: selectedVpa,
                                           onVpaChanged: onVpaChanged,
                                         ),
-                                      ],
+                                      ),
                                     ],
-                                  ),
+                                  ],
                                 ),
                               ),
                             ),
@@ -160,6 +160,8 @@ class _WebAllMerchantSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
+        width: double.infinity,
+        height: double.infinity,
         decoration: _webSurface(),
         child: BlocBuilder<PosTransactionBloc, PosTransactionState>(
           builder: (context, state) => Column(
@@ -207,82 +209,113 @@ class _WebAllMerchantSummary extends StatelessWidget {
                   icon: Icons.storefront_outlined,
                   message: context.tr('no_transactions'),
                 )
-              else ...[
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 13),
-                  decoration: BoxDecoration(
-                    color: context.isDarkMode
-                        ? context.appElevatedSurface
-                        : AppColors.primaryPurple.withValues(alpha: .10),
-                    border: Border(
-                      bottom: BorderSide(color: context.appBorder),
-                    ),
-                  ),
-                  child: Row(
+              else
+                Expanded(
+                  child: WebScrollableTable(
                     children: [
-                      Expanded(child: _WebColumnLabel(context.tr('terminals'))),
-                      Expanded(
-                        child: _WebColumnLabel(
-                          context.tr('total_transactions'),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 13,
+                        ),
+                        decoration: BoxDecoration(
+                          color: context.isDarkMode
+                              ? context.appElevatedSurface
+                              : AppColors.primaryPurple.withValues(alpha: .10),
+                          border: Border(
+                            bottom: BorderSide(color: context.appBorder),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: _WebColumnLabel(context.tr('terminals')),
+                            ),
+                            Expanded(
+                              child: _WebColumnLabel(
+                                context.tr('total_transactions'),
+                              ),
+                            ),
+                            Expanded(
+                              child:
+                                  _WebColumnLabel(context.tr('total_amount')),
+                            ),
+                          ],
                         ),
                       ),
-                      Expanded(
-                        child: _WebColumnLabel(context.tr('total_amount')),
+                      ...state.terminalSummaries.map(
+                        (summary) => Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 17,
+                          ),
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(color: context.appBorder),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  summary.serialNumber.isEmpty
+                                      ? context.tr('not_available')
+                                      : summary.serialNumber,
+                                  style: AppTextStyle(
+                                          kIsWeb &&
+                                                  AppBreakpoints
+                                                      .isTabletOrLarger(
+                                                          context)
+                                              ? AppPlatform.web
+                                              : AppPlatform.mobile)
+                                      .h5
+                                      .copyWith(
+                                        color: context.appTextPrimary,
+                                        fontWeight: FontWeight.w800,
+                                      ),
+                                ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  '${summary.count}',
+                                  style: AppTextStyle(
+                                          kIsWeb &&
+                                                  AppBreakpoints
+                                                      .isTabletOrLarger(
+                                                          context)
+                                              ? AppPlatform.web
+                                              : AppPlatform.mobile)
+                                      .h5
+                                      .copyWith(
+                                        color: context.appTextPrimary,
+                                        fontWeight: FontWeight.w800,
+                                      ),
+                                ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  'Rs. ${summary.totalAmount.toStringAsFixed(2)}',
+                                  style: AppTextStyle(
+                                          kIsWeb &&
+                                                  AppBreakpoints
+                                                      .isTabletOrLarger(
+                                                          context)
+                                              ? AppPlatform.web
+                                              : AppPlatform.mobile)
+                                      .h5
+                                      .copyWith(
+                                        color: context.appTextPrimary,
+                                        fontWeight: FontWeight.w800,
+                                      ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ],
                   ),
                 ),
-                ...state.terminalSummaries.map(
-                  (summary) => Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 17,
-                    ),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(color: context.appBorder),
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            summary.serialNumber.isEmpty
-                                ? context.tr('not_available')
-                                : summary.serialNumber,
-                            style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
-                              color: context.appTextPrimary,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            '${summary.count}',
-                            style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
-                              color: context.appTextPrimary,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            'Rs. ${summary.totalAmount.toStringAsFixed(2)}',
-                            style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
-                              color: context.appTextPrimary,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
             ],
           ),
         ),
@@ -560,6 +593,8 @@ class _WebRecentTransactions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
+        width: double.infinity,
+        height: double.infinity,
         decoration: _webSurface(),
         child: selectedTab == TransactionTab.pos
             ? _buildPosTransactions()
@@ -591,11 +626,13 @@ class _WebRecentTransactions extends StatelessWidget {
               message: context.tr('no_pos_transactions'),
             )
           else ...[
-            _WebHomeTransactionTable(
-              isPos: true,
-              children: state.transactions
-                  .map((item) => _WebTransactionRow(transaction: item))
-                  .toList(),
+            Expanded(
+              child: _WebHomeTransactionTable(
+                isPos: true,
+                children: state.transactions
+                    .map((item) => _WebTransactionRow(transaction: item))
+                    .toList(),
+              ),
             ),
             _WebPagination(
               page: state.page,
@@ -639,47 +676,53 @@ class _WebRecentTransactions extends StatelessWidget {
           ),
         ),
         const Divider(height: 1),
-        BlocBuilder<MerchantVpaTxnBloc, MerchantVpaTxnState>(
-          builder: (context, state) {
-            if (state is MerchantVpaTxnLoading && state.transactions.isEmpty) {
-              return const Padding(
-                padding: EdgeInsets.all(60),
-                child: CircularProgressIndicator(),
-              );
-            }
+        Expanded(
+          child: BlocBuilder<MerchantVpaTxnBloc, MerchantVpaTxnState>(
+            builder: (context, state) {
+              if (state is MerchantVpaTxnLoading &&
+                  state.transactions.isEmpty) {
+                return const Padding(
+                  padding: EdgeInsets.all(60),
+                  child: CircularProgressIndicator(),
+                );
+              }
 
-            if (state is MerchantVpaTxnFailure && state.transactions.isEmpty) {
-              return _WebEmptyState(
-                icon: Icons.error_outline_rounded,
-                message: context.tr('unable_load_qr_transactions'),
-              );
-            }
+              if (state is MerchantVpaTxnFailure &&
+                  state.transactions.isEmpty) {
+                return _WebEmptyState(
+                  icon: Icons.error_outline_rounded,
+                  message: context.tr('unable_load_qr_transactions'),
+                );
+              }
 
-            if (state.transactions.isEmpty) {
-              return _WebEmptyState(
-                icon: Icons.qr_code_rounded,
-                message: context.tr('no_qr_transactions_for_vpa'),
-              );
-            }
+              if (state.transactions.isEmpty) {
+                return _WebEmptyState(
+                  icon: Icons.qr_code_rounded,
+                  message: context.tr('no_qr_transactions_for_vpa'),
+                );
+              }
 
-            return Column(children: [
-              _WebHomeTransactionTable(
-                isPos: false,
-                children: state.transactions
-                    .map((item) => _WebQrTransactionRow(transaction: item))
-                    .toList(),
-              ),
-              _WebPagination(
-                page: state.page,
-                totalPages: state.totalPages,
-                isLoading: state is MerchantVpaTxnLoading,
-                canGoPrevious: !state.first,
-                canGoNext: !state.last,
-                onPrevious: () => onQrPageRequested(state.page - 1),
-                onNext: () => onQrPageRequested(state.page + 1),
-              ),
-            ]);
-          },
+              return Column(children: [
+                Expanded(
+                  child: _WebHomeTransactionTable(
+                    isPos: false,
+                    children: state.transactions
+                        .map((item) => _WebQrTransactionRow(transaction: item))
+                        .toList(),
+                  ),
+                ),
+                _WebPagination(
+                  page: state.page,
+                  totalPages: state.totalPages,
+                  isLoading: state is MerchantVpaTxnLoading,
+                  canGoPrevious: !state.first,
+                  canGoNext: !state.last,
+                  onPrevious: () => onQrPageRequested(state.page - 1),
+                  onNext: () => onQrPageRequested(state.page + 1),
+                ),
+              ]);
+            },
+          ),
         ),
       ]);
 
@@ -739,9 +782,16 @@ class _WebRecentTransactions extends StatelessWidget {
             const Divider(height: 1),
             _WebSettlementSummary(state: state),
             const Divider(height: 1),
-            const _WebSettlementColumnLabels(),
-            ...state.settlements.map(
-              (item) => _WebSettlementRow(settlement: item),
+            Expanded(
+              child: WebScrollableTable(
+                minWidth: 980,
+                children: [
+                  const _WebSettlementColumnLabels(),
+                  ...state.settlements.map(
+                    (item) => _WebSettlementRow(settlement: item),
+                  ),
+                ],
+              ),
             ),
             _WebPagination(
               page: state.page,
@@ -968,21 +1018,12 @@ class _WebHomeTransactionTable extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => LayoutBuilder(
-        builder: (context, constraints) => SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: SizedBox(
-            width: constraints.maxWidth < (isPos ? 1040 : 1100)
-                ? (isPos ? 1040 : 1100)
-                : constraints.maxWidth,
-            child: Column(
-              children: [
-                _WebTransactionColumnLabels(isPos: isPos),
-                ...children
-              ],
-            ),
-          ),
-        ),
+  Widget build(BuildContext context) => WebScrollableTable(
+        minWidth: isPos ? 1040 : 1100,
+        children: [
+          _WebTransactionColumnLabels(isPos: isPos),
+          ...children,
+        ],
       );
 }
 

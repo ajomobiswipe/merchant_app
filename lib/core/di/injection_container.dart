@@ -47,6 +47,9 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<SoundBoxRepository>(() => SoundBoxRepositoryImpl(
         apiService: sl(),
       ));
+  sl.registerLazySingleton<MerchantQrRepository>(
+    () => MerchantQrRepository(apiService: sl()),
+  );
   sl.registerLazySingleton<MerchantVpaTxnRepository>(
       () => MerchantVpaTxnRepositoryImpl(
             apiService: sl(),
