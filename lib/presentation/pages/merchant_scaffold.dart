@@ -73,6 +73,14 @@ class MerchantScaffold extends StatelessWidget {
           height: 40,
         ),
         actions: [
+          if (ModalRoute.of(context)?.settings.name != "merchantQr")
+            IconButton(
+              icon: const Icon(Icons.qr_code_2),
+              tooltip: "Show Merchant QR",
+              onPressed: () {
+                Navigator.pushNamed(context, "merchantQr");
+              },
+            ),
           IconButton(
             icon: const Icon(Icons.notifications_none_outlined),
             onPressed: () {},

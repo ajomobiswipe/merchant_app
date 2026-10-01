@@ -72,7 +72,23 @@ class _MerchantHelpScreenState extends State<MerchantHelpScreen> {
               ),
             ],
           ),
-          defaultHeight(screenHeight * 0.05),
+          defaultHeight(screenHeight * 0.03),
+          CustomContainer(
+            height: screenHeight * 0.06,
+            onTap: () => Navigator.pushNamed(context, "merchantQr"),
+            child: const Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.qr_code_2, color: Colors.white),
+                SizedBox(width: 8),
+                CustomTextWidget(
+                  text: "Show Merchant QR",
+                  color: Colors.white,
+                ),
+              ],
+            ),
+          ),
+          defaultHeight(screenHeight * 0.03),
           Row(
             children: [
               CustomTextWidget(

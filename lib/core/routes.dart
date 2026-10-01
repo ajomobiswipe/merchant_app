@@ -11,6 +11,7 @@ import 'package:anet_merchant_app/presentation/pages/forgot_password.dart';
 import 'package:anet_merchant_app/presentation/pages/reset_password.dart';
 import 'package:anet_merchant_app/presentation/pages/splash_screen/splash_screen.dart';
 import 'package:anet_merchant_app/presentation/pages/merchant_help_screen.dart';
+import 'package:anet_merchant_app/presentation/pages/merchant_qr_page.dart';
 import 'package:anet_merchant_app/presentation/pages/merchant_home_page/merchant_home_screen.dart';
 import 'package:anet_merchant_app/presentation/pages/merchant_login.dart';
 import 'package:anet_merchant_app/presentation/pages/merchant_transcation_filter_screen.dart';
@@ -46,6 +47,8 @@ class CustomRoute {
           return const MerchantHomeScreen();
         case "merchantHelpScreen":
           return const MerchantHelpScreen();
+        case "merchantQr":
+          return const MerchantQrPage();
         case "merchantTransactionFilterScreen":
           return MerchantTransactionFilterScreen();
         case "merchantStatementFilterScreen":

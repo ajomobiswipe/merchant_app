@@ -122,6 +122,13 @@ class MerchantServices {
     return await DioClient().post(url, requestModel);
   }
 
+  Future<dynamic> getListOfVpaAndQrData(Map<String, dynamic> requestModel,
+      {int pageNumber = 0, int pageSize = 200}) async {
+    final url =
+        "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/getListOfVpaAndQrData?pageNumber=$pageNumber&size=$pageSize&sort=insertDateTime%2Cdesc";
+    return await DioClient().post(url, requestModel);
+  }
+
   Future<dynamic> getSupportActionData() async {
     final url =
         "${EndPoints.baseApiPublic}/NanoPay/Middleware/UiApi/getSupportActionData";
