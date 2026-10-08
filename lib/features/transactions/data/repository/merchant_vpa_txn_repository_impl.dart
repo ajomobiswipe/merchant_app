@@ -34,6 +34,7 @@ class MerchantVpaTxnRepositoryImpl implements MerchantVpaTxnRepository {
         ),
         page: page,
         size: size,
+        sort: 'insertDateTime,desc',
         mappedMerchantId: mappedMerchantId,
       );
 

@@ -66,8 +66,12 @@ class MerchantVpaTxnPageDataModel {
     return MerchantVpaTxnPageDataModel(
       content: content is List
           ? content
-              .whereType<Map<String, dynamic>>()
-              .map(MerchantVpaTransactionModel.fromJson)
+              .whereType<Map>()
+              .map(
+                (item) => MerchantVpaTransactionModel.fromJson(
+                  Map<String, dynamic>.from(item),
+                ),
+              )
               .toList()
           : [],
       first: json['first'] ?? true,
@@ -88,6 +92,7 @@ class MerchantVpaTransactionModel {
   final String transactionAmount;
   final String transactionType;
   final String accountDetailsAccType;
+  final String payerDetailsAccType;
   final String code;
   final String payerName;
   final String payeeName;
@@ -108,6 +113,7 @@ class MerchantVpaTransactionModel {
     required this.transactionAmount,
     required this.transactionType,
     required this.accountDetailsAccType,
+    this.payerDetailsAccType = '',
     required this.code,
     required this.payerName,
     required this.payeeName,
@@ -135,6 +141,7 @@ class MerchantVpaTransactionModel {
       transactionAmount: json['transactionAmount'] ?? '',
       transactionType: json['transactionType'] ?? '',
       accountDetailsAccType: json['accountDetailsAccType'] ?? '',
+      payerDetailsAccType: '${json['payerDetailsAccType'] ?? ''}',
       code: code,
       payerName: json['payerName'] ?? '',
       payeeName: json['payeeName'] ?? '',
@@ -150,6 +157,29 @@ class MerchantVpaTransactionModel {
           ? explicitOrgStatus
           : _derivedOrgStatus(status: status, code: code),
     );
+  }
+
+  String get displayAccType {
+    final payerType = payerDetailsAccType.trim();
+    if (payerType.isNotEmpty) {
+      return payerType;
+    }
+    return accountDetailsAccType.trim();
+  }
+
+  bool get isSuccessful {
+    final code = gatewayResponseCode.trim();
+    if (code == '00' || code == '000') {
+      return true;
+    }
+
+    final text = '$status $orgStatus'.toLowerCase();
+    if (text.contains('success') || text.contains('approved')) {
+      return true;
+    }
+
+    final statusCode = status.trim();
+    return statusCode == '00' || statusCode == '000';
   }
 
   static String _derivedOrgStatus({

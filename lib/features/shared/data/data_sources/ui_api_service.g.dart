@@ -24,13 +24,13 @@ class _MerchantUiApiService implements MerchantUiApiService {
     String authorization,
     String clientUniqueId,
     SoundBoxDevicesRequestModel request, {
-    int pageNumber = 0,
-    int size = 100,
+    int page = 0,
+    int size = 500,
     String sort = 'insertDateTime,desc',
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
-      r'pageNumber': pageNumber,
+      r'page': page,
       r'size': size,
       r'sort': sort,
     };
@@ -115,14 +115,14 @@ class _MerchantUiApiService implements MerchantUiApiService {
     String acceptLanguage = 'en-GB,en-US;q=0.9,en;q=0.8',
     int page = 0,
     int size = 10,
-    String sortDir = 'DESC',
+    String sort = 'insertDateTime,desc',
     String? mappedMerchantId,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
       r'page': page,
       r'size': size,
-      r'sortDir': sortDir,
+      r'sort': sort,
       r'mappedMerchantId': mappedMerchantId,
     };
     queryParameters.removeWhere(

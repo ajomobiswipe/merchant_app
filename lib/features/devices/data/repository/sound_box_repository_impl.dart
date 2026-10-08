@@ -23,6 +23,9 @@ class SoundBoxRepositoryImpl implements SoundBoxRepository {
         _authorizationHeader(bearerToken),
         clientUniqueId,
         SoundBoxDevicesRequestModel(merchantId: merchantId),
+        page: 0,
+        size: 500,
+        sort: 'insertDateTime,desc',
       );
 
       if (httpResponse.response.statusCode == HttpStatus.ok) {

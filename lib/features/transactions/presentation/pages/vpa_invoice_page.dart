@@ -109,7 +109,7 @@ class _VpaInvoicePageState extends State<VpaInvoicePage> {
                 value: transaction.status),
             _InvoiceLine(
               label: context.tr('account_type'),
-              value: transaction.accountDetailsAccType,
+              value: transaction.displayAccType,
             ),
             _InvoiceLine(
               label: context.tr('customer_name'),
@@ -251,7 +251,7 @@ class _VpaInvoicePageState extends State<VpaInvoicePage> {
             ),
             _pdfLine(
               'Account Type',
-              transaction.accountDetailsAccType,
+              transaction.displayAccType,
               regularFont: regularFont,
               boldFont: boldFont,
             ),

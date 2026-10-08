@@ -22,8 +22,8 @@ abstract class MerchantUiApiService {
     @Header('Authorization') String authorization,
     @Header('x-client-unique-id') String clientUniqueId,
     @Body() SoundBoxDevicesRequestModel request, {
-    @Query('pageNumber') int pageNumber = 0,
-    @Query('size') int size = 100,
+    @Query('page') int page = 0,
+    @Query('size') int size = 500,
     @Query('sort') String sort = 'insertDateTime,desc',
   });
 
@@ -46,7 +46,7 @@ abstract class MerchantUiApiService {
     String acceptLanguage = 'en-GB,en-US;q=0.9,en;q=0.8',
     @Query('page') int page = 0,
     @Query('size') int size = 10,
-    @Query('sortDir') String sortDir = 'DESC',
+    @Query('sort') String sort = 'insertDateTime,desc',
     @Query('mappedMerchantId') String? mappedMerchantId,
   });
 

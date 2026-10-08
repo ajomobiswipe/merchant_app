@@ -380,9 +380,12 @@ class _TransactionRrnSearchSheetState
       title: transaction.transactionAmount,
       subtitle:
           '${transaction.addedOn.replaceFirst('T', ' ')}  ${transaction.rrn}',
-      detail: transaction.customerVpa,
+      detail: [
+        transaction.customerVpa,
+        if (transaction.displayAccType.isNotEmpty) transaction.displayAccType,
+      ].where((part) => part.trim().isNotEmpty).join('  ·  '),
       status: status,
-      successful: _isApprovedStatus(status),
+      successful: transaction.isSuccessful,
       onTap: () {
         final router = GoRouter.of(context);
         Navigator.of(context).pop();

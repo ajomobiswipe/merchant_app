@@ -609,7 +609,8 @@ class _TransactionListPageState extends State<TransactionListPage> {
 
         return Column(
           children: [
-            _WebResultTable(
+            Expanded(
+              child: _WebResultTable(
               isPosTable: false,
               isQrTable: true,
               entries: state.transactions
@@ -620,9 +621,10 @@ class _TransactionListPageState extends State<TransactionListPage> {
                       customerName: _valueOrFallback(transaction.payerName, ''),
                       paymentName:
                           _valueOrFallback(transaction.customerVpa, ''),
-                      method: _valueOrFallback(transaction.rrn, ''),
+                      method: _valueOrFallback(transaction.displayAccType, ''),
+                      category: _valueOrFallback(transaction.rrn, ''),
                       status: transaction.status,
-                      successful: _isSuccessfulStatus(transaction.status),
+                      successful: transaction.isSuccessful,
                       onTap: () => context.push(
                         AppRoutes.vpaInvoice,
                         extra: transaction,
@@ -630,6 +632,7 @@ class _TransactionListPageState extends State<TransactionListPage> {
                     ),
                   )
                   .toList(),
+            ),
             ),
             const SizedBox(height: 8),
             _PaginationControls(
@@ -672,7 +675,8 @@ class _TransactionListPageState extends State<TransactionListPage> {
 
         return Column(
           children: [
-            _WebResultTable(
+            Expanded(
+              child: _WebResultTable(
               isPosTable: true,
               isQrTable: false,
               entries: state.transactions
@@ -699,6 +703,7 @@ class _TransactionListPageState extends State<TransactionListPage> {
                     ),
                   )
                   .toList(),
+            ),
             ),
             const SizedBox(height: 8),
             _PaginationControls(
@@ -728,7 +733,8 @@ class _TransactionListPageState extends State<TransactionListPage> {
 
         return Column(
           children: [
-            _WebResultTable(
+            Expanded(
+              child: _WebResultTable(
               isPosTable: false,
               isQrTable: false,
               entries: state.settlements.map(
@@ -757,6 +763,7 @@ class _TransactionListPageState extends State<TransactionListPage> {
                   );
                 },
               ).toList(),
+            ),
             ),
             const SizedBox(height: 8),
             _PaginationControls(
@@ -1703,7 +1710,7 @@ class _WebResultTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WebScrollableTable(
-      minWidth: isQrTable ? 1100 : 1040,
+      minWidth: isQrTable ? 1220 : 1040,
       children: [
         _WebResultTableHeader(
           isPosTable: isPosTable,
@@ -1765,7 +1772,9 @@ class _WebResultTableHeader extends StatelessWidget {
             _WebResultTableCell(
                 label: context.tr('customer_name'), flex: 18, header: true),
             _WebResultTableCell(
-                label: context.tr('customer_vpa'), flex: 20, header: true),
+                label: context.tr('customer_vpa'), flex: 18, header: true),
+            _WebResultTableCell(
+                label: context.tr('account_type'), flex: 14, header: true),
             _WebResultTableCell(
                 label: context.tr('rrn'), flex: 14, header: true),
             _WebResultTableCell(
@@ -1837,8 +1846,9 @@ class _WebResultTableRow extends StatelessWidget {
                 _WebResultTableCell(label: entry.amount, flex: 13, bold: true),
                 _WebResultTableCell(label: entry.date, flex: 16),
                 _WebResultTableCell(label: entry.customerName, flex: 18),
-                _WebResultTableCell(label: entry.paymentName, flex: 20),
+                _WebResultTableCell(label: entry.paymentName, flex: 18),
                 _WebResultTableCell(label: entry.method, flex: 14),
+                _WebResultTableCell(label: entry.category, flex: 14),
                 Expanded(
                   flex: 14,
                   child: Align(
@@ -1958,7 +1968,15 @@ class _LoadingTransactions extends StatelessWidget {
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 48),
-        child: CircularProgressIndicator(color: AppColors.primaryPurple),
+        child: SizedBox(
+          width: 36,
+          height: 36,
+          child: CircularProgressIndicator(
+            color: AppColors.primaryPurple,
+            strokeWidth: 2.8,
+            constraints: BoxConstraints.tightFor(width: 36, height: 36),
+          ),
+        ),
       ),
     );
   }

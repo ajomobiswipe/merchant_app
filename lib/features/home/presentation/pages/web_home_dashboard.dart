@@ -13,7 +13,7 @@ class WebHomeDashboard extends StatelessWidget {
   final ValueChanged<TransactionTab> onTabSelected;
   final ValueChanged<int> onNavigationSelected;
   final VoidCallback onViewAll;
-  final VoidCallback onRefresh;
+  final Future<void> Function() onRefresh;
   final ValueChanged<int> onPosPageRequested;
   final ValueChanged<int> onQrPageRequested;
   final ValueChanged<int> onSettlementPageRequested;
@@ -106,9 +106,15 @@ class WebHomeDashboard extends StatelessWidget {
                                     const SizedBox(height: 12),
                                     if (isAllMerchantSelection)
                                       Expanded(
-                                        child: _WebAllMerchantSummary(
-                                          onViewAll: onViewAll,
+                                        child: RefreshIndicator(
+                                          color: AppColors.primaryPurple,
                                           onRefresh: onRefresh,
+                                          child: _WebAllMerchantSummary(
+                                          onViewAll: onViewAll,
+                                          onRefresh: () {
+                                            onRefresh();
+                                          },
+                                        ),
                                         ),
                                       )
                                     else ...[
@@ -118,10 +124,15 @@ class WebHomeDashboard extends StatelessWidget {
                                       ),
                                       const SizedBox(height: 12),
                                       Expanded(
-                                        child: _WebRecentTransactions(
+                                        child: RefreshIndicator(
+                                          color: AppColors.primaryPurple,
+                                          onRefresh: onRefresh,
+                                          child: _WebRecentTransactions(
                                           selectedTab: selectedTab,
                                           onViewAll: onViewAll,
-                                          onRefresh: onRefresh,
+                                          onRefresh: () {
+                                            onRefresh();
+                                          },
                                           onPosPageRequested:
                                               onPosPageRequested,
                                           onQrPageRequested: onQrPageRequested,
@@ -129,6 +140,7 @@ class WebHomeDashboard extends StatelessWidget {
                                               onSettlementPageRequested,
                                           selectedVpa: selectedVpa,
                                           onVpaChanged: onVpaChanged,
+                                        ),
                                         ),
                                       ),
                                     ],
@@ -200,10 +212,7 @@ class _WebAllMerchantSummary extends StatelessWidget {
               ),
               const Divider(height: 1),
               if (state.transactionsLoading && state.terminalSummaries.isEmpty)
-                const Padding(
-                  padding: EdgeInsets.all(60),
-                  child: CircularProgressIndicator(),
-                )
+                const Expanded(child: _WebCenteredLoader())
               else if (state.terminalSummaries.isEmpty)
                 _WebEmptyState(
                   icon: Icons.storefront_outlined,
@@ -616,10 +625,7 @@ class _WebRecentTransactions extends StatelessWidget {
           ),
           const Divider(height: 1),
           if (state.transactionsLoading && state.transactions.isEmpty)
-            const Padding(
-              padding: EdgeInsets.all(60),
-              child: CircularProgressIndicator(),
-            )
+            const Expanded(child: _WebCenteredLoader())
           else if (state.transactions.isEmpty)
             _WebEmptyState(
               icon: Icons.receipt_long_outlined,
@@ -681,10 +687,7 @@ class _WebRecentTransactions extends StatelessWidget {
             builder: (context, state) {
               if (state is MerchantVpaTxnLoading &&
                   state.transactions.isEmpty) {
-                return const Padding(
-                  padding: EdgeInsets.all(60),
-                  child: CircularProgressIndicator(),
-                );
+                return const _WebCenteredLoader();
               }
 
               if (state is MerchantVpaTxnFailure &&
@@ -735,10 +738,7 @@ class _WebRecentTransactions extends StatelessWidget {
                 onRefresh: null,
               ),
               const Divider(height: 1),
-              const Padding(
-                padding: EdgeInsets.all(60),
-                child: CircularProgressIndicator(),
-              ),
+              const Expanded(child: _WebCenteredLoader()),
             ]);
           }
 
@@ -998,6 +998,8 @@ class _WebTransactionColumnLabels extends StatelessWidget {
                 flex: 18, child: _WebColumnLabel(context.tr('customer_name'))),
             Expanded(
                 flex: 20, child: _WebColumnLabel(context.tr('customer_vpa'))),
+            Expanded(
+                flex: 14, child: _WebColumnLabel(context.tr('account_type'))),
             Expanded(flex: 14, child: _WebColumnLabel(context.tr('rrn'))),
           ],
           SizedBox(width: 112, child: _WebColumnLabel(context.tr('status'))),
@@ -1019,7 +1021,7 @@ class _WebHomeTransactionTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => WebScrollableTable(
-        minWidth: isPos ? 1040 : 1100,
+        minWidth: isPos ? 1040 : 1220,
         children: [
           _WebTransactionColumnLabels(isPos: isPos),
           ...children,
@@ -1214,6 +1216,25 @@ class _WebColumnLabel extends StatelessWidget {
       );
 }
 
+class _WebCenteredLoader extends StatelessWidget {
+  const _WebCenteredLoader();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: SizedBox(
+        width: 36,
+        height: 36,
+        child: CircularProgressIndicator(
+          strokeWidth: 2.8,
+          color: AppColors.primaryPurple,
+          constraints: BoxConstraints.tightFor(width: 36, height: 36),
+        ),
+      ),
+    );
+  }
+}
+
 class _WebEmptyState extends StatelessWidget {
   final IconData icon;
   final String message;
@@ -1245,8 +1266,7 @@ class _WebQrTransactionRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final successful = transaction.status.toLowerCase().contains('success') ||
-        transaction.status.toLowerCase().contains('approved');
+    final successful = transaction.isSuccessful;
     return InkWell(
       onTap: () => context.push(AppRoutes.vpaInvoice, extra: transaction),
       child: Container(
@@ -1274,6 +1294,12 @@ class _WebQrTransactionRow extends StatelessWidget {
           Expanded(
             flex: 20,
             child: _WebHomeTableText(_webValueOrDash(transaction.customerVpa)),
+          ),
+          Expanded(
+            flex: 14,
+            child: _WebHomeTableText(
+              _webValueOrDash(transaction.displayAccType),
+            ),
           ),
           Expanded(
             flex: 14,

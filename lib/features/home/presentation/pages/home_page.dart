@@ -301,18 +301,55 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void _refreshSelectedTransactions() {
-    if (_selectedTransactionTab == TransactionTab.qr) {
-      _loadMerchantVpaTransactions(page: 0);
+  Future<void> _refreshSelectedTransactions() async {
+    if (_isAllMerchantSelection ||
+        _selectedTransactionTab == TransactionTab.pos) {
+      _loadPosTransactions(page: 0);
+      await _waitUntilSelectedTabIdle();
       return;
     }
 
-    if (_selectedTransactionTab == TransactionTab.pos) {
-      _loadPosTransactions(page: 0);
+    if (_selectedTransactionTab == TransactionTab.qr) {
+      _loadMerchantVpaTransactions(page: 0);
+      await _waitUntilSelectedTabIdle();
       return;
     }
 
     _loadSettlements(page: 0);
+    await _waitUntilSelectedTabIdle();
+  }
+
+  Future<void> _waitUntilSelectedTabIdle() async {
+    await Future<void>.delayed(Duration.zero);
+    if (!mounted) return;
+
+    if (_isAllMerchantSelection ||
+        _selectedTransactionTab == TransactionTab.pos) {
+      final bloc = context.read<PosTransactionBloc>();
+      if (bloc.state.transactionsLoading) {
+        await bloc.stream
+            .firstWhere((state) => !state.transactionsLoading)
+            .timeout(const Duration(seconds: 20), onTimeout: () => bloc.state);
+      }
+      return;
+    }
+
+    if (_selectedTransactionTab == TransactionTab.qr) {
+      final bloc = context.read<MerchantVpaTxnBloc>();
+      if (bloc.state is MerchantVpaTxnLoading) {
+        await bloc.stream
+            .firstWhere((state) => state is! MerchantVpaTxnLoading)
+            .timeout(const Duration(seconds: 20), onTimeout: () => bloc.state);
+      }
+      return;
+    }
+
+    final bloc = context.read<SettlementBloc>();
+    if (bloc.state.isLoading) {
+      await bloc.stream
+          .firstWhere((state) => !state.isLoading)
+          .timeout(const Duration(seconds: 20), onTimeout: () => bloc.state);
+    }
   }
 
   Future<void> _onMerchantChanged(String? merchantId) async {
@@ -591,8 +628,12 @@ class _HomePageState extends State<HomePage> {
             stops: const [0, 0.28],
           ),
         ),
-        child: ListView(
+        child: RefreshIndicator(
+          color: AppColors.primaryPurple,
+          onRefresh: _refreshSelectedTransactions,
+          child: ListView(
           controller: _scrollController,
+          physics: const AlwaysScrollableScrollPhysics(),
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 18),
           children: [
             MobileHomeGreeting(
@@ -650,6 +691,7 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 8),
             _buildSelectedTransactionList(),
           ],
+        ),
         ),
       ),
     );
@@ -740,11 +782,9 @@ class _HomePageState extends State<HomePage> {
       listener: (context, state) => _scheduleHomeLoadMoreIfNeeded(),
       builder: (context, state) {
         if (state is MerchantVpaTxnLoading && state.transactions.isEmpty) {
-          return const Center(
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 48),
-              child: CircularProgressIndicator(),
-            ),
+          return const Padding(
+            padding: EdgeInsets.symmetric(vertical: 48),
+            child: _WebCenteredLoader(),
           );
         }
 
@@ -788,13 +828,9 @@ class _HomePageState extends State<HomePage> {
           return Column(
             children: [
               summary,
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 48),
-                  child: CircularProgressIndicator(
-                    color: AppColors.primaryPurple,
-                  ),
-                ),
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 48),
+                child: _WebCenteredLoader(),
               ),
             ],
           );
@@ -844,11 +880,9 @@ class _HomePageState extends State<HomePage> {
         if (state.transactionsLoading &&
             state.transactions.isEmpty &&
             state.terminalSummaries.isEmpty) {
-          return Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 48),
-              child: CircularProgressIndicator(color: AppColors.primaryPurple),
-            ),
+          return const Padding(
+            padding: EdgeInsets.symmetric(vertical: 48),
+            child: _WebCenteredLoader(),
           );
         }
 

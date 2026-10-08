@@ -394,6 +394,7 @@ class MobileHomeTxnTile extends StatelessWidget {
   final IconData icon;
   final String title;
   final String subtitle;
+  final String? accType;
   final String? rrn;
   final String dateTimeText;
   final String amount;
@@ -410,6 +411,7 @@ class MobileHomeTxnTile extends StatelessWidget {
     required this.amount,
     required this.status,
     required this.successful,
+    this.accType,
     this.rrn,
     this.onTap,
   });
@@ -442,21 +444,23 @@ class MobileHomeTxnTile extends StatelessWidget {
   }) {
     final vpa = transaction.customerVpa.trim();
     final rrn = transaction.rrn.trim();
+    final accType = transaction.displayAccType;
     return MobileHomeTxnTile(
       icon: Icons.qr_code_2_rounded,
       title: transaction.transactionType.trim().isEmpty
           ? 'QR'
           : transaction.transactionType,
-      subtitle: vpa.isEmpty
-          ? (transaction.payerName.trim().isEmpty
-              ? '-'
-              : transaction.payerName.trim())
-          : vpa,
+      subtitle: vpa.isNotEmpty
+          ? vpa
+          : (transaction.payerName.trim().isEmpty
+              ? ''
+              : transaction.payerName.trim()),
+      accType: accType.isEmpty ? null : accType,
       rrn: rrn.isEmpty ? null : rrn,
       dateTimeText: _formatIso(transaction.addedOn),
       amount: _rupee(transaction.transactionAmount),
       status: transaction.status,
-      successful: transaction.status.toLowerCase().contains('success'),
+      successful: transaction.isSuccessful,
       onTap: onTap,
     );
   }
@@ -465,14 +469,21 @@ class MobileHomeTxnTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final chipBg = _statusChipBg(context, success: successful);
     final chipFg = _statusChipFg(context, success: successful);
-    final details = [
-      if (subtitle.trim().isNotEmpty && subtitle.trim() != '-') subtitle.trim(),
-      if (rrn != null && rrn!.isNotEmpty) '${context.tr('rrn')} $rrn',
-    ].join('  ·  ');
+    final vpaText = subtitle.trim();
+    final typeText = accType?.trim() ?? '';
+    final rrnText = rrn?.trim() ?? '';
 
     final background = _tileBackground(context);
     final titleColor = _tileTitleColor(context);
     final mutedColor = _tileMutedColor(context);
+    final detailStyle = AppTextStyle(
+      kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+          ? AppPlatform.web
+          : AppPlatform.mobile,
+    ).h5.copyWith(
+          color: mutedColor,
+          height: 1.25,
+        );
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
@@ -522,17 +533,22 @@ class MobileHomeTxnTile extends StatelessWidget {
                           height: 1.2,
                         ),
                       ),
-                      if (details.isNotEmpty) ...[
+                      if (vpaText.isNotEmpty && vpaText != '-') ...[
                         const SizedBox(height: 3),
                         Text(
-                          details,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
-                            color: mutedColor,
-                            height: 1.2,
-                          ),
+                          vpaText,
+                          style: detailStyle,
+                        ),
+                      ],
+                      if (typeText.isNotEmpty) ...[
+                        const SizedBox(height: 2),
+                        Text(typeText, style: detailStyle),
+                      ],
+                      if (rrnText.isNotEmpty) ...[
+                        const SizedBox(height: 2),
+                        Text(
+                          '${context.tr('rrn')} $rrnText',
+                          style: detailStyle,
                         ),
                       ],
                       const SizedBox(height: 3),
