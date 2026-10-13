@@ -14,6 +14,7 @@ import 'package:anet_merchants/features/transactions/presentation/pages/transact
 import 'package:anet_merchants/features/shared/presentation/widgets/flow_page_header.dart';
 import 'package:anet_merchants/features/shared/presentation/widgets/merchant_overview.dart';
 import 'package:anet_merchants/features/shared/presentation/widgets/quick_actions.dart';
+import 'package:anet_merchants/features/shared/presentation/widgets/searchable_dropdown_field.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
@@ -1261,6 +1262,22 @@ class _FilterDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (values.length > 10) {
+      return SearchableDropdownField(
+        values: values,
+        selectedValue: selectedValue,
+        labelOf: (value) => value,
+        onChanged: values.isEmpty ? null : onChanged,
+        icon: icon,
+        isLoading: isLoading,
+        searchHint: context.tr('search_terminal'),
+        emptyLabel: context.tr('no_matching_terminals'),
+        height: 56,
+        borderRadius: 6,
+        padding: const EdgeInsets.symmetric(horizontal: 14),
+      );
+    }
+
     return Container(
       height: 56,
       decoration: BoxDecoration(

@@ -43,6 +43,7 @@ class _TransactionListPageState extends State<TransactionListPage> {
   String _merchantId = '';
   String _acqMerchantId = '';
   String _clientUniqueId = '';
+  bool _merchantContextLoaded = false;
   bool _isSendingEmail = false;
   bool _isDownloadingReport = false;
 
@@ -55,13 +56,27 @@ class _TransactionListPageState extends State<TransactionListPage> {
       widget.filter.tab == TransactionTab.pos && _acqMerchantId == '0';
   bool get _isReportActionBusy => _isSendingEmail || _isDownloadingReport;
   bool get _showExcelDownload =>
-      _supportsExcelReport && !_isAllMerchantSelection;
+      _merchantContextLoaded &&
+      _supportsExcelReport &&
+      _acqMerchantId != '0';
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
-    _loadSelectedTransactions(page: 0);
+    _bootstrap();
+  }
+
+  Future<void> _bootstrap() async {
+    final merchantId = await _sessionStorage.merchantId;
+    final acqMerchantId = await _sessionStorage.activeAcqMerchantId;
+    if (!mounted) return;
+    setState(() {
+      _merchantId = merchantId;
+      _acqMerchantId = acqMerchantId;
+      _merchantContextLoaded = true;
+    });
+    await _loadSelectedTransactions(page: 0);
   }
 
   @override

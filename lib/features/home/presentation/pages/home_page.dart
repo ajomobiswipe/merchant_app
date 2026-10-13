@@ -1031,56 +1031,21 @@ class _MerchantDropdown extends StatelessWidget {
   Widget build(BuildContext context) {
     final selectedExists =
         items.any((item) => item.merchantId == selectedMerchantId);
+    final labels = <String, String>{
+      for (final item in items)
+        item.merchantId:
+            item.isAll ? context.tr('all_merchants') : item.displayLabel,
+    };
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
-      decoration: BoxDecoration(
-        color: context.appSurface,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: context.appBorder),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: selectedExists ? selectedMerchantId : items.first.merchantId,
-          isExpanded: true,
-          dropdownColor: context.appSurface,
-          icon: Icon(
-            Icons.keyboard_arrow_down_rounded,
-            color: AppColors.primaryPurple,
-          ),
-          items: items.map((item) {
-            final label =
-                item.isAll ? context.tr('all_merchants') : item.displayLabel;
-
-            return DropdownMenuItem<String>(
-              value: item.merchantId,
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.storefront_rounded,
-                    color: AppColors.primaryPurple,
-                    size: 22,
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Text(
-                      label,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
-                        color: context.appTextPrimary,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }).toList(),
-          onChanged: onChanged,
-        ),
-      ),
+    return SearchableDropdownField(
+      values: items.map((item) => item.merchantId).toList(),
+      selectedValue:
+          selectedExists ? selectedMerchantId : items.first.merchantId,
+      labelOf: (value) => labels[value] ?? value,
+      onChanged: onChanged,
+      icon: Icons.storefront_rounded,
+      searchHint: context.tr('search_terminal'),
+      emptyLabel: context.tr('no_matching_terminals'),
     );
   }
 }
