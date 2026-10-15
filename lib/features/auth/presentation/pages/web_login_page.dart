@@ -397,6 +397,8 @@ class _WebSignInCard extends StatelessWidget {
             _OrDivider(compact: compact),
             SizedBox(height: compact ? 16 : 22),
             _ConnectCard(compact: compact),
+            SizedBox(height: compact ? 8 : 12),
+            _PrivacyPolicyLink(compact: compact),
           ],
         ),
       ),

@@ -9,6 +9,7 @@ import 'package:anet_merchants/core/localization/app_language.dart';
 import 'package:anet_merchants/core/services/app_update_service.dart';
 import 'package:anet_merchants/core/services/device_app_info_service.dart';
 import 'package:anet_merchants/core/storage/session_storage.dart';
+import 'package:anet_merchants/core/utils/contact_launcher.dart';
 import 'package:anet_merchants/core/utils/logout_helper.dart';
 import 'package:anet_merchants/features/auth/auth.dart';
 import 'package:anet_merchants/features/shared/shared.dart';
@@ -498,9 +499,24 @@ class _AboutSection extends StatelessWidget {
           icon: Icons.payments_rounded,
           label: context.tr('description'),
           value: context.tr('app_description'),
+        ),
+        _ActionTile(
+          icon: Icons.policy_rounded,
+          label: context.tr('privacy_policy'),
+          value: context.tr('view_privacy_policy'),
+          onTap: () => _openPrivacyPolicy(context),
           showDivider: false,
         ),
       ],
+    );
+  }
+
+  Future<void> _openPrivacyPolicy(BuildContext context) async {
+    final launched = await ContactLauncher.openPrivacyPolicy();
+    if (!context.mounted || launched) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(context.tr('open_contact_failed'))),
     );
   }
 }

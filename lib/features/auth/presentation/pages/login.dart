@@ -349,6 +349,8 @@ class _LoginState extends State<Login> {
                                 _OrDivider(compact: compact),
                                 SizedBox(height: compact ? 18 : 28),
                                 _ConnectCard(compact: compact),
+                                SizedBox(height: compact ? 8 : 12),
+                                _PrivacyPolicyLink(compact: compact),
                               ],
                             ),
                           ),
@@ -1052,3 +1054,47 @@ class _ContactRow extends StatelessWidget {
 }
 
 enum _ContactType { phone, email }
+
+class _PrivacyPolicyLink extends StatelessWidget {
+  final bool compact;
+
+  const _PrivacyPolicyLink({this.compact = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: TextButton(
+        onPressed: () => _openPrivacyPolicy(context),
+        child: Text(
+          context.tr('privacy_policy'),
+          style: (compact
+                  ? AppTextStyle(kIsWeb &&
+                          AppBreakpoints.isTabletOrLarger(context)
+                      ? AppPlatform.web
+                      : AppPlatform.mobile)
+                      .h5
+                  : AppTextStyle(kIsWeb &&
+                          AppBreakpoints.isTabletOrLarger(context)
+                      ? AppPlatform.web
+                      : AppPlatform.mobile)
+                      .h4)
+              .copyWith(
+            color: AppColors.primaryPurple,
+            fontWeight: FontWeight.w800,
+            decoration: TextDecoration.underline,
+            decorationColor: AppColors.primaryPurple,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _openPrivacyPolicy(BuildContext context) async {
+    final launched = await ContactLauncher.openPrivacyPolicy();
+    if (!context.mounted || launched) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(context.tr('open_contact_failed'))),
+    );
+  }
+}
