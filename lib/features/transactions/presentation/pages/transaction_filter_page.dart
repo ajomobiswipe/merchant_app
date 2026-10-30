@@ -6,6 +6,7 @@ import 'package:anet_merchants/core/common/app_colors.dart';
 import 'package:anet_merchants/core/common/app_text_style.dart';
 import 'package:anet_merchants/core/common/common_scaffold.dart';
 import 'package:anet_merchants/core/localization/app_language.dart';
+import 'package:anet_merchants/core/services/alert_service.dart';
 import 'package:anet_merchants/core/storage/session_storage.dart';
 import 'package:anet_merchants/core/utils/navigation_helper.dart';
 import 'package:anet_merchants/features/transactions/presentation/bloc/pos_transaction/pos_transaction_bloc.dart';
@@ -164,10 +165,30 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
       return;
     }
 
+    final maximumEndDate = _oneMonthAfter(fromDate);
+    final rangeEnd = toDate.isAfter(maximumEndDate) ? maximumEndDate : toDate;
+
     setState(() {
-      _customDateRange = DateTimeRange(start: fromDate, end: toDate);
+      _customDateRange = DateTimeRange(start: fromDate, end: rangeEnd);
       _dateFilter = _DateFilter.custom;
     });
+
+    if (toDate.isAfter(maximumEndDate)) {
+      await AlertService.warning(
+        context,
+        title: context.tr('warning'),
+        message: context.tr('custom_date_range_limited'),
+      );
+    }
+  }
+
+  DateTime _oneMonthAfter(DateTime date) {
+    final lastDayOfNextMonth = DateTime(date.year, date.month + 2, 0).day;
+    return DateTime(
+      date.year,
+      date.month + 1,
+      date.day > lastDayOfNextMonth ? lastDayOfNextMonth : date.day,
+    );
   }
 
   Future<DateTime?> _pickCalendarDate({
@@ -233,10 +254,14 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
                 foregroundColor: AppColors.primaryPurple,
-                textStyle: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
-                  fontWeight: FontWeight.w800,
-                ),
+                textStyle: AppTextStyle(
+                        kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                            ? AppPlatform.web
+                            : AppPlatform.mobile)
+                    .h4
+                    .copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
               ),
             ),
           ),
@@ -375,30 +400,42 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
           ),
           title: Text(
             context.tr('filter_required'),
-            style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
-              color: context.appTextPrimary,
-              fontWeight: FontWeight.w900,
-            ),
+            style: AppTextStyle(
+                    kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                        ? AppPlatform.web
+                        : AppPlatform.mobile)
+                .h4
+                .copyWith(
+                  color: context.appTextPrimary,
+                  fontWeight: FontWeight.w900,
+                ),
           ),
           content: Text(
             message,
-            style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
-              color: context.appTextSecondary,
-              fontWeight: FontWeight.w700,
-            ),
+            style: AppTextStyle(
+                    kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                        ? AppPlatform.web
+                        : AppPlatform.mobile)
+                .h5
+                .copyWith(
+                  color: context.appTextSecondary,
+                  fontWeight: FontWeight.w700,
+                ),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
               child: Text(
                 context.tr('ok'),
-                style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
-                  color: AppColors.primaryPurple,
-                  fontWeight: FontWeight.w900,
-                ),
+                style: AppTextStyle(
+                        kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                            ? AppPlatform.web
+                            : AppPlatform.mobile)
+                    .h5
+                    .copyWith(
+                      color: AppColors.primaryPurple,
+                      fontWeight: FontWeight.w900,
+                    ),
               ),
             ),
           ],
@@ -481,20 +518,26 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
                         context,
                         AppRoutes.home,
                       ),
-                      icon:  Icon(defaultTargetPlatform == TargetPlatform.iOS
-                          ? Icons.arrow_back_ios
-                          : Icons.arrow_back_rounded,),
+                      icon: Icon(
+                        defaultTargetPlatform == TargetPlatform.iOS
+                            ? Icons.arrow_back_ios
+                            : Icons.arrow_back_rounded,
+                      ),
                       color: context.appTextPrimary,
                       tooltip: context.tr('back'),
                     ),
                     const SizedBox(width: 8),
                     Text(
                       _webFilterTitle,
-                      style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
-                        color: context.appTextPrimary,
-                        fontWeight: FontWeight.w900,
-                      ),
+                      style: AppTextStyle(
+                              kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                                  ? AppPlatform.web
+                                  : AppPlatform.mobile)
+                          .h3
+                          .copyWith(
+                            color: context.appTextPrimary,
+                            fontWeight: FontWeight.w900,
+                          ),
                     ),
                   ],
                 ),
@@ -543,8 +586,12 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
         style: OutlinedButton.styleFrom(
           foregroundColor: const Color(0xffF34D4D),
           side: const BorderSide(color: Color(0xffF34D4D)),
-          textStyle: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(fontWeight: FontWeight.w900),
+          textStyle: AppTextStyle(
+                  kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                      ? AppPlatform.web
+                      : AppPlatform.mobile)
+              .h4
+              .copyWith(fontWeight: FontWeight.w900),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
@@ -561,9 +608,12 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppColors.primaryPurple,
                 side: BorderSide(color: AppColors.primaryPurple),
-                textStyle:
-                    AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(fontWeight: FontWeight.w900),
+                textStyle: AppTextStyle(
+                        kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                            ? AppPlatform.web
+                            : AppPlatform.mobile)
+                    .h4
+                    .copyWith(fontWeight: FontWeight.w900),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -577,8 +627,11 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
                 backgroundColor: AppColors.primaryPurple,
                 foregroundColor: Colors.white,
                 elevation: 0,
-                textStyle: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4WhiteColor
+                textStyle: AppTextStyle(
+                        kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                            ? AppPlatform.web
+                            : AppPlatform.mobile)
+                    .h4WhiteColor
                     .copyWith(fontWeight: FontWeight.w900),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -614,11 +667,14 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
         const SizedBox(height: 34),
         Text(
           context.tr('vpa'),
-          style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
-            color: context.appTextPrimary,
-            fontWeight: FontWeight.w900,
-          ),
+          style: AppTextStyle(kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                  ? AppPlatform.web
+                  : AppPlatform.mobile)
+              .h4
+              .copyWith(
+                color: context.appTextPrimary,
+                fontWeight: FontWeight.w900,
+              ),
         ),
         const SizedBox(height: 8),
         BlocBuilder<SoundBoxBloc, SoundBoxState>(
@@ -658,11 +714,15 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
           padding: const EdgeInsets.only(left: sectionInset),
           child: Text(
             context.tr('payment_tid'),
-            style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
-              color: context.appTextPrimary,
-              fontWeight: FontWeight.w900,
-            ),
+            style: AppTextStyle(
+                    kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                        ? AppPlatform.web
+                        : AppPlatform.mobile)
+                .h4
+                .copyWith(
+                  color: context.appTextPrimary,
+                  fontWeight: FontWeight.w900,
+                ),
           ),
         ),
         const SizedBox(height: 12),
@@ -670,11 +730,15 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
           padding: const EdgeInsets.only(left: sectionInset),
           child: Text(
             context.tr('search_by'),
-            style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
-              color: context.appTextPrimary,
-              fontWeight: FontWeight.w900,
-            ),
+            style: AppTextStyle(
+                    kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                        ? AppPlatform.web
+                        : AppPlatform.mobile)
+                .h4
+                .copyWith(
+                  color: context.appTextPrimary,
+                  fontWeight: FontWeight.w900,
+                ),
           ),
         ),
         const SizedBox(height: 12),
@@ -725,11 +789,15 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
           children: [
             Text(
               context.tr('search_by'),
-              style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
-                color: context.appTextPrimary,
-                fontWeight: FontWeight.w900,
-              ),
+              style: AppTextStyle(
+                      kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                          ? AppPlatform.web
+                          : AppPlatform.mobile)
+                  .h4
+                  .copyWith(
+                    color: context.appTextPrimary,
+                    fontWeight: FontWeight.w900,
+                  ),
             ),
             const SizedBox(height: 10),
             if (narrow) ...[
@@ -786,11 +854,14 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
       children: [
         Text(
           context.tr('tid_vpa'),
-          style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
-            color: context.appTextPrimary,
-            fontWeight: FontWeight.w900,
-          ),
+          style: AppTextStyle(kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                  ? AppPlatform.web
+                  : AppPlatform.mobile)
+              .h4
+              .copyWith(
+                color: context.appTextPrimary,
+                fontWeight: FontWeight.w900,
+              ),
         ),
         const SizedBox(height: 8),
         BlocBuilder<PosTransactionBloc, PosTransactionState>(
@@ -823,11 +894,15 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
         children: [
           Text(
             context.tr('tid_vpa'),
-            style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
-              color: context.appTextPrimary,
-              fontWeight: FontWeight.w900,
-            ),
+            style: AppTextStyle(
+                    kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                        ? AppPlatform.web
+                        : AppPlatform.mobile)
+                .h4
+                .copyWith(
+                  color: context.appTextPrimary,
+                  fontWeight: FontWeight.w900,
+                ),
           ),
           const SizedBox(height: 8),
           BlocBuilder<PosTransactionBloc, PosTransactionState>(
@@ -864,11 +939,15 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
           width: 72,
           child: Text(
             context.tr('tid_vpa'),
-            style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
-              color: context.appTextPrimary,
-              fontWeight: FontWeight.w900,
-            ),
+            style: AppTextStyle(
+                    kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                        ? AppPlatform.web
+                        : AppPlatform.mobile)
+                .h4
+                .copyWith(
+                  color: context.appTextPrimary,
+                  fontWeight: FontWeight.w900,
+                ),
           ),
         ),
         const SizedBox(width: 16),
@@ -917,11 +996,14 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
       children: [
         Text(
           'Date',
-          style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
-            color: context.appTextPrimary,
-            fontWeight: FontWeight.w900,
-          ),
+          style: AppTextStyle(kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                  ? AppPlatform.web
+                  : AppPlatform.mobile)
+              .h4
+              .copyWith(
+                color: context.appTextPrimary,
+                fontWeight: FontWeight.w900,
+              ),
         ),
         const SizedBox(height: 8),
         ..._availableDateFilters.map(_buildDateOption),
@@ -945,11 +1027,15 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
         children: [
           Text(
             context.tr('payment_mode'),
-            style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
-              color: context.appTextPrimary,
-              fontWeight: FontWeight.w900,
-            ),
+            style: AppTextStyle(
+                    kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                        ? AppPlatform.web
+                        : AppPlatform.mobile)
+                .h4
+                .copyWith(
+                  color: context.appTextPrimary,
+                  fontWeight: FontWeight.w900,
+                ),
           ),
           const SizedBox(height: 8),
           _FilterDropdown(
@@ -973,11 +1059,15 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
           width: 130,
           child: Text(
             context.tr('payment_mode'),
-            style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
-              color: context.appTextPrimary,
-              fontWeight: FontWeight.w900,
-            ),
+            style: AppTextStyle(
+                    kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                        ? AppPlatform.web
+                        : AppPlatform.mobile)
+                .h4
+                .copyWith(
+                  color: context.appTextPrimary,
+                  fontWeight: FontWeight.w900,
+                ),
           ),
         ),
         Expanded(
@@ -1038,19 +1128,27 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
           Expanded(
             child: TextField(
               controller: _codeController,
-              style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
-                color: context.appTextPrimary,
-                fontWeight: FontWeight.w700,
-              ),
+              style: AppTextStyle(
+                      kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                          ? AppPlatform.web
+                          : AppPlatform.mobile)
+                  .h5
+                  .copyWith(
+                    color: context.appTextPrimary,
+                    fontWeight: FontWeight.w700,
+                  ),
               decoration: InputDecoration(
                 border: InputBorder.none,
                 hintText: label,
-                hintStyle: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
-                  color: context.appTextSecondary,
-                  fontWeight: FontWeight.w700,
-                ),
+                hintStyle: AppTextStyle(
+                        kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                            ? AppPlatform.web
+                            : AppPlatform.mobile)
+                    .h5
+                    .copyWith(
+                      color: context.appTextSecondary,
+                      fontWeight: FontWeight.w700,
+                    ),
               ),
             ),
           ),
@@ -1090,11 +1188,15 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
             Expanded(
               child: Text(
                 _labelFor(filter),
-                style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
-                  color: context.appTextSecondary,
-                  fontWeight: FontWeight.w700,
-                ),
+                style: AppTextStyle(
+                        kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                            ? AppPlatform.web
+                            : AppPlatform.mobile)
+                    .h5
+                    .copyWith(
+                      color: context.appTextSecondary,
+                      fontWeight: FontWeight.w700,
+                    ),
               ),
             ),
             IconButton(
@@ -1297,22 +1399,30 @@ class _FilterDropdown extends StatelessWidget {
             child: isLoading
                 ? Text(
                     context.tr('loading'),
-                    style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
-                      color: context.appTextSecondary,
-                      fontWeight: FontWeight.w700,
-                    ),
+                    style: AppTextStyle(
+                            kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                                ? AppPlatform.web
+                                : AppPlatform.mobile)
+                        .h5
+                        .copyWith(
+                          color: context.appTextSecondary,
+                          fontWeight: FontWeight.w700,
+                        ),
                   )
                 : DropdownButtonHideUnderline(
                     child: DropdownButton<String>(
                       value: selectedValue,
                       isExpanded: true,
                       dropdownColor: context.appSurface,
-                      style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
-                        color: context.appTextPrimary,
-                        fontWeight: FontWeight.w700,
-                      ),
+                      style: AppTextStyle(
+                              kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                                  ? AppPlatform.web
+                                  : AppPlatform.mobile)
+                          .h5
+                          .copyWith(
+                            color: context.appTextPrimary,
+                            fontWeight: FontWeight.w700,
+                          ),
                       icon: Icon(
                         Icons.keyboard_arrow_down_rounded,
                         color: AppColors.primaryPurple,
@@ -1320,10 +1430,14 @@ class _FilterDropdown extends StatelessWidget {
                       hint: Text(
                         hint,
                         style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
-                          color: context.appTextSecondary,
-                          fontWeight: FontWeight.w700,
-                        ),
+                                    AppBreakpoints.isTabletOrLarger(context)
+                                ? AppPlatform.web
+                                : AppPlatform.mobile)
+                            .h5
+                            .copyWith(
+                              color: context.appTextSecondary,
+                              fontWeight: FontWeight.w700,
+                            ),
                       ),
                       items: values
                           .map(
@@ -1369,11 +1483,15 @@ class _SearchOption extends StatelessWidget {
           const SizedBox(width: 12),
           Text(
             label,
-            style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
-              color: context.appTextPrimary,
-              fontWeight: FontWeight.w900,
-            ),
+            style: AppTextStyle(
+                    kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                        ? AppPlatform.web
+                        : AppPlatform.mobile)
+                .h5
+                .copyWith(
+                  color: context.appTextPrimary,
+                  fontWeight: FontWeight.w900,
+                ),
           ),
         ],
       ),

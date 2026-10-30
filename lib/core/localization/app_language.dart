@@ -230,6 +230,8 @@ const Map<AppLanguage, Map<String, String>> _localizedValues = {
     'last_7_days': 'Last 7 Days',
     'last_1_month': 'Last 1 Month',
     'custom_date_range': 'Custom Date Range',
+    'custom_date_range_limited':
+        'Custom date range is limited to one month. The end date has been adjusted.',
     'search_result': 'Search result',
     'select_date': 'Select date',
     'cancel': 'Cancel',
@@ -347,8 +349,7 @@ const Map<AppLanguage, Map<String, String>> _localizedValues = {
     'no_transactions_to_send': 'No transactions are available to send.',
     'report_download_failed':
         'Could not download the report. Please try again.',
-    'no_transactions_to_download':
-        'No transactions are available to download.',
+    'no_transactions_to_download': 'No transactions are available to download.',
     'all_merchants': 'All',
     'login_web_hero_message':
         'Sign in to access your merchant dashboard\nand manage your business securely.',
@@ -586,6 +587,8 @@ const Map<AppLanguage, Map<String, String>> _localizedValues = {
     'last_7_days': 'കഴിഞ്ഞ 7 ദിവസം',
     'last_1_month': 'കഴിഞ്ഞ 1 മാസം',
     'custom_date_range': 'ഇഷ്ടാനുസൃത തീയതി പരിധി',
+    'custom_date_range_limited':
+        'ഇഷ്ടാനുസൃത തീയതി പരിധി ഒരു മാസമായി പരിമിതപ്പെടുത്തിയിരിക്കുന്നു. അവസാന തീയതി ക്രമീകരിച്ചു.',
     'search_result': 'തിരയൽ ഫലം',
     'select_date': 'തീയതി തിരഞ്ഞെടുക്കുക',
     'cancel': 'റദ്ദാക്കുക',
@@ -948,6 +951,8 @@ const Map<AppLanguage, Map<String, String>> _localizedValues = {
     'last_7_days': 'கடைசி 7 நாட்கள்',
     'last_1_month': 'கடைசி 1 மாதம்',
     'custom_date_range': 'தனிப்பயன் தேதி வரம்பு',
+    'custom_date_range_limited':
+        'தனிப்பயன் தேதி வரம்பு ஒரு மாதத்திற்கு மட்டுப்படுத்தப்பட்டுள்ளது. முடிவு தேதி சரிசெய்யப்பட்டுள்ளது.',
     'search_result': 'தேடல் முடிவு',
     'select_date': 'தேதி தேர்வு',
     'cancel': 'ரத்து',
@@ -1310,6 +1315,8 @@ const Map<AppLanguage, Map<String, String>> _localizedValues = {
     'last_7_days': 'पिछले 7 दिन',
     'last_1_month': 'पिछला 1 महीना',
     'custom_date_range': 'कस्टम तारीख सीमा',
+    'custom_date_range_limited':
+        'कस्टम तारीख सीमा एक महीने तक सीमित है। अंतिम तारीख समायोजित कर दी गई है।',
     'search_result': 'खोज परिणाम',
     'select_date': 'तारीख चुनें',
     'cancel': 'रद्द करें',

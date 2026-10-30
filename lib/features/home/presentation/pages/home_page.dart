@@ -632,66 +632,66 @@ class _HomePageState extends State<HomePage> {
           color: AppColors.primaryPurple,
           onRefresh: _refreshSelectedTransactions,
           child: ListView(
-          controller: _scrollController,
-          physics: const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 18),
-          children: [
-            MobileHomeGreeting(
-              onProfileTap: () => _onBottomNavItemSelected(3),
-            ),
-            if (!_isTerminalUser && _merchantDropdownItems.isNotEmpty) ...[
-              const SizedBox(height: 10),
-              _MerchantDropdown(
-                items: _merchantDropdownItems,
-                selectedMerchantId: _acqMerchantId.isEmpty
-                    ? _merchantDropdownItems.first.merchantId
-                    : _acqMerchantId,
-                onChanged: _onMerchantChanged,
+            controller: _scrollController,
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 18),
+            children: [
+              MobileHomeGreeting(
+                onProfileTap: () => _onBottomNavItemSelected(3),
               ),
-            ],
-            const SizedBox(height: 14),
-            _buildHomeSummaryCard(),
-            const SizedBox(height: 12),
-            _buildChannelTiles(),
-            if (!_isAllMerchantSelection &&
-                _selectedTransactionTab == TransactionTab.qr) ...[
+              if (!_isTerminalUser && _merchantDropdownItems.isNotEmpty) ...[
+                const SizedBox(height: 10),
+                _MerchantDropdown(
+                  items: _merchantDropdownItems,
+                  selectedMerchantId: _acqMerchantId.isEmpty
+                      ? _merchantDropdownItems.first.merchantId
+                      : _acqMerchantId,
+                  onChanged: _onMerchantChanged,
+                ),
+              ],
+              const SizedBox(height: 14),
+              _buildHomeSummaryCard(),
               const SizedBox(height: 12),
-              BlocBuilder<SoundBoxBloc, SoundBoxState>(
-                builder: (context, state) {
-                  return VpaSelector(
-                    isLoading: state is SoundBoxLoading,
-                    vpas: state.devices,
-                    selectedVpa: state.devices.contains(_selectedVpa)
-                        ? _selectedVpa
-                        : null,
-                    onChanged: _onVpaChanged,
-                  );
-                },
+              _buildChannelTiles(),
+              if (!_isAllMerchantSelection &&
+                  _selectedTransactionTab == TransactionTab.qr) ...[
+                const SizedBox(height: 12),
+                BlocBuilder<SoundBoxBloc, SoundBoxState>(
+                  builder: (context, state) {
+                    return VpaSelector(
+                      isLoading: state is SoundBoxLoading,
+                      vpas: state.devices,
+                      selectedVpa: state.devices.contains(_selectedVpa)
+                          ? _selectedVpa
+                          : null,
+                      onChanged: _onVpaChanged,
+                    );
+                  },
+                ),
+              ],
+              const SizedBox(height: 16),
+              MobileHomeSectionHeader(
+                title: _isAllMerchantSelection
+                    ? context.tr('all_merchants')
+                    : _selectedTransactionTab == TransactionTab.pos
+                        ? context.tr('transactions_today')
+                        : _selectedTransactionTab == TransactionTab.qr
+                            ? context.tr('qr_transactions_today')
+                            : context.tr('todays_settlements'),
+                onViewAll: _openTransactionFilter,
+                onSearch: _merchantDropdownItems.isNotEmpty ||
+                        _selectedTransactionTab == TransactionTab.settlements
+                    ? null
+                    : () => showTransactionRrnSearchSheet(
+                          context,
+                          tab: _selectedTransactionTab,
+                          creditVpa: _selectedVpa ?? '',
+                        ),
               ),
+              const SizedBox(height: 8),
+              _buildSelectedTransactionList(),
             ],
-            const SizedBox(height: 16),
-            MobileHomeSectionHeader(
-              title: _isAllMerchantSelection
-                  ? context.tr('all_merchants')
-                  : _selectedTransactionTab == TransactionTab.pos
-                      ? context.tr('transactions_today')
-                      : _selectedTransactionTab == TransactionTab.qr
-                          ? context.tr('qr_transactions_today')
-                          : context.tr('todays_settlements'),
-              onViewAll: _openTransactionFilter,
-              onSearch: !kIsWeb ||
-                      _selectedTransactionTab == TransactionTab.settlements
-                  ? null
-                  : () => showTransactionRrnSearchSheet(
-                        context,
-                        tab: _selectedTransactionTab,
-                        creditVpa: _selectedVpa ?? '',
-                      ),
-            ),
-            const SizedBox(height: 8),
-            _buildSelectedTransactionList(),
-          ],
-        ),
+          ),
         ),
       ),
     );
@@ -943,29 +943,41 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Text(
                     '${context.tr('terminals')}: ${summary.serialNumber.isEmpty ? context.tr('not_available') : summary.serialNumber}',
-                    style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
-                      color: context.appTextPrimary,
-                      fontWeight: FontWeight.w900,
-                    ),
+                    style: AppTextStyle(
+                            kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                                ? AppPlatform.web
+                                : AppPlatform.mobile)
+                        .h3
+                        .copyWith(
+                          color: context.appTextPrimary,
+                          fontWeight: FontWeight.w900,
+                        ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     '${context.tr('total_transactions')}: ${summary.count}',
-                    style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
-                      color: context.appTextPrimary,
-                      fontWeight: FontWeight.w500,
-                    ),
+                    style: AppTextStyle(
+                            kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                                ? AppPlatform.web
+                                : AppPlatform.mobile)
+                        .h3
+                        .copyWith(
+                          color: context.appTextPrimary,
+                          fontWeight: FontWeight.w500,
+                        ),
                   ),
                   const SizedBox(height: 6),
                   Text(
                     '${context.tr('total_amount')}: Rs ${summary.totalAmount.toStringAsFixed(0)}',
-                    style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
-                      color: context.appTextPrimary,
-                      fontWeight: FontWeight.w500,
-                    ),
+                    style: AppTextStyle(
+                            kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                                ? AppPlatform.web
+                                : AppPlatform.mobile)
+                        .h3
+                        .copyWith(
+                          color: context.appTextPrimary,
+                          fontWeight: FontWeight.w500,
+                        ),
                   ),
                 ],
               ),
@@ -982,12 +994,15 @@ class _HomePageState extends State<HomePage> {
         padding: const EdgeInsets.symmetric(vertical: 120),
         child: Text(
           context.tr('no_transactions'),
-          style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
-            color: context.appTextSecondary,
-            fontStyle: FontStyle.italic,
-            fontWeight: FontWeight.w400,
-          ),
+          style: AppTextStyle(kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                  ? AppPlatform.web
+                  : AppPlatform.mobile)
+              .h3
+              .copyWith(
+                color: context.appTextSecondary,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w400,
+              ),
         ),
       ),
     );

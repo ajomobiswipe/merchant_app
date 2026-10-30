@@ -110,11 +110,13 @@ class WebHomeDashboard extends StatelessWidget {
                                           color: AppColors.primaryPurple,
                                           onRefresh: onRefresh,
                                           child: _WebAllMerchantSummary(
-                                          onViewAll: onViewAll,
-                                          onRefresh: () {
-                                            onRefresh();
-                                          },
-                                        ),
+                                            onViewAll: onViewAll,
+                                            onRefresh: () {
+                                              onRefresh();
+                                            },
+                                            isAllMerchantSelection:
+                                                isAllMerchantSelection,
+                                          ),
                                         ),
                                       )
                                     else ...[
@@ -128,19 +130,21 @@ class WebHomeDashboard extends StatelessWidget {
                                           color: AppColors.primaryPurple,
                                           onRefresh: onRefresh,
                                           child: _WebRecentTransactions(
-                                          selectedTab: selectedTab,
-                                          onViewAll: onViewAll,
-                                          onRefresh: () {
-                                            onRefresh();
-                                          },
-                                          onPosPageRequested:
-                                              onPosPageRequested,
-                                          onQrPageRequested: onQrPageRequested,
-                                          onSettlementPageRequested:
-                                              onSettlementPageRequested,
-                                          selectedVpa: selectedVpa,
-                                          onVpaChanged: onVpaChanged,
-                                        ),
+                                            selectedTab: selectedTab,
+                                            onViewAll: onViewAll,
+                                            onRefresh: () {
+                                              onRefresh();
+                                            },
+                                            onPosPageRequested:
+                                                onPosPageRequested,
+                                            onQrPageRequested:
+                                                onQrPageRequested,
+                                            onSettlementPageRequested:
+                                                onSettlementPageRequested,
+                                            selectedVpa: selectedVpa,
+                                            onVpaChanged: onVpaChanged,
+                                            showSearch: merchantItems.isEmpty,
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -165,9 +169,12 @@ class _WebAllMerchantSummary extends StatelessWidget {
   final VoidCallback onViewAll;
   final VoidCallback onRefresh;
 
+  final dynamic isAllMerchantSelection;
+
   const _WebAllMerchantSummary({
     required this.onViewAll,
     required this.onRefresh,
+    required this.isAllMerchantSelection,
   });
 
   @override
@@ -185,18 +192,23 @@ class _WebAllMerchantSummary extends StatelessWidget {
                   children: [
                     Text(
                       context.tr('all_merchants'),
-                      style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
-                        fontWeight: FontWeight.w900,
-                      ),
+                      style: AppTextStyle(
+                              kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                                  ? AppPlatform.web
+                                  : AppPlatform.mobile)
+                          .h4
+                          .copyWith(
+                            fontWeight: FontWeight.w900,
+                          ),
                     ),
                     const Spacer(),
-                    _WebSearchButton(
-                      onPressed: () => showTransactionRrnSearchSheet(
-                        context,
-                        tab: TransactionTab.pos,
+                    if (!isAllMerchantSelection)
+                      _WebSearchButton(
+                        onPressed: () => showTransactionRrnSearchSheet(
+                          context,
+                          tab: TransactionTab.pos,
+                        ),
                       ),
-                    ),
                     const SizedBox(width: 8),
                     _WebRefreshButton(
                       onPressed: state.transactionsLoading ? null : onRefresh,
@@ -270,13 +282,11 @@ class _WebAllMerchantSummary extends StatelessWidget {
                                   summary.serialNumber.isEmpty
                                       ? context.tr('not_available')
                                       : summary.serialNumber,
-                                  style: AppTextStyle(
-                                          kIsWeb &&
-                                                  AppBreakpoints
-                                                      .isTabletOrLarger(
-                                                          context)
-                                              ? AppPlatform.web
-                                              : AppPlatform.mobile)
+                                  style: AppTextStyle(kIsWeb &&
+                                              AppBreakpoints.isTabletOrLarger(
+                                                  context)
+                                          ? AppPlatform.web
+                                          : AppPlatform.mobile)
                                       .h5
                                       .copyWith(
                                         color: context.appTextPrimary,
@@ -287,13 +297,11 @@ class _WebAllMerchantSummary extends StatelessWidget {
                               Expanded(
                                 child: Text(
                                   '${summary.count}',
-                                  style: AppTextStyle(
-                                          kIsWeb &&
-                                                  AppBreakpoints
-                                                      .isTabletOrLarger(
-                                                          context)
-                                              ? AppPlatform.web
-                                              : AppPlatform.mobile)
+                                  style: AppTextStyle(kIsWeb &&
+                                              AppBreakpoints.isTabletOrLarger(
+                                                  context)
+                                          ? AppPlatform.web
+                                          : AppPlatform.mobile)
                                       .h5
                                       .copyWith(
                                         color: context.appTextPrimary,
@@ -304,13 +312,11 @@ class _WebAllMerchantSummary extends StatelessWidget {
                               Expanded(
                                 child: Text(
                                   'Rs. ${summary.totalAmount.toStringAsFixed(2)}',
-                                  style: AppTextStyle(
-                                          kIsWeb &&
-                                                  AppBreakpoints
-                                                      .isTabletOrLarger(
-                                                          context)
-                                              ? AppPlatform.web
-                                              : AppPlatform.mobile)
+                                  style: AppTextStyle(kIsWeb &&
+                                              AppBreakpoints.isTabletOrLarger(
+                                                  context)
+                                          ? AppPlatform.web
+                                          : AppPlatform.mobile)
                                       .h5
                                       .copyWith(
                                         color: context.appTextPrimary,
@@ -406,12 +412,16 @@ class _WebNavItem extends StatelessWidget {
                           : context.appTextSecondary),
                   const SizedBox(width: 16),
                   Text(label,
-                      style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
-                          color: selected
-                              ? AppColors.primaryPurple
-                              : context.appTextPrimary,
-                          fontWeight: FontWeight.w900)),
+                      style: AppTextStyle(
+                              kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                                  ? AppPlatform.web
+                                  : AppPlatform.mobile)
+                          .h4
+                          .copyWith(
+                              color: selected
+                                  ? AppColors.primaryPurple
+                                  : context.appTextPrimary,
+                              fontWeight: FontWeight.w900)),
                 ],
               ),
             ),
@@ -502,13 +512,22 @@ class _WebMetric extends StatelessWidget {
         const SizedBox(width: 12),
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(label,
-              style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(fontWeight: FontWeight.w800)),
+              style: AppTextStyle(
+                      kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                          ? AppPlatform.web
+                          : AppPlatform.mobile)
+                  .h5
+                  .copyWith(fontWeight: FontWeight.w800)),
           const SizedBox(height: 2),
           Text(value,
-              style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
-                  color: AppColors.primaryPurple, fontWeight: FontWeight.w900))
+              style: AppTextStyle(
+                      kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                          ? AppPlatform.web
+                          : AppPlatform.mobile)
+                  .h3
+                  .copyWith(
+                      color: AppColors.primaryPurple,
+                      fontWeight: FontWeight.w900))
         ])
       ]));
 }
@@ -569,11 +588,15 @@ class _WebTab extends StatelessWidget {
                     Expanded(
                         child: Text(label,
                             style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
-                                color: selected
-                                    ? Colors.white
-                                    : context.appTextPrimary,
-                                fontWeight: FontWeight.w900))),
+                                        AppBreakpoints.isTabletOrLarger(context)
+                                    ? AppPlatform.web
+                                    : AppPlatform.mobile)
+                                .h5
+                                .copyWith(
+                                    color: selected
+                                        ? Colors.white
+                                        : context.appTextPrimary,
+                                    fontWeight: FontWeight.w900))),
                     Icon(Icons.chevron_right_rounded,
                         color:
                             selected ? Colors.white : context.appTextSecondary)
@@ -589,6 +612,7 @@ class _WebRecentTransactions extends StatelessWidget {
   final ValueChanged<int> onSettlementPageRequested;
   final String? selectedVpa;
   final ValueChanged<String?> onVpaChanged;
+  final bool showSearch;
 
   const _WebRecentTransactions(
       {required this.selectedTab,
@@ -598,7 +622,8 @@ class _WebRecentTransactions extends StatelessWidget {
       required this.onQrPageRequested,
       required this.onSettlementPageRequested,
       required this.selectedVpa,
-      required this.onVpaChanged});
+      required this.onVpaChanged,
+      required this.showSearch});
 
   @override
   Widget build(BuildContext context) => Container(
@@ -618,10 +643,12 @@ class _WebRecentTransactions extends StatelessWidget {
           _WebTableHeader(
             onViewAll: onViewAll,
             onRefresh: state.transactionsLoading ? null : onRefresh,
-            onSearch: () => showTransactionRrnSearchSheet(
-              context,
-              tab: TransactionTab.pos,
-            ),
+            onSearch: showSearch
+                ? () => showTransactionRrnSearchSheet(
+                      context,
+                      tab: TransactionTab.pos,
+                    )
+                : null,
           ),
           const Divider(height: 1),
           if (state.transactionsLoading && state.transactions.isEmpty)
@@ -661,11 +688,13 @@ class _WebRecentTransactions extends StatelessWidget {
           builder: (context, state) => _WebQrTableHeader(
             onViewAll: onViewAll,
             onRefresh: state is MerchantVpaTxnLoading ? null : onRefresh,
-            onSearch: () => showTransactionRrnSearchSheet(
-              context,
-              tab: TransactionTab.qr,
-              creditVpa: selectedVpa ?? '',
-            ),
+            onSearch: showSearch
+                ? () => showTransactionRrnSearchSheet(
+                      context,
+                      tab: TransactionTab.qr,
+                      creditVpa: selectedVpa ?? '',
+                    )
+                : null,
           ),
         ),
         const Divider(height: 1),
@@ -839,8 +868,12 @@ class _WebPagination extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 22),
             child: Text(
               '${context.tr('page')} ${page + 1} ${context.tr('of')} ${totalPages == 0 ? 1 : totalPages}',
-              style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(fontWeight: FontWeight.w900),
+              style: AppTextStyle(
+                      kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                          ? AppPlatform.web
+                          : AppPlatform.mobile)
+                  .h5
+                  .copyWith(fontWeight: FontWeight.w900),
             ),
           ),
           OutlinedButton.icon(
@@ -855,22 +888,28 @@ class _WebPagination extends StatelessWidget {
 class _WebTableHeader extends StatelessWidget {
   final VoidCallback onViewAll;
   final VoidCallback? onRefresh;
-  final VoidCallback onSearch;
+  final VoidCallback? onSearch;
   const _WebTableHeader({
     required this.onViewAll,
     required this.onRefresh,
-    required this.onSearch,
+    this.onSearch,
   });
   @override
   Widget build(BuildContext context) => Padding(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       child: Row(children: [
         Text(context.tr('transactions_today'),
-            style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(fontWeight: FontWeight.w900)),
+            style: AppTextStyle(
+                    kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                        ? AppPlatform.web
+                        : AppPlatform.mobile)
+                .h4
+                .copyWith(fontWeight: FontWeight.w900)),
         const Spacer(),
-        _WebSearchButton(onPressed: onSearch),
-        const SizedBox(width: 8),
+        if (onSearch != null) ...[
+          _WebSearchButton(onPressed: onSearch!),
+          const SizedBox(width: 8),
+        ],
         _WebRefreshButton(onPressed: onRefresh),
         const SizedBox(width: 8),
         TextButton.icon(
@@ -883,11 +922,11 @@ class _WebTableHeader extends StatelessWidget {
 class _WebQrTableHeader extends StatelessWidget {
   final VoidCallback onViewAll;
   final VoidCallback? onRefresh;
-  final VoidCallback onSearch;
+  final VoidCallback? onSearch;
   const _WebQrTableHeader({
     required this.onViewAll,
     required this.onRefresh,
-    required this.onSearch,
+    this.onSearch,
   });
 
   @override
@@ -895,11 +934,17 @@ class _WebQrTableHeader extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         child: Row(children: [
           Text(context.tr('qr_transactions_today'),
-              style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(fontWeight: FontWeight.w900)),
+              style: AppTextStyle(
+                      kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                          ? AppPlatform.web
+                          : AppPlatform.mobile)
+                  .h4
+                  .copyWith(fontWeight: FontWeight.w900)),
           const Spacer(),
-          _WebSearchButton(onPressed: onSearch),
-          const SizedBox(width: 8),
+          if (onSearch != null) ...[
+            _WebSearchButton(onPressed: onSearch!),
+            const SizedBox(width: 8),
+          ],
           _WebRefreshButton(onPressed: onRefresh),
           const SizedBox(width: 8),
           TextButton.icon(
@@ -922,8 +967,12 @@ class _WebSettlementTableHeader extends StatelessWidget {
         child: Row(children: [
           Text(
             context.tr('todays_settlements'),
-            style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(fontWeight: FontWeight.w900),
+            style: AppTextStyle(
+                    kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                        ? AppPlatform.web
+                        : AppPlatform.mobile)
+                .h4
+                .copyWith(fontWeight: FontWeight.w900),
           ),
           const Spacer(),
           _WebRefreshButton(onPressed: onRefresh),
@@ -992,7 +1041,8 @@ class _WebTransactionColumnLabels extends StatelessWidget {
             Expanded(
                 flex: 16,
                 child: _WebColumnLabel(context.tr('transaction_type'))),
-            Expanded(flex: 15, child: _WebColumnLabel(context.tr('entry_mode'))),
+            Expanded(
+                flex: 15, child: _WebColumnLabel(context.tr('entry_mode'))),
           ] else ...[
             Expanded(
                 flex: 18, child: _WebColumnLabel(context.tr('customer_name'))),
@@ -1140,27 +1190,39 @@ class _WebSettlementSummaryCard extends StatelessWidget {
                   label,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(fontWeight: FontWeight.w900),
+                  style: AppTextStyle(
+                          kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                              ? AppPlatform.web
+                              : AppPlatform.mobile)
+                      .h5
+                      .copyWith(fontWeight: FontWeight.w900),
                 ),
                 const SizedBox(height: 3),
                 Text(
                   subtitle,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
-                    color: context.appTextSecondary,
-                  ),
+                  style: AppTextStyle(
+                          kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                              ? AppPlatform.web
+                              : AppPlatform.mobile)
+                      .h5
+                      .copyWith(
+                        color: context.appTextSecondary,
+                      ),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   'Rs. ${amount.toStringAsFixed(2)}',
-                  style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
-                    color: color,
-                    fontWeight: FontWeight.w900,
-                  ),
+                  style: AppTextStyle(
+                          kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                              ? AppPlatform.web
+                              : AppPlatform.mobile)
+                      .h4
+                      .copyWith(
+                        color: color,
+                        fontWeight: FontWeight.w900,
+                      ),
                 ),
               ],
             ),
@@ -1207,12 +1269,15 @@ class _WebColumnLabel extends StatelessWidget {
         label,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
-        style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
-          color: context.appTextSecondary,
-          fontSize: 12,
-          fontWeight: FontWeight.w900,
-        ),
+        style: AppTextStyle(kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                ? AppPlatform.web
+                : AppPlatform.mobile)
+            .h5
+            .copyWith(
+              color: context.appTextSecondary,
+              fontSize: 12,
+              fontWeight: FontWeight.w900,
+            ),
       );
 }
 
@@ -1250,11 +1315,15 @@ class _WebEmptyState extends StatelessWidget {
           Text(
             message,
             textAlign: TextAlign.center,
-            style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
-              color: context.appTextSecondary,
-              fontWeight: FontWeight.w700,
-            ),
+            style: AppTextStyle(
+                    kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                        ? AppPlatform.web
+                        : AppPlatform.mobile)
+                .h4
+                .copyWith(
+                  color: context.appTextSecondary,
+                  fontWeight: FontWeight.w700,
+                ),
           ),
         ]),
       );
@@ -1367,11 +1436,15 @@ class _WebSettlementRow extends StatelessWidget {
               date,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
-                color: context.appTextPrimary,
-                fontWeight: FontWeight.w700,
-              ),
+              style: AppTextStyle(
+                      kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                          ? AppPlatform.web
+                          : AppPlatform.mobile)
+                  .h5
+                  .copyWith(
+                    color: context.appTextPrimary,
+                    fontWeight: FontWeight.w700,
+                  ),
             ),
           ),
           Expanded(
@@ -1383,16 +1456,24 @@ class _WebSettlementRow extends StatelessWidget {
                   '${context.tr('utr')}: $utr',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(fontWeight: FontWeight.w900),
+                  style: AppTextStyle(
+                          kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                              ? AppPlatform.web
+                              : AppPlatform.mobile)
+                      .h5
+                      .copyWith(fontWeight: FontWeight.w900),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   '${settlement.transactionCount} transactions',
-                  style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
-                    color: context.appTextPrimary,
-                  ),
+                  style: AppTextStyle(
+                          kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                              ? AppPlatform.web
+                              : AppPlatform.mobile)
+                      .h5
+                      .copyWith(
+                        color: context.appTextPrimary,
+                      ),
                 ),
               ],
             ),
@@ -1403,8 +1484,12 @@ class _WebSettlementRow extends StatelessWidget {
               'Rs. ${settlement.grossTransactionAmount.toStringAsFixed(2)}',
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(fontWeight: FontWeight.w900),
+              style: AppTextStyle(
+                      kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                          ? AppPlatform.web
+                          : AppPlatform.mobile)
+                  .h5
+                  .copyWith(fontWeight: FontWeight.w900),
             ),
           ),
           Expanded(
@@ -1413,11 +1498,15 @@ class _WebSettlementRow extends StatelessWidget {
               'Rs. ${settlement.totalAmountPayable.toStringAsFixed(2)}',
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
-                color: AppColors.primaryPurple,
-                fontWeight: FontWeight.w900,
-              ),
+              style: AppTextStyle(
+                      kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                          ? AppPlatform.web
+                          : AppPlatform.mobile)
+                  .h5
+                  .copyWith(
+                    color: AppColors.primaryPurple,
+                    fontWeight: FontWeight.w900,
+                  ),
             ),
           ),
           SizedBox(
@@ -1447,12 +1536,16 @@ class _WebSettlementStatusBadge extends StatelessWidget {
         child: Text(
           isSettled ? context.tr('settled') : context.tr('pending_settlements'),
           textAlign: TextAlign.center,
-          style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
-            color:
-                isSettled ? const Color(0xff18A957) : const Color(0xffA66D00),
-            fontWeight: FontWeight.w900,
-          ),
+          style: AppTextStyle(kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                  ? AppPlatform.web
+                  : AppPlatform.mobile)
+              .h5
+              .copyWith(
+                color: isSettled
+                    ? const Color(0xff18A957)
+                    : const Color(0xffA66D00),
+                fontWeight: FontWeight.w900,
+              ),
         ),
       );
 }
@@ -1535,11 +1628,14 @@ class _WebHomeTableText extends StatelessWidget {
         value,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
-        style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
-          color: context.appTextPrimary,
-          fontWeight: isAmount ? FontWeight.w900 : FontWeight.w700,
-        ),
+        style: AppTextStyle(kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                ? AppPlatform.web
+                : AppPlatform.mobile)
+            .h5
+            .copyWith(
+              color: context.appTextPrimary,
+              fontWeight: isAmount ? FontWeight.w900 : FontWeight.w700,
+            ),
       );
 }
 
@@ -1561,11 +1657,14 @@ class _WebHomeStatusBadge extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
-          style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
-            color: successful ? const Color(0xff18A957) : Colors.red,
-            fontWeight: FontWeight.w900,
-          ),
+          style: AppTextStyle(kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                  ? AppPlatform.web
+                  : AppPlatform.mobile)
+              .h5
+              .copyWith(
+                color: successful ? const Color(0xff18A957) : Colors.red,
+                fontWeight: FontWeight.w900,
+              ),
         ),
       );
 }

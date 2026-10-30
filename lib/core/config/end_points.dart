@@ -7,7 +7,7 @@ class EndPoints {
 
   static const String _configuredEnvironment = String.fromEnvironment(
     'APP_ENV',
-    defaultValue: 'PROD',
+    defaultValue: 'prod',
   );
 
   static Environment get environment {

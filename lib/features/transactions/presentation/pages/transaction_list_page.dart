@@ -44,6 +44,7 @@ class _TransactionListPageState extends State<TransactionListPage> {
   String _acqMerchantId = '';
   String _clientUniqueId = '';
   bool _merchantContextLoaded = false;
+  bool _hasMerchantDropdown = false;
   bool _isSendingEmail = false;
   bool _isDownloadingReport = false;
 
@@ -56,9 +57,7 @@ class _TransactionListPageState extends State<TransactionListPage> {
       widget.filter.tab == TransactionTab.pos && _acqMerchantId == '0';
   bool get _isReportActionBusy => _isSendingEmail || _isDownloadingReport;
   bool get _showExcelDownload =>
-      _merchantContextLoaded &&
-      _supportsExcelReport &&
-      _acqMerchantId != '0';
+      _merchantContextLoaded && _supportsExcelReport && _acqMerchantId != '0';
 
   @override
   void initState() {
@@ -70,10 +69,12 @@ class _TransactionListPageState extends State<TransactionListPage> {
   Future<void> _bootstrap() async {
     final merchantId = await _sessionStorage.merchantId;
     final acqMerchantId = await _sessionStorage.activeAcqMerchantId;
+    final merchantDropdownItems = await _sessionStorage.merchantDropdownItems;
     if (!mounted) return;
     setState(() {
       _merchantId = merchantId;
       _acqMerchantId = acqMerchantId;
+      _hasMerchantDropdown = merchantDropdownItems.isNotEmpty;
       _merchantContextLoaded = true;
     });
     await _loadSelectedTransactions(page: 0);
@@ -382,9 +383,11 @@ class _TransactionListPageState extends State<TransactionListPage> {
             context,
             AppRoutes.home,
           ),
-          icon:  Icon(defaultTargetPlatform == TargetPlatform.iOS
-              ? Icons.arrow_back_ios
-              : Icons.arrow_back_rounded,),
+          icon: Icon(
+            defaultTargetPlatform == TargetPlatform.iOS
+                ? Icons.arrow_back_ios
+                : Icons.arrow_back_rounded,
+          ),
           color: context.appTextPrimary,
           tooltip: context.tr('back'),
         ),
@@ -394,6 +397,7 @@ class _TransactionListPageState extends State<TransactionListPage> {
         ] else
           const Spacer(),
         if (kIsWeb &&
+            !_hasMerchantDropdown &&
             (widget.filter.tab == TransactionTab.pos ||
                 widget.filter.tab == TransactionTab.qr)) ...[
           OutlinedButton.icon(
@@ -431,10 +435,14 @@ class _TransactionListPageState extends State<TransactionListPage> {
                     label: context.tr('preparing'),
                     color: AppColors.primaryPurple,
                     indicatorSize: 18,
-                    textStyle: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
-                      fontWeight: FontWeight.w900,
-                    ),
+                    textStyle: AppTextStyle(
+                            kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                                ? AppPlatform.web
+                                : AppPlatform.mobile)
+                        .h5
+                        .copyWith(
+                          fontWeight: FontWeight.w900,
+                        ),
                   )
                 : Row(
                     mainAxisSize: MainAxisSize.min,
@@ -464,10 +472,14 @@ class _TransactionListPageState extends State<TransactionListPage> {
                     label: context.tr('sending_email'),
                     color: AppColors.primaryPurple,
                     indicatorSize: 18,
-                    textStyle: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
-                      fontWeight: FontWeight.w900,
-                    ),
+                    textStyle: AppTextStyle(
+                            kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                                ? AppPlatform.web
+                                : AppPlatform.mobile)
+                        .h5
+                        .copyWith(
+                          fontWeight: FontWeight.w900,
+                        ),
                   )
                 : Row(
                     mainAxisSize: MainAxisSize.min,
@@ -484,6 +496,7 @@ class _TransactionListPageState extends State<TransactionListPage> {
 
   Widget _buildDateAndReportActions() {
     final showSearch = kIsWeb &&
+        !_hasMerchantDropdown &&
         (widget.filter.tab == TransactionTab.pos ||
             widget.filter.tab == TransactionTab.qr);
     final showActions =
@@ -569,10 +582,14 @@ class _TransactionListPageState extends State<TransactionListPage> {
               label: loadingLabel,
               color: AppColors.primaryPurple,
               indicatorSize: 14,
-              textStyle: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
-                fontWeight: FontWeight.w800,
-              ),
+              textStyle: AppTextStyle(
+                      kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                          ? AppPlatform.web
+                          : AppPlatform.mobile)
+                  .h5
+                  .copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
             )
           : Row(
               mainAxisSize: MainAxisSize.min,
@@ -581,11 +598,15 @@ class _TransactionListPageState extends State<TransactionListPage> {
                 const SizedBox(width: 6),
                 Text(
                   label,
-                  style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
-                    color: AppColors.primaryPurple,
-                    fontWeight: FontWeight.w800,
-                  ),
+                  style: AppTextStyle(
+                          kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                              ? AppPlatform.web
+                              : AppPlatform.mobile)
+                      .h5
+                      .copyWith(
+                        color: AppColors.primaryPurple,
+                        fontWeight: FontWeight.w800,
+                      ),
                 ),
               ],
             ),
@@ -626,28 +647,30 @@ class _TransactionListPageState extends State<TransactionListPage> {
           children: [
             Expanded(
               child: _WebResultTable(
-              isPosTable: false,
-              isQrTable: true,
-              entries: state.transactions
-                  .map(
-                    (transaction) => _WebResultEntry(
-                      date: transaction.addedOn,
-                      amount: 'Rs. ${transaction.transactionAmount}',
-                      customerName: _valueOrFallback(transaction.payerName, ''),
-                      paymentName:
-                          _valueOrFallback(transaction.customerVpa, ''),
-                      method: _valueOrFallback(transaction.displayAccType, ''),
-                      category: _valueOrFallback(transaction.rrn, ''),
-                      status: transaction.status,
-                      successful: transaction.isSuccessful,
-                      onTap: () => context.push(
-                        AppRoutes.vpaInvoice,
-                        extra: transaction,
+                isPosTable: false,
+                isQrTable: true,
+                entries: state.transactions
+                    .map(
+                      (transaction) => _WebResultEntry(
+                        date: transaction.addedOn,
+                        amount: 'Rs. ${transaction.transactionAmount}',
+                        customerName:
+                            _valueOrFallback(transaction.payerName, ''),
+                        paymentName:
+                            _valueOrFallback(transaction.customerVpa, ''),
+                        method:
+                            _valueOrFallback(transaction.displayAccType, ''),
+                        category: _valueOrFallback(transaction.rrn, ''),
+                        status: transaction.status,
+                        successful: transaction.isSuccessful,
+                        onTap: () => context.push(
+                          AppRoutes.vpaInvoice,
+                          extra: transaction,
+                        ),
                       ),
-                    ),
-                  )
-                  .toList(),
-            ),
+                    )
+                    .toList(),
+              ),
             ),
             const SizedBox(height: 8),
             _PaginationControls(
@@ -692,33 +715,34 @@ class _TransactionListPageState extends State<TransactionListPage> {
           children: [
             Expanded(
               child: _WebResultTable(
-              isPosTable: true,
-              isQrTable: false,
-              entries: state.transactions
-                  .map(
-                    (transaction) => _WebResultEntry(
-                      date:
-                          '${transaction.transactionDate} ${transaction.transactionTime}',
-                      amount: 'Rs. ${transaction.amount}',
-                      paymentName: _valueOrFallback(transaction.terminalId, ''),
-                      method: _valueOrFallback(
-                        transaction.schemeName,
-                        _schemeFromCardNumber(transaction.cardNo),
+                isPosTable: true,
+                isQrTable: false,
+                entries: state.transactions
+                    .map(
+                      (transaction) => _WebResultEntry(
+                        date:
+                            '${transaction.transactionDate} ${transaction.transactionTime}',
+                        amount: 'Rs. ${transaction.amount}',
+                        paymentName:
+                            _valueOrFallback(transaction.terminalId, ''),
+                        method: _valueOrFallback(
+                          transaction.schemeName,
+                          _schemeFromCardNumber(transaction.cardNo),
+                        ),
+                        category:
+                            _posTransactionType(transaction.transactionType),
+                        entryMode: _posCardEntryMode(transaction.posEntryMode),
+                        status: transaction.responseDesc,
+                        successful: transaction.responseCode == '00' ||
+                            _isSuccessfulStatus(transaction.responseDesc),
+                        onTap: () => context.push(
+                          AppRoutes.transactionInvoice,
+                          extra: transaction,
+                        ),
                       ),
-                      category:
-                          _posTransactionType(transaction.transactionType),
-                      entryMode: _posCardEntryMode(transaction.posEntryMode),
-                      status: transaction.responseDesc,
-                      successful: transaction.responseCode == '00' ||
-                          _isSuccessfulStatus(transaction.responseDesc),
-                      onTap: () => context.push(
-                        AppRoutes.transactionInvoice,
-                        extra: transaction,
-                      ),
-                    ),
-                  )
-                  .toList(),
-            ),
+                    )
+                    .toList(),
+              ),
             ),
             const SizedBox(height: 8),
             _PaginationControls(
@@ -750,35 +774,35 @@ class _TransactionListPageState extends State<TransactionListPage> {
           children: [
             Expanded(
               child: _WebResultTable(
-              isPosTable: false,
-              isQrTable: false,
-              entries: state.settlements.map(
-                (settlement) {
-                  final successful = settlement.isSettledStatus;
-                  return _WebResultEntry(
-                    date: settlement.tranDate == null
-                        ? '-'
-                        : settlement.tranDate!
-                            .toLocal()
-                            .toString()
-                            .split(' ')
-                            .first,
-                    amount:
-                        'Rs. ${settlement.totalAmountPayable.toStringAsFixed(2)}',
-                    paymentName:
-                        _valueOrFallback(settlement.utr, settlement.rrn),
-                    method: _valueOrFallback(settlement.mid, '-'),
-                    category: '${settlement.transactionCount} transactions',
-                    status: successful ? 'Settled' : 'Pending',
-                    successful: successful,
-                    onTap: () => context.push(
-                      AppRoutes.settlementInvoice,
-                      extra: settlement,
-                    ),
-                  );
-                },
-              ).toList(),
-            ),
+                isPosTable: false,
+                isQrTable: false,
+                entries: state.settlements.map(
+                  (settlement) {
+                    final successful = settlement.isSettledStatus;
+                    return _WebResultEntry(
+                      date: settlement.tranDate == null
+                          ? '-'
+                          : settlement.tranDate!
+                              .toLocal()
+                              .toString()
+                              .split(' ')
+                              .first,
+                      amount:
+                          'Rs. ${settlement.totalAmountPayable.toStringAsFixed(2)}',
+                      paymentName:
+                          _valueOrFallback(settlement.utr, settlement.rrn),
+                      method: _valueOrFallback(settlement.mid, '-'),
+                      category: '${settlement.transactionCount} transactions',
+                      status: successful ? 'Settled' : 'Pending',
+                      successful: successful,
+                      onTap: () => context.push(
+                        AppRoutes.settlementInvoice,
+                        extra: settlement,
+                      ),
+                    );
+                  },
+                ).toList(),
+              ),
             ),
             const SizedBox(height: 8),
             _PaginationControls(
@@ -1512,11 +1536,15 @@ class _DateRangeLabel extends StatelessWidget {
             label,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
-              color: context.appTextPrimary,
-              fontWeight: FontWeight.w900,
-            ),
+            style: AppTextStyle(
+                    kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                        ? AppPlatform.web
+                        : AppPlatform.mobile)
+                .h4
+                .copyWith(
+                  color: context.appTextPrimary,
+                  fontWeight: FontWeight.w900,
+                ),
           ),
         ),
       ],
@@ -1560,65 +1588,62 @@ class _WebTerminalSummaryTable extends StatelessWidget {
     return WebScrollableTable(
       minWidth: 720,
       children: [
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-                decoration: BoxDecoration(
-                  color: context.isDarkMode
-                      ? context.appElevatedSurface
-                      : AppColors.primaryPurple.withValues(alpha: .10),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Row(
-                  children: [
-                    _TerminalSummaryCell(
-                      label: context.tr('terminals'),
-                      header: true,
-                    ),
-                    _TerminalSummaryCell(
-                      label: context.tr('total_transactions'),
-                      header: true,
-                    ),
-                    _TerminalSummaryCell(
-                      label: context.tr('total_amount'),
-                      header: true,
-                    ),
-                  ],
-                ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+          decoration: BoxDecoration(
+            color: context.isDarkMode
+                ? context.appElevatedSurface
+                : AppColors.primaryPurple.withValues(alpha: .10),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Row(
+            children: [
+              _TerminalSummaryCell(
+                label: context.tr('terminals'),
+                header: true,
               ),
-              for (var index = 0; index < summaries.length; index++)
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 17,
-                  ),
-                  decoration: BoxDecoration(
-                    color: index.isOdd
-                        ? context.appSurfaceAlt
-                        : context.appSurface,
-                    border: Border(
-                      bottom: BorderSide(color: context.appBorder),
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      _TerminalSummaryCell(
-                        label: summaries[index].serialNumber.isEmpty
-                            ? context.tr('not_available')
-                            : summaries[index].serialNumber,
-                        bold: true,
-                      ),
-                      _TerminalSummaryCell(
-                        label: '${summaries[index].count}',
-                      ),
-                      _TerminalSummaryCell(
-                        label:
-                            'Rs. ${summaries[index].totalAmount.toStringAsFixed(2)}',
-                        bold: true,
-                      ),
-                    ],
-                  ),
+              _TerminalSummaryCell(
+                label: context.tr('total_transactions'),
+                header: true,
+              ),
+              _TerminalSummaryCell(
+                label: context.tr('total_amount'),
+                header: true,
+              ),
+            ],
+          ),
+        ),
+        for (var index = 0; index < summaries.length; index++)
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 17,
+            ),
+            decoration: BoxDecoration(
+              color: index.isOdd ? context.appSurfaceAlt : context.appSurface,
+              border: Border(
+                bottom: BorderSide(color: context.appBorder),
+              ),
+            ),
+            child: Row(
+              children: [
+                _TerminalSummaryCell(
+                  label: summaries[index].serialNumber.isEmpty
+                      ? context.tr('not_available')
+                      : summaries[index].serialNumber,
+                  bold: true,
                 ),
+                _TerminalSummaryCell(
+                  label: '${summaries[index].count}',
+                ),
+                _TerminalSummaryCell(
+                  label:
+                      'Rs. ${summaries[index].totalAmount.toStringAsFixed(2)}',
+                  bold: true,
+                ),
+              ],
+            ),
+          ),
       ],
     );
   }
@@ -1642,11 +1667,14 @@ class _TerminalSummaryCell extends StatelessWidget {
         label,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
-        style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
-          color: context.appTextPrimary,
-          fontWeight: header || bold ? FontWeight.w900 : FontWeight.w700,
-        ),
+        style: AppTextStyle(kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                ? AppPlatform.web
+                : AppPlatform.mobile)
+            .h5
+            .copyWith(
+              color: context.appTextPrimary,
+              fontWeight: header || bold ? FontWeight.w900 : FontWeight.w700,
+            ),
       ),
     );
   }
@@ -1676,29 +1704,41 @@ class _TerminalSummaryList extends StatelessWidget {
                 children: [
                   Text(
                     '${context.tr('terminals')}: ${summary.serialNumber.isEmpty ? context.tr('not_available') : summary.serialNumber}',
-                    style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
-                      color: context.appTextPrimary,
-                      fontWeight: FontWeight.w900,
-                    ),
+                    style: AppTextStyle(
+                            kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                                ? AppPlatform.web
+                                : AppPlatform.mobile)
+                        .h4
+                        .copyWith(
+                          color: context.appTextPrimary,
+                          fontWeight: FontWeight.w900,
+                        ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     '${context.tr('total_transactions')}: ${summary.count}',
-                    style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
-                      color: context.appTextPrimary,
-                      fontWeight: FontWeight.w700,
-                    ),
+                    style: AppTextStyle(
+                            kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                                ? AppPlatform.web
+                                : AppPlatform.mobile)
+                        .h5
+                        .copyWith(
+                          color: context.appTextPrimary,
+                          fontWeight: FontWeight.w700,
+                        ),
                   ),
                   const SizedBox(height: 5),
                   Text(
                     '${context.tr('total_amount')}: Rs. ${summary.totalAmount.toStringAsFixed(2)}',
-                    style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
-                      color: context.appTextPrimary,
-                      fontWeight: FontWeight.w700,
-                    ),
+                    style: AppTextStyle(
+                            kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                                ? AppPlatform.web
+                                : AppPlatform.mobile)
+                        .h5
+                        .copyWith(
+                          color: context.appTextPrimary,
+                          fontWeight: FontWeight.w700,
+                        ),
                   ),
                 ],
               ),
@@ -1921,11 +1961,14 @@ class _WebResultTableCell extends StatelessWidget {
         label,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
-        style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
-          color: context.appTextPrimary,
-          fontWeight: header || bold ? FontWeight.w900 : FontWeight.w700,
-        ),
+        style: AppTextStyle(kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                ? AppPlatform.web
+                : AppPlatform.mobile)
+            .h5
+            .copyWith(
+              color: context.appTextPrimary,
+              fontWeight: header || bold ? FontWeight.w900 : FontWeight.w700,
+            ),
       ),
     );
   }
@@ -1965,11 +2008,14 @@ class _WebResultStatus extends StatelessWidget {
         normalized.isEmpty ? '-' : normalized,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
-        style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
-          color: foreground,
-          fontWeight: FontWeight.w900,
-        ),
+        style: AppTextStyle(kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                ? AppPlatform.web
+                : AppPlatform.mobile)
+            .h5
+            .copyWith(
+              color: foreground,
+              fontWeight: FontWeight.w900,
+            ),
       ),
     );
   }
@@ -2007,12 +2053,15 @@ class _EmptyTransactions extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 72),
         child: Text(
           context.tr('no_transactions'),
-          style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
-            color: context.appTextSecondary,
-            fontStyle: FontStyle.italic,
-            fontWeight: FontWeight.w400,
-          ),
+          style: AppTextStyle(kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                  ? AppPlatform.web
+                  : AppPlatform.mobile)
+              .h3
+              .copyWith(
+                color: context.appTextSecondary,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w400,
+              ),
         ),
       ),
     );
@@ -2074,19 +2123,27 @@ class _TransactionSummary extends StatelessWidget {
             children: [
               Text(
                 '$count',
-                style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h2.copyWith(
-                  color: valueColor,
-                  fontWeight: FontWeight.w900,
-                ),
+                style: AppTextStyle(
+                        kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                            ? AppPlatform.web
+                            : AppPlatform.mobile)
+                    .h2
+                    .copyWith(
+                      color: valueColor,
+                      fontWeight: FontWeight.w900,
+                    ),
               ),
               Text(
                 context.tr('total_transactions'),
-                style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
-                  color: foregroundColor,
-                  fontWeight: FontWeight.w900,
-                ),
+                style: AppTextStyle(
+                        kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                            ? AppPlatform.web
+                            : AppPlatform.mobile)
+                    .h5
+                    .copyWith(
+                      color: foregroundColor,
+                      fontWeight: FontWeight.w900,
+                    ),
               ),
             ],
           ),
@@ -2097,19 +2154,27 @@ class _TransactionSummary extends StatelessWidget {
             children: [
               Text(
                 '₹ ${amount.toStringAsFixed(2)}',
-                style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h2.copyWith(
-                  color: valueColor,
-                  fontWeight: FontWeight.w900,
-                ),
+                style: AppTextStyle(
+                        kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                            ? AppPlatform.web
+                            : AppPlatform.mobile)
+                    .h2
+                    .copyWith(
+                      color: valueColor,
+                      fontWeight: FontWeight.w900,
+                    ),
               ),
               Text(
                 context.tr('total_amount'),
-                style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
-                  color: foregroundColor,
-                  fontWeight: FontWeight.w900,
-                ),
+                style: AppTextStyle(
+                        kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                            ? AppPlatform.web
+                            : AppPlatform.mobile)
+                    .h5
+                    .copyWith(
+                      color: foregroundColor,
+                      fontWeight: FontWeight.w900,
+                    ),
               ),
             ],
           ),
@@ -2147,11 +2212,14 @@ class _PaginationControls extends StatelessWidget {
         ),
         Text(
           '${context.tr('page')} ${page + 1} ${context.tr('of')} ${totalPages == 0 ? 1 : totalPages}',
-          style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h5.copyWith(
-            color: context.appTextPrimary,
-            fontWeight: FontWeight.w800,
-          ),
+          style: AppTextStyle(kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                  ? AppPlatform.web
+                  : AppPlatform.mobile)
+              .h5
+              .copyWith(
+                color: context.appTextPrimary,
+                fontWeight: FontWeight.w800,
+              ),
         ),
         IconButton(
           onPressed: isLoading ? null : onNextPage,
