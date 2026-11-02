@@ -13,14 +13,18 @@ class AppTextStyle {
 
   static const String _fontFamily = 'Muli';
 
-  /// Compact sizes read on iOS. The same sizes are too small on Android,
-  /// so Android keeps the sizes from before that scale.
+  /// Native iOS has its own scale. The compact sizes were too small there.
+  /// Android keeps the pre-compact sizes. Narrow web still uses compact.
   double _size({
     required double web,
-    required double compact,
+    required double ios,
     required double android,
+    required double compact,
   }) {
     if (platform == AppPlatform.web) return web;
+    if (!kIsWeb && defaultTargetPlatform == TargetPlatform.iOS) {
+      return ios;
+    }
     if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
       return android;
     }
@@ -29,38 +33,38 @@ class AppTextStyle {
 
   TextStyle get h2 => TextStyle(
         fontFamily: _fontFamily,
-        fontSize: _size(web: 22, compact: 14, android: 22),
+        fontSize: _size(web: 22, ios: 18, android: 22, compact: 14),
         fontWeight: FontWeight.w700,
       );
 
   TextStyle get h3 => TextStyle(
         fontFamily: _fontFamily,
-        fontSize: _size(web: 16, compact: 12, android: 16),
+        fontSize: _size(web: 16, ios: 14, android: 16, compact: 12),
         fontWeight: FontWeight.w700,
       );
 
   TextStyle get h4 => TextStyle(
         fontFamily: _fontFamily,
-        fontSize: _size(web: 15, compact: 11, android: 15),
+        fontSize: _size(web: 15, ios: 13, android: 15, compact: 11),
         fontWeight: FontWeight.w600,
       );
 
   TextStyle get h5 => TextStyle(
         fontFamily: _fontFamily,
-        fontSize: _size(web: 12, compact: 8, android: 12),
+        fontSize: _size(web: 12, ios: 11, android: 12, compact: 8),
         fontWeight: FontWeight.w600,
       );
 
   TextStyle get h4WhiteColor => TextStyle(
         fontFamily: _fontFamily,
-        fontSize: _size(web: 15, compact: 11, android: 15),
+        fontSize: _size(web: 15, ios: 13, android: 15, compact: 11),
         fontWeight: FontWeight.w600,
         color: Colors.white,
       );
 
   TextStyle get h5WhiteColor => TextStyle(
         fontFamily: _fontFamily,
-        fontSize: _size(web: 12, compact: 8, android: 12),
+        fontSize: _size(web: 12, ios: 11, android: 12, compact: 8),
         fontWeight: FontWeight.w600,
         color: Colors.white,
       );

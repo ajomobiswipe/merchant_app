@@ -705,46 +705,37 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
       return _buildWebPosFilterContent();
     }
 
-    const sectionInset = 36.0;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(left: sectionInset),
-          child: Text(
-            context.tr('payment_tid'),
-            style: AppTextStyle(
-                    kIsWeb && AppBreakpoints.isTabletOrLarger(context)
-                        ? AppPlatform.web
-                        : AppPlatform.mobile)
-                .h4
-                .copyWith(
-                  color: context.appTextPrimary,
-                  fontWeight: FontWeight.w900,
-                ),
-          ),
+        Text(
+          context.tr('payment_tid'),
+          style: AppTextStyle(
+                  kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                      ? AppPlatform.web
+                      : AppPlatform.mobile)
+              .h4
+              .copyWith(
+                color: context.appTextPrimary,
+                fontWeight: FontWeight.w900,
+              ),
         ),
         const SizedBox(height: 12),
-        Padding(
-          padding: const EdgeInsets.only(left: sectionInset),
-          child: Text(
-            context.tr('search_by'),
-            style: AppTextStyle(
-                    kIsWeb && AppBreakpoints.isTabletOrLarger(context)
-                        ? AppPlatform.web
-                        : AppPlatform.mobile)
-                .h4
-                .copyWith(
-                  color: context.appTextPrimary,
-                  fontWeight: FontWeight.w900,
-                ),
-          ),
+        Text(
+          context.tr('search_by'),
+          style: AppTextStyle(
+                  kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                      ? AppPlatform.web
+                      : AppPlatform.mobile)
+              .h4
+              .copyWith(
+                color: context.appTextPrimary,
+                fontWeight: FontWeight.w900,
+              ),
         ),
         const SizedBox(height: 12),
         Row(
           children: [
-            const SizedBox(width: sectionInset),
             _SearchOption(
               label: context.tr('date'),
               selected: _searchBy == _SearchBy.date,
@@ -935,20 +926,9 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        SizedBox(
+        _FilterSideLabel(
           width: 72,
-          child: Text(
-            context.tr('tid_vpa'),
-            style: AppTextStyle(
-                    kIsWeb && AppBreakpoints.isTabletOrLarger(context)
-                        ? AppPlatform.web
-                        : AppPlatform.mobile)
-                .h4
-                .copyWith(
-                  color: context.appTextPrimary,
-                  fontWeight: FontWeight.w900,
-                ),
-          ),
+          text: context.tr('tid_vpa'),
         ),
         const SizedBox(width: 16),
         Expanded(
@@ -1054,21 +1034,11 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
     }
 
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        SizedBox(
+        _FilterSideLabel(
           width: 130,
-          child: Text(
-            context.tr('payment_mode'),
-            style: AppTextStyle(
-                    kIsWeb && AppBreakpoints.isTabletOrLarger(context)
-                        ? AppPlatform.web
-                        : AppPlatform.mobile)
-                .h4
-                .copyWith(
-                  color: context.appTextPrimary,
-                  fontWeight: FontWeight.w900,
-                ),
-          ),
+          text: context.tr('payment_mode'),
         ),
         Expanded(
           child: _FilterDropdown(
@@ -1345,6 +1315,42 @@ class _TransactionFilterPageState extends State<TransactionFilterPage> {
   }
 }
 
+/// Side label for a 56px filter field. The box matches the field height so
+/// the word stays on the field's vertical center.
+class _FilterSideLabel extends StatelessWidget {
+  final double width;
+  final String text;
+
+  const _FilterSideLabel({
+    required this.width,
+    required this.text,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: width,
+      height: 56,
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Text(
+          text,
+          style: AppTextStyle(
+                  kIsWeb && AppBreakpoints.isTabletOrLarger(context)
+                      ? AppPlatform.web
+                      : AppPlatform.mobile)
+              .h4
+              .copyWith(
+                color: context.appTextPrimary,
+                fontWeight: FontWeight.w900,
+                height: 1,
+              ),
+        ),
+      ),
+    );
+  }
+}
+
 class _FilterDropdown extends StatelessWidget {
   final IconData icon;
   final List<String> values;
@@ -1388,6 +1394,7 @@ class _FilterDropdown extends StatelessWidget {
       ),
       padding: const EdgeInsets.symmetric(horizontal: 14),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Icon(
             icon,
