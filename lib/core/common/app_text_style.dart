@@ -69,3 +69,27 @@ class AppTextStyle {
         color: Colors.white,
       );
 }
+
+/// Receipt text. The same sizes are used on iOS, Android, and web.
+/// [AppTextStyle] is too large for these dense screens.
+class InvoiceText {
+  static const String _fontFamily = 'Muli';
+
+  static const TextStyle title = TextStyle(
+    fontFamily: _fontFamily,
+    fontSize: 15,
+    fontWeight: FontWeight.w700,
+  );
+
+  static const TextStyle body = TextStyle(
+    fontFamily: _fontFamily,
+    fontSize: 13,
+    fontWeight: FontWeight.w600,
+  );
+
+  static const TextStyle detail = TextStyle(
+    fontFamily: _fontFamily,
+    fontSize: 12,
+    fontWeight: FontWeight.w600,
+  );
+}

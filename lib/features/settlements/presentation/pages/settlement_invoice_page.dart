@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -15,8 +14,6 @@ import 'package:anet_merchants/core/utils/navigation_helper.dart';
 import 'package:anet_merchants/features/invoices/presentation/widgets/invoice_page_shell.dart';
 import 'package:anet_merchants/features/invoices/utils/invoice_pdf_downloader.dart';
 import 'package:anet_merchants/features/settlements/data/models/settlement_history_response_model.dart';
-
-import '../../../../core/common/responsive_layout.dart';
 
 class SettlementInvoicePage extends StatefulWidget {
   final SettlementItemModel transaction;
@@ -86,8 +83,7 @@ class _SettlementInvoicePageState extends State<SettlementInvoicePage> {
               textAlign: TextAlign.center,
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
-              style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
+              style: InvoiceText.body.copyWith(
                 color: context.appTextPrimary,
                 fontWeight: FontWeight.w900,
               ),
@@ -131,8 +127,7 @@ class _SettlementInvoicePageState extends State<SettlementInvoicePage> {
             Text(
               context.tr('thank_you_service'),
               textAlign: TextAlign.center,
-              style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h3.copyWith(
+              style: InvoiceText.body.copyWith(
                 color: context.appTextPrimary,
                 fontWeight: FontWeight.w900,
               ),
@@ -141,8 +136,7 @@ class _SettlementInvoicePageState extends State<SettlementInvoicePage> {
             Text(
               context.tr('keep_receipt'),
               textAlign: TextAlign.center,
-              style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
+              style: InvoiceText.detail.copyWith(
                 color: context.appTextPrimary,
                 fontWeight: FontWeight.w800,
               ),
@@ -330,8 +324,7 @@ class _InvoiceLine extends StatelessWidget {
           Expanded(
             child: Text(
               label,
-              style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
+              style: InvoiceText.body.copyWith(
                 color: context.appTextPrimary,
                 fontWeight: FontWeight.w900,
               ),
@@ -343,8 +336,7 @@ class _InvoiceLine extends StatelessWidget {
               textAlign: TextAlign.right,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4.copyWith(
+              style: InvoiceText.body.copyWith(
                 color: context.appTextPrimary,
                 fontWeight: FontWeight.w500,
               ),
@@ -388,8 +380,7 @@ class _TotalAmount extends StatelessWidget {
         children: [
           Text(
             'PAYABLE',
-            style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h2.copyWith(
+            style: InvoiceText.title.copyWith(
               color: context.appTextPrimary,
               fontWeight: FontWeight.w900,
             ),
@@ -397,8 +388,7 @@ class _TotalAmount extends StatelessWidget {
           const SizedBox(width: 26),
           Text(
             'INR',
-            style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h2.copyWith(
+            style: InvoiceText.title.copyWith(
               color: context.appTextPrimary,
               fontWeight: FontWeight.w900,
             ),
@@ -406,8 +396,7 @@ class _TotalAmount extends StatelessWidget {
           const SizedBox(width: 26),
           Text(
             amount.toStringAsFixed(2),
-            style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h2.copyWith(
+            style: InvoiceText.title.copyWith(
               color: context.appTextPrimary,
               fontWeight: FontWeight.w900,
             ),
@@ -448,8 +437,8 @@ class _DownloadButton extends StatelessWidget {
               : const Icon(Icons.download_rounded, size: 26),
           label: Text(
             isDownloading ? context.tr('preparing') : context.tr('download'),
-            style: AppTextStyle(kIsWeb &&
-                AppBreakpoints.isTabletOrLarger(context)?AppPlatform.web:AppPlatform.mobile).h4WhiteColor.copyWith(
+            style: InvoiceText.body.copyWith(
+              color: Colors.white,
               fontWeight: FontWeight.w900,
             ),
           ),
