@@ -80,7 +80,17 @@ class AppRoutes {
         builder: (context, state) {
           final extra = state.extra;
 
-          return ResetPasswordPage(username: extra is String ? extra : '');
+          if (extra is ResetPasswordRouteArgs) {
+            return ResetPasswordPage(
+              username: extra.username,
+              bearerToken: extra.bearerToken,
+            );
+          }
+
+          return ResetPasswordPage(
+            username: extra is String ? extra : '',
+            bearerToken: '',
+          );
         },
       ),
       GoRoute(

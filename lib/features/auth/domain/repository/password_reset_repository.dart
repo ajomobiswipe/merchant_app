@@ -7,6 +7,7 @@ abstract class PasswordResetRepository {
     required String currentPassword,
     required String password,
     required String confirmPassword,
+    required String bearerToken,
   });
 }
 

@@ -8,12 +8,14 @@ class ResetPasswordParams {
   final String currentPassword;
   final String password;
   final String confirmPassword;
+  final String bearerToken;
 
   const ResetPasswordParams({
     required this.username,
     required this.currentPassword,
     required this.password,
     required this.confirmPassword,
+    required this.bearerToken,
   });
 }
 
@@ -33,6 +35,7 @@ class ResetPassword
       currentPassword: params.currentPassword,
       password: params.password,
       confirmPassword: params.confirmPassword,
+      bearerToken: params.bearerToken,
     );
   }
 }

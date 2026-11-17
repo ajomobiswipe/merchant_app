@@ -17,6 +17,7 @@ class PasswordResetRepositoryImpl implements PasswordResetRepository {
     required String currentPassword,
     required String password,
     required String confirmPassword,
+    required String bearerToken,
   }) async {
     try {
       final response = await dio.post<Map<String, dynamic>>(
@@ -31,6 +32,7 @@ class PasswordResetRepositoryImpl implements PasswordResetRepository {
         options: Options(
           headers: {
             HttpHeaders.contentTypeHeader: 'application/json',
+            HttpHeaders.authorizationHeader: _authorizationHeader(bearerToken),
           },
         ),
       );
@@ -52,6 +54,14 @@ class PasswordResetRepositoryImpl implements PasswordResetRepository {
     } on DioException catch (e) {
       return DataFailed(e);
     }
+  }
+
+  String _authorizationHeader(String bearerToken) {
+    final token = bearerToken.trim();
+    if (token.startsWith('Bearer ')) {
+      return token;
+    }
+    return 'Bearer $token';
   }
 }
 

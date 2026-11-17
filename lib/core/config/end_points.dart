@@ -1,13 +1,13 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-enum Environment { uat, prod, local }
+enum Environment { uat, prod, local, aws }
 
 class EndPoints {
   const EndPoints._();
 
   static const String _configuredEnvironment = String.fromEnvironment(
     'APP_ENV',
-    defaultValue: 'prod',
+    defaultValue: 'aws',
   );
 
   static Environment get environment {
@@ -18,10 +18,12 @@ class EndPoints {
         return Environment.prod;
       case 'local':
         return Environment.local;
+      case 'aws':
+        return Environment.aws;
       default:
         throw StateError(
           'Unsupported APP_ENV: $_configuredEnvironment. '
-          'Expected uat, prod, or local.',
+          'Expected uat, prod, local, or aws.',
         );
     }
   }
@@ -34,6 +36,8 @@ class EndPoints {
         return _env('BASE_API_PUBLIC_PROD');
       case Environment.local:
         return _env('BASE_API_LOCAL');
+      case Environment.aws:
+        return _env('BASE_API_PUBLIC_UAT');
     }
   }
 
@@ -45,6 +49,8 @@ class EndPoints {
         return _env('BASE_API_PUBLIC_PROD_UMS');
       case Environment.local:
         return _env('BASE_API_LOCAL_UMS');
+      case Environment.aws:
+        return _env('BASE_API_PUBLIC_UAT_UMS'); 
     }
   }
 

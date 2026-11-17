@@ -19,6 +19,7 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:anet_merchants/features/auth/presentation/bloc/login/bloc/auth_bloc.dart';
+import 'package:anet_merchants/features/auth/presentation/pages/reset_password_page.dart';
 
 part 'web_login_page.dart';
 
@@ -157,7 +158,13 @@ class _LoginState extends State<Login> {
       );
 
       if (!context.mounted) return;
-      context.push(AppRoutes.resetPassword, extra: state.username);
+      context.push(
+        AppRoutes.resetPassword,
+        extra: ResetPasswordRouteArgs(
+          username: state.username,
+          bearerToken: state.userinfo?.bearerToken ?? '',
+        ),
+      );
       return;
     }
 

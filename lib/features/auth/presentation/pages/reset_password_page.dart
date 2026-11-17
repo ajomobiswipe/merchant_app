@@ -17,12 +17,24 @@ import '../../../../core/common/responsive_layout.dart';
 
 part 'web_reset_password_page.dart';
 
+class ResetPasswordRouteArgs {
+  final String username;
+  final String bearerToken;
+
+  const ResetPasswordRouteArgs({
+    required this.username,
+    required this.bearerToken,
+  });
+}
+
 class ResetPasswordPage extends StatefulWidget {
   final String username;
+  final String bearerToken;
 
   const ResetPasswordPage({
     super.key,
     required this.username,
+    required this.bearerToken,
   });
 
   @override
@@ -69,6 +81,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
         currentPassword: _currentPasswordController.text,
         password: _newPasswordController.text,
         confirmPassword: _confirmPasswordController.text,
+        bearerToken: widget.bearerToken,
       ),
     );
 
