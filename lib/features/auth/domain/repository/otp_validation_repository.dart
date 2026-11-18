@@ -5,6 +5,7 @@ abstract class OtpValidationRepository {
   Future<DataState<OtpValidationResponseModel>> verifyEmailOtp({
     required String username,
     required String otp,
+    required String bearerToken,
   });
 }
 

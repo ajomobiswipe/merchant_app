@@ -51,6 +51,7 @@ class _OtpValidationPageState extends State<OtpValidationPage> {
       params: VerifyEmailOtpParams(
         username: widget.userInfo.userName,
         otp: _otpController.text.trim(),
+        bearerToken: widget.userInfo.bearerToken,
       ),
     );
 

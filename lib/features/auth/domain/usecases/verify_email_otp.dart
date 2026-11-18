@@ -6,10 +6,12 @@ import 'package:anet_merchants/features/auth/domain/repository/otp_validation_re
 class VerifyEmailOtpParams {
   final String username;
   final String otp;
+  final String bearerToken;
 
   const VerifyEmailOtpParams({
     required this.username,
     required this.otp,
+    required this.bearerToken,
   });
 }
 
@@ -27,6 +29,7 @@ class VerifyEmailOtp
     return _repository.verifyEmailOtp(
       username: params.username,
       otp: params.otp,
+      bearerToken: params.bearerToken,
     );
   }
 }

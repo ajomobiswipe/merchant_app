@@ -15,6 +15,7 @@ class OtpValidationRepositoryImpl implements OtpValidationRepository {
   Future<DataState<OtpValidationResponseModel>> verifyEmailOtp({
     required String username,
     required String otp,
+    required String bearerToken,
   }) async {
     try {
       final response = await dio.post<Map<String, dynamic>>(
@@ -23,6 +24,12 @@ class OtpValidationRepositoryImpl implements OtpValidationRepository {
           'userName': username,
           'otp': otp,
         },
+        options: Options(
+          headers: {
+            HttpHeaders.contentTypeHeader: 'application/json',
+            HttpHeaders.authorizationHeader: _authorizationHeader(bearerToken),
+          },
+        ),
       );
 
       if (response.statusCode == HttpStatus.ok && response.data != null) {
@@ -42,6 +49,14 @@ class OtpValidationRepositoryImpl implements OtpValidationRepository {
     } on DioException catch (error) {
       return DataFailed(error);
     }
+  }
+
+  String _authorizationHeader(String bearerToken) {
+    final token = bearerToken.trim();
+    if (token.startsWith('Bearer ')) {
+      return token;
+    }
+    return 'Bearer $token';
   }
 }
 
